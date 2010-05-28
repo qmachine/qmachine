@@ -11,15 +11,15 @@
 
 server {
         listen 80;
-        server_name localhost;
-        rewrite ^/(.*) https://localhost/$1 permanent;
+        server_name couchdb.kicks-ass.org;
+        rewrite ^/(.*) https://couchdb.kicks-ass.org/$1 permanent;
 }
 
 # The HTTPS server, to which all traffic is directed --
 
 server {
         listen   443;
-        server_name  localhost;
+        server_name  couchdb.kicks-ass.org;
 
         ssl  on;
         ssl_certificate  /etc/ssl/certs/srw_test.crt;
@@ -37,16 +37,14 @@ server {
             #auth_basic "Restricted";
             #auth_basic_user_file /etc/sites/htpasswd/sub.domain.com
             proxy_pass http://localhost:5984;
-            proxy_redirect off;
-            proxy_buffering off;
+            #proxy_redirect off;
+            #proxy_buffering off;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded_For $proxy_add_x_forwarded_for;
         }
 
-    # Deny access to any files of the form ".foo" --
-
-        location ~ /\. {
+        location ~ /\. {                # Deny access to files of form ".foo"
             deny all;
         }
 
