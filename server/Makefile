@@ -16,7 +16,7 @@
 # infinitely more convenient and meaningful than a README file. I've been using
 # this "trick" for over a year now, and it's my "one click" method: '$ make'.
 #
-#                                                           -- SRW, 27 May 2010
+#                                                           -- SRW, 19 May 2010
 
 SHELL   :=  bash
 
@@ -49,7 +49,7 @@ define get-ip-address
 endef
 
 .PHONY: all apply_settings create_admin disallow_root_login install_pkgs    \
-            reboot source update
+             reboot update
 
 # Although I've arranged the routines alphabetically, the execution order is
 #   update                  Explanation ?
@@ -58,8 +58,6 @@ endef
 #   apply_settings          Explanation ?
 #   disallow_root_login     Explanation ?
 #   reboot                  Explanation ?
-#
-#   source                  optional -- just another service I provide ;-)
 #
 
 all: reboot
@@ -75,17 +73,12 @@ apply_settings: install_pkgs $(CRT) $(KEY)
 	@   sed -i "s/MYKEY/$(KEY)/" $(NGX_CFG)
 	@   $(exit-message)
 
-clean:
-	@   echo $(get-ip-address)
-	@   $(RM) $(CRT) $(CSR) $(DUP) $(KEY)
-	@   $(CP) /etc/ssh/~sshd_config $(SSH_CFG)
-
 create_admin: update
 	@   $(start-message)
-	@   #echo -n "Enter new UNIX username: "                         ;   \
-            #read NAME                                                   ;   \
-            #adduser $${NAME}                                            ;   \
-            #adduser $${NAME} sudo
+	@   echo -n "Enter new UNIX username: "                         ;   \
+            read NAME                                                   ;   \
+            adduser $${NAME}                                            ;   \
+            adduser $${NAME} sudo
 	@   $(exit-message)
 
 disallow_root_login: apply_settings
@@ -102,13 +95,7 @@ install_pkgs: create_admin
 reboot: disallow_root_login
 	@   $(start-message)
 	@   $(RM) $(CRT) $(CSR) $(DUP) $(KEY)
-	@   #reboot
-
-source: update
-	@   $(start-message)
-	@   $(APT_GET) install $(DEVPKGS)
-	@   $(APT_GET) source $(PKGS)
-	@   $(exit-message)
+	@   reboot
 
 update:
 	@   $(start-message)
