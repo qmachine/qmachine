@@ -1,0 +1,11 @@
+README --
+
+Having created YOURSERVER, a fresh Ubuntu Lucid machine on Rackspace, you can
+deploy CouchDB over HTTPS by entering the following commands in a shell on your
+local UNIX or UNIX-based workstation:
+
+    $ curl http://quanah.googlecode.com/hg/server/Makefile .
+    $ scp Makefile root@YOURSERVER
+    $ ssh root@YOURSERVER make
+
+                                                            -- SRW, 28 May 2010
