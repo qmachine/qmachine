@@ -22,8 +22,8 @@ server {
         server_name  EXTERNALDOMAIN;
 
         ssl  on;
-        ssl_certificate  MYCERTIFICATE;
-        ssl_certificate_key  MYKEY;
+        ssl_certificate  /etc/ssl/certs/MYCERTIFICATE;
+        ssl_certificate_key  /etc/ssl/private/MYKEY;
 
         ssl_session_timeout  5m;
 
