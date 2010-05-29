@@ -11,19 +11,19 @@
 
 server {
         listen 80;
-        server_name couchdb.kicks-ass.org;
-        rewrite ^/(.*) https://couchdb.kicks-ass.org/$1 permanent;
+        server_name EXTERNALDOMAIN;
+        rewrite ^/(.*) https://EXTERNALDOMAIN/$1 permanent;
 }
 
 # The HTTPS server, to which all traffic is directed --
 
 server {
         listen   443;
-        server_name  couchdb.kicks-ass.org;
+        server_name  EXTERNALDOMAIN;
 
         ssl  on;
-        ssl_certificate  /etc/ssl/certs/srw_test.crt;
-        ssl_certificate_key  /etc/ssl/private/srw_test.key;
+        ssl_certificate  /etc/ssl/certs/MYCERTIFICATE;
+        ssl_certificate_key  /etc/ssl/private/MYKEY;
 
         ssl_session_timeout  5m;
 
