@@ -16,23 +16,25 @@
 # infinitely more convenient and meaningful than a README file. I've been using
 # this "trick" for over a year now, and it's my "one click" method: '$ make'.
 #
-#                                                           -- SRW, 19 May 2010
+#                                                           -- SRW, 27 May 2010
 
 SHELL   :=  bash
 
 APT_GET :=  apt-get --assume-yes        # hopefully this is equivalent ...
+CP      :=  rsync                       # 'rsync' can be used as 'cp'++
+CURL    :=  curl
 
-PKGS    :=  couchdb nginx
+PKGS    :=  couchdb nginx rsync
 DEVPKGS :=  dpkg-dev emacs23-nox vim-nox
 
-KEY     :=  myssl.key
+KEY     :=  quanah.key
 DUP     :=  $(KEY:%.key=%.dup)
-CSR     :=  $(KEY:%.key=%.csr)
 CRT     :=  $(KEY:%.key=%.crt)
+CSR     :=  $(KEY:%.key=%.csr)
 
-SSH_CFG :=  ./sshd_config               # /etc/ssh/sshd_config
-NGX_CFG :=  /etc/nginx/sites-available/default-test # ultimately , .../default
-NGX_WEB :=  http://quanah.googlecode.com/hg/server/nginx-default
+SSH_CFG :=  /etc/ssh/sshd_config
+NGX_CFG :=  /etc/nginx/sites-available/default
+NGX_WEB	:=  http://quanah.googlecode.com/hg/server/nginx-default
 
 define start-message
     echo -e "\e[1;32mBeginning task '$@'...\e[1;0m";
@@ -42,14 +44,17 @@ define exit-message
     echo -e "\e[1;32mCompleted task '$@'.\n\e[1;0m";
 endef
 
-.PHONY: all apply_settings create_admin disallow_root_login \
-            fetch_config_files install_pkgs reboot source update
+define get-ip-address
+`curl www.whatismyip.com/automation/n09230945.asp`
+endef
+
+.PHONY: all apply_settings create_admin disallow_root_login install_pkgs    \
+            reboot source update
 
 # Although I've arranged the routines alphabetically, the execution order is
 #   update                  Explanation ?
 #   create_admin            Explanation ?
 #   install_pkgs            Explanation ?
-#   fetch_config_files      Explanation ?
 #   apply_settings          Explanation ?
 #   disallow_root_login     Explanation ?
 #   reboot                  Explanation ?
@@ -59,13 +64,21 @@ endef
 
 all: reboot
 
-apply_settings: install_pkgs $(CRT) $(KEY) $(NGX_CFG)
+apply_settings: install_pkgs $(CRT) $(KEY)
 	@   $(start-message)
-	@   #see changes to /etc/nginx/sites-available/default
-	@   #no changes have been made to to /etc/couchdb/local.ini ...
-	@   #cp $(CRT) /etc/ssl/certs/
-	@   #cp $(KEY) /etc/ssl/private/
+	@   # No changes have been made to /etc/couchdb/local.ini .
+	@   $(CP) $(CRT) /etc/ssl/certs/
+	@   $(CP) $(KEY) /etc/ssl/private/
+	@   $(CURL) $(NGX_WEB) -o $(NGX_CFG)
+	@   sed -i "s/EXTERNALDOMAIN/$(get-ip-address)/" $(NGX_CFG)
+	@   sed -i "s/MYCERTIFICATE/$(CRT)/" $(NGX_CFG)
+	@   sed -i "s/MYKEY/$(KEY)/" $(NGX_CFG)
 	@   $(exit-message)
+
+clean:
+	@   echo $(get-ip-address)
+	@   $(RM) $(CRT) $(CSR) $(DUP) $(KEY)
+	@   $(CP) /etc/ssh/~sshd_config $(SSH_CFG)
 
 create_admin: update
 	@   $(start-message)
@@ -81,11 +94,6 @@ disallow_root_login: apply_settings
 	@   echo "PermitRootLogin no" >> $(SSH_CFG)
 	@   $(exit-message)
 
-fetch_config_files: install_pkgs
-	@   $(start-message)
-	@   ###
-	@   $(exit-message)
-
 install_pkgs: create_admin
 	@   $(start-message)
 	@   $(APT_GET) install $(PKGS)
@@ -93,6 +101,7 @@ install_pkgs: create_admin
 
 reboot: disallow_root_login
 	@   $(start-message)
+	@   $(RM) $(CRT) $(CSR) $(DUP) $(KEY)
 	@   #reboot
 
 source: update
@@ -109,18 +118,20 @@ update:
 
 ###
 
-$(CRT): $(DUP) $(KEY)
+$(CRT): $(CSR) $(KEY) $(DUP)
 	@   openssl rsa -in $(DUP) -out $(KEY)
 	@   openssl x509 -req -days 365 -in $(CSR) -signkey $(KEY) -out $@
 
+$(CSR) $(KEY):
+	@   openssl req -new -nodes -keyout $(KEY) -out $(CSR)
+
+# The next rule (and all that use $(DUP)), comes from the questionable idea that
+# it is convenient and safe to remove the passphrase from the key ??? I am able
+# to generate the $(CRT) programmatically anyway, but according to this article,
+#   http://articles.slicehost.com/2007/12/19/ ...
+#       ubuntu-gutsy-self-signed-ssl-certificates-and-nginx ,
+# there are actually advantages to using this weird method of doing things ...
+
 $(DUP): $(KEY)
-	@   cp $< $@
+	@   $(CP) $< $@
 
-$(NGX_CFG):
-	@   curl $(NGX_WEB) -o $(NGX_CFG)
-
-%.csr: %.key
-	@   openssl req -new -key $< -out $@
-
-%.key:
-	@   openssl genrsa -des3 -out $@ 1024
