@@ -1,26 +1,22 @@
 # Makefile
 
-# The goal of this Makefile is to use "Sean's Trick" (see below) to transform a
-# clean install of Ubuntu Lucid on a Rackspace server into a minimal test mule
-# for CouchDB that uses SSL, as requested by Jonas. As a bonus, the system
-# changes encoded herein represent an idempotent operation, so that executing
-# these instructions repeatedly will always result in a correct configuration.
-# (The inverise operation exists but its implementation is left to the reader.)
-#
-# "Sean's Trick" is to use a Makefile to structure a group of related shell
-# scripts (bash scripts almost always). One advantage versus writing functions
-# inside of shell scripts is that we get automatic prerequisite / dependency
-# checking for free, and additionally, a Makefile doesn't require executable
-# permissions -- it's merely the input to the 'make' and nothing more. I use
-# these to leave myself "live directions" because a well-commented Makefile is
-# infinitely more convenient and meaningful than a README file. I've been using
-# this "trick" for over a year now, and it's my "one click" method: '$ make'.
-#
-#                                                           -- SRW, 19 May 2010
+# This Makefile contains instructions to transform a clean install of Ubuntu
+# Lucid on a Rackspace server into a minimal test mule for CouchDB over SSL. It
+# requires that 'make' be run as 'root' user; I know this is unusual, but when
+# you create a new machine on Rackspace, the email you receive contains only the
+# IP of the new machine and the root user's password. In other cases, YMMV.
+
+# This installer utilizes "Sean's Trick" for using Makefiles to organize related
+# shell scripts in order to simplify issues like permissions and dependency
+# checking. The syntax is not pure 'bash' scripting, but rather a hybrid that
+# additionally takes advantage of idiosyncratic expansion rules in 'make'. Other
+# build systems like 'ant' or 'scons' may merit a look in the future, but the
+# decision here to use 'make' is based on the probability of preinstallation.
+#                                                           -- SRW, 02 Jun 2010
 
 SHELL   :=  bash
 
-APT_GET :=  apt-get --assume-yes        # hopefully this is equivalent ...
+APT_GET :=  apt-get --assume-yes
 CP      :=  rsync                       # 'rsync' can be used as 'cp'++
 CURL    :=  curl
 
@@ -117,7 +113,8 @@ $(CSR) $(KEY):
 # to generate the $(CRT) programmatically anyway, but according to this article,
 #   http://articles.slicehost.com/2007/12/19/ ...
 #       ubuntu-gutsy-self-signed-ssl-certificates-and-nginx ,
-# there are actually advantages to using this weird method of doing things ...
+# there are actually advantages to using this weird method of doing things? It
+# doesn't make sense to me, and any input here would be greatly appreciated.
 
 $(DUP): $(KEY)
 	@   $(CP) $< $@
