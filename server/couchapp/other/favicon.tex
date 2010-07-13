@@ -1,0 +1,23 @@
+% LaTeX source file
+
+% favicon.tex --
+%   This represents the minimal document necessary to typeset a blue "Q" using
+%   Hermann Zapf's AMS "Euler" font. We also disable page numbering in order to
+%   keep the bounding box small so we can crop the resulting PDF automatically
+%   before converting it into a 'favicon.ico' file for use on our webpage.
+%                                                           -- SRW, 02 Jul 2010
+
+\documentclass{article}
+
+\usepackage{eulervm}                    % use Zapf's "Euler" font
+\usepackage{color}                      % allow the use of color
+\pagestyle{empty}                       % minimize document's bounding box
+
+\begin{document}
+
+    \Huge                               % use largest built-in font size
+    \color{blue}                        % change color of all subsequent text
+
+    \[ Q \]                             % write the letter 'Q' with math font 
+
+\end{document}
