@@ -56,7 +56,7 @@ if (!this.Q) {                          // check for its existence
         }
     });
 
-    build_Q("eval", function (code) {
+    build_Q("run", function (code) {
 
      // Sterilize the environment as much as possible before proceeding
 

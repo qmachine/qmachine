@@ -5,7 +5,7 @@
 //      https://developer.mozilla.org/En/Using_web_workers
 //                                                          -- SRW, 13 Jul 2010
 
-importScripts("json2.js","curl.js","Q.js","Maths.js");
+importScripts("json2.js", "curl.js", "Q.js", "Maths.js");
 
 (function (queue) {
     var fetch = function () {
@@ -13,7 +13,7 @@ importScripts("json2.js","curl.js","Q.js","Maths.js");
             latest = {};
         if (changes.results.length > 0) {
             latest = Q.down(changes.results[0].id);
-            latest.results = Q.eval(latest.code);
+            latest.results = Q.run(latest.code);
             Q.up(latest);
         }
         setTimeout(fetch, 1000);
