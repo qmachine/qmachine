@@ -30,7 +30,7 @@ CSR     :=  $(KEY:%.key=%.csr)
 
 SSH_CFG :=  /etc/ssh/sshd_config
 NGX_CFG :=  /etc/nginx/sites-available/default
-NGX_WEB	:=  http://quanah.googlecode.com/hg/server/nginx-default
+NGX_WEB	:=  http://quanah.googlecode.com/hg/nginx-ssl/nginx-default
 
 define start-message
     echo -e "\e[1;32mBeginning task '$@'...\e[1;0m";

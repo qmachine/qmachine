@@ -7,7 +7,7 @@ First, login to YOURSERVER using your favorite SSH client:
     $ ssh root@YOURSERVER
 
 Second, download the automated configuration script by typing the following:
-    # curl http://quanah.googlecode.com/hg/server/Makefile -o Makefile
+    # curl http://quanah.googlecode.com/hg/nginx-ssl/Makefile -o Makefile
 
 Finally, run the automated setup:
     # make
