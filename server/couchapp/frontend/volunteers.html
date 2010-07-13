@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<!--
+    volunteers.html:
+                                                             - SRW, 07 Jul 2010
+-->
+<html>
+
+    <head>
+
+        <meta charset="utf-8">
+        <title>Quanah: Idle Cycle Donation Page</title>
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link rel="stylesheet" href="main.css" />
+
+      <!--
+        Include JSON library in case native browser functions aren't available.
+        If native functions are available, though, they will not be replaced.
+      -->
+        <script>                        // initializations
+            var insert = function (link) {
+                var s = document.createElement('script');
+                s.src = link;
+                document.head.appendChild(s);
+            };
+
+            if (!this.JSON) {
+                insert('json2.js');
+            }
+        </script>
+
+        <script src="curl.js"></script>
+        <script src="Q.js"></script>
+        <script src="Maths.js"></script>
+
+    </head>
+
+    <body>
+
+        <div class=error>
+            <noscript>You MUST enable JavaScript to use this page!</noscript>
+        </div>
+
+        <div id=logo>
+            Quanah: The World's Most Relaxed Supercomputer
+            <br/>
+            <br/>
+            <img src="logo.jpg" alt="(Quanah logo)" />
+            <br/>
+            <br/>
+            "No downloads, no installs, no problem!"
+        </div>
+
+        <div id=main>
+            <br/>
+            Thanks for helping out!
+        </div>
+
+        <script>
+            (function (chores) {
+                var fetch = function () {
+                    var changes = Q.down(chores),
+                        latest = {};
+                    if (changes.results.length > 0) {
+                        latest = Q.down(changes.results[0].id);
+                        latest.results = Q.eval(latest.code);
+                        Q.up(latest);
+                    }
+                    setTimeout(fetch, 1000);
+                };
+                setTimeout(fetch, 1000);
+            }("_changes?filter=quanah/code"));
+        </script>
+
+    </body>
+
+</html>

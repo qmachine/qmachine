@@ -7,7 +7,7 @@ myself.
     0.  Install Mercurial -- if you're reading this, you probably already did.
     1.  See the directions at http://code.google.com/p/quanah/source/checkout .
     2.  Edit files, then type
-            $   hg add
+            $   hg addremove
             $   hg commit               # this one is crucial!
     3.  To "push" your changes back to everyone else, type
             $   hg push                 # and then follow the directions.
