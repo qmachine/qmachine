@@ -1,0 +1,8 @@
+notes.txt --
+
+- I realized that the current queue mechanism is vulnerable to "wabbits".
+
+- Does 'jslint' have a bug in it, for methods that begin with "_" ?
+
+                                                            -- SRW, 13 Jul 2010
+

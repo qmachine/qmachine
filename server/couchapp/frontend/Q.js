@@ -5,52 +5,24 @@
 //  and its only external dependencies are the 'curl' and 'JSON' objects.
 //                                                          -- SRW, 11 Jul 2010
 
-//  NOTE: I just realized the current system is vulnerable to "wabbits". This
-//  is in addition to the fact that any anonymous person out there could bring
-//  down the entire system with a mere 'curl -X DELETE $URL'. Argh.
-
-//  NOTE: Does 'jslint' have a bug in it, for methods that begin with '_' ?
-
-//  NOTE: I'd like to forego explicitly disallowing insecure JS functions in
-//  favor of simply refreshing the page if anything alters the volunteers'
-//  local instance of the webpage. Can this be done with 'onchange'-type events?
-
 if (!this.Q) {                          // check for its existence
     var Q = {};
 }
 
 (function () {                          // build it inside an anonymous closure
 
- // First, we declare private variables that exist only within this closure.
+ // PRIVATE MEMBERS
 
-    var root = window.location.protocol + '//' + window.location.host + '/',
+    var root = location.protocol + '//' + location.host + '/',
         db = root + 'quanah/',
         results = {"stdout": [], "stderr": []},
         build_Q = function (branch, definition) {
             if (typeof Q[branch] !== 'function') {
                 Q[branch] = definition;
             }
-        },
-        nono = function (fname) {
-            return function () {
-                throw "ERROR: Do not use the '" + fname + "' function.";
-            };
         };
 
- // Now, let's nip some potential nuisances in the bud by overwriting some of
- // the default output functions. The list will be carefully expanded soon.
-
-    window.alert = nono("alert");
-    document.write = nono("document.write");
-    document.writeln = nono("document.writeln");
-
- // From this point on, we are building members for the 'Q' object, so we must
- // be careful not to create any "Hawking radiation" that leaves the closure.
-
-    build_Q("sterilize", function () {
-        results.stdout.length = 0;
-        results.stderr.length = 0;
-    });
+  // PUBLIC MEMBERS
 
     build_Q("print", function (message) {
         results.stdout.push(message);
@@ -85,7 +57,14 @@ if (!this.Q) {                          // check for its existence
     });
 
     build_Q("eval", function (code) {
-        Q.sterilize();
+
+     // Sterilize the environment as much as possible before proceeding
+
+        results.stdout.length = 0;
+        results.stderr.length = 0;
+
+     // Now, evaluate the user's code inside a 'try/catch' to capture errors.
+
         try {
             eval(code);
         } catch (error) {
