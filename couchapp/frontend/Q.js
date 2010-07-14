@@ -14,7 +14,7 @@ if (!this.Q) {                          // check for its existence
  // PRIVATE MEMBERS
 
     var root = location.protocol + '//' + location.host + '/',
-        db = root + 'quanah/',
+        db = root + 'app/',
         results = {"stdout": [], "stderr": []},
         build_Q = function (branch, definition) {
             if (typeof Q[branch] !== 'function') {
