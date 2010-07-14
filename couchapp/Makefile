@@ -18,7 +18,7 @@ BROWSE      :=  gnome-www-browser       # 'gnome-open' also works
 COUCHAPP    :=  couchapp                # missing? 'sudo easy_install couchapp'
 
 APP         :=  quanah
-URL         :=  "http://localhost:5984/$(APP)"
+URL         :=  quanah.couchone.com/app
 HOMEPAGE    :=  $(URL)/_design/$(APP)/index.html
 
 FRONTEND    :=  frontend
@@ -39,7 +39,8 @@ clean: reset
 
 clobber: clean
 	@   $(RM) $(APP) $(FAVICON) $(JSON) $(LOGO) $(MATHS)
-	@   $(CURL) DELETE $(URL) > /dev/null 2>&1
+	@   $(ECHO) "Use Futon manually if you want to destroy your app"    \
+                "completely --\n    I refuse to endanger your app this way!\n"
 
 reset:
 	@   clear
@@ -48,7 +49,9 @@ run: $(APP) $(FAVICON) $(JSON) $(MATHS)
 	@   $(CP) $(BACKEND)/couchapp.json $(APP)/                      ;   \
             $(CP) $(BACKEND)/filters-code.js $(APP)/filters/code.js     ;   \
             $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
-            $(COUCHAPP) push $(APP) $(URL)
+            $(ECHO) "Username: " && read USER                           ;   \
+            $(ECHO) "Password: "; stty -echo; read PASSWD; stty echo    ;   \
+            $(COUCHAPP) push $(APP) "http://$${USER}:$${PASSWD}@$(URL)"
 
 ###
 
