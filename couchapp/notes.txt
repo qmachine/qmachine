@@ -4,5 +4,8 @@ notes.txt --
 
 - Does 'jslint' have a bug in it, for methods that begin with "_" ?
 
-                                                            -- SRW, 13 Jul 2010
+- Do NOT touch the "require_valid_user" tag in "/_config". If you do, you can
+  undo the damage as shown:
+    $ curl -X PUT http://user:password@foo.couchone.com/_config/couch_httpd_auth/require_valid_user -d '"false"'
 
+                                                            -- SRW, 14 Jul 2010
