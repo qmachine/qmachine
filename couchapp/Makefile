@@ -39,8 +39,8 @@ clean: reset
 
 clobber: clean
 	@   $(RM) $(APP) $(FAVICON) $(JSON) $(LOGO) $(MATHS)
-	@   $(ECHO) "Use Futon manually if you want to destroy your app"    \
-                "completely --\n    I refuse to endanger your app this way!\n"
+	@   #$(ECHO) "Use Futon manually if you want to destroy your app"    \
+            #    "completely --\n    I refuse to endanger your app this way!\n"
 
 reset:
 	@   clear
@@ -51,6 +51,7 @@ run: $(APP) $(FAVICON) $(JSON) $(MATHS)
             $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
             $(ECHO) "Username: " && read USER                           ;   \
             $(ECHO) "Password: "; stty -echo; read PASSWD; stty echo    ;   \
+            $(ECHO) "\n"                                                  ;   \
             $(COUCHAPP) push $(APP) "http://$${USER}:$${PASSWD}@$(URL)"
 
 ###

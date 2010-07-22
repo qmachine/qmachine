@@ -13,6 +13,14 @@ a:hover {
     text-decoration: underline;
 }
 
+img {
+    margin: 1em;
+}
+
+form {
+    margin: 1em;
+}
+
 .error {                                /* <div class=error> ... </div> */
     color: red;
 }
