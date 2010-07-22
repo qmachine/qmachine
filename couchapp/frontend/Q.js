@@ -1,76 +1,119 @@
-// BROWSER ONLY!
+//: BROWSER ONLY!
 
-// Q.js --
-//  This contains routines specific to "The World's Most Relaxed Supercomputer",
-//  and its only external dependencies are the 'curl' and 'JSON' objects.
-//                                                          -- SRW, 11 Jul 2010
+//: Q.js --
+//  This mini-framework for "Quanah" requires only 'JSON' and 'curl' objects.
+//                                                          -- SRW, 21 Jul 2010
 
-if (!this.Q) {                          // check for its existence
+if (!this.Q) {                          //: Check for the Q object's existence
     var Q = {};
 }
 
-(function () {                          // build it inside an anonymous closure
+(function () {                          //: Build Q inside an anonymous closure
 
- // PRIVATE MEMBERS
+//: PRIVATE MEMBERS
 
     var root = location.protocol + '//' + location.host + '/',
         db = root + 'app/',
-        results = {"stdout": [], "stderr": []},
-        build_Q = function (branch, definition) {
+
+        fresh_id = (function () {       //: Memoized (poorly) but not AJAX'ed
+            var ideal = 100,
+                source = root + '_uuids?count=' + ideal,
+                the_uuids = [],
+                refill_uuids = function () {
+                    if (the_uuids.length < ideal / 2) {
+                        var msg = curl.GET(source),     //: AJAX will go here
+                            latest = JSON.parse(msg);
+                        the_uuids = the_uuids.concat(latest.uuids);
+                    }
+                };
+            refill_uuids();
+            return function (n) {
+                n = n || 1;
+                var temp = the_uuids.splice(0,n);
+                refill_uuids();
+                return (n === 1) ? temp[0] : temp;
+            };
+        }()),
+
+        author = (function () {
+            var source = root + '_session',
+                msg = JSON.parse(curl.GET(source));
+            return msg.userCtx.name;
+        }()),
+
+        Qdot = function (branch, definition) {
             if (typeof Q[branch] !== 'function') {
                 Q[branch] = definition;
             }
+        },
+
+        results = {
+            "stdout":   [],
+            "stderr":   []
+        },
+
+    //: I may replace this next bit with a "validate_doc_update.js" file ...
+        validate = function (obj) {     //: fills in an object's missing fields
+            obj["_id"] = obj["_id"] || fresh_id();
+            obj.name = author;
+            return obj;
         };
 
-  // PUBLIC MEMBERS
+//: PUBLIC MEMBERS
 
-    build_Q("print", function (message) {
+    Qdot("print", function (message) {  //: an all-purpose output function
+
         results.stdout.push(message);
+
     });
 
-    build_Q("up", function (obj) {      // client --> cloud transfer
-        var msg = curl.PUT(db + obj['_id'], JSON.stringify(obj));
+    Qdot("up", function (obj) {         //: client --> cloud transfer
+
+        validate(obj);
+
+        var target = db + obj['_id'],
+            source = JSON.stringify(obj),
+            msg = curl.PUT(target, source);
+
         return JSON.parse(msg);
+
     });
 
-    build_Q("down", function (doc_id) { // cloud --> client transfer
-        var msg = curl.GET(db + doc_id);
+    Qdot("down", function (doc_id) {    //: cloud --> client transfer
+
+        var source = db + doc_id,
+            msg = curl.GET(source);
+
         return JSON.parse(msg);
+
     });
 
-    build_Q("fresh_id", function (n) {  // need to memoize ...
-        n = n || 1;
-        var msg = curl.GET(root + '_uuids?count=' + n),
-            temp = JSON.parse(msg);
-        return (n === 1) ? temp.uuids[0] : temp.uuids;
-    });
+    Qdot("run", function (code) {       //: CLEARS RESULTS, then runs inline JS
 
-    build_Q("Doc", function () {        // Constructor that takes no arguments
-        var template = {"_id": Q.fresh_id()},
-            msg = Q.up(template);
-        if (msg.ok) {
-            template['_rev'] = msg.rev;
-            return template;
-        } else {
-            throw msg;
-        }
-    });
+        results.stdout.length = 0;      //: Sterilize the environment as much
+        results.stderr.length = 0;      //  as possible before proceeding.
 
-    build_Q("run", function (code) {
-
-     // Sterilize the environment as much as possible before proceeding
-
-        results.stdout.length = 0;
-        results.stderr.length = 0;
-
-     // Now, evaluate the user's code inside a 'try/catch' to capture errors.
-
-        try {
-            eval(code);
-        } catch (error) {
-            results.stderr.push(error);
+        try {                           //: Now, use a 'try/catch' statement
+            eval(code);                 //  to evaluate the user's code and
+        } catch (error) {               //  catch any exceptions that may have
+            results.stderr.push(error); //  been thrown in the process.
         }
         return results;
+
+    });
+
+    Qdot("Doc", function () {           //: Constructor for new CouchDB docs
+
+        var template = validate({}),    //: The '{}' will get validated twice,
+            msg = Q.up(template);       //  but it's not a big deal right now. 
+
+        if (msg.ok === 'false') {
+            throw msg;
+        }
+
+        template['_rev'] = msg.rev;
+        return template;
+
     });
 
 }());

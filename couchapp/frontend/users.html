@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <!--
-    users.html:
+:   users.html -
+        The page for those who wish to program Quanah.
                                                              - SRW, 07 Jul 2010
 -->
 <html>
@@ -11,19 +12,6 @@
         <title>Quanah: Program Submission Page</title>
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="main.css" />
-
-      <!--
-        Include JSON library in case native browser functions aren't available.
-        If native functions are available, though, they will not be replaced.
-      -->
-        <script src="json2.js"></script>
-
-      <!--
-        Add my own libraries for AJAX and mathematical computation.
-      -->
-        <script src="curl.js"></script>
-        <script src="Q.js"></script>
-        <script src="Maths.js"></script>
 
     </head>
 
@@ -36,9 +24,7 @@
         <div id=logo>
             Quanah: The World's Most Relaxed Supercomputer
             <br/>
-            <br/>
             <img src="logo.jpg" alt="(Quanah logo)" />
-            <br/>
             <br/>
             "No downloads, no installs, no problem!"
         </div>
@@ -47,18 +33,29 @@
             <br/>
             Note: Syntax highlighting is definitely on the to-do list!
             <br/>
-            <br/>
-            <form name=editor>
-                <textarea id=code autofocus cols=80 rows=24></textarea>
-                <br/>
-                <br/>
-                <select id=devmode>
-                    <option>Final</option>
-                </select>
-                <input type=button value="Run"
-                    onClick="Q.up({'_id': Q.fresh_id(), 'code': code.value});">
-            </form>
         </div>
+
+        <form name=editor>
+            <textarea id=code autofocus cols=80 rows=24></textarea>
+            <br/>
+            <select id=devmode>
+                <option>Final</option>
+            </select>
+            <input type=button value=Run onClick="Q.up({'code': code.value});">
+        </form>
+
+      <!--
+        Include JSON library in case native browser functions aren't available.
+        If native functions are available, though, they will not be replaced.
+      -->
+        <script src="json2.js"></script>
+
+      <!--
+        Libraries for AJAX and mathematical computation.
+      -->
+        <script src="curl.js"></script>
+        <script src="Q.js"></script>
+        <script src="Maths.js"></script>
 
     </body>
 
