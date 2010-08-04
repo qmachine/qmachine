@@ -1,0 +1,26 @@
+[
+  {
+    "from":     "/",
+    "to":       "/index.html",
+    "method":   "GET",
+    "query":    {}
+  },
+  {
+    "from":     "/empower",
+    "to":       "/volunteers.html",
+    "method":   "GET",
+    "query":    {}
+  },
+  {
+    "from":     "/program",
+    "to":       "/users.html",
+    "method":   "GET",
+    "query":    {}
+  },
+  {
+    "from":     "*",
+    "to":       "/*",
+    "method":   "GET",
+    "query":    {}
+  }
+]
