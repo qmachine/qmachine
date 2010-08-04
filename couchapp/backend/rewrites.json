@@ -6,14 +6,8 @@
     "query":    {}
   },
   {
-    "from":     "/empower",
-    "to":       "/volunteers.html",
-    "method":   "GET",
-    "query":    {}
-  },
-  {
-    "from":     "/program",
-    "to":       "/users.html",
+    "from":     "/~app/*",
+    "to":       "../../*",
     "method":   "GET",
     "query":    {}
   },
