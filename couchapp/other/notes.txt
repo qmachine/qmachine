@@ -1,0 +1,17 @@
+notes.txt --
+
+- I realized that the current queue mechanism is vulnerable to "wabbits".
+
+- Do NOT touch the "require_valid_user" tag in "/_config". If you do, you can
+  undo the damage as shown:
+    $ curl -X PUT http://user:password@foo.couchone.com/_config/couch_httpd_auth/require_valid_user -d '"false"'
+
+- http://blog.couch.io/post/443028592/whats-new-in-apache-couchdb-0-11-part-one-nice-urls
+
+- http://wiki.apache.org/couchdb/Rewriting_urls
+
+curl -X PUT http://user:password@foo.couchone.com/_config/vhosts/hostname -d \
+  '"/db/_design/app/_rewrite"'
+
+
+                                                            -- SRW, 03 Aug 2010

@@ -18,7 +18,7 @@ BROWSE      :=  gnome-www-browser       # 'gnome-open' also works
 COUCHAPP    :=  couchapp                # missing? 'sudo easy_install couchapp'
 
 APP         :=  quanah
-URL         :=  quanah.couchone.com/app
+URL         :=  quanah.couchone.com:5984/app
 HOMEPAGE    :=  $(URL)/_design/$(APP)/index.html
 
 FRONTEND    :=  frontend
@@ -46,7 +46,7 @@ reset:
 	@   clear
 
 run: $(APP) $(FAVICON) $(JSON) $(MATHS)
-	@   $(CP) $(BACKEND)/couchapp.json $(APP)/                      ;   \
+	@   $(CP) $(BACKEND)/*.json $(APP)/                             ;   \
             $(CP) $(BACKEND)/filters-code.js $(APP)/filters/code.js     ;   \
             $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
             $(ECHO) "Username: " && read USER                           ;   \
