@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<!--
+//: notes.html
+//  It makes more sense to leave "live" notes as HTML than as plain-text, since
+//  then, at the very least, the links are active.
+//                                                           - SRW, 05 Aug 2010
+-->
+<html>
+
+    <head>
+        <title>Notes</title>
+    </head>
+
+    <body>
+
+        <div style="margin:1em">
+            <h3>
+                <span style="float:left">Notes</span>
+                <span style="float:right">05 Aug 2010</span>
+            </h3>
+        </div>
+
+        <br/>
+
+        <ol>
+
+            <li>
+                The current queue mechanism is vulnerable to
+                <a href="http://en.wikipedia.org/wiki/Wabbit">wabbits</a>.
+            </li>
+
+            <li>
+                To alter the server-side configuration on foo.couchone.com, use
+                <br/>
+                <code>
+                    curl -X PUT http://user:passwd@foo.couchone.com/_config
+                    -d '"JSON"'
+                </code>
+            </li>
+
+            <li>
+                Some useful links for Virtual Hosts, URL rewriting, etc. [
+                <a href="http://blog.couch.io/post/443028592/">1</a>,
+                <a href="http://wiki.apache.org/couchdb/Rewriting_urls">2</a>]
+            </li>
+
+            <li>
+                Also, I am considering using "~username" as a rewrite rule to
+                some view / show / filter function that shows all of a certain
+                user's relevant documents.
+            </li>
+
+        </ol>
+        </p>
+
+    </body>
+
+</html>
