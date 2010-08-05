@@ -1,0 +1,13 @@
+# Mercurial "ignore" file -- see hgignore(5).
+
+# .hgignore --
+#   This file contains a set of patterns that alter the behavior of Mercurial.
+#   Mercurial will ignore every unmanaged file that matches any pattern in an
+#   "ignore" file. In this case, I have instructed Mercurial to ignore hidden
+#   files created by vim as well as the .couchapprc file, which potentially
+#   contains plaintext passwords for use while authenticating file uploads.
+#                                                           -- SRW, 05 Aug 2010
+
+\.swp$
+
+.couchapprc
