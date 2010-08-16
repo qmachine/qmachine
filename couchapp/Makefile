@@ -12,10 +12,9 @@
 SHELL       :=  bash                    #
 ECHO        :=  echo -en                # use explicit formatting (ie, '\n')
 RM          :=  rm -rf                  # delete folders as well as files
-CP          :=  rsync --archive         # 'rsync' is a smarter than 'cp'
+CP          :=  rsync --archive         # 'rsync' is smarter than 'cp'
 CURL        :=  curl -X                 #
-BROWSE      :=  gnome-www-browser       # 'gnome-open' also works
-COUCHAPP    :=  couchapp                # missing? 'sudo easy_install couchapp'
+COUCHAPP    :=  couchapp                # if missing, sudo easy_install couchapp
 
 APP         :=  quanah
 URL         :=  quanah.couchone.com:5984/app
@@ -32,15 +31,12 @@ FAVICON     :=  $(FRONTEND)/favicon.ico
 .PHONY: all clean clobber reset run
 
 all: run
-	@   $(BROWSE) $(HOMEPAGE)
 
 clean: reset
 	@   $(RM) $(OTHER)/*.{aux,log,pdf}
 
 clobber: clean
-	@   $(RM) $(APP) $(FAVICON) $(JSON) $(LOGO) $(MATHS)
-	@   #$(ECHO) "Use Futon manually if you want to destroy your app"    \
-            #    "completely --\n    I refuse to endanger your app this way!\n"
+	@   $(RM) $(APP) $(JSON) $(MATHS)
 
 reset:
 	@   clear
@@ -51,8 +47,9 @@ run: $(APP) $(FAVICON) $(JSON) $(MATHS)
             $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
             $(ECHO) "Username: " && read USER                           ;   \
             $(ECHO) "Password: "; stty -echo; read PASSWD; stty echo    ;   \
-            $(ECHO) "\n"                                                  ;   \
-            $(COUCHAPP) push $(APP) "http://$${USER}:$${PASSWD}@$(URL)"
+            $(ECHO) "\n"                                                ;   \
+            $(COUCHAPP) push --browse $(APP)                                \
+                "http://$${USER}:$${PASSWD}@$(URL)"
 
 ###
 
@@ -67,6 +64,13 @@ $(JSON):
 
 $(MATHS):
 	@   $(CURL) GET http://libjs-maths.googlecode.com/hg/Maths.js > $@
+
+###
+# The following directions were used on Ubuntu Linux to create the logo and
+# favicon from scratch, programmatically. Since they aren't guaranteed to work
+# in other environments, the images themeselves are stored in this repository
+# along with the original source file (other/favicon.tex). This problem will be
+# addressed at a future date.
 
 $(FAVICON) $(LOGO): $(OTHER)/favicon.tex
 	@   PDF="$(<:%.tex=%.pdf)"                                      ;   \
