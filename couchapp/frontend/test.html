@@ -22,8 +22,7 @@
                 },
                 form = document.forms['f'];
             form.action = actout();
-            form.buildfile.value = "http://" +
-                "permease.googlecode.com/hg/build.json";
+            form.buildfile.value = window.location.href + "/build.json";
             form.submit();
         </script>
     </body>
