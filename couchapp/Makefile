@@ -44,6 +44,7 @@ reset:
 run: $(APP) $(FAVICON) $(JSON) $(MATHS)
 	@   $(CP) $(BACKEND)/*.json $(APP)/                             ;   \
             $(CP) $(BACKEND)/filters-code.js $(APP)/filters/code.js     ;   \
+            $(CP) $(BACKEND)/update-create.js $(APP)/updates/create.js  ;   \
             $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
             $(ECHO) "Username: " && read USER                           ;   \
             $(ECHO) "Password: "; stty -echo; read PASSWD; stty echo    ;   \

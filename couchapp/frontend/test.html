@@ -8,14 +8,24 @@
     </head>
 
     <body>
+        <form id="f" action="" method="post" >
+            <input name="buildfile" type="url" />
+        </form>
 
         <script src="curl.js"></script>
         <script src="Q.js"></script>
 
-        <form id="f" action="http://quanah.couchone.com/app" method="put">
-            <input id="i" value="booyah">
-        </form>
-
+        <script>
+            var actout = function () {
+                    var booyah = new Q.Doc();
+                    return "_update/create/" + booyah._id;
+                },
+                form = document.forms['f'];
+            form.action = actout();
+            form.buildfile.value = "http://" +
+                "permease.googlecode.com/hg/build.json";
+            form.submit();
+        </script>
     </body>
 
 </html>
