@@ -49,14 +49,14 @@ run: $(APP) $(FAVICON) $(JSON) $(MATHS)
             $(ECHO) "Username: " && read USER                           ;   \
             $(ECHO) "Password: "; stty -echo; read PASSWD; stty echo    ;   \
             $(ECHO) "\n"                                                ;   \
-            $(COUCHAPP) push --browse $(APP)                                \
+            $(COUCHAPP) push --browse --quiet $(APP)                        \
                 "http://$${USER}:$${PASSWD}@$(URL)"
 
 ###
 
 $(APP):
 	@   $(COUCHAPP) generate $(APP)                                 ;   \
-            mkdir -p $(APP)/filters                                     ;   \
+            mkdir -p $(APP)/filters $(APP)/updates                      ;   \
             $(RM) $(APP)/{_attachments/*,evently,lists,shows,views,vendor}
 
 $(JSON):

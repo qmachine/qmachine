@@ -116,4 +116,20 @@ if (!this.Q) {                          //: Check for the Q object's existence
 
     });
 
+    Qdot("reval", function (func, argarray) {
+        argarray = argarray || [];
+        var dQ = new Q.Doc(),
+            id = dQ._id;
+        localStorage[id] = func;        //- stringify the function
+        dQ.code = '(' + localStorage[id] + ')' +
+            '.apply(this, ' + JSON.stringify(argarray) + ')';
+        Q.up(dQ);
+        delete localStorage[id];
+        console.log('Waiting for response ...');
+        while (!dQ.results) {
+            dQ = Q.down(id);
+        }
+        return dQ.results.stdout;
+    });
+
 }());
