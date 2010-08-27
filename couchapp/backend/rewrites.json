@@ -1,1 +1,19 @@
-[{"to": "/index.html", "from": "/", "method": "GET", "query": {}}, {"to": "../../*", "from": "/~app/*", "method": "GET", "query": {}}, {"to": "/*", "from": "*", "method": "GET", "query": {}}]
+[
+    {
+        "from":     "/",
+        "to":       "/index.html",
+        "method":   "GET",
+        "query":    {}
+    },
+    {
+        "from":     "/db/*",
+        "to":       "../../*",
+        "query":    {}
+    },
+    {
+        "from":     "*",
+        "to":       "/*",
+        "method":   "GET",
+        "query":    {}
+    }
+]

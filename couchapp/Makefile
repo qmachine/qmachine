@@ -49,10 +49,9 @@ run: $(APP) $(FAVICON) $(JSON) $(MATHS)
             $(CP) $(BACKEND)/update-create.js $(APP)/updates/create.js  ;   \
             $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
             $(ECHO) "Username: " && read USER                           ;   \
-            $(ECHO) "Password: "; read -s PASSWD                        ;   \
+            $(ECHO) "Password: " && read -s PASSWD                      ;   \
             $(ECHO) "\n"                                                ;   \
-            $(COUCHAPP) push --browse --quiet $(APP)                        \
-                "http://$${USER}:$${PASSWD}@$(URL)"
+            $(COUCHAPP) push -bq $(APP) "http://$${USER}:$${PASSWD}@$(URL)"
 
 ###
 
