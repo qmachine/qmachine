@@ -1,27 +1,27 @@
-//: BROWSER ONLY!
+//- JavaScript source code
 
-//: Q.js --
+//- Q.js ~~
 //  This mini-framework for "Quanah" requires only 'JSON' and 'curl' objects.
-//                                                          -- SRW, 21 Jul 2010
+//                                                          ~~ SRW, 21 Jul 2010
 
-if (!this.Q) {                          //: Check for the Q object's existence
+if (!this.Q) {                          //- Check for the Q object's existence
     var Q = {};
 }
 
-(function () {                          //: Build Q inside an anonymous closure
+(function () {                          //- Build Q inside an anonymous closure
 
-//: PRIVATE MEMBERS
+//- PRIVATE MEMBERS
 
     var root = location.protocol + '//' + location.host + '/',
         db = root + 'app/',
 
-        fresh_id = (function () {       //: Memoized (poorly) but not AJAX'ed
+        fresh_id = (function () {       //- Memoized (poorly) but not AJAX'ed
             var ideal = 100,
                 source = root + '_uuids?count=' + ideal,
                 the_uuids = [],
                 refill_uuids = function () {
                     if (the_uuids.length < ideal / 2) {
-                        var msg = curl.GET(source),     //: AJAX will go here
+                        var msg = curl.GET(source),     //- AJAX will go here
                             latest = JSON.parse(msg);
                         the_uuids = the_uuids.concat(latest.uuids);
                     }
@@ -41,7 +41,7 @@ if (!this.Q) {                          //: Check for the Q object's existence
             return msg.userCtx.name;
         }()),
 
-        Qdot = function (branch, definition) {
+        augment = function (branch, definition) {
             if (typeof Q[branch] !== 'function') {
                 Q[branch] = definition;
             }
@@ -52,22 +52,22 @@ if (!this.Q) {                          //: Check for the Q object's existence
             "stderr":   []
         },
 
-    //: I may replace this next bit with a "validate_doc_update.js" file ...
-        validate = function (obj) {     //: fills in an object's missing fields
+    //- I may replace this next bit with a "validate_doc_update.js" file ...
+        validate = function (obj) {     //- fills in an object's missing fields
             obj["_id"] = obj["_id"] || fresh_id();
             obj.name = author;
             return obj;
         };
 
-//: PUBLIC MEMBERS
+//- PUBLIC MEMBERS
 
-    Qdot("print", function (message) {  //: an all-purpose output function
+    augment("print", function (msg) {   //- an all-purpose output function
 
-        results.stdout.push(message);
+        results.stdout.push(msg);
 
     });
 
-    Qdot("up", function (obj) {         //: client --> cloud transfer
+    augment("up", function (obj) {      //- client --> cloud transfer
 
         validate(obj);
 
@@ -79,7 +79,7 @@ if (!this.Q) {                          //: Check for the Q object's existence
 
     });
 
-    Qdot("down", function (doc_id) {    //: cloud --> client transfer
+    augment("down", function (doc_id) { //- cloud --> client transfer
 
         var source = db + doc_id,
             msg = curl.GET(source);
@@ -88,12 +88,12 @@ if (!this.Q) {                          //: Check for the Q object's existence
 
     });
 
-    Qdot("run", function (code) {       //: CLEARS RESULTS, then runs inline JS
+    augment("run", function (code) {    //- CLEARS RESULTS, then runs inline JS
 
-        results.stdout.length = 0;      //: Sterilize the environment as much
+        results.stdout.length = 0;      //- Sterilize the environment as much
         results.stderr.length = 0;      //  as possible before proceeding.
 
-        try {                           //: Now, use a 'try/catch' statement
+        try {                           //- Now, use a 'try/catch' statement
             eval(code);                 //  to evaluate the user's code and
         } catch (error) {               //  catch any exceptions that may have
             results.stderr.push(error); //  been thrown in the process.
@@ -102,9 +102,9 @@ if (!this.Q) {                          //: Check for the Q object's existence
 
     });
 
-    Qdot("Doc", function () {           //: Constructor for new CouchDB docs
+    augment("Doc", function () {        //- Constructor for new CouchDB docs
 
-        var template = validate({}),    //: The '{}' will get validated twice,
+        var template = validate({}),    //- The '{}' will get validated twice,
             msg = Q.up(template);       //  but it's not a big deal right now. 
 
         if (msg.ok === 'false') {
@@ -116,7 +116,7 @@ if (!this.Q) {                          //: Check for the Q object's existence
 
     });
 
-    Qdot("reval", function (func, argarray) {
+    augment("reval", function (func, argarray) {
         argarray = argarray || [];
         var dQ = new Q.Doc(),
             id = dQ._id;
@@ -133,3 +133,9 @@ if (!this.Q) {                          //: Check for the Q object's existence
     });
 
 }());
+
+if (this.console) {
+    console.log("Welcome to the Quanah Lab :-)");
+}
+
+//- vim:set syntax=javascript:
