@@ -5,7 +5,7 @@
 //      https://developer.mozilla.org/En/Using_web_workers
 //                                                          -- SRW, 13 Jul 2010
 
-importScripts("json2.js", "curl.js", "Q.js", "Maths.js");
+importScripts("json2.js", "curl.js", "Q.js", "stdlib.js", "Maths.js");
 
 (function (queue) {
     var fetch = function () {
