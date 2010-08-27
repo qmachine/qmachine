@@ -14,11 +14,10 @@ ECHO        :=  echo -en                # use explicit formatting (ie, '\n')
 RM          :=  rm -rf                  # delete folders as well as files
 CP          :=  rsync --archive         # 'rsync' is smarter than 'cp'
 CURL        :=  curl -X                 #
-COUCHAPP    :=  couchapp                # if missing, sudo easy_install couchapp
+COUCHAPP    :=  couchapp                # obtain: $ sudo easy_install couchapp
 
 APP         :=  quanah
-URL         :=  quanah.couchone.com:5984/app
-HOMEPAGE    :=  $(URL)/_design/$(APP)/index.html
+DB          :=  quanah.couchone.com/app
 
 FRONTEND    :=  frontend
 BACKEND     :=  backend
@@ -43,7 +42,7 @@ clobber: clean
 reset:
 	@   clear
 
-run: $(APP) $(FAVICON) $(JSON) $(MATHS)
+run: $(APP) $(FAVICON) $(LOGO) $(JSON) $(MATHS) $(STDLIB)
 	@   $(CP) $(BACKEND)/*.json $(APP)/                             ;   \
             $(CP) $(BACKEND)/filters-code.js $(APP)/filters/code.js     ;   \
             $(CP) $(BACKEND)/update-create.js $(APP)/updates/create.js  ;   \
@@ -51,7 +50,7 @@ run: $(APP) $(FAVICON) $(JSON) $(MATHS)
             $(ECHO) "Username: " && read USER                           ;   \
             $(ECHO) "Password: " && read -s PASSWD                      ;   \
             $(ECHO) "\n"                                                ;   \
-            $(COUCHAPP) push -bq $(APP) "http://$${USER}:$${PASSWD}@$(URL)"
+            $(COUCHAPP) push -bq $(APP) "http://$${USER}:$${PASSWD}@$(DB)"
 
 ###
 
@@ -60,7 +59,7 @@ $(APP):
             mkdir -p $(APP)/filters $(APP)/updates                      ;   \
             $(RM) $(APP)/{_attachments/*,evently,lists,shows,views,vendor}
 
-$(JSON):
+$(JSON): $(APP)
 	@   $(ECHO) '//' > $@                                           ;   \
             $(CURL) GET http://www.json.org/json2.js >> $@
 
@@ -86,4 +85,4 @@ $(FAVICON) $(LOGO): $(OTHER)/favicon.tex
             pdftoppm -scale-to-x 128 -scale-to-y 128 $${PDF} |              \
                 ppmtojpeg > $(LOGO)
 
-#
+# vim:set syntax=make:
