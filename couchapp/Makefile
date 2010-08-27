@@ -17,7 +17,7 @@ CURL        :=  curl -X                 #
 COUCHAPP    :=  couchapp                # obtain: $ sudo easy_install couchapp
 
 APP         :=  quanah
-DB          :=  quanah.couchone.com/app
+DB          :=  quanah.couchone.com:5984/app
 
 FRONTEND    :=  frontend
 BACKEND     :=  backend

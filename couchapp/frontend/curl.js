@@ -1,19 +1,19 @@
-// BROWSER ONLY!
+//- JavaScript source code
 
-// curl.js --
+//- curl.js ~~
 //  A JavaScript object that mimics 'curl' using nothing more than XHR. It uses
 //  synchronous (non-AJAX) transfer, and it returns 'req.responseText' instead
 //  of 'responseXML', which allows it to work correctly in both the Browser and
 //  Worker contexts.
-//                                                          -- SRW, 03 Jul 2010
+//                                                          ~~ SRW, 03 Jul 2010
 
-if (!this.curl) {                       // Check for existence
+if (!this.curl) {                       //- Check for existence
     var curl = {};
 }
 
-(function () {                          // Build it inside an anonymous closure
+(function () {                          //- Build it inside an anonymous closure
 
- // PRIVATE MEMBERS
+//- PRIVATE MEMBERS
 
     var template = function (action) {
             return function (URL, data) {
@@ -31,7 +31,7 @@ if (!this.curl) {                       // Check for existence
             };
         };
 
- // PUBLIC MEMBERS
+//- PUBLIC MEMBERS
 
     if (typeof curl.GET !== 'function') {
         curl.GET = template("GET");
@@ -42,3 +42,5 @@ if (!this.curl) {                       // Check for existence
     }
 
 }());
+
+//- vim:set syntax=javascript:

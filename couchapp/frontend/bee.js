@@ -20,3 +20,5 @@ importScripts("json2.js", "curl.js", "Q.js", "stdlib.js", "Maths.js");
     };
     setTimeout(fetch, 1000);
 }("_changes?filter=quanah/code"));
+
+//- vim:set syntax=javascript:
