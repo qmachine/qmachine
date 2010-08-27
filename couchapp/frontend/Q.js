@@ -13,7 +13,7 @@ if (!this.Q) {                          //: Check for the Q object's existence
 //: PRIVATE MEMBERS
 
     var root = location.protocol + '//' + location.host + '/',
-        db = root + 'app/',
+        db = root + 'db/',
 
         fresh_id = (function () {       //: Memoized (poorly) but not AJAX'ed
             var ideal = 100,
