@@ -23,10 +23,12 @@ HOMEPAGE    :=  $(URL)/_design/$(APP)/index.html
 FRONTEND    :=  frontend
 BACKEND     :=  backend
 OTHER       :=  other
-JSON        :=  $(FRONTEND)/json2.js
-LOGO        :=  $(FRONTEND)/logo.jpg
-MATHS       :=  $(FRONTEND)/Maths.js
+
 FAVICON     :=  $(FRONTEND)/favicon.ico
+LOGO        :=  $(FRONTEND)/logo.jpg
+JSON        :=  $(FRONTEND)/json2.js
+STDLIB      :=  $(FRONTEND)/stdlib.js
+MATHS       :=  $(FRONTEND)/Maths.js
 
 .PHONY: all clean clobber reset run
 
@@ -36,7 +38,7 @@ clean: reset
 	@   $(RM) $(OTHER)/*.{aux,log,pdf}
 
 clobber: clean
-	@   $(RM) $(APP) $(JSON) $(MATHS)
+	@   $(RM) $(APP) $(JSON) $(MATHS) $(STDLIB)
 
 reset:
 	@   clear
@@ -47,7 +49,7 @@ run: $(APP) $(FAVICON) $(JSON) $(MATHS)
             $(CP) $(BACKEND)/update-create.js $(APP)/updates/create.js  ;   \
             $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
             $(ECHO) "Username: " && read USER                           ;   \
-            $(ECHO) "Password: "; stty -echo; read PASSWD; stty echo    ;   \
+            $(ECHO) "Password: "; read -s PASSWD                        ;   \
             $(ECHO) "\n"                                                ;   \
             $(COUCHAPP) push --browse --quiet $(APP)                        \
                 "http://$${USER}:$${PASSWD}@$(URL)"
@@ -63,8 +65,11 @@ $(JSON):
 	@   $(ECHO) '//' > $@                                           ;   \
             $(CURL) GET http://www.json.org/json2.js >> $@
 
-$(MATHS):
+$(MATHS): $(STDLIB)
 	@   $(CURL) GET http://libjs-maths.googlecode.com/hg/Maths.js > $@
+
+$(STDLIB): $(JSON)
+	@   $(CURL) GET http://libjs-maths.googlecode.com/hg/stdlib.js > $@
 
 ###
 # The following directions were used on Ubuntu Linux to create the logo and
