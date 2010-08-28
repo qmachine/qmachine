@@ -8,14 +8,14 @@ if (!this.Q) {                          //- Check for the Q object's existence
     var Q = {};
 }
 
-(function () {                          //- Build Q inside an anonymous closure
+(function () {                          //- Build inside an anonymous closure
 
 //- PRIVATE MEMBERS
 
     var root = location.protocol + '//' + location.host + '/',
         db = root + 'app/',
 
-        fresh_id = (function () {       //- Memoized (poorly) but not AJAX'ed
+        fresh_id = (function () {       //- Constructor for memoized function
             var ideal = 100,
                 source = root + '_uuids?count=' + ideal,
                 the_uuids = [],
@@ -27,7 +27,7 @@ if (!this.Q) {                          //- Check for the Q object's existence
                     }
                 };
             refill_uuids();
-            return function (n) {
+            return function (n) {       //- the "actual" function
                 n = n || 1;
                 var temp = the_uuids.splice(0,n);
                 refill_uuids();
@@ -50,13 +50,6 @@ if (!this.Q) {                          //- Check for the Q object's existence
         results = {
             "stdout":   [],
             "stderr":   []
-        },
-
-    //- I may replace this next bit with a "validate_doc_update.js" file ...
-        validate = function (obj) {     //- fills in an object's missing fields
-            obj["_id"] = obj["_id"] || fresh_id();
-            obj.name = author;
-            return obj;
         };
 
 //- PUBLIC MEMBERS
@@ -69,19 +62,24 @@ if (!this.Q) {                          //- Check for the Q object's existence
 
     augment("up", function (obj) {      //- client --> cloud transfer
 
-        validate(obj);
-
-        var target = db + obj['_id'],
+        var target = db + obj.id,
             source = JSON.stringify(obj),
             msg = curl.PUT(target, source);
+            //msg = curl.PUT(target, source),
+            //check = JSON.parse(msg);
 
+        //if (check.ok === 'true') {
+        //    obj.rev = check.rev;
+        //    return obj;
+        //} else {
+        //    return check.error;
+        //}
         return JSON.parse(msg);
-
     });
 
-    augment("down", function (doc_id) { //- cloud --> client transfer
+    augment("down", function (id) {     //- cloud --> client transfer
 
-        var source = db + doc_id,
+        var source = db + id,
             msg = curl.GET(source);
 
         return JSON.parse(msg);
@@ -102,29 +100,32 @@ if (!this.Q) {                          //- Check for the Q object's existence
 
     });
 
-    augment("Doc", function () {        //- Constructor for new CouchDB docs
+    augment("Doc", function (obj) {     //- Constructor for new CouchDB docs
 
-        var template = validate({}),    //- The '{}' will get validated twice,
-            msg = Q.up(template);       //  but it's not a big deal right now. 
+        obj = obj || {};
+        obj.id = obj.id || fresh_id(1);
+        obj.name = author;
+
+        var msg = Q.up(obj);
 
         if (msg.ok === 'false') {
             throw msg;
         }
 
-        template['_rev'] = msg.rev;
-        return template;
+        obj._rev = msg.rev;
+        return obj;
 
     });
 
     augment("reval", function (func, argarray) {
         argarray = argarray || [];
-        var dQ = new Q.Doc(),
-            id = dQ._id;
-        localStorage[id] = func;        //- stringify the function
-        dQ.code = '(' + localStorage[id] + ')' +
-            '.apply(this, ' + JSON.stringify(argarray) + ')';
+        var id = fresh_id(),
+            dQ = new Q.Doc({
+                "id":  id,
+                "code": '(' + func.toString() + ').apply(this, ' +
+                            JSON.stringify(argarray) + ')'
+            });
         Q.up(dQ);
-        delete localStorage[id];
         console.log('Waiting for response ...');
         while (!dQ.results) {
             dQ = Q.down(id);
@@ -132,7 +133,7 @@ if (!this.Q) {                          //- Check for the Q object's existence
         return dQ.results.stdout;
     });
 
-}());
+})();
 
 if (this.console) {
     console.log("Welcome to the Quanah Lab :-)");
