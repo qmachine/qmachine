@@ -47,8 +47,8 @@ run: $(APP) $(FAVICON) $(LOGO) $(JSON) $(MATHS) $(STDLIB)
             $(CP) $(BACKEND)/filters-code.js $(APP)/filters/code.js     ;   \
             $(CP) $(BACKEND)/update-create.js $(APP)/updates/create.js  ;   \
             $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
-            $(ECHO) "Username: " && read USER                           ;   \
-            $(ECHO) "Password: " && read -s PASSWD                      ;   \
+            read -p 'Username: ' USER                                   ;   \
+            read -sp 'Password: ' PASSWD                                ;   \
             $(ECHO) "\n"                                                ;   \
             $(COUCHAPP) push -bq $(APP) "http://$${USER}:$${PASSWD}@$(DB)"
 
