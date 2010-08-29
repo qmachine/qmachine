@@ -1,45 +1,113 @@
 //- JavaScript source code
 
-//- curl.js ~~
-//  A JavaScript object that mimics 'curl' using nothing more than XHR. It uses
-//  synchronous (non-AJAX) transfer, and it returns 'req.responseText' instead
-//  of 'responseXML', which allows it to work correctly in both the Browser and
-//  Worker contexts.
-//                                                          ~~ SRW, 03 Jul 2010
+//- acurl.js ~~
+//  An experimental new version of my 'curl' object that uses XMLHttpRequest
+//  for asynchronous transfer of files. The main difference is callbacks.
+//                                                          ~~ SRW, 28 Aug 2010
+
+//- But, now I can say things like the following:
+//
+//      var x;
+//      curl.GET("http://quanah.couchone.com/_uuids", function (response) {
+//          x = JSON.parse(response);
+//      })
+//
 
 if (!this.curl) {                       //- Check for existence
     var curl = {};
 }
 
-(function () {                          //- Build it inside an anonymous closure
+(function () {                          //- Build inside an anonymous closure
 
 //- PRIVATE MEMBERS
 
-    var template = function (action) {
-            return function (URL, data) {
-                URL = URL || "";
-                data = data || "{}";
-                var req = new XMLHttpRequest();
-                req.open(action, URL, false);
-                if (action === "PUT") {
-                    req.setRequestHeader("Content-type", "application/json");
-                    req.send(data);
-                } else {
-                    req.send(null);
-                }
-                return req.responseText;
-            };
+    var augment = function (branch, definition) {
+            if (typeof curl[branch] !== 'function') {
+                curl[branch] = definition;
+            }
         };
 
 //- PUBLIC MEMBERS
 
-    if (typeof curl.GET !== 'function') {
-        curl.GET = template("GET");
-    }
+    augment('GET', function (URL, callback) {
 
-    if (typeof curl.PUT !== 'function') {
-        curl.PUT = template("PUT");
-    }
+        //- need to validate parameters ...
+
+        var request = new XMLHttpRequest();
+
+        if (callback === undefined) {
+            request.open('GET', URL, false);    //- synchronous
+            request.send(null);
+            return request.responseText;
+        } else {
+            request.open('GET', URL, true);     //- AJAX
+            request.onreadystatechange = function (aEvt) {
+                if (request.readyState == 4) {
+                    if (request.status == 200) {
+                        callback(request.responseText);
+                    } else {
+                        callback("Error: Failed to load " + URL + " .");
+                    }
+                }
+            };
+            request.send(null);
+        }
+
+    });
+
+    augment('DELETE', function (URL, callback) {
+
+        //- need to validate parameters ...
+
+        var request = new XMLHttpRequest();
+
+        if (callback === undefined) {
+            request.open('GET', URL, false);    //- synchronous
+            request.send(null);
+            return request.responseText;
+        } else {
+            request.open('GET', URL, true);     //- AJAX
+            request.onreadystatechange = function (aEvt) {
+                if (request.readyState == 4) {
+                    if (request.status == 200) {
+                        callback(request.responseText);
+                    } else {
+                        callback("Error: Failed to load " + URL + " .");
+                    }
+                }
+            };
+            request.send(null);
+        }
+
+    });
+
+    augment('PUT', function (URL, data, callback) {
+
+        //- need to validate parameters ...
+
+        var request = new XMLHttpRequest();
+
+        if (callback === undefined) {
+            request.open('PUT', URL, false);    //- synchronous
+            request.setRequestHeader("Content-type", "application/json");
+            request.send(data);
+            return request.responseText;
+        } else {
+            request.open('PUT', URL, true);     //- AJAX
+            request.setRequestHeader("Content-type", "application/json");
+            request.onreadystatechange = function (aEvt) {
+                if (request.readyState == 4) {
+                    if (request.status == 200) {
+                        callback(request.responseText);
+                    } else {
+                        callback("Error: Failed to transfer to " + URL + " .");
+                    }
+                }
+            };
+            request.send(data);
+        }
+
+    });
 
 }());
 

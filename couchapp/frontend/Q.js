@@ -62,28 +62,25 @@ if (!this.Q) {                          //- Check for the Q object's existence
 
     augment("up", function (obj) {      //- client --> cloud transfer
 
-        var target = db + obj.id,
+        if (typeof obj !== 'object') {
+            throw 'Error: Argument to "Q.up" must be an object.'
+        }
+
+        obj._id = obj._id || fresh_id(1);
+        obj.name = author;
+
+        var target = db + obj._id,
             source = JSON.stringify(obj),
             msg = curl.PUT(target, source);
-            //msg = curl.PUT(target, source),
-            //check = JSON.parse(msg);
 
-        //if (check.ok === 'true') {
-        //    obj.rev = check.rev;
-        //    return obj;
-        //} else {
-        //    return check.error;
-        //}
         return JSON.parse(msg);
     });
 
     augment("down", function (id) {     //- cloud --> client transfer
-
         var source = db + id,
             msg = curl.GET(source);
 
         return JSON.parse(msg);
-
     });
 
     augment("run", function (code) {    //- CLEARS RESULTS, then runs inline JS
@@ -103,7 +100,7 @@ if (!this.Q) {                          //- Check for the Q object's existence
     augment("Doc", function (obj) {     //- Constructor for new CouchDB docs
 
         obj = obj || {};
-        obj.id = obj.id || fresh_id(1);
+        obj._id = obj._id || fresh_id(1);
         obj.name = author;
 
         var msg = Q.up(obj);
@@ -121,7 +118,7 @@ if (!this.Q) {                          //- Check for the Q object's existence
         argarray = argarray || [];
         var id = fresh_id(),
             dQ = new Q.Doc({
-                "id":  id,
+                "_id":  id,
                 "code": '(' + func.toString() + ').apply(this, ' +
                             JSON.stringify(argarray) + ')'
             });
