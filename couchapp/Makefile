@@ -23,7 +23,7 @@ SLOGAN      :=  "The World's Most Relaxed Supercomputer"
 
 APPDIR      :=  .
 TEST_DB     :=  localhost:5984/testing
-FINAL_DB    :=  quanah.couchone.com:5984/app
+PROD_DB     :=  quanah.couchone.com:5984/app
 
 COUCHAPPRC  :=  $(APPDIR)/.couchapprc
 COUCHIGNORE :=  $(APPDIR)/.couchappignore
@@ -46,7 +46,7 @@ MATHS   :=  $(APPDIR)/_attachments/Maths.js
 STDLIB  :=  $(APPDIR)/_attachments/stdlib.js
 OLDIES  :=  $(JSON) $(MATHS) $(STDLIB)
 
-.PHONY: all clean clobber commit deploy raw reset run test
+.PHONY: all clean clobber deploy raw reset run test
 
 all: run
 
@@ -56,25 +56,11 @@ clean: reset
 clobber: clean
 	@   $(RM) $(JSON) $(MATHS) $(STDLIB)
 
-commit: clobber
-	@   $(ECHO) "This commits to the Google Code repository using 'hg'."
-
 deploy: $(COUCHCONFIG) $(OLDIES)
-	@   read -p "Username: " -e USERNAME                            ;   \
-            read -p "Password: " -s PASSWORD && echo ''                 ;   \
-            if [ -n "$${USERNAME}" ] && [ -n "$${PASSWORD}" ]           ;   \
-              then                                                          \
-                LOGIN="$${USERNAME}:$${PASSWORD}"                       ;   \
-                DB="$(FINAL_DB)"                                        ;   \
-                $(COUCHAPP) push -q $(APPDIR) "http://$${LOGIN}@$${DB}" ;   \
-              else                                                          \
-                $(COUCHAPP) push -q $(APPDIR) "http://$(FINAL_DB)"      ;   \
-            fi                                                          ;   \
-            $(COUCHAPP) browse "http://$(FINAL_DB)"                     ;   \
-            unset DB LOGIN PASSWORD USERNAME
+	@   cd $(APPDIR) && $(COUCHAPP) push -bq prod
 
 raw: $(COUCHCONFIG) $(OLDIES)
-	@   $(COUCHAPP) push --export $(APPDIR) $(TEST_DB)
+	@   cd $(APPDIR) && $(COUCHAPP) push --export test
 
 reset:
 	@   clear
@@ -82,7 +68,7 @@ reset:
 run: test
 
 test: $(COUCHCONFIG) $(OLDIES)
-	@   cd $(APPDIR) && $(COUCHAPP) push -bq
+	@   cd $(APPDIR) && $(COUCHAPP) push -bq test
 
 ### OLDIES -- WILL BE REMOVED SOON!
 
@@ -108,12 +94,26 @@ $(APPDIR):
             $(RM) $(APPDIR)/views
 
 $(COUCHAPPRC): $(APPDIR)
-	@   read -p "Username: " -e USERNAME                            ;   \
-            read -p "Password: " -s PASSWORD && $(ECHO) ''              ;   \
-            LOGIN="$${USERNAME}:$${PASSWORD}"                           ;   \
-            $(ECHO) '{"env": {"default": {"db":' \
-                "\"http://$${LOGIN}@$(TEST_DB)\"}}}" > $@               ;   \
-            unset LOGIN PASSWORD USERNAME
+	@   read -p "Set up login for testing? [Y/n] " CHOICE           ;   \
+            if [[ $${CHOICE:-"Y"} == "Y" ]]                             ;   \
+              then                                                          \
+                read -p "Username: " -e USERNAME                        ;   \
+                read -p "Password: " -s PASSWORD && $(ECHO) ''          ;   \
+                TEST="$${USERNAME}:$${PASSWORD}@"                       ;   \
+            fi                                                          ;   \
+            read -p "Set up login for deployment? [Y/n] " CHOICE        ;   \
+            if [[ $${CHOICE:-"Y"} == "Y" ]]                             ;   \
+              then                                                          \
+                read -p "Username: " -e USERNAME                        ;   \
+                read -p "Password: " -s PASSWORD && $(ECHO) ''          ;   \
+                PROD="$${USERNAME}:$${PASSWORD}@"                       ;   \
+            fi                                                          ;   \
+            $(ECHO)                                                         \
+                '{"env": {'                                                 \
+                    '"test": {"db": "http://'$${TEST}$(TEST_DB)'"},'        \
+                    '"prod": {"db": "http://'$${PROD}$(PROD_DB)'"}'         \
+                '}}' > $@                                               ;   \
+            unset CHOICE USERNAME PASSWORD TEST PROD
 
 $(COUCHIGNORE): $(APPDIR)
 	@   $(ECHO) '[ "Makefile", ".swp", "ignore/*", "~" ]' > $@
