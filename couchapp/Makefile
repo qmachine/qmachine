@@ -1,67 +1,94 @@
-# Makefile
+#-  GNU Makefile
 
-# This constitutes a set of "live directions" for creating a CouchDB application
-# using 'couchapp', the Python utility recommended by the O'Reilly "Relax" book.
-# Everything has been written and tested on an Ubuntu Lucid localhost CouchDB,
-# version 0.10 (default installed by 'aptitude'). I was also interested in using
-# 'node.couchapp.js' to construct Quanah, right up until this worked, haha. It
-# could be simpler to use, since it would allow everything to be written in JS,
-# but for now I have no plans to pursue that route.
-#                                                           -- SRW, 07 Jul 2010
+#-  quanah/couchapp/Makefile ~~
+#
+#   This file serves as live instructions for assembling Quanah as a CouchApp.
+#
+#   GNU Make is my choice for automation, but do not be misled -- I use Make
+#   for writing semi-portable shell scripts that handle dependencies
+#   automatically. I may replace Make with SCons or Ant someday, but it is
+#   meaningless to argue the merits of server-side build scripts to develop
+#   for The Web Computer. We terminal junkies will have to get our fix in the
+#   browser someday, and worrying about the choice of command line tools just
+#   prolongs the addiction.
+#
+#   Test machine: Mac OS X 10.6.4 with CouchDB 1.0.1 installed by HomeBrew.
+#
+#                                                           ~~ SRW, 25 Sep 2010
 
-SHELL       :=  bash                    #
-ECHO        :=  echo -en                # use explicit formatting (ie, '\n')
-RM          :=  rm -rf                  # delete folders as well as files
-CP          :=  rsync --archive         # 'rsync' is smarter than 'cp'
-CURL        :=  curl -X                 #
-COUCHAPP    :=  couchapp                # obtain: $ sudo easy_install couchapp
+SHELL       :=  bash                    #-  GNU conventions don't apply to us!
 
-APP         :=  quanah
-DB          :=  quanah.couchone.com:5984/app
+PROJECT     :=  http://quanah.googlecode.com
+SLOGAN      :=  "The World's Most Relaxed Supercomputer"
 
-FRONTEND    :=  frontend
-BACKEND     :=  backend
-OTHER       :=  other
+APPDIR      :=  .
+TEST_DB     :=  localhost:5984/testing
+FINAL_DB    :=  quanah.couchone.com:5984/app
 
-FAVICON     :=  $(FRONTEND)/favicon.ico
-LOGO        :=  $(FRONTEND)/logo.jpg
-JSON        :=  $(FRONTEND)/json2.js
-STDLIB      :=  $(FRONTEND)/stdlib.js
-MATHS       :=  $(FRONTEND)/Maths.js
+COUCHAPPRC  :=  $(APPDIR)/.couchapprc
+COUCHIGNORE :=  $(APPDIR)/.couchappignore
+COUCHJSON   :=  $(APPDIR)/couchapp.json
+DOCID       :=  $(APPDIR)/_id
 
-.PHONY: all clean clobber reset run
+COUCHCONFIG :=  $(COUCHAPPRC) $(COUCHIGNORE) $(COUCHJSON) $(DOCID)
+
+COUCHAPP    :=  couchapp                #-  http://couchapp.org/
+CP          :=  rsync --archive         #-  http://rsync.samba.org/
+CURL        :=  curl -X
+ECHO        :=  echo -e
+MKDIR       :=  mkdir -p
+RM          :=  rm -rf
+
+#-  TO BE REMOVED, BUT CURRENTLY IMPORTANT:
+
+JSON    :=  $(APPDIR)/_attachments/json2.js
+MATHS   :=  $(APPDIR)/_attachments/Maths.js
+STDLIB  :=  $(APPDIR)/_attachments/stdlib.js
+OLDIES  :=  $(JSON) $(MATHS) $(STDLIB)
+
+.PHONY: all clean clobber commit deploy raw reset run test
 
 all: run
 
 clean: reset
-	@   $(RM) $(OTHER)/*.{aux,log,pdf}
+	@   $(RM) $(COUCHCONFIG)
 
 clobber: clean
-	@   $(RM) $(APP) $(JSON) $(MATHS) $(STDLIB)
+	@   $(RM) $(JSON) $(MATHS) $(STDLIB)
+
+commit: clobber
+	@   $(ECHO) "This commits to the Google Code repository using 'hg'."
+
+deploy: $(COUCHCONFIG) $(OLDIES)
+	@   read -p "Username: " -e USERNAME                            ;   \
+            read -p "Password: " -s PASSWORD && echo ''                 ;   \
+            if [ -n "$${USERNAME}" ] && [ -n "$${PASSWORD}" ]           ;   \
+              then                                                          \
+                LOGIN="$${USERNAME}:$${PASSWORD}"                       ;   \
+                DB="$(FINAL_DB)"                                        ;   \
+                $(COUCHAPP) push -q $(APPDIR) "http://$${LOGIN}@$${DB}" ;   \
+              else                                                          \
+                $(COUCHAPP) push -q $(APPDIR) "http://$(FINAL_DB)"      ;   \
+            fi                                                          ;   \
+            $(COUCHAPP) browse "http://$(FINAL_DB)"                     ;   \
+            unset DB LOGIN PASSWORD USERNAME
+
+raw: $(COUCHCONFIG) $(OLDIES)
+	@   $(COUCHAPP) push --export $(APPDIR) $(TEST_DB)
 
 reset:
 	@   clear
 
-run: $(APP) $(FAVICON) $(LOGO) $(JSON) $(MATHS) $(STDLIB)
-	@   $(CP) $(BACKEND)/*.json $(APP)/                             ;   \
-            $(CP) $(BACKEND)/filters-code.js $(APP)/filters/code.js     ;   \
-            $(CP) $(BACKEND)/update-create.js $(APP)/updates/create.js  ;   \
-            $(CP) $(FRONTEND)/* $(APP)/_attachments/                    ;   \
-            read -p 'Username: ' USER                                   ;   \
-            read -sp 'Password: ' PASSWD                                ;   \
-            $(ECHO) "\n"                                                ;   \
-            $(COUCHAPP) push -bq $(APP) "http://$${USER}:$${PASSWD}@$(DB)"
+run: test
 
-###
+test: $(COUCHCONFIG) $(OLDIES)
+	@   cd $(APPDIR) && $(COUCHAPP) push -bq
 
-$(APP):
-	@   $(COUCHAPP) generate $(APP)                                 ;   \
-            mkdir -p $(APP)/filters $(APP)/updates                      ;   \
-            $(RM) $(APP)/{_attachments/*,evently,lists,shows,views,vendor}
+### OLDIES -- WILL BE REMOVED SOON!
 
-$(JSON): $(APP)
-	@   $(ECHO) '//' > $@                                           ;   \
-            $(CURL) GET http://www.json.org/json2.js >> $@
+$(JSON): $(APPDIR)
+	@   $(CURL) GET http://www.json.org/json2.js | \
+                sed -e 's/^alert[^;]*;$$//gp' > $@
 
 $(MATHS): $(STDLIB)
 	@   $(CURL) GET http://libjs-maths.googlecode.com/hg/Maths.js > $@
@@ -70,19 +97,31 @@ $(STDLIB): $(JSON)
 	@   $(CURL) GET http://libjs-maths.googlecode.com/hg/stdlib.js > $@
 
 ###
-# The following directions were used on Ubuntu Linux to create the logo and
-# favicon from scratch, programmatically. Since they aren't guaranteed to work
-# in other environments, the images themeselves are stored in this repository
-# along with the original source file (other/favicon.tex). This problem will be
-# addressed at a future date.
 
-$(FAVICON) $(LOGO): $(OTHER)/favicon.tex
-	@   PDF="$(<:%.tex=%.pdf)"                                      ;   \
-            pdflatex -output-directory $(OTHER) $<                      ;   \
-            pdfcrop --margin 1 $${PDF} $${PDF}                          ;   \
-            pdftoppm -scale-to-x 16 -scale-to-y 16 $${PDF} |                \
-                ppmtowinicon > $(FAVICON)                               ;   \
-            pdftoppm -scale-to-x 128 -scale-to-y 128 $${PDF} |              \
-                ppmtojpeg > $(LOGO)
+$(APPDIR):
+	@   $(COUCHAPP) generate app $(APPDIR)                          ;   \
+            $(RM) $(APPDIR)/README.md                                   ;   \
+            $(RM) $(APPDIR)/evently                                     ;   \
+            $(RM) $(APPDIR)/lists                                       ;   \
+            $(RM) $(APPDIR)/shows                                       ;   \
+            $(RM) $(APPDIR)/vendor                                      ;   \
+            $(RM) $(APPDIR)/views
 
-# vim:set syntax=make:
+$(COUCHAPPRC): $(APPDIR)
+	@   read -p "Username: " -e USERNAME                            ;   \
+            read -p "Password: " -s PASSWORD && $(ECHO) ''              ;   \
+            LOGIN="$${USERNAME}:$${PASSWORD}"                           ;   \
+            $(ECHO) '{"env": {"default": {"db":' \
+                "\"http://$${LOGIN}@$(TEST_DB)\"}}}" > $@               ;   \
+            unset LOGIN PASSWORD USERNAME
+
+$(COUCHIGNORE): $(APPDIR)
+	@   $(ECHO) '[ "Makefile", ".swp", "ignore/*", "~" ]' > $@
+
+$(COUCHJSON): $(APPDIR)
+	@   $(ECHO) '{"name": "Quanah", "description": "'$(SLOGAN)'"}' > $@
+
+$(DOCID): $(APPDIR)
+	@   $(ECHO) "_design/quanah" > $@
+
+#-  vim:set syntax=make:

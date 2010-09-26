@@ -1,18 +1,19 @@
-// BROWSER ONLY!
+//- JavaScript source code -- usable in browser's "Web Worker" context only
 
-// bee.js --
+//- bee.js ~~
 //  This JavaScript is designed for use by a "Web Worker" object. For info, see
 //      https://developer.mozilla.org/En/Using_web_workers
-//                                                          -- SRW, 13 Jul 2010
+//                                                          ~~ SRW, 25 Sep 2010
 
 importScripts("json2.js", "curl.js", "Q.js", "stdlib.js", "Maths.js");
 
 (function (queue) {
     var fetch = function () {
         var changes = Q.down(queue),
-            latest = {};
-        if (changes.results.length > 0) {
-            latest = Q.down(changes.results[0].id);
+            latest = {},
+            results = changes.results || [];
+        if (results.length > 0) {
+            latest = Q.down(results[0].id);
             latest.results = Q.run(latest.code);
             Q.up(latest);
         }
