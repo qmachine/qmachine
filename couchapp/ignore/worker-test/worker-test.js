@@ -13,5 +13,6 @@ var checker = function (name, obj) {
 checker("JSON", JSON);
 checker("WebSocket", WebSocket);
 checker("XMLHttpRequest", XMLHttpRequest);
+checker("location", location);
 
 //- vim:set syntax=javascript:

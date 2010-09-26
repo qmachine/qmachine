@@ -1,17 +1,14 @@
 //- JavaScript source code
 
-//- acurl.js ~~
+//- curl.js ~~
 //  An experimental new version of my 'curl' object that uses XMLHttpRequest
-//  for asynchronous transfer of files. The main difference is callbacks.
-//                                                          ~~ SRW, 28 Aug 2010
-
-//- But, now I can say things like the following:
-//
+//  for asynchronous transfer of files. The main difference is callbacks:
 //      var x;
 //      curl.GET("http://quanah.couchone.com/_uuids", function (response) {
 //          x = JSON.parse(response);
-//      })
-//
+//      });
+//  I'm not sure it's useful for Quanah, though.
+//                                                          ~~ SRW, 28 Aug 2010
 
 if (!this.curl) {                       //- Check for existence
     var curl = {};
