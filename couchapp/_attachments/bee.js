@@ -1,21 +1,25 @@
-//- JavaScript source code -- usable in browser's "Web Worker" context only
+//- JavaScript source code -- Web Worker script
 
 //- bee.js ~~
-//  This JavaScript is designed for use by a "Web Worker" object. For info, see
-//      https://developer.mozilla.org/En/Using_web_workers
+//  This is where the magic happens. The computational nodes poll a URL where
+//  tasks needing to be accomplished are posted by a CouchDB filter rule. The
+//  node then executes the first task listed and uploads its results. The task
+//  itself runs within a Web Worker context, which increases both security and
+//  performance for all parties involved. Chrome, Safari, Firefox, and Opera
+//  all fully support for Web Workers; Internet Explorer, of course, doesn't.
 //                                                          ~~ SRW, 25 Sep 2010
 
 importScripts("json2.js", "curl.js", "Q.js", "stdlib.js", "Maths.js");
 
 (function (queue) {
     var fetch = function () {
-        var changes = Q.down(queue),
+        var changes = Q.read(queue),
             latest = {},
             results = changes.results || [];
         if (results.length > 0) {
-            latest = Q.down(results[0].id);
+            latest = Q.read(results[0].id);
             latest.results = Q.run(latest.code);
-            Q.up(latest);
+            Q.write(latest);
         }
         setTimeout(fetch, 1000);
     };

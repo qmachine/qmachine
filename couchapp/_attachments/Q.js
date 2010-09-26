@@ -2,7 +2,8 @@
 
 //- Q.js ~~
 //  This mini-framework for "Quanah" requires only 'JSON' and 'curl' objects.
-//                                                          ~~ SRW, 21 Jul 2010
+//  I am going to fix it, though. I have a new idea!
+//                                                          ~~ SRW, 26 Sep 2010
 
 if (!this.Q) {                          //- Check for the Q object's existence
     var Q = {};
@@ -12,8 +13,8 @@ if (!this.Q) {                          //- Check for the Q object's existence
 
 //- PRIVATE MEMBERS
 
-    var root = location.protocol + '//' + location.host + '/',
-        db = root + 'app/',
+    var root = location.href.replace(location.pathname, "/"),
+        db = root + location.pathname.replace(/([/][^/]+[/]).*/, "$1"),
 
         fresh_id = (function () {       //- Constructor for memoized function
             var ideal = 100,
@@ -60,10 +61,10 @@ if (!this.Q) {                          //- Check for the Q object's existence
 
     });
 
-    augment("up", function (obj) {      //- client --> cloud transfer
+    augment("write", function (obj) {      //- client --> cloud transfer
 
         if (typeof obj !== 'object') {
-            throw 'Error: Argument to "Q.up" must be an object.'
+            throw 'Error: Argument to "Q.write" must be an object.'
         }
 
         obj._id = obj._id || fresh_id(1);
@@ -76,7 +77,7 @@ if (!this.Q) {                          //- Check for the Q object's existence
         return JSON.parse(msg);
     });
 
-    augment("down", function (id) {     //- cloud --> client transfer
+    augment("read", function (id) {     //- cloud --> client transfer
         var source = db + id,
             msg = curl.GET(source);
 
@@ -103,7 +104,7 @@ if (!this.Q) {                          //- Check for the Q object's existence
         obj._id = obj._id || fresh_id(1);
         obj.name = author;
 
-        var msg = Q.up(obj);
+        var msg = Q.write(obj);
 
         if (msg.ok === 'false') {
             throw msg;
@@ -122,10 +123,10 @@ if (!this.Q) {                          //- Check for the Q object's existence
                 "code": '(' + func.toString() + ').apply(this, ' +
                             JSON.stringify(argarray) + ')'
             });
-        Q.up(dQ);
+        Q.write(dQ);
         console.log('Waiting for response ...');
         while (!dQ.results) {
-            dQ = Q.down(id);
+            dQ = Q.read(id);
         }
         return dQ.results.stdout;
     });
