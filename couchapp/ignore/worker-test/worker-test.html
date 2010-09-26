@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<!--
+*   worker-test.html ~~
+    This page was written for testing what new technologies are available for
+    use within a browser's Web Worker context.
+                                                            ~~ SRW, 25 Sep 2010
+-->
+<html>
+
+    <head>
+
+        <meta charset="utf-8" />
+        <title>Web Worker Test</title>
+
+    </head>
+
+    <body>
+
+        <script>
+            var worker = new Worker("worker-test.js");
+            worker.onmessage = function (event) {
+                console.log(event.data);
+            };
+        </script>
+
+    </body>
+
+</html>

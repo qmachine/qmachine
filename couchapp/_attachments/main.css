@@ -1,11 +1,12 @@
-/* CSS source code
+/*  CSS source code
 
-    main.css ~~
-                                                            ~~ SRW, 26 Aug 2010
+-   main.css ~~
+    This is the base stylesheet for Quanah.
+                                                            ~~ SRW, 25 Sep 2010
 */
 
 body {
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Georgia,serif;         /* Arial,Helvetica,sans-serif */
     text-align: center;
 }
 
