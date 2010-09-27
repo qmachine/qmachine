@@ -52,7 +52,6 @@ reset:
 	@   clear
 
 run: $(ICONS)
-	@   open $(LOGO)
 
 ###
 
