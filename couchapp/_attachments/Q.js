@@ -134,7 +134,7 @@ if (!this.Q) {                          //- Check for the Q object's existence
 })();
 
 if (this.console) {
-    console.log("Welcome to the Quanah Lab :-)");
+    console.log("Welcome to Quanah :-)");
 }
 
 //- vim:set syntax=javascript:
