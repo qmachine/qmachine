@@ -13,10 +13,19 @@ if (!this.Q) {                          //- Check for the Q object's existence
 
 //- PRIVATE MEMBERS
 
-    var root = location.href.replace(location.pathname, "/"),
-        db = root + location.pathname.replace(/([/][^/]+[/]).*/, "$1"),
+    var root = location.href.replace(location.pathname, '/'),
+        db;
 
-        fresh_id = (function () {       //- Constructor for memoized function
+//- Rewrite rules allow us to ignore the database name, but using port 5984 on
+//  couchone.com disables the rewrite handler, requiring us to detect the name.
+
+    if (location.port !== "5984") {
+        db = root + 'db/';
+    } else {
+        db = root + location.pathname.replace(/([/][^/]+\/).*/, "$1");
+    }
+
+    var fresh_id = (function () {       //- Constructor for memoized function
             var ideal = 100,
                 source = root + '_uuids?count=' + ideal,
                 the_uuids = [],
