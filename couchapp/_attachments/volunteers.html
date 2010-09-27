@@ -8,7 +8,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Quanah: Idle Cycle Donation Page</title>
+        <title>Quanah: Volunteer Page</title>
         <link rel="shortcut icon" href="style/favicon.ico" />
         <link rel="stylesheet" href="style/main.css" />
     </head>
@@ -19,22 +19,26 @@
             <noscript>You MUST enable JavaScript to use this page!</noscript>
         </div>
 
-        <div id=logo>
+        <div id=main>
             Quanah: The World's Most Relaxed Supercomputer
             <br/>
             <img src="style/logo.jpg" alt="(Quanah logo)" />
             <br/>
-            "No downloads, no installs, no problem!"
+            Volunteer's Entrance
         </div>
 
-        <div id=main>
-            <br/>
-            Thanks for helping out!
         </div>
-
-        <script>
-            new Worker("bee.js");       //- to-do: autodetect window.Worker ...
-        </script>
+            <script>
+                if (typeof window.Worker === 'function') {
+                    new Worker('bee.js');
+                    document.write('Thanks for helping out!');
+                } else {
+                    document.write('Your browser does not support the ' +
+                        'advanced features that Quanah requires. Please ' +
+                        'see the <a href="faq.html>FAQ</a>.');
+                }
+            </script>
+        </div>
 
     </body>
 

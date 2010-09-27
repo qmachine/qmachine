@@ -21,16 +21,15 @@ SHELL       :=  bash                    #-  GNU conventions don't apply to us!
 PROJECT     :=  http://quanah.googlecode.com
 SLOGAN      :=  "The World's Most Relaxed Supercomputer"
 
-APPDIR      :=  .
 TEST_DB     :=  localhost:5984/testing
 PROD_DB     :=  quanah.couchone.com:5984/app
 
-COUCHAPPRC  :=  $(APPDIR)/.couchapprc
-COUCHIGNORE :=  $(APPDIR)/.couchappignore
-COUCHJSON   :=  $(APPDIR)/couchapp.json
-DOCID       :=  $(APPDIR)/_id
+C_APPJSON   :=  couchapp.json
+C_APPRC     :=  .couchapprc
+C_APPIGNORE :=  .couchappignore
+DOCID       :=  _id
 
-COUCHCONFIG :=  $(COUCHAPPRC) $(COUCHIGNORE) $(COUCHJSON) $(DOCID)
+COUCHCONFIG :=  $(C_APPJSON) $(C_APPRC) $(C_APPIGNORE) $(DOCID)
 
 COUCHAPP    :=  couchapp                #-  http://couchapp.org/
 CP          :=  rsync --archive         #-  http://rsync.samba.org/
@@ -39,14 +38,12 @@ ECHO        :=  echo -e
 MKDIR       :=  mkdir -p
 RM          :=  rm -rf
 
-#-  TO BE REMOVED, BUT CURRENTLY IMPORTANT:
+JSON        :=  _attachments/json2.js
+MATHS       :=  _attachments/Maths.js
+STDLIB      :=  _attachments/stdlib.js
+OLDIES      :=  $(JSON) $(MATHS) $(STDLIB)
 
-JSON    :=  $(APPDIR)/_attachments/json2.js
-MATHS   :=  $(APPDIR)/_attachments/Maths.js
-STDLIB  :=  $(APPDIR)/_attachments/stdlib.js
-OLDIES  :=  $(JSON) $(MATHS) $(STDLIB)
-
-.PHONY: all clean clobber deploy raw reset run test
+.PHONY: all clean clobber deploy reset run test
 
 all: run
 
@@ -54,13 +51,10 @@ clean: reset
 	@   $(RM) $(COUCHCONFIG)
 
 clobber: clean
-	@   $(RM) $(JSON) $(MATHS) $(STDLIB)
+	@   $(RM) $(OLDIES)
 
 deploy: $(COUCHCONFIG) $(OLDIES)
-	@   cd $(APPDIR) && $(COUCHAPP) push -bq prod
-
-raw: $(COUCHCONFIG) $(OLDIES)
-	@   cd $(APPDIR) && $(COUCHAPP) push --export test
+	@   $(COUCHAPP) push --browse --quiet prod
 
 reset:
 	@   clear
@@ -68,60 +62,52 @@ reset:
 run: test
 
 test: $(COUCHCONFIG) $(OLDIES)
-	@   cd $(APPDIR) && $(COUCHAPP) push -bq test
-
-### OLDIES -- WILL BE REMOVED SOON!
-
-$(JSON): $(APPDIR)
-	@   $(CURL) GET http://www.json.org/json2.js | \
-                sed -e 's/^alert[^;]*;$$//gp' > $@
-
-$(MATHS): $(STDLIB)
-	@   $(CURL) GET http://libjs-maths.googlecode.com/hg/Maths.js > $@
-
-$(STDLIB): $(JSON)
-	@   $(CURL) GET http://libjs-maths.googlecode.com/hg/stdlib.js > $@
+	@   $(COUCHAPP) push --browse --quiet test
 
 ###
 
-$(APPDIR):
-	@   $(COUCHAPP) generate app $(APPDIR)                          ;   \
-            $(RM) $(APPDIR)/README.md                                   ;   \
-            $(RM) $(APPDIR)/evently                                     ;   \
-            $(RM) $(APPDIR)/lists                                       ;   \
-            $(RM) $(APPDIR)/shows                                       ;   \
-            $(RM) $(APPDIR)/vendor                                      ;   \
-            $(RM) $(APPDIR)/views
+$(JSON):
+	@   URL="http://www.json.org/json2.js"                          ;   \
+            $(CURL) GET $${URL} | sed -e 's/^alert[^;]*;$$//gp' > $@
 
-$(COUCHAPPRC): $(APPDIR)
-	@   read -p "Set up login for testing? [Y/n] " CHOICE           ;   \
-            if [[ $${CHOICE:-"Y"} == "Y" ]]                             ;   \
-              then                                                          \
+$(MATHS): $(STDLIB)
+	@   URL="http://libjs-maths.googlecode.com/hg/Maths.js"         ;   \
+            $(CURL) GET $${URL} > $@
+
+$(STDLIB): $(JSON)
+	@   URL="http://libjs-maths.googlecode.com/hg/stdlib.js"        ;   \
+            $(CURL) GET $${URL} > $@
+
+###
+
+$(C_APPJSON):
+	@   $(ECHO) '{'                                                     \
+                '"name": "Quanah",'                                         \
+                '"description": "'$(SLOGAN)'",'                             \
+                '"homepage": "'$(PROJECT)'"'                                \
+            '}' > $@
+
+$(C_APPRC):
+	@   $(ECHO) '{"env": {' > $@                                    ;   \
+            function setup_login {                                          \
+                local CHOICE USERNAME PASSWORD                          ;   \
+                read -p "Setup login $$1 " CHOICE                       ;   \
+                [[ $${CHOICE:-"Y"} == "Y" ]] || return 0                ;   \
                 read -p "Username: " -e USERNAME                        ;   \
                 read -p "Password: " -s PASSWORD && $(ECHO) ''          ;   \
-                TEST="$${USERNAME}:$${PASSWORD}@"                       ;   \
-            fi                                                          ;   \
-            read -p "Set up login for deployment? [Y/n] " CHOICE        ;   \
-            if [[ $${CHOICE:-"Y"} == "Y" ]]                             ;   \
-              then                                                          \
-                read -p "Username: " -e USERNAME                        ;   \
-                read -p "Password: " -s PASSWORD && $(ECHO) ''          ;   \
-                PROD="$${USERNAME}:$${PASSWORD}@"                       ;   \
-            fi                                                          ;   \
-            $(ECHO)                                                         \
-                '{"env": {'                                                 \
-                    '"test": {"db": "http://'$${TEST}$(TEST_DB)'"},'        \
-                    '"prod": {"db": "http://'$${PROD}$(PROD_DB)'"}'         \
-                '}}' > $@                                               ;   \
-            unset CHOICE USERNAME PASSWORD TEST PROD
+                wc -l $@ | awk '{if (1 < $$1) print ","}' >> $@         ;   \
+                $(ECHO) "\"$$2\": {"                                        \
+                    "\"db\": \"http://$${USERNAME}:$${PASSWORD}@$$3\""      \
+                "}" >> $@                                               ;   \
+            }                                                           ;   \
+            setup_login 'for testing? [Y/n]' test '$(TEST_DB)'          ;   \
+            setup_login 'for deployment? [Y/n]' prod '$(PROD_DB)'       ;   \
+            $(ECHO) "}}" >> $@
 
-$(COUCHIGNORE): $(APPDIR)
+$(C_APPIGNORE):
 	@   $(ECHO) '[ "Makefile", ".swp", "ignore/*", "~" ]' > $@
 
-$(COUCHJSON): $(APPDIR)
-	@   $(ECHO) '{"name": "Quanah", "description": "'$(SLOGAN)'"}' > $@
-
-$(DOCID): $(APPDIR)
+$(DOCID):
 	@   $(ECHO) "_design/quanah" > $@
 
 #-  vim:set syntax=make:
