@@ -16,11 +16,12 @@ CP          :=  rsync -va               #-  rsync.samba.org     v. 3.0.7
 SRC         :=  quanah-logo.tex
 PDF         :=  $(SRC:%.tex=%.pdf)
 
+APPLE_TOUCH :=  apple-touch-icon.png
 FAVICON     :=  favicon.ico
+GOOGLECODE  :=  googlecode.png
 LOGO        :=  logo.jpg
 
-ILOGO_LO    :=  mobile-lores.png        #-  for old iPhones et al.
-ILOGO_HI    :=  mobile-hires.png        #-  for new iPhones et al.
+ICONS       :=  $(APPLE_TOUCH) $(FAVICON) $(GOOGLECODE) $(LOGO)
 
 #-  Since we're converting a vector format (PDF) into raster formats, we will
 #   need to alert ImageMagick to the original image resolution. In the case of
@@ -28,41 +29,46 @@ ILOGO_HI    :=  mobile-hires.png        #-  for new iPhones et al.
 
 IMGOPTS     :=  -density 600 -quality 100
 
+WEBDIR      :=  ../couchapp/_attachments/style
+
 .PHONY: all clean clobber install reset run
 
 all: run
 
 clean: reset
-	@   $(RM) $(wildcard *.aux *.log *.pdf)
+	@   $(RM) $(wildcard *.aux *.log) $(PDF)
 
 clobber: clean
-	@   $(RM) $(FAVICON) $(ILOGO_LO) $(ILOGO_HI) $(LOGO)
+	@   $(RM) $(ICONS)
 
-install: $(FAVICON) $(LOGO)
-	@   $(CP) $(FAVICON) ../couchapp/_attachments                   ;   \
-            $(CP) $(LOGO) ../couchapp/_attachments
+install: $(ICONS)
+	@   $(CP) $(APPLE_TOUCH) $(WEBDIR)                              ;   \
+            $(CP) $(FAVICON) $(WEBDIR)                                  ;   \
+            $(CP) $(LOGO) $(WEBDIR)
 
 reset:
 	@   clear
 
-run: $(FAVICON) $(ILOGO_LO) $(ILOGO_HI) $(LOGO)
+run: $(ICONS)
 
 ###
+
+$(APPLE_TOUCH): $(PDF)
+	@   $(CONVERT) $(IMGOPTS) -resize '114x114!' $< $@
 
 $(FAVICON): $(PDF)
 	@   $(CONVERT) $(IMGOPTS) -resize '16x16!' $< $@
 
-$(ILOGO_LO): $(PDF)
-	@   $(CONVERT) $(IMGOPTS) -resize '57x57!' $< $@
-
-$(ILOGO_HI): $(PDF)
-	@   $(CONVERT) $(IMGOPTS) -resize '129x129!' $< $@
+$(GOOGLECODE): $(PDF)
+	@   $(CONVERT) $(IMGOPTS) -resize '55x55!' $< $@
 
 $(LOGO): $(PDF)
 	@   $(CONVERT) $(IMGOPTS) -resize '128x128!' $< $@
+
+###
 
 $(PDF): $(SRC)
 	@   $(RENDER) $<                                                ;   \
             $(CROP) --margin 1 $(PDF) $@
 
-#   vim:set syntax=make:
+#-  vim:set syntax=make:
