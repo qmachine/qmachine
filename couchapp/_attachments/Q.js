@@ -140,11 +140,9 @@ if (!this.Q) {                          //- Check for the Q object's existence
             dQ = Q.read(id);
         }
         if (typeof window.console !== undefined) {
-        //- Q.map(dQ.results.stdout, console.log);
-        //- console.log(dQ.results.stdout);
             var i, x = dQ.results.stdout;
             for (i = 0; i < x.length; i += 1) {
-                console.log(x[i]);
+                console.log(x[i]);      //- will be replaced by a map function!
             }
         }
         return dQ.results.stdout;
