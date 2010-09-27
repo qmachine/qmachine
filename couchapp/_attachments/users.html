@@ -31,12 +31,13 @@
         </div>
 
         <form name=editor>
-            <textarea id=codebucket autofocus cols=80 rows=24></textarea>
+            <textarea id=codebox autofocus cols=80 rows=24></textarea>
             <br/>
             <select id=devmode>
                 <option>Final</option>
             </select>
-            <input type=button value=Run onClick="Q.reval(codebucket.value);" />
+            <input type=button value=Run
+                onClick="Q.reval('function () {' + codebox.value + '}', []);" />
         </form>
 
       <!--

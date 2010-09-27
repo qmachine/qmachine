@@ -133,9 +133,19 @@ if (!this.Q) {                          //- Check for the Q object's existence
                             JSON.stringify(argarray) + ')'
             });
         Q.write(dQ);
-        console.log('Waiting for response ...');
+        if (typeof window.console !== undefined) {
+            console.log('Waiting for response ...');
+        }
         while (!dQ.results) {
             dQ = Q.read(id);
+        }
+        if (typeof window.console !== undefined) {
+        //- Q.map(dQ.results.stdout, console.log);
+        //- console.log(dQ.results.stdout);
+            var i, x = dQ.results.stdout;
+            for (i = 0; i < x.length; i += 1) {
+                console.log(x[i]);
+            }
         }
         return dQ.results.stdout;
     });
