@@ -26,8 +26,10 @@ ICONS       :=  $(APPLE_TOUCH) $(FAVICON) $(GOOGLECODE) $(LOGO)
 #-  Since we're converting a vector format (PDF) into raster formats, we will
 #   need to alert ImageMagick to the original image resolution. In the case of
 #   LaTeX, fonts have 600+ dpi. Additionally, we will make high-quality JPEGs.
+#   Also, let's "functionalize" it to accept a size argument for convenience.
 
-IMGOPTS     :=  -density 600 -quality 100
+IMGOPTS      =  -density 600 -quality 100 \
+                    -gravity center -resize '$(1)x$(1)' -extent '$(1)x$(1)'
 
 WEBDIR      :=  ../couchapp/_attachments/style
 
@@ -50,21 +52,21 @@ reset:
 	@   clear
 
 run: $(ICONS)
+	@   open $(LOGO)
 
 ###
 
 $(APPLE_TOUCH): $(PDF)
-	@   $(CONVERT) $(IMGOPTS) -resize '114x114!' $< $@
+	@   $(CONVERT) $(call IMGOPTS,114) $< $@
 
 $(FAVICON): $(PDF)
-	@   $(CONVERT) $(IMGOPTS) -resize '16x16!' $< $@
+	@   $(CONVERT) $(call IMGOPTS,16) $< $@
 
 $(GOOGLECODE): $(PDF)
-	@   $(CONVERT) $(IMGOPTS) -resize '55x55!' $< $@
+	@   $(CONVERT) $(call IMGOPTS,55) $< $@
 
 $(LOGO): $(PDF)
-	@   $(CONVERT) $(IMGOPTS) -resize '128x128!' $< $@
-
+	@   $(CONVERT) $(call IMGOPTS,128) $< $@
 ###
 
 $(PDF): $(SRC)
