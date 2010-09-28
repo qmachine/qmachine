@@ -37,11 +37,6 @@ ECHO        :=  echo -e
 MKDIR       :=  mkdir -p
 RM          :=  rm -rf
 
-JSON        :=  _attachments/json2.js
-MATHS       :=  _attachments/Maths.js
-STDLIB      :=  _attachments/stdlib.js
-OLDIES      :=  $(JSON) $(MATHS) $(STDLIB)
-
 .PHONY: all clean clobber deploy reset run test
 
 all: run
@@ -50,9 +45,8 @@ clean: reset
 	@   $(RM) $(COUCHCONFIG)
 
 clobber: clean
-	@   $(RM) $(OLDIES)
 
-deploy: $(COUCHCONFIG) $(OLDIES)
+deploy: $(COUCHCONFIG)
 	@   $(COUCHAPP) push --browse --quiet prod
 
 reset:
@@ -60,22 +54,8 @@ reset:
 
 run: test
 
-test: $(COUCHCONFIG) $(OLDIES)
+test: $(COUCHCONFIG)
 	@   $(COUCHAPP) push --browse --quiet test
-
-###
-
-$(JSON):
-	@   URL="http://www.json.org/json2.js"                          ;   \
-            $(CURL) GET $${URL} | sed -e 's/^alert[^;]*;$$//gp' > $@
-
-$(MATHS): $(STDLIB)
-	@   URL="http://libjs-maths.googlecode.com/hg/Maths.js"         ;   \
-            $(CURL) GET $${URL} > $@
-
-$(STDLIB): $(JSON)
-	@   URL="http://libjs-maths.googlecode.com/hg/stdlib.js"        ;   \
-            $(CURL) GET $${URL} > $@
 
 ###
 

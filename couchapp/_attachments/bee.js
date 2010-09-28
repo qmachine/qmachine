@@ -5,21 +5,20 @@
 //  tasks needing to be accomplished are posted by a CouchDB filter rule. The
 //  node then executes the first task listed and uploads its results. The task
 //  itself runs within a Web Worker context, which increases both security and
-//  performance for all parties involved. Chrome, Safari, Firefox, and Opera
-//  all fully support for Web Workers; Internet Explorer, of course, doesn't.
-//                                                          ~~ SRW, 25 Sep 2010
+//  performance for all parties involved. The FAQ lists which browsers work ...
+//                                                          ~~ SRW, 27 Sep 2010
 
-importScripts("json2.js", "curl.js", "Q.js", "stdlib.js", "Maths.js");
+importScripts("Q.js");
 
 (function (queue) {
     var fetch = function () {
-        var changes = Q.read(queue),
+        var changes = Q.io.read(queue),
             latest = {},
             results = changes.results || [];
         if (results.length > 0) {
-            latest = Q.read(results[0].id);
+            latest = Q.io.read(results[0].id);
             latest.results = Q.run(latest.code);
-            Q.write(latest);
+            Q.io.write(latest);
         }
         setTimeout(fetch, 1000);
     };
