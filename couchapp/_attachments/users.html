@@ -36,14 +36,28 @@
             <select id=devmode>
                 <option>Final</option>
             </select>
-            <input type=button value=Run
-                onClick="Q.reval('function () {' + codebox.value + '}', []);" />
+            <input type=button value=Run onClick="codebox_reval();" />
         </form>
 
-      <!--
-        Then, load the definitions for the Q object.
-      -->
-        <script src="Q.js"></script>
+        <script src="Q.js"></script>    <!-- defines the Q object -->
+
+        <script>
+            var codebox_reval = function () {
+                    var codebox = document.getElementById('codebox'),
+                        contents = codebox.value,
+                        results;
+                    if (this.console) {
+                        console.log("Waiting for response ...");
+                    }
+                    results = Q.reval('function () {' + contents + '}', []);
+                    if (this.console) {
+                        Q.iterate(results.stdout).using(function (i) {
+                            console.log(results.stdout[i]);
+                        });
+                    }
+                    return results;
+                };
+        </script>
 
     </body>
 
