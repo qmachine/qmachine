@@ -31,16 +31,32 @@
         </div>
 
         <div>
+
             <script>
                 if (typeof window.Worker === 'function') {
-                    new Worker('bee.js');
                     document.write('Thanks for helping out!');
                 } else {
                     document.write('Your browser does not support the ' +
                         'advanced features that Quanah requires. Please ' +
                         'see the <a href="faq.html">FAQ</a>.');
                 }
+
+                (function () {
+                    var counter = 0,
+                        busybee = function () {
+                            var worker = new Worker('bee.js');
+                            worker.onmessage = function (event) {
+                                var t = event.data;
+                                setTimeout(busybee, 2*t);
+                                counter += 1;
+                                console.log(counter + ":" + t);
+                            };
+                        };
+                    busybee();
+                }());
+
             </script>
+
         </div>
 
     </body>

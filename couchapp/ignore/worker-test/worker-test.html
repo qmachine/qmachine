@@ -17,10 +17,18 @@
     <body>
 
         <script>
-            var worker = new Worker("worker-test.js");
-            worker.onmessage = function (event) {
-                console.log(event.data);
-            };
+            (function () {
+                var busybee = function () {
+                        var worker = new Worker('worker-test.js');
+                        worker.onmessage = function (event) {
+                            if (event.data === "closing") {
+                                setTimeout(busybee, 1000);
+                            }
+                            console.log(event.data);
+                        };
+                    };
+                busybee();
+            }());
         </script>
 
     </body>
