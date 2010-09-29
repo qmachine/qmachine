@@ -197,6 +197,9 @@ if (!this.Q) {
         whoami: (function () {
             var source = root + '_session',
                 msg = JSON.parse(curl.get(source));
+                if (!msg.userCtx) {     //- for CouchDB 0.10 on Ubuntu Lucid
+                    msg.userCtx = {name: "unknown"};
+                }
             return function () {
                 return msg.userCtx.name;
             };
