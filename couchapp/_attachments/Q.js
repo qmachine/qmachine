@@ -26,8 +26,8 @@
 
 //- JSLint Rules -- Quanah members used in this script
 /*members
-    _id _rev code compose Doc filter find from get io iterate log map
-    merge name ok put Q read reduce results rev reval run stdout stderr
+    _id _rev code compose couch Doc filter find from get iterate map merge
+    name ok print put Q read reduce results rev reval run stdout stderr
     uuids userCtx using write
 */
 
@@ -70,12 +70,6 @@ if (!this.Q) {
                 return req.responseText;
             }
         },
-
-        author = (function () {
-            var source = root + '_session',
-                msg = JSON.parse(curl.get(source));
-            return msg.userCtx.name;
-        }()),
 
         fresh_id = (function () {       //- Constructor for memoized function
             var ideal = 100,
@@ -146,7 +140,7 @@ if (!this.Q) {
             };
         },
 
-        log: function (message) {       //- Quanah's "console.log" equivalent
+        print: function (message) {     //- Quanah's "console.log" equivalent
             results.stdout.push(message);
         },
 
@@ -200,7 +194,15 @@ if (!this.Q) {
 
         merge: deepcopy,
 
-        io: {
+        whoami: (function () {
+            var source = root + '_session',
+                msg = JSON.parse(curl.get(source));
+            return function () {
+                return msg.userCtx.name;
+            };
+        }()),
+
+        couch: {
 
             read: function (id) {       //- non-AJAX cloud --> client transfer
                 var source = db + id,
@@ -211,11 +213,12 @@ if (!this.Q) {
             write: function (obj) {     //- non-AJAX client --> cloud transfer
 
                 if (typeof obj !== 'object') {
-                    throw 'Error: Argument to "Q.write" must be an object.';
+                    throw 'Error: "Q.couch.write" expects an object.';
                 }
 
                 obj._id = obj._id || fresh_id(1);
-                obj.name = author;
+                obj.author = obj.author || Q.whoami();
+                obj.time = (new Date()).toUTCString();
 
                 var url = db + obj._id,
                     data = JSON.stringify(obj),
@@ -240,9 +243,8 @@ if (!this.Q) {
 
         Doc: function (obj) {           //- constructor for new CouchDB docs
             obj = obj || {};
-            obj._id = obj._id || fresh_id(1);
-            obj.name = author;
-            var msg = Q.io.write(obj);
+            obj.author = Q.whoami();
+            var msg = Q.couch.write(obj);
 
             if (msg.ok === 'false') {
                 throw msg;
@@ -260,9 +262,9 @@ if (!this.Q) {
                     '_id':  id,
                     'code': '(' + f + ').apply(this, ' + args + ')'
                 });
-            Q.io.write(dQ);
+            Q.couch.write(dQ);
             while (!dQ.results) {
-                dQ = Q.io.read(id);
+                dQ = Q.couch.read(id);
             }
             return dQ.results;
         }
