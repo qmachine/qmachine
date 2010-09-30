@@ -70,6 +70,6 @@ $(LOGO): $(PDF)
 
 $(PDF): $(SRC)
 	@   $(RENDER) $<                                                ;   \
-            $(CROP) --margin 1 $(PDF) $@
+            $(CROP) --margins "1 2 1 1" $(PDF) $@
 
 #-  vim:set syntax=make:
