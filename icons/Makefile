@@ -31,7 +31,7 @@ ICONS       :=  $(APPLE_TOUCH) $(FAVICON) $(GOOGLECODE) $(LOGO)
 IMGOPTS      =  -density 600 -quality 100 \
                     -gravity center -resize '$(1)x$(1)' -extent '$(1)x$(1)'
 
-WEBDIR      :=  ../couchapp/_attachments/style
+APPQUANAH   :=  ../couchdb/quanah-app/_attachments/style
 
 .PHONY: all clean clobber install reset run
 
@@ -44,9 +44,9 @@ clobber: clean
 	@   $(RM) $(ICONS)
 
 install: $(ICONS)
-	@   $(CP) $(APPLE_TOUCH) $(WEBDIR)                              ;   \
-            $(CP) $(FAVICON) $(WEBDIR)                                  ;   \
-            $(CP) $(LOGO) $(WEBDIR)
+	@   $(CP) $(APPLE_TOUCH) $(APPQUANAH)                           ;   \
+            $(CP) $(FAVICON) $(APPQUANAH)                               ;   \
+            $(CP) $(LOGO) $(APPQUANAH)
 
 reset:
 	@   clear

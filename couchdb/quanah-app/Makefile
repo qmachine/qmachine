@@ -21,14 +21,7 @@ SHELL       :=  bash                    #-  GNU conventions don't apply to us!
 TEST_DB     :=  localhost:5984/testing
 PROD_DB     :=  quanah.couchone.com:5984/app
 
-CONFIGDIR   :=  ignore/config
-C_APPJSON   :=  couchapp.json
-C_APPRC     :=  .couchapprc
-C_APPIGNORE :=  .couchappignore
-DOCID       :=  _id
-REWRITES    :=  rewrites.json
-
-COUCHCONFIG :=  $(C_APPJSON) $(C_APPRC) $(C_APPIGNORE) $(DOCID) $(REWRITES)
+COUCHAPPRC  :=  .couchapprc
 
 COUCHAPP    :=  couchapp                #-  http://couchapp.org/
 CP          :=  rsync --archive         #-  http://rsync.samba.org/
@@ -42,11 +35,11 @@ RM          :=  rm -rf
 all: run
 
 clean: reset
-	@   $(RM) $(COUCHCONFIG)
+	@   $(RM) $(COUCHAPPRC)
 
 clobber: clean
 
-deploy: $(COUCHCONFIG)
+deploy: $(COUCHAPPRC)
 	@   $(COUCHAPP) push --browse --quiet prod
 
 reset:
@@ -54,18 +47,12 @@ reset:
 
 run: test
 
-test: $(COUCHCONFIG)
+test: $(COUCHAPPRC)
 	@   $(COUCHAPP) push --browse --quiet test
 
 ###
 
-$(C_APPIGNORE):
-	@   $(CP) $(CONFIGDIR)/couchappignore $@
-
-$(C_APPJSON):
-	@   $(CP) $(CONFIGDIR)/couchapp.json $@
-
-$(C_APPRC):
+$(COUCHAPPRC):
 	@   $(ECHO) '{"env": {' > $@                                    ;   \
             function setup_login {                                          \
                 local CHOICE USERNAME PASSWORD                          ;   \
@@ -81,11 +68,5 @@ $(C_APPRC):
             setup_login 'for testing? [Y/n]' test '$(TEST_DB)'          ;   \
             setup_login 'for deployment? [Y/n]' prod '$(PROD_DB)'       ;   \
             $(ECHO) "}}" >> $@
-
-$(DOCID):
-	@   $(CP) $(CONFIGDIR)/_id $@
-
-$(REWRITES):
-	@   $(CP) $(CONFIGDIR)/rewrites.json $@
 
 #-  vim:set syntax=make:
