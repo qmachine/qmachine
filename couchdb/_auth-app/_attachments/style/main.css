@@ -1,0 +1,47 @@
+/*  CSS source code
+
+-   main.css ~~
+    This is the base stylesheet for Quanah.
+                                                            ~~ SRW, 25 Sep 2010
+*/
+
+body {
+    font-family: Georgia,serif;         /* Arial,Helvetica,sans-serif */
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+div {
+    margin-top: 1em;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 1em;
+}
+
+img {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+form {
+    margin: 1em;
+}
+
+#codebox {
+    font-family: "Andale Mono",monospace;
+}
+
+#main {}
+
+.error {                                /* <div class=error> ... </div> */
+    color: red;
+}
+
+/*  vim:set syntax=css: */
