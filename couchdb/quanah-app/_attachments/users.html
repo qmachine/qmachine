@@ -51,9 +51,7 @@
                     }
                     results = Q.reval('function () {' + contents + '}', []);
                     if (this.console) {
-                        Q.iterate(results.stdout).using(function (i) {
-                            console.log(results.stdout[i]);
-                        });
+                        console.log(results);
                     }
                     return results;
                 };
