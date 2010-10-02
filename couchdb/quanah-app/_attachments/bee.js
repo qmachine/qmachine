@@ -13,21 +13,28 @@ importScripts("Q.js");
 
 Q.merge(Q, this);                       //- gives Jonas the syntax he wanted :)
 
-var changes = Q.couch.read("_changes?filter=quanah/code"),
+var changes = Q.couch.read("_changes?filter=quanah/waiting"),
     latest = {},
-    results = changes.results || [];
+    results = changes.results || [],
+    didsomething = false;
 
 if (results.length > 0) {
 
     latest = Q.couch.read(results[0].id);
     latest.volunteer = Q.whoami();
+    latest.state = "running";
+    Q.couch.write(latest);
+
     latest.results = Q.run(latest.code);
-    Q.couch.write(latest);              //- security hole for server?
+    latest.state = "done";
+    Q.couch.write(latest);
+
+    didsomething = true;
 
 }
 
 var t = 1000;                           //- milliseconds till Worker closes
-postMessage(t);
+postMessage([t, didsomething]);
 setTimeout(close, t);
 
 //- vim:set syntax=javascript:

@@ -223,8 +223,13 @@ if (!this.Q) {
 
                 var url = db + obj._id,
                     data = JSON.stringify(obj),
-                    msg = curl.put(url, data);
-                return JSON.parse(msg);
+                    msg = JSON.parse(curl.put(url, data));
+
+                if (msg.ok === true) {
+                    obj._rev = msg.rev;
+                }
+
+                return msg;
             }
 
         },
@@ -261,13 +266,14 @@ if (!this.Q) {
                 args = JSON.stringify((argarray || [])),
                 dQ = new Q.Doc({
                     '_id':  id,
-                    'code': '(' + f + ').apply(this, ' + args + ')'
+                    'code': '(' + f + ').apply(this, ' + args + ')',
+                    'state': "waiting"
                 });
             Q.couch.write(dQ);
-            while (!dQ.results) {
+            while (dQ.state !== "done") {
                 dQ = Q.couch.read(id);
             }
-            return dQ.results;
+            return dQ;
         }
 
     });
