@@ -32,14 +32,12 @@ ICONS       :=  $(APPLE_TOUCH) $(FAVICON) $(GOOGLECODE) $(LOGO)
 #   LaTeX, fonts have 600+ dpi. Additionally, we will make high-quality JPEGs.
 #   Also, let's "functionalize" it to accept a size argument for convenience.
 
-IMGOPTS     =       -density 600 -gravity center -quality 100 -resize '$(1)x$(1)'
+IMGOPTS      =  -density 600 -gravity center -quality 100 -resize '$(1)x$(1)'
 
-COLOR       :=      "\#cccccc"
-IMGOPTS_REF  =      $(IMGOPTS) -extent '$(1)x$(1)'                 \
-                    -bordercolor $(COLOR) -border "1x1" -matte -fill none   \
-                    -fuzz "20%" -draw "matte 0,0 floodfill"                 \
-                    -shave "1x1" -background $(COLOR)
-
+COLOR       :=  "\#cccccc"
+IMGOPTS_REF  =  $(IMGOPTS) -extent '$(1)x$(1)' -bordercolor $(COLOR)        \
+                -border "1x1" -matte -fill none -fuzz "20%"                 \
+                -draw "matte 0,0 floodfill" -shave "1x1" -background $(COLOR)
 
 .PHONY: all clean clobber reset run
 
@@ -84,6 +82,7 @@ $(REF_PNG): $(REF_BG) $(REF_FG)
 ###
 
 $(BGPDF): $(BGSRC)
+
 $(PDF): $(SRC)
 
 %.pdf: %.tex
