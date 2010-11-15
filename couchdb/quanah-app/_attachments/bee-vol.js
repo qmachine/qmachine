@@ -13,7 +13,7 @@ try {
         waiting = quanah.read(queue),
         jobs = JSON.parse(waiting).results,
 
-        next, obj, didsomething = false,
+        index, next, obj, didsomething = false,
 
         send_report = function () {
             if (typeof obj === 'object') {
@@ -28,7 +28,13 @@ try {
 
     if (jobs.length > 0) {
 
-        next = jobs[0].id;
+     // Don't worry about "locking" and check-outs and timeouts and whatnot --
+     // just let volunteers accomplish things in a random order. This idea may
+     // or may not end up being better, but at the moment it does prevent total
+     // gridlock when the oldest task is going to take awhile. Meh ;-)
+
+        index = Math.floor(Math.random() * jobs.length);
+        next = jobs[index].id;
         obj = JSON.parse(quanah.read(bookmarks.db + next));
         eval(obj.code);
         obj.state = "done";
