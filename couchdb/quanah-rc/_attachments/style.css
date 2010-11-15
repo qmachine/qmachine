@@ -1,0 +1,79 @@
+/*  CSS style sheet  */
+
+/*  style.css ~
+*   This is the stylesheet for Quanah 1.0-RC :-)
+*                                                           ~~ SRW, 12 Nov 2010
+*/
+
+body {
+    background-color: #CCCCCC;
+    font-family: Georgia, serif;
+    text-align: center;
+}
+
+ul {
+    float: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+a {
+    background-color: #002469;          /*  Rice blue  */
+    color: white;
+    padding: 0em 0.2em;
+    text-decoration: inherit;
+    width: 6em;
+}
+
+a:hover {
+    background-color: yellow;
+    color: black;
+}
+
+a:visited {}
+
+a.li {                                  /*  class for links in 'li' tags  */
+    background-color: inherit;
+    color: inherit;
+    float: center;
+}
+
+li {
+    border-right: 1px solid #5E6062;    /*  Rice dark gray  */
+    color: white;
+    background-color: #002469;          /*  Rice blue  */
+    padding: 0.2em 0.4em;
+    display: inline;
+}
+
+li:hover {
+    background-color: yellow;
+    color: black;
+}
+
+textarea.terminal {
+    font-family: Menlo, AndaleMono, monospace;
+    font-size: extra-small;
+}
+
+div.question {
+    font-style: italic;
+    text-align: justify;
+}
+
+div.answer {
+    font-weight: normal;
+    text-align: justify;
+}
+
+.tt {
+    font-family: Menlo, AndaleMono, monospace;
+}
+
+.error {
+    color: red;
+}
+
+/*  vim:set syntax=css:  */

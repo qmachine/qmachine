@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<!--
+    developers.html ~~
+                                                            ~~ SRW, 12 Nov 2010
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Quanah 1.0-RC: Developers' Page</title>
+        <link rel="stylesheet" href="style.css"/>
+        <link rel="shortcut icon" href="favicon.ico"/>
+    </head>
+
+    <body onload="launch.developer();">
+
+        <form id=editor>
+            <textarea id=codebox autofocus cols=80 rows=24
+                class=terminal></textarea>
+            <br/>
+            <select id=devmode>
+                <optgroup label="Execution Mode">
+                    <option value="local">Local</option>
+                    <option value="remote">Remote</option>
+                </optgroup>
+            </select>
+            <input type=button value=Run onClick="launch.button();"/>
+        </form>
+
+<!--    First, load Quanah's basic library.                                 -->
+        <script src="quanah.js"></script>
+
+<!--    Next, we need to load the framework to make it usable.              -->
+        <script src="launch.js"></script>
+
+    </body>
+
+</html>
