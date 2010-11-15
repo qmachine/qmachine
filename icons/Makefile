@@ -1,10 +1,8 @@
-#-  Makefile                            #-  GNU Make            v. 3.81
+#-  GNU Makefile
 
-#-  quanah/icons/Makefile ~~
-#   These are the instructions to create the logo and favicon from scratch.
-#   They were written and tested on Mac OS X 10.6.4, and I have tried to leave
-#   as many details as I could about the exact software versions that I used.
-#                                                           ~~ SRW, 25 Sep 2010
+#-  Makefile ~~
+#   These directions build Quanah's icons from LaTeX source code.
+#                                                           ~~ SRW, 21 Oct 2010
 
 SHELL       :=  bash                    #-  GNU bash            v. 3.2.48(1)
 
@@ -13,6 +11,8 @@ CROP        :=  pdfcrop                 #-  MacTeX 2010         v. 1.31
 CONVERT     :=  convert                 #-  ImageMagick         v. 6.6.1-3
 CP          :=  rsync -va               #-  rsync.samba.org     v. 3.0.7
 
+BGSRC       :=  background.tex
+BGPDF       :=  $(BGSRC:%.tex=%.pdf)
 SRC         :=  quanah-logo.tex
 PDF         :=  $(SRC:%.tex=%.pdf)
 
@@ -21,6 +21,10 @@ FAVICON     :=  favicon.ico
 GOOGLECODE  :=  googlecode.png
 LOGO        :=  logo.jpg
 
+REF_BG      :=  background.png
+REF_FG      :=  foreground.png
+REF_PNG     :=  reference.png
+
 ICONS       :=  $(APPLE_TOUCH) $(FAVICON) $(GOOGLECODE) $(LOGO)
 
 #-  Since we're converting a vector format (PDF) into raster formats, we will
@@ -28,48 +32,62 @@ ICONS       :=  $(APPLE_TOUCH) $(FAVICON) $(GOOGLECODE) $(LOGO)
 #   LaTeX, fonts have 600+ dpi. Additionally, we will make high-quality JPEGs.
 #   Also, let's "functionalize" it to accept a size argument for convenience.
 
-IMGOPTS      =  -density 600 -quality 100 \
-                    -gravity center -resize '$(1)x$(1)' -extent '$(1)x$(1)'
+IMGOPTS     =       -density 600 -gravity center -quality 100 -resize '$(1)x$(1)'
 
-APPQUANAH   :=  ../couchdb/quanah-app/_attachments/style
+COLOR       :=      "\#cccccc"
+IMGOPTS_REF  =      $(IMGOPTS) -extent '$(1)x$(1)'                 \
+                    -bordercolor $(COLOR) -border "1x1" -matte -fill none   \
+                    -fuzz "20%" -draw "matte 0,0 floodfill"                 \
+                    -shave "1x1" -background $(COLOR)
 
-.PHONY: all clean clobber install reset run
+
+.PHONY: all clean clobber reset run
 
 all: run
 
 clean: reset
-	@   $(RM) $(wildcard *.aux *.log) $(PDF)
+	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(PDF) $(REF_FG) $(REF_BG)
 
 clobber: clean
-	@   $(RM) $(ICONS)
-
-install: $(ICONS)
-	@   $(CP) $(APPLE_TOUCH) $(APPQUANAH)                           ;   \
-            $(CP) $(FAVICON) $(APPQUANAH)                               ;   \
-            $(CP) $(LOGO) $(APPQUANAH)
+	@   $(RM) $(ICONS) $(REF_PNG)
 
 reset:
 	@   clear
 
 run: $(ICONS)
+	@   for each in $(ICONS); do open $${each}; done
 
 ###
 
-$(APPLE_TOUCH): $(PDF)
+$(APPLE_TOUCH): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,114) $< $@
 
-$(FAVICON): $(PDF)
+$(FAVICON): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,16) $< $@
 
-$(GOOGLECODE): $(PDF)
+$(GOOGLECODE): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,55) $< $@
 
 $(LOGO): $(PDF)
-	@   $(CONVERT) $(call IMGOPTS,128) $< $@
+	@   $(CONVERT) $(call IMGOPTS_REF,128) $< $@
+
+$(REF_BG): $(BGPDF)
+	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
+
+$(REF_FG): $(PDF)
+	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
+
+$(REF_PNG): $(REF_BG) $(REF_FG)
+	@   $(CONVERT) $(call IMGOPTS,512) $(REF_FG) $(REF_BG) \
+                -compose ChangeMask -composite $@
+
 ###
 
+$(BGPDF): $(BGSRC)
 $(PDF): $(SRC)
+
+%.pdf: %.tex
 	@   $(RENDER) $<                                                ;   \
-            $(CROP) --margins "1 2 1 1" $(PDF) $@
+            $(CROP) --margins "-1 -1 -1 -1" $@ $@
 
 #-  vim:set syntax=make:

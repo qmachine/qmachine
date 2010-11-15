@@ -1,65 +1,23 @@
 <!DOCTYPE HTML>
 <!--
     volunteers.html ~~
-    Visiting this page turns your computer into a Quanah computational node.
-                                                             - SRW, 26 Sep 2010
+                                                            ~~ SRW, 12 Nov 2010
 -->
 <html>
-
     <head>
         <meta charset="utf-8" />
-        <title>Quanah: Volunteer Page</title>
-        <link rel="shortcut icon" href="style/favicon.ico" />
-        <link rel="apple-touch-icon" href="style/apple-touch-icon.png" />
-        <link rel="stylesheet" href="style/main.css" />
+        <title>Quanah 1.0: Volunteers' Page</title>
+        <link rel="stylesheet" href="style.css"/>
+        <link rel="shortcut icon" href="favicon.ico"/>
     </head>
 
-    <body>
+    <body onload="launch.volunteer();">
 
-        <div class=error>
-            <noscript>You MUST enable JavaScript to use this page!</noscript>
-        </div>
+<!--    First, load Quanah's basic library.                                 -->
+        <script src="quanah.js"></script>
 
-        <div id=main>
-            <span style="font-style: italic">
-                "No downloads, no installs, no problem."
-            </span>
-            <br/>
-            <img src="style/logo.jpg" alt="(Quanah logo)" />
-            <br/>
-            Volunteer's Portal
-        </div>
-
-        <div>
-
-            <script>
-                if (typeof window.Worker === 'function') {
-                    document.write('Thanks for helping out!');
-                } else {
-                    document.write('Your browser does not support the ' +
-                        'advanced features that Quanah requires. Please ' +
-                        'see the <a href="faq.html">FAQ</a>.');
-                }
-
-                (function () {
-                    var counter = 0,
-                        busybee = function () {
-                            var worker = new Worker('bee.js');
-                            worker.onmessage = function (event) {
-                                var t = event.data[0],
-                                    didsomething = event.data[1];
-                                setTimeout(busybee, 2*t);
-                                counter += 1;
-                                console.log(counter + ":" + t + " " +
-                                    didsomething);
-                            };
-                        };
-                    busybee();
-                }());
-
-            </script>
-
-        </div>
+<!--    Next, we need to load the framework to make it usable.              -->
+        <script src="launch.js"></script>
 
     </body>
 
