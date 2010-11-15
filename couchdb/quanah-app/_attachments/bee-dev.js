@@ -52,6 +52,6 @@ onmessage = function (event) {
 
 };
 
-postMessage("Welcome to Quanah :-)");
+postMessage("Welcome to Quanah 1.0 :-)");
 
 //- vim:set syntax=javascript:

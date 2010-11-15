@@ -9,7 +9,7 @@ quanah.merge(quanah, this);
 
 try {
 
-    var queue = bookmarks.db + "_changes?filter=quanah-rc/waiting",
+    var queue = bookmarks.db + "_changes?filter=quanah/waiting",
         waiting = quanah.read(queue),
         jobs = JSON.parse(waiting).results,
 
