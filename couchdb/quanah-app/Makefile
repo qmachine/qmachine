@@ -9,8 +9,8 @@ SHELL   :=  bash
 COUCHAPP:=  couchapp
 APP     :=  quanah
 #DB      :=  localhost:5984/testing
-#DB      :=  sean.couchone.com/dmz
-DB      :=  quanah.couchone.com/app
+DB      :=  sean.couchone.com/dmz
+#DB      :=  quanah.couchone.com/app
 APPRC   :=  $(APP)/.couchapprc
 
 CP      :=  rsync --archive

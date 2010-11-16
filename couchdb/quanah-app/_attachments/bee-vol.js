@@ -33,7 +33,7 @@ try {
      // or may not end up being better, but at the moment it does prevent total
      // gridlock when the oldest task is going to take awhile. Meh ;-)
 
-        index = Math.floor(Math.random() * jobs.length);
+        index = Math.round(Math.random() * jobs.length);
         next = jobs[index].id;
         obj = JSON.parse(quanah.read(bookmarks.db + next));
         eval(obj.code);
