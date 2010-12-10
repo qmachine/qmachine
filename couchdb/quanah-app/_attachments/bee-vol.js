@@ -7,24 +7,26 @@
 importScripts("quanah.js");
 quanah.merge(quanah, this);
 
+var didsomething, index, jobs, next, obj, queue, send_report, waiting;
+
 try {
 
-    var queue = bookmarks.db + "_changes?filter=quanah/waiting",
-        waiting = quanah.read(queue),
-        jobs = JSON.parse(waiting).results,
+    send_report = function () {
+        if (typeof obj === 'object') {
+            obj.results = {
+                stdout: quanah.print() || [],
+                stderr: quanah.error() || []
+            };
+            quanah.write(obj);
+            didsomething = true;
+        }
+    };
 
-        index, next, obj, didsomething = false,
+    queue = bookmarks.db + "_changes?filter=quanah/waiting";
+    waiting = quanah.read(queue);
+    jobs = JSON.parse(waiting).results;
 
-        send_report = function () {
-            if (typeof obj === 'object') {
-                obj.results = {
-                    stdout: quanah.print() || [],
-                    stderr: quanah.error() || []
-                };
-                quanah.write(obj);
-                didsomething = true;
-            }
-        };
+    didsomething = false;
 
     if (jobs.length > 0) {
 
@@ -42,9 +44,12 @@ try {
 
     }
 
-} catch(err) {
+} catch (err) {
 
     quanah.error(err);
+    if (typeof obj !== 'object') {
+        obj = {};
+    }
     obj.state = "failed";
     send_report();
 

@@ -9,19 +9,21 @@ quanah.merge(quanah, this);
 
 onmessage = function (event) {
 
-    try {
-        var key = event.data.key,
-            mode = event.data.mode,
-            code = decodeURI(event.data.code),
+    var code, key, mode, send_report;
 
-            send_report = function () {
-                postMessage({
-                    key: event.data.key,
-                    stdout: quanah.print() || [],
-                    stderr: quanah.error() || []
-                });
-                quanah.reset();
-            };
+    try {
+        code = decodeURI(event.data.code);
+        key = event.data.key;
+        mode = event.data.mode;
+
+        send_report = function () {
+            postMessage({
+                key: event.data.key,
+                stdout: quanah.print() || [],
+                stderr: quanah.error() || []
+            });
+            quanah.reset();
+        };
 
         if (mode === "local") {
             eval(code);
@@ -29,17 +31,19 @@ onmessage = function (event) {
         }
 
         if (mode === "remote") {
-            var obj = quanah.write({code: code, state: "waiting"}),
-                check_back = function () {
-                    var txt = quanah.read(obj),
-                        ans = JSON.parse(txt);
-                    if (ans.results === undefined) {
-                        setTimeout(check_back, 5000);
-                    } else {
-                        quanah.print(ans);
-                        send_report();
-                    }
-                };
+            var check_back, obj;
+            obj = quanah.write({code: code, state: "waiting"});
+            check_back = function () {
+                var ans, txt;
+                txt = quanah.read(obj);
+                ans = JSON.parse(txt);
+                if (ans.results === undefined) {
+                    setTimeout(check_back, 5000);
+                } else {
+                    quanah.print(ans);
+                    send_report();
+                }
+            };
             check_back();
         }
 
