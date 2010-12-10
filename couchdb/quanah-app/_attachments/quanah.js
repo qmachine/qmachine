@@ -23,69 +23,74 @@ if (this.bookmarks === undefined) {
 
 (function () {
 
-//- "Private" definitions -- these are scoped to the anonymous closure.
+ // First, declare private variables that are scoped to this anonymous closure.
 
-    var as_array = function (obj) {
-            return Array.prototype.slice.call(obj);
-        }, 
+    var app, as_Array, db, deepcopy, environment,
+        jax, root, stdout, stderr, subs;
 
-        deepcopy = function (source, dest) {
-            dest = dest || [];
-            for (var i in source) {
-                if (source.hasOwnProperty(i)) {
-                    dest[i] = source[i];
-                    if (typeof source[i] === 'object') {
-                        dest[i] = deepcopy(source[i]);
-                    }
+    as_Array = function (obj) {
+        return Array.prototype.slice.call(obj);
+    };
+
+    deepcopy = function (source, dest) {
+        var i;
+        dest = dest || [];
+        for (i in source) {
+            if (source.hasOwnProperty(i)) {
+                dest[i] = source[i];
+                if (typeof source[i] === 'object') {
+                    dest[i] = deepcopy(source[i]);
                 }
             }
-            return dest;
-        },
+        }
+        return dest;
+    };
 
-        jax = {                         //- synchronous XMLHttpRequest wrapper
-            get: function (url) {
-                var req = new XMLHttpRequest();
-                req.open('GET', url, false);
-                req.send(null);
-                return req.responseText;
-            },
-            put: function (url, data) {
-                data = data || "";
-                var req = new XMLHttpRequest();
-                req.open('PUT', url, false);
-                req.setRequestHeader("Content-type", "application/json");
-                req.send(data);
-                return req.responseText;
-            }
+    jax = {                             //- synchronous XMLHttpRequest wrapper
+        get: function (url) {
+            var req;
+            req = new XMLHttpRequest();
+            req.open('GET', url, false);
+            req.send(null);
+            return req.responseText;
         },
+        put: function (url, data) {
+            var req;
+            data = data || "";
+            req = new XMLHttpRequest();
+            req.open('PUT', url, false);
+            req.setRequestHeader("Content-type", "application/json");
+            req.send(data);
+            return req.responseText;
+        }
+    };
 
-        environment = (function () {
-            if (typeof window === 'object') {
-                if (typeof window.console === 'object') {
-                    return "has-console";
-                } else {
-                    return "has-window";
-                }
+    environment = (function () {
+        if (typeof window === 'object') {
+            if (typeof window.console === 'object') {
+                return "has-console";
             } else {
-                if (typeof importScripts === 'function') {
-                    return "is-worker";
-                } else {
-                    return "unknown";
-                }
+                return "has-window";
             }
-        })(),
+        } else {
+            if (typeof importScripts === 'function') {
+                return "is-worker";
+            } else {
+                return "unknown";
+            }
+        }
+    })();
 
-        root = location.href.replace(location.pathname, '/'),
-        subs = location.pathname.match(/([^\/]+)\//g),
-        db = root + subs[0],
-        app = db + subs[1] + subs[2],
+    root = location.href.replace(location.pathname, '/');
+    subs = location.pathname.match(/([^\/]+)\//g);
+    db = root + subs[0];
+    app = db + subs[1] + subs[2];
 
-        stdout = [],
-        stderr = [];
+    stdout = [];
+    stderr = [];
 
-//- "Public" definitions -- these will persist outside the anonymous closure.
-//  These functions DO currently depend on CouchDB, but I am not going to worry
-//  about portability to other platforms until I have this working perfectly.
+ // Now, use the above definitions as necessary to define the "side effects"
+ // that will persist outside the scope as members of 'quanah' and 'bookmarks'.
 
     bookmarks.root = root;
     bookmarks.db = db;
@@ -95,18 +100,19 @@ if (this.bookmarks === undefined) {
         switch (environment) {
         case "has-console":
             return function () {
-                console.log.apply(console, as_array(arguments));
+                console.log.apply(console, as_Array(arguments));
             };
         case "has-window":
             return function () {
-                var args = as_array(arguments),
-                    sink = document.body,
-                    tag = '<div class="tt">';
+                var args, sink, tag;
+                args = as_Array(arguments);
+                sink = document.body;
+                tag = '<div class="tt">';
                 sink.innerHTML += (tag + args.join("</div>" + tag) + "</div>");
             };
         case "is-worker":
             return function () {
-                stdout = stdout.concat(as_array(arguments));
+                Array.prototype.push.apply(stdout, as_Array(arguments));
                 return stdout;
             };
         default:
@@ -118,18 +124,19 @@ if (this.bookmarks === undefined) {
         switch (environment) {
         case "has-console":
             return function () {
-                console.error.apply(console, as_array(arguments));
+                console.error.apply(console, as_Array(arguments));
             };
         case "has-window":
             return function () {
-                var args = as_array(arguments),
-                    sink = document.body,
-                    tag = '<div class="tt,error">';
+                var args, sink, tags;
+                args = as_Array(arguments);
+                sink = document.body;
+                tag = '<div class="tt,error">';
                 sink.innerHTML += (tag + args.join("</div>" + tag) + "</div>");
             };
         case "is-worker":
             return function () {
-                stderr = stderr.concat(as_array(arguments));
+                Array.prototype.push.apply(stderr, as_Array(arguments));
                 return stderr;
             };
         default:
@@ -157,13 +164,15 @@ if (this.bookmarks === undefined) {
         switch (environment) {
         case "has-console":
             return function (x) {
-                var s = document.createElement('script');
+                var s;
+                s = document.createElement('script');
                 s.src = x;
                 document.body.appendChild(s);
             };
         case "has-window":
             return function (x) {
-                var s = document.createElement('script');
+                var s;
+                s = document.createElement('script');
                 s.src = x;
                 document.body.appendChild(x);
             };
@@ -195,17 +204,19 @@ if (this.bookmarks === undefined) {
     quanah.toc = function () {},        //- returns HH:MM:SS.SSS since "tic()"
 
     quanah.tic = function () {          //- returns ms since 01 Jan 1970, 12 AM
-        var start_time = new Date(),
-            pad = function (value) {
-                return (value < 10) ? "0" + value : value;
-            },
-            toc = function () {      //- returns HH:MM:SS.SSS since "tic()"
-                var now = ((new Date()) - start_time) / 1000,
-                    hours = Math.floor(now / 3600),
-                    minutes = Math.floor((now % 3600) / 60),
-                    seconds = (now % 60).toFixed(3);
-                return [pad(hours), pad(minutes), pad(seconds)].join(':');
-            };
+        var pad, start_time, toc;
+        pad = function (value) {
+            return (value < 10) ? "0" + value : value;
+        };
+        start_time = new Date();
+        toc = function () {             //- returns HH:MM:SS.SSS since "tic()"
+            var hours, minutes, now, seconds;
+            now = ((new Date()) - start_time) / 1000;
+            hours = Math.floor(now / 3600);
+            minutes = Math.floor((now % 3600) / 60);
+            seconds = (now % 60).toFixed(3);
+            return [pad(hours), pad(minutes), pad(seconds)].join(':');
+        };
         if (typeof this.toc === 'function') {
             this.toc = toc;
         }

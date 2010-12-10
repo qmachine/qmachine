@@ -7,26 +7,27 @@
 //- NOTE: this assumes we are running the test from the developers' page.
 
 load("q.js");
-
 merge(q, this);
 
-var tripler = function (x) {
-        return map(x).using(function (each) {
-            return 3 * each;
-        });
-    },
+var sum, tripler, x, y, z;
 
-    sum = function (x) {
-        return reduce(0, x).using(function (a, b) {
-            return a + b;
-        });
-    },
+sum = function (x) {
+    return reduce(0, x).using(function (a, b) {
+        return a + b;
+    });
+};
 
-    x = [1, 2, 3, 4, 5],
+tripler = function (x) {
+    return map(x).using(function (each) {
+        return 3 * each;
+    }); 
+};
 
-    y = tripler(x),
+x = [1, 2, 3, 4, 5];
 
-    z = sum(y);
+y = tripler(x);
+
+z = sum(y);
 
 print(x, y, z);
 

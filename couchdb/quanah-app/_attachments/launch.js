@@ -18,10 +18,6 @@ if (this.dictionary === undefined) {
 
 (function () {
 
-//- PRIVATE DEFINITIONS -- these are confined to this anonymous closure.
-
-//- PUBLIC DEFINITIONS -- these will be persistent outside this closure.
-
     launch.Worker = function (url, func) {
         if (typeof window.Worker !== 'function') {
             document.body.innerHTML += '<div>Your browser does not support ' +
@@ -29,16 +25,18 @@ if (this.dictionary === undefined) {
                 'see the <a href="faq.html">FAQ</a> for more info.</div>';
             return;
         }
+        var sisyphus;
         func = func || function () {};
-        var sisyphus = function () {
-                var worker = new Worker(url);
-                worker.onmessage = function (event) {
-                    if (func(event) === true) {
-                        setTimeout(sisyphus, 5000);
-                    }
-                };
-                return worker;
+        sisyphus = function () {
+            var worker;
+            worker = new Worker(url);
+            worker.onmessage = function (event) {
+                if (func(event) === true) {
+                    setTimeout(sisyphus, 5000);
+                }
             };
+            return worker;
+        };
         return sisyphus();
     };
 
@@ -46,39 +44,43 @@ if (this.dictionary === undefined) {
 
     launch.developer = function () {
 
-        var bee = launch.Worker('bee-dev.js', function (event) {
-                if (event.data.key !== undefined) {
-                    var key = event.data.key,
-                        stdout = event.data.stdout,
-                        stderr = event.data.stderr;
-                    dictionary[key].results = stdout.concat(stderr);
-                    if (stderr.length > 0) {
-                        quanah.error('New results: dictionary["%s"] = %o',
-                            key, dictionary[key]);
-                    } else {
-                        quanah.print('New results: dictionary["%s"] = %o',
-                            key, dictionary[key]);
-                    }
-                    return;
-                }
-                quanah.print(event.data);
-                return false;           //- "true" ==> launch a new Web Worker
-            }),
+        var bee, button, job, uuid;
 
-            uuid = function () {        //- a quick replacement for host/_uuids
-                var new_id = ((Math.random()).toString()).split('.')[1];
-                if (dictionary[new_id] === undefined) {
-                    dictionary[new_id] = {
-                        results: null   //- placeholder that can be tested
-                    };
-                    return new_id;
+        bee = launch.Worker('bee-dev.js', function (event) {
+            if (event.data.key !== undefined) {
+                var key, stdout, stderr;
+                key = event.data.key;
+                stdout = event.data.stdout;
+                stderr = event.data.stderr;
+                dictionary[key].results = stdout.concat(stderr);
+                if (stderr.length > 0) {
+                    quanah.error('New results: dictionary["%s"] = %o',
+                        key, dictionary[key]);
+                } else {
+                    quanah.print('New results: dictionary["%s"] = %o',
+                        key, dictionary[key]);
                 }
-                return uuid();          //- if it wasn't unique, keep trying!
-            };
+                return;
+            }
+            quanah.print(event.data);
+            return false;           //- "true" ==> launch a new Web Worker
+        });
 
-        launch.job = function (code, mode) {
-            mode = mode || "local";
+        uuid = function () {        //- a quick replacement for host/_uuids
+            var new_id;
+            new_id = ((Math.random()).toString()).split('.')[1];
+            if (dictionary[new_id] === undefined) {
+                dictionary[new_id] = {
+                    results: null   //- placeholder that can be tested
+                };
+                return new_id;
+            }
+            return uuid();          //- if it wasn't unique, keep trying!
+        };
+
+        job = function (code, mode) {
             var key = uuid();
+            mode = mode || "local";
             bee.postMessage({
                 key: key,
                 mode: mode,
@@ -87,21 +89,26 @@ if (this.dictionary === undefined) {
             return dictionary[key];
         };
 
-        launch.button = function () {
-            var editor = document.getElementById("editor"),
-                code = editor.codebox.value,
-                mode = editor.devmode.value;
-            launch.job(code, mode);
+        button = function () {
+            var code, editor, mode;
+            editor = document.getElementById("editor");
+            code = editor.codebox.value;
+            mode = editor.devmode.value;
+            job(code, mode);
         };
+
+        launch.job = job;
+        launch.button = button;
 
     };
 
 //- VOLUNTEER SETUP -//
 
     launch.volunteer = function () {
+        var toc;
         document.body.innerHTML += "<div>Thanks for helping out!</div>";
         quanah.print(quanah.tic());
-        var toc = quanah.toc;
+        toc = quanah.toc;
         launch.Worker("bee-vol.js", function (event) {
             quanah.print("+ " + toc() + ": " + event.data);
             return true;                //- "true" ==> launch a new Web Worker
