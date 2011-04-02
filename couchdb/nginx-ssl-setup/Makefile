@@ -1,18 +1,22 @@
-# Makefile
+#-  GNU Makefile
 
-# This Makefile contains instructions to transform a clean install of Ubuntu
-# Lucid on a Rackspace server into a minimal test mule for CouchDB over SSL. It
-# requires that 'make' be run as 'root' user; I know this is unusual, but when
-# you create a new machine on Rackspace, the email you receive contains only the
-# IP of the new machine and the root user's password. In other cases, YMMV.
+#-  Makefile ~~
+#
+#   This Makefile contains instructions to transform a clean install of Ubuntu
+#   Lucid on a Rackspace server into a minimal test mule for CouchDB over SSL.
+#   It requires that 'make' be run as 'root' user; I know this is unusual, but
+#   when you create a new machine on Rackspace, the email you receive contains
+#   only the IP of the new machine and the root user's password.
 
-# This installer utilizes "Sean's Trick" for using Makefiles to organize related
-# shell scripts in order to simplify issues like permissions and dependency
-# checking. The syntax is not pure 'bash' scripting, but rather a hybrid that
-# additionally takes advantage of idiosyncratic expansion rules in 'make'. Other
-# build systems like 'ant' or 'scons' may merit a look in the future, but the
-# decision here to use 'make' is based on the probability of preinstallation.
-#                                                           -- SRW, 02 Jun 2010
+#   This installer utilizes "Sean's Trick" for using Makefiles to organize
+#   related shell scripts in order to simplify issues like permissions and
+#   dependency checking. The syntax is not pure 'bash' scripting, but rather a
+#   hybrid that additionally takes advantage of idiosyncratic expansion rules
+#   in 'make'. Other build systems like 'ant' or 'scons' may merit a look in
+#   the future, but the decision here to use 'make' is based on the much-higher
+#   probability of preinstallation.
+#
+#                                                           ~~ SRW, 02 Jun 2010
 
 SHELL   :=  bash
 
@@ -108,14 +112,18 @@ $(CRT): $(CSR) $(KEY) $(DUP)
 $(CSR) $(KEY):
 	@   openssl req -new -nodes -keyout $(KEY) -out $(CSR)
 
-# The next rule (and all that use $(DUP)), comes from the questionable idea that
-# it is convenient and safe to remove the passphrase from the key ??? I am able
-# to generate the $(CRT) programmatically anyway, but according to this article,
-#   http://articles.slicehost.com/2007/12/19/ ...
-#       ubuntu-gutsy-self-signed-ssl-certificates-and-nginx ,
-# there are actually advantages to using this weird method of doing things? It
-# doesn't make sense to me, and any input here would be greatly appreciated.
+#-  The next rule (and all that use $(DUP)), comes from the questionable idea
+#   that it is convenient and safe to remove the passphrase from the key ???
+#   I am able to generate the $(CRT) programmatically anyway, but according to
+#   an article at
+#
+#       http://articles.slicehost.com/2007/12/19/ ...
+#           ... ubuntu-gutsy-self-signed-ssl-certificates-and-nginx ,
+#
+#   there are actually advantages to using this weird method of doing things.
+#   It doesn't make sense to me, and input here would be greatly appreciated!
 
 $(DUP): $(KEY)
 	@   $(CP) $< $@
 
+#-  vim:set syntax=make:
