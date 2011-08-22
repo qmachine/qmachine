@@ -1,10 +1,13 @@
 //- JavaScript source code -- Web Workers only
 
 //- bee-dev.js ~~
+//
 //  This is the Web Worker for Quanah's "local" execution context.
+//
 //                                                          ~~ SRW, 12 Nov 2010
 
 importScripts("quanah.js");
+
 quanah.merge(quanah, this);
 
 onmessage = function (event) {

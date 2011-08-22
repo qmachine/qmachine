@@ -1,7 +1,9 @@
 //- JavaScript source code
 
 //- tests.js ~~
+//
 //  This defines regression tests for Quanah. I'm new to this, so be gentle ;-)
+//
 //                                                          ~~ SRW, 13 Nov 2010
 
 //- NOTE: this assumes we are running the test from the developers' page.

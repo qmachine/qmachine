@@ -1,7 +1,9 @@
 //- JavaScript source code -- Web Workers only
 
 //- bee-vol.js ~~
+//
 //  This is the Web Worker for Quanah's "remote" execution context.
+//
 //                                                          ~~ SRW, 12 Nov 2010
 
 importScripts("quanah.js");
