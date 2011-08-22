@@ -1,12 +1,14 @@
 //- JavaScript source code
 
 //- quanah.js ~~
+//
 //  This is the basic Quanah library, which contructs the "quanah" object that
 //  contains basic functions necessary to write programs for Quanah. It also
 //  defines the function "quanah.load" which allows the looading of external
 //  libraries. It does currently depend on CouchDB in a few places, but I will
 //  abstract those dependencies away soon, to allow compatibility with other
 //  backends such as NodeJS, Ruby on Rails, or perhaps even the LAMP stack.
+//
 //                                                          ~~ SRW, 13 Nov 2010
 
 //- NOTE: Be careful when loading large frameworks like jQuery -- make sure the

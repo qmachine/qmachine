@@ -1,9 +1,11 @@
 //- JavaScript source code
 
 //- launch.js ~~
+//
 //  This defines the client-side framework for Quanah, but it does not contain
 //  any library functions for users to import into their own programs. None of
 //  this code depends directly on CouchDB, but it does depend on "quanah.js".
+//
 //                                                          ~~ SRW, 12 Nov 2010
 
 //- DEPENDENCIES: quanah.js
