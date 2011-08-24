@@ -41,50 +41,56 @@ chassis(function (q, global) {
             return this;
         }
 
-        CouchDoc.prototype.pull = function () {
-         // This function has an anticipated use, but I haven't tested it much.
-            var callback, that, url;
-            callback = function (txt) {
-                var key, response;
-                key = JSON.parse(txt);
-                for (key in response) {
-                    if (response.hasOwnProperty(key)) {
-                        switch (key) {
-                        case "_id":
-                            that.uuid = that._id;
-                            break;
-                        default:
-                            that[key] = response[key];
+        CouchDoc.prototype.sync = function () {
+         // If the local copy is newer, a "push" will succeed. If the remote
+         // copy is newer, a "pull" will succeed. At least one of these will
+         // fail, and if both fail, we can only assume something has gone
+         // horribly awry. Thus, the approach here attempts to synchronize to
+         // and from CouchDB at the same time using AJAX and only throws an
+         // error if both attempts fail. I have also decided to rewrite the
+         // "ajax" module to use a Node.js idiom that asynchronous functions
+         // always return an error and an output.
+            var that = this;
+            chassis(function (q) {
+                if (that.ready === false) {
+                    q.die();
+                }
+                that.ready = false;
+                var callback, data, url;
+                callback = function (err, txt) {
+                    var key, other, rev;
+                    if (err === null) {     //- the sync succeeded -- hooray!
+                        other = JSON.parse(txt);
+                        if (other.ok === true) {
+                         // The local version pushed to CouchDB successfully,
+                         // and thus we need only update our revision number.
+                            that._rev = other.rev;
+                        }
+                        if (parseInt(that._rev || 0) < parseInt(other._rev)) {
+                         // The remote version is newer -- copy its properties
+                         // onto the local version. Don't simply replace the
+                         // local instance, though -- it destroys references.
+                            for (key in other) {
+                                if (other.hasOwnProperty(key)) {
+                                    that[key] = other[key];
+                                }
+                            }
+                        }
+                        that.ready = true;
+                    } else {
+                        callback.errs += 1;
+                        if (callback.errs === 2) {
+                            q.puts('The "sync" has gone horribly awry.');
+                            //throw new Error('The "sync" has gone awry ...');
                         }
                     }
-                }
-                that.ready = true;
-            };
-            that = this;
-            that.ready = false;
-            url = bookmarks.db + that.uuid;
-            q.ajax$get(url, callback);
-        };
-
-        CouchDoc.prototype.push = function () {
-            var callback, data, that, url;
-            callback = function (txt) {
-                var response = JSON.parse(txt);
-                if (response.ok) {
-                    that["_rev"] = response.rev;
-                    that.ready = true;
-                    if (q.flags.debug) {
-                        q.puts("DEBUG:", that);
-                    }
-                } else {
-                    throw new Error('Failed to push to "' + url + '".');
-                }
-            };
-            data = JSON.stringify(this);
-            that = this;
-            that.ready = false;
-            url = bookmarks.db + that.uuid;
-            q.ajax$put(url, data, callback);
+                };
+                callback.errs = 0;
+                data = JSON.stringify(that);
+                url = bookmarks.db + that.uuid;
+                q.ajax$get(url, callback);
+                q.ajax$put(url, data, callback);
+            });
         };
 
         q.base$registerType(CouchDoc);
@@ -117,7 +123,10 @@ chassis(function (q, global) {
             var cache = [];
             uuid = function () {
                 if (cache.length < 5) {
-                    q.ajax$get(bookmarks.uuids, function (txt) {
+                    q.ajax$get(bookmarks.uuids, function (err, txt) {
+                        if (err) {
+                            throw err;
+                        }
                         cache.push.apply(cache, JSON.parse(txt).uuids);
                     });
                     if (cache.length === 0) {
@@ -145,12 +154,11 @@ chassis(function (q, global) {
             var y;
             if (x.isObjectLike()) {
                 y = new CouchDoc(x.raw);
-                y.push();
             } else {
                 y = new CouchDoc();
                 y.uuid = x.raw;
-                y.pull();
             }
+            y.sync();
             return y;
         };
 
@@ -180,7 +188,10 @@ chassis(function (q, global) {
          // here so I won't forget and leave it hardcoded permanently ...
             url = bookmarks.db + "_changes?filter=quanah/waiting";
          // Finally, we get to the good part! First, we read the queue.
-            q.ajax$get(url, function (txt) {
+            q.ajax$get(url, function (err, txt) {
+                if (err) {
+                    throw err;
+                }
                 var tasks, url;
                 tasks = JSON.parse(txt).results;
                 if (tasks.length > 0) {
@@ -188,7 +199,10 @@ chassis(function (q, global) {
                  // so we can run its code. Currently, this grabs the first in
                  // the list -- I'll relax that restriction soon ;-)
                     url = bookmarks.db + tasks[0].id;
-                    q.ajax$get(url, function (txt) {
+                    q.ajax$get(url, function (err, txt) {
+                        if (err) {
+                            throw err;
+                        }
                         var obj = JSON.parse(txt);
                         obj.results = q.puts(eval(obj.code));
                         obj.state = "done";

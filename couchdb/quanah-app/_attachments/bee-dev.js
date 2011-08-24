@@ -85,20 +85,33 @@ chassis(function (q, global) {
             break;
         case "remote":
             (function (x) {
-                q.puts("Pushing to Quanah ...");
+                if (q.flags.debug) {
+                    q.puts("Pushing to Quanah ...");
+                }
                 chassis(function (q) {
                     if (x.ready === false) {
-                        q.die("It isn't ready yet ...");
+                        q.die("It hasn't uploaded yet ...");
                     }
-                 // This outputs the URL the answer will appear at ...
-                    q.puts(q.quanah$bookmarks.db + x.uuid);
-                    x.pull();
-                    chassis(function (q) {
-                        if (x.state !== "done") {
-                            q.die("It hasn't run yet ...");
-                        }
-                        q.puts(x);
-                    });
+                 // We're in a Web Worker, so there's no reason _not_ to block,
+                 // since I'm thoroughly annoyed right now anyway. This _does_
+                 // work, by the way ;-)
+                    if (q.flags.debug) {
+                        q.puts("Polling for results ...");
+                    }
+                    var obj, txt;
+                    obj = {state: "waiting"};
+                    while (obj.state !== "done") {
+                        txt = q.ajax$getNOW(q.quanah$bookmarks.db + x.uuid);
+                        obj = JSON.parse(txt);
+                    }
+                 // The volunteer captures the exit code of the 'eval' just in
+                 // case it's the only "output". If it is the only output, we
+                 // want to see it, but otherwise it's usually ugly anyway.
+                    if (obj.results.length === 1) {
+                        q.puts(obj.results);
+                    } else {
+                        q.puts(obj.results.slice(0, -1));
+                    }
                 });
             }(q.quanah$doc({
                 code: code,

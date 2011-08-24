@@ -31,12 +31,16 @@ chassis(function (q, global) {
         q.ajax$get = function (url, callback) {
             var req = new XMLHttpRequest();
             req.onreadystatechange = function () {
+                var err, txt;
+                err = null;
+                txt = null;
                 if (req.readyState === 4) {
                     if (req.status === 200) {
-                        callback(req.responseText);
+                        txt = req.responseText;
                     } else {
-                        throw new Error('Could not retrieve "' + url + '".');
+                        err = new Error('Could not GET from "' + url + '".');
                     }
+                    callback(err, txt);
                 }
              // In the meantime, it may be useful to trigger a "revive" ...
                 q(function () {});
@@ -61,12 +65,16 @@ chassis(function (q, global) {
         q.ajax$put = function (url, data, callback) {
             var req = new XMLHttpRequest();
             req.onreadystatechange = function () {
+                var err, txt;
+                err = null;
+                txt = null;
                 if (req.readyState === 4) {
                     if (req.status === 201) {
-                        callback(req.responseText);
+                        txt = req.responseText;
                     } else {
-                        throw new Error('Could not push to "' + url + '".');
+                        err = new Error('Could not PUT to "' + url + '".');
                     }
+                    callback(err, txt);
                 }
              // In the meantime, it may be useful to trigger a "revive" ...
                 q(function () {});
