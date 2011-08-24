@@ -1,64 +1,132 @@
-//- JavaScript source code -- Web Workers only
+//- JavaScript source code
 
 //- bee-dev.js ~~
 //
-//  This is the Web Worker for Quanah's "local" execution context.
+//  This program implements Quanah's "local" execution context, but it doesn't
+//  submit code to the "remote" execution context yet.
 //
-//                                                          ~~ SRW, 12 Nov 2010
+//                                                      ~~ (c) SRW, 21 Aug 2011
 
-importScripts("quanah.js");
+importScripts(
+    "bin/web-chassis.js",
+    "bin/jslint.js",
+    "lib/quanah.js"
+);
 
-quanah.merge(quanah, this);
+chassis(function (q, global) {
+    "use strict";
 
-onmessage = function (event) {
+ // Prerequisites
 
-    var code, key, mode, send_report;
+    q.lib("quanah");
 
-    try {
-        code = decodeURI(event.data.code);
-        key = event.data.key;
-        mode = event.data.mode;
+ // Private declarations
 
-        send_report = function () {
-            postMessage({
-                key: event.data.key,
-                stdout: quanah.print() || [],
-                stderr: quanah.error() || []
-            });
-            quanah.reset();
+    var alpha;
+
+ // Private definitions
+
+    alpha = "\u03B1";                   //- the UTF-8 codepoint for \alpha :-)
+
+ // Global definitions
+
+    global.onerror = function (evt) {
+
+     // I'll worry about formatting ErrorEvents generically later ...
+
+        q.puts(evt);
+
+    };
+
+    global.onmessage = function (evt) {
+
+     // My new idea is to use JSLint as an off-the-shelf preprocessor so that
+     // I don't have to write (and therefore, maintain) my own. JSLint is a
+     // self-contained code analysis tool written by the strictest JS expert
+     // in the world, and it possesses both a powerful, externally configurable
+     // parser and a very permissive license. This choice of "components" will
+     // hopefully expedite my solution of closure serialization by allowing me
+     // to reject the distribution of codes that aren't self-contained. It may
+     // even be a better idea to filter these at the server-side as a safety
+     // measure, but I'll worry more about that later.
+
+        var code, mode, not_lint, options;
+
+        code = evt.data.code;
+        mode = evt.data.mode;
+
+        not_lint = [
+         // Here, I have specified defaults that aren't configurable yet ...
+            "/*global chassis: true */"
+        ];
+
+        options = {
+            sloppy: true                //- make "use strict" pragma optional
         };
 
-        if (mode === "local") {
-            eval(code);
-            send_report();
+        if (code.length === 0) {
+            return;
+        } else {
+            code = [not_lint.join("\n"), code].join("\n");
         }
 
-        if (mode === "remote") {
-            var check_back, obj;
-            obj = quanah.write({code: code, state: "waiting"});
-            check_back = function () {
-                var ans, txt;
-                txt = quanah.read(obj);
-                ans = JSON.parse(txt);
-                if (ans.results === undefined) {
-                    setTimeout(check_back, 5000);
-                } else {
-                    quanah.print(ans);
-                    send_report();
-                }
-            };
-            check_back();
+        if (global.JSLINT(code, options) === false) {            
+            q.puts(global.JSLINT.errors);
+            return;
         }
 
-    } catch (err) {
+        switch (mode) {
+        case "local":
+            try {
+                q.puts(eval(code));
+            } catch (err) {
+                q.puts(err);
+            }
+            break;
+        case "remote":
+            (function (x) {
+                q.puts("Pushing to Quanah ...");
+                chassis(function (q) {
+                    if (x.ready === false) {
+                        q.die("It isn't ready yet ...");
+                    }
+                 // This outputs the URL the answer will appear at ...
+                    q.puts(q.quanah$bookmarks.db + x.uuid);
+                    x.pull();
+                    chassis(function (q) {
+                        if (x.state !== "done") {
+                            q.die("It hasn't run yet ...");
+                        }
+                        q.puts(x);
+                    });
+                });
+            }(q.quanah$doc({
+                code: code,
+                state: "waiting"
+            })));
+            break;
+        default:
+            q.puts("What have you done to this computer?!");
+            break;
+        }
 
-        quanah.error(err);
-        send_report();
+    };
 
-    }
+ // Send a welcome message back to the main context before exiting :-)
 
-};
+    q.puts("Welcome to Quanah 2.0-" + alpha + ".");
 
-postMessage("Welcome to Quanah 1.0 :-)");
+ // Also, the next line is useful for inspecting the methods available to a
+ // specific browser's Worker object. The growing support for non-standard
+ // object constructors like Uint8Array seems to indicate that a new era of
+ // high-performance computing is just around the bend ...
+
+ /*
+    q.puts(Object.getOwnPropertyNames(global).sort(function (a, b) {
+        return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;
+    }));
+ */
+
+});
 
 //- vim:set syntax=javascript:

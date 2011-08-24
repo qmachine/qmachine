@@ -1,37 +1,78 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <!--
     developers.html ~~
-                                                            ~~ SRW, 12 Nov 2010
+                                                        ~~ (c) SRW, 21 Aug 2011
 -->
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Quanah 1.0: Developers' Page</title>
-        <link rel="stylesheet" href="style.css"/>
-        <link rel="shortcut icon" href="favicon.ico"/>
-    </head>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Sean Wilkinson"/>
+    <title>Quanah: Developers' Page</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <script src="bin/web-chassis.js"></script>
+  </head>
+  <body>
+    <noscript>Please enable JavaScript in your browser.</noscript>
+    <form id="editor">
+      <textarea
+        id="codebox" autofocus cols="80" rows="24" class="tt"></textarea>
+      <br/>
+      <select id="devmode">
+        <optgroup label="Execution Mode">
+          <option value="local">Local</option>
+          <option value="remote">Remote</option>
+        </optgroup>
+      </select>
+      <input id="runButton" type="button" value="Run"/>
+    </form>
+    <script>
+        chassis(function (q, global) {
+            "use strict";
 
-    <body onload="launch.developer();">
+         // Environment checks
 
-        <form id=editor>
-            <textarea id=codebox autofocus cols=80 rows=24
-                class=terminal></textarea>
-            <br/>
-            <select id=devmode>
-                <optgroup label="Execution Mode">
-                    <option value="local">Local</option>
-                    <option value="remote">Remote</option>
-                </optgroup>
-            </select>
-            <input type=button value=Run onClick="launch.button();"/>
-        </form>
+            if (q.detects("Worker") === false) {
+                throw new Error("Please try a different browser.");
+            }
 
-<!--    First, load Quanah's basic library.                                 -->
-        <script src="quanah.js"></script>
+         // Prerequisites
 
-<!--    Next, we need to load the framework to make it usable.              -->
-        <script src="launch.js"></script>
+            q.lib("quanah");
 
-    </body>
+         // Declarations
 
+            var bee, button;
+
+         // Create the Web Worker and direct its output appropriately.
+
+            bee = new Worker("bee-dev.js");
+
+            bee.onmessage = function (evt) {
+             // This function receives a MessageEvent object.
+                q.puts(evt.data);
+            };
+
+            bee.onerror = function (evt) {
+             // This function receives an ErrorEvent object.
+                q.puts(evt);            //- not sure what to do with it yet ...
+            };
+
+         // Grab a reference to the button entitled "Run" and tie its event
+         // listener to the Web Worker so that the textarea's content pipes
+         // straight into the background context.
+
+            button = global.document.getElementById("runButton");
+
+            button.onclick = function (evt) {
+                bee.postMessage({
+                    code: global.document.getElementById("codebox").value,
+                    mode: global.document.getElementById("devmode").value
+                });
+            };
+
+        });
+    </script>
+    <script src="lib/quanah.js"></script>
+  </body>
 </html>

@@ -1,6 +1,6 @@
 [
-    ".swp",
-    "~",
-    "Makefile",
-    "ignore/*"
+    ".*~$",
+    ".*\\.swp$",
+    ".*\\.bak$",
+    "Makefile"
 ]

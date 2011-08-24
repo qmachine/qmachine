@@ -128,6 +128,7 @@ run: $(APPRC) $(APP)
 	@   $(CP) _attachments $(APP)/                                  ;   \
             $(CP) filters $(APP)/                                       ;   \
             $(CP) rewrites.json $(APP)/                                 ;   \
+            $(CP) .couchappignore $(APP)/                               ;   \
             cd $(APP) && $(COUCHAPP) push -bq                           ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(call hilite, "Deployment succeeded.")                 ;   \
@@ -148,6 +149,6 @@ $(APPRC): $(APP)
             printf '%s' '{"env": {"default": {"db": "http://' > $@      ;   \
             $(call read-prompt, "Username: ") && USERNAME="$${REPLY}"   ;   \
             $(call read-secure, "Password: ") && PASSWORD="$${REPLY}"   ;   \
-            printf '%s' "$${USERNAME}:$${PASSWORD}@$(DB)" '"}}}' >> $@      )
+            printf '%s' "$${USERNAME}:$${PASSWORD}@$(DB)" '"}}}' >> $@  )
 
 #-  vim:set syntax=make:
