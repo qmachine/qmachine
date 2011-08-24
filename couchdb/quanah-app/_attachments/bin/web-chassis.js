@@ -305,12 +305,26 @@ esac
         if (q.detects("window")) {
          // Web Chassis is running inside a web browser -- hooray!
             q.load = function (uri) {
-                var script = global.document.createElement("script");
-                script.src = uri;
-                script.onload = function () {
-                    revive();
+                var loaded = {};
+                q.load = function (uri) {
+                    if (loaded[uri] === true) {
+                     // It has already been loaded.
+                        return;
+                    } else if (loaded[uri] === false) {
+                     // It is being loaded.
+                        return;
+                    } else {
+                        loaded[uri] = false;
+                        var script = global.document.createElement("script");
+                        script.src = uri;
+                        script.onload = function () {
+                            loaded[uri] = true;
+                            revive();
+                        };
+                        global.document.body.appendChild(script);
+                    }
                 };
-                global.document.body.appendChild(script);
+                q.load(uri);
             };
             q.puts = function () {
                 var join = Array.prototype.join;
@@ -335,8 +349,23 @@ esac
         } else {
          // Web Chassis is running inside a Web Worker -- hooray!
             q.load = function (uri) {
-                global.importScripts(uri);
-                revive();
+                var loaded = {};
+                q.load = function (uri) {
+                    if (loaded[uri] === true) {
+                     // It has already been loaded.
+                        return;
+                    } else if (loaded[uri] === false) {
+                     // It is being loaded. This is kind of overkill, because
+                     // Web Workers use a blocking script loader anyway ...
+                        return;
+                    } else {
+                        loaded[uri] = false;
+                        global.importScripts(uri);
+                        loaded[uri] = true;
+                        revive();
+                    }
+                };
+                q.load(uri);
             };
             q.puts = function () {
                 global.postMessage(Array.prototype.slice.call(arguments));
@@ -352,8 +381,23 @@ esac
             q.argv = [];
         }
         q.load = function (uri) {
-            global.load(uri);
-            revive();
+            var loaded = {};
+            q.load = function (uri) {
+                if (loaded[uri] === true) {
+                 // It has already been loaded.
+                    return;
+                } else if (loaded[uri] === false) {
+                 // It is being loaded. This is probably overkill, because the
+                 // developer shells all use blocking script loaders ...
+                    return;
+                } else {
+                    loaded[uri] = false;
+                    global.load(uri);
+                    loaded[uri] = true;
+                    revive();
+                }
+            };
+            q.load(uri);
         };
         q.puts = function () {
             global.print(Array.prototype.join.call(arguments, " "));
@@ -364,13 +408,28 @@ esac
         global.vm = require("vm");
         q.argv = global.process.argv.slice(2);
         q.load = function (uri) {
-            global.fs.readFile(uri, "utf8", function (err, data) {
-                if (err) {
-                    throw err;
+            var loaded = {};
+            q.load = function (uri) {
+                if (loaded[uri] === true) {
+                 // It has already loaded.
+                    return;
+                } else if (loaded[uri] === false) {
+                 // It is being loaded. This is NOT overkill in Node.js, since
+                 // all kinds of crazy things can happen concurrently here.
+                    return;
+                } else {
+                    loaded[uri] = false;
+                    global.fs.readFile(uri, "utf8", function (err, data) {
+                        if (err) {
+                            throw err;
+                        }
+                        global.vm.createScript(data, uri).runInThisContext();
+                        loaded[uri] = true;
+                        revive();
+                    });
                 }
-                global.vm.createScript(data, uri).runInThisContext();
-                revive();
-            });
+            };
+            q.load(uri);
         };
         q.puts = function () {
             global.console.log(Array.prototype.join.call(arguments, " "));
