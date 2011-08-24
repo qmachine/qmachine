@@ -1,41 +1,49 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <!--
     faq.html ~~
-                                                            ~~ SRW, 13 Sep 2010
+                                                        ~~ (c) SRW, 22 Aug 2011
 -->
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Quanah 1.0: FAQ</title>
-        <link rel="stylesheet" href="style.css"/>
-        <link rel="shortcut icon" href="favicon.ico"/>
-    </head>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Sean Wilkinson"/>
+    <title>Quanah: FAQ</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+  </head>
+  <body>
+    <h1>Frequently Asked Questions</h1>
+    <div class="question">
+      Name?
+    </div>
+    <div class="answer">
+      Read <a href="http://en.wikipedia.org/wiki/Quanah_Parker">here</a>.
+    </div>
+    <div class="question">
+      First program?
+    </div>
+    <div class="answer">
+      <span>
+        <pre class="tt">
+chassis(function (q) {
+    "use strict";
 
-    <body>
+    q.puts("Hello, world!");
 
-        Frequently Asked Questions
-
-        <div class="question">
-            Name?
-        </div>
-        <div class="answer">
-            Read <a href="http://en.wikipedia.org/wiki/Quanah_Parker">here</a>.
-        </div>
-
-        <div class="question">
-            First program?
-        </div>
-        <div class="answer">
-            <span class="tt">print("Hello world!");</span>
-        </div>
-
-        <div class="question">
-            Second program?
-        </div>
-        <div class="answer">
-            Tutorials are coming soon.
-        </div>
-
-    </body>
-
+});</pre>
+      </span>
+    </div>
+    <div class="question">
+      Second program?
+    </div>
+    <div class="answer">
+      Tutorials are coming soon.
+    </div>
+    <div class="question">
+      Source code?
+    </div>
+    <div class="answer">
+      <a href="http://quanah.googlecode.com">Source</a>
+    </div>
+  </body>
 </html>

@@ -1,15 +1,40 @@
-#-  Mercurial "ignore" file -- see hgignore(5).
+#-  Mercurial configuration file
 
 #-  .hgignore ~~
-#   This file contains a set of patterns that alter the behavior of Mercurial.
-#   Mercurial will ignore every unmanaged file that matches any pattern in an
-#   "ignore" file. In this case, I have instructed Mercurial to ignore hidden
-#   files created by vim as well as the .couchapprc file, which potentially
-#   contains plaintext passwords for use while authenticating file uploads.
-#                                                           ~~ SRW, 05 Aug 2010
+#
+#   This file contains user-defined filename patterns that Mercurial should
+#   ignore when it computes changes. Typically, we want to ignore any hidden
+#   or temporary files created by the operating system or text editor, but I
+#   should stress that we do not, under _any_ circumstances, want to add a
+#   rule that may cause us to exclude an important file accidentally. Thus,
+#   my own policy is to script and monitor every step of my workflow except
+#   for version control -- always execute your commits manually!
+#
+#   For more information, see hgignore(5).
+#
+#                                                       ~~ (c) SRW, 22 Aug 2011
+
+#-  Vim swap files
+#   -   files that end with '.swp'
 
 \.swp$
 
-\.couchapprc
+#-  Mac OS X invisible system files
+#   -   files named exactly '.localized'
+#   -   files named exactly '.DS_Store'
 
-#-  No modeline yet.
+^\.localized$
+^\.DS_Store$
+
+#-  CouchApp configuration files for rapid development with CouchDB -- these
+#   may contain unencrypted passwords, so be careful!
+#   -   files named exactly '.couchapprc'
+
+^\.couchapprc$
+
+#-  Google V8 debugging shell ("d8") interactive history files
+#   -   files named exactly '.d8_history'
+
+^\.d8_history$
+
+#-  vim:set syntax=python:
