@@ -28,14 +28,18 @@ a:hover {
 
 a:visited {}
 
-div.question {
-    font-style: italic;
+div {
+    margin-bottom: 1em;                 /** skip a line after each end tag */
+}
+
+div.question, div.answer {
     text-align: justify;
 }
 
-div.answer {
-    font-weight: normal;
-    text-align: justify;
+div.question:before {
+    content: "Q";
+    margin-left: -2em;
+    position: absolute;
 }
 
 li {
@@ -72,17 +76,18 @@ noscript {
     text-align: center;
 }
 
+pre {
+    font-family: Menlo, AndaleMono, monospace;
+    font-size: 8pt;
+    margin-bottom: -1em;
+}
+
 ul {
     font-size: 200%;
     list-style-type: none;
     margin: 0;
     padding: 0;
     width: 100%;
-}
-
-.tt {
-    font-family: Menlo, AndaleMono, monospace;
-    font-size: 8pt;
 }
 
 /*  vim:set syntax=css:  */

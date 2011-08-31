@@ -2,11 +2,16 @@
 
 //- quanah.js ~~
 //
-//  This file defines Quanah as a Web Chassis module. The AJAX wrappers are
-//  located in a separate module, but the calls specific to CouchDB are still
-//  encapsulated in this module directly for now.
+//  This file defines Quanah as a Web Chassis module. I'll write the rest of
+//  the description later when I reflect on what I've actually accomplished :-P
 //
-//                                                      ~~ (c) SRW, 21 Aug 2011
+//  An idea I had just now for implementing a non-blocking interactive session
+//  is to push functions onto a stack when the CouchDoc isn't ready, just like
+//  I do for Web Chassis's main "revive" loop. Then, hopefully I would be able
+//  to tie those together as successfully as I have done with "revive", with a
+//  single key difference -- the stack order for CouchDocs must be preserved!
+//
+//                                                      ~~ (c) SRW, 25 Aug 2011
 
 /*jslint indent: 4, maxlen: 80 */
 /*global chassis: true */
@@ -26,80 +31,136 @@ chassis(function (q, global) {
 
     q.quanah = function () {
 
+     // Private declarations
+
+        var bookmarks, Duck, uuid;
+
      // Constructors
 
         function CouchDoc(obj) {
-         // I'll worry with generics in the wrapper, not the constructor!
-            var key;
-            for (key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    this[key] = obj[key];
-                }
-            }
-            this.uuid = uuid();
+         // This function is a constructor that produces CouchDoc objects.
+         // A CouchDoc object corresponds directly to a document on CouchDB,
+         // and this one-to-one correspondence keeps things simple. I build
+         // Quanah's basic data structures using this as a building block.
+            this._id = uuid();
+            this._rev = null;
+            this.data = obj || null;
             this.ready = true;
+            this.queue = [];
+            this.type = "CouchDoc";     //- useful for writing CouchDB filters
             return this;
         }
 
-        CouchDoc.prototype.sync = function () {
-         // If the local copy is newer, a "push" will succeed. If the remote
-         // copy is newer, a "pull" will succeed. At least one of these will
-         // fail, and if both fail, we can only assume something has gone
-         // horribly awry. Thus, the approach here attempts to synchronize to
-         // and from CouchDB at the same time using AJAX and only throws an
-         // error if both attempts fail. I have also decided to rewrite the
-         // "ajax" module to use a Node.js idiom that asynchronous functions
-         // always return an error and an output.
-            var that = this;
+     // Constructor prototypes
+
+        CouchDoc.prototype.onload = null;
+
+        CouchDoc.prototype.revive = function () {
+         // This function mimics Web Chassis's "revive" function, but this one
+         // works its way linearly through a CouchDoc's queue when its "ready"
+         // property indicates that the previous operation has succeeded.
+            //(nothing yet...)
+        };
+
+        CouchDoc.prototype.whenready = function (f) {
+            if (this.ready === true) {
+                f.call(this);
+            } else {
+                this.queue.push(f);
+            }
             chassis(function (q) {
-                if (that.ready === false) {
-                    q.die();
-                }
-                that.ready = false;
-                var callback, data, url;
-                callback = function (err, txt) {
-                    var key, other, rev;
-                    if (err === null) {     //- the sync succeeded -- hooray!
-                        other = JSON.parse(txt);
-                        if (other.ok === true) {
-                         // The local version pushed to CouchDB successfully,
-                         // and thus we need only update our revision number.
-                            that._rev = other.rev;
+                //???
+            });
+            return this;
+        };
+
+        CouchDoc.prototype.sync = function () {
+         // This function syncs a CouchDoc to the remote CouchDB instance in
+         // the same sense that Git and Mercurial would sync two repositories.
+            var count, push, pull, revision, that, url;
+            that = this;
+            if (that.ready === false) {
+             // If the object is being used right now, we'll just exit for now,
+             // because I don't have the queue mechanism worked out yet. We'll
+             // probably push a "sync" onto the stack here after I think about
+             // how to avoid creating an endless list of consecutive syncs.
+                return;
+            }
+            count = 0;
+            pull = function () {
+             // This function updates the local version if it's out-of-date.
+             // The GET operation depends on the fact that the CouchDoc has
+             // been PUT to remote at some point, and it fails otherwise.
+                q.ajax$get(url, function (err, txt) {
+                    if (err !== null) {
+                        count += 1;
+                        if (count === 2) {
+                            throw new Error("Sync to " + url + " failed.");
                         }
-                        if (parseInt(that._rev || 0) < parseInt(other._rev)) {
-                         // The remote version is newer -- copy its properties
-                         // onto the local version. Don't simply replace the
-                         // local instance, though -- it destroys references.
-                            for (key in other) {
-                                if (other.hasOwnProperty(key)) {
-                                    that[key] = other[key];
-                                }
+                        return;
+                    }
+                    var key, response;
+                    response = JSON.parse(txt);
+                    if (revision < parseInt(response._rev)) {
+                        for (key in response) {
+                            if (response.hasOwnProperty(key)) {
+                                that[key] = response[key];
                             }
                         }
+                    }
+                    that.ready = true;
+                });
+            };
+            push = function () {
+             // This function succeeds if the local version is up-to-date or
+             // if the local version is newer than the remote version.
+                q.ajax$put(url, JSON.stringify(that), function (err, txt) {
+                    if (err !== null) {
+                        count += 1;
+                        if (count === 2) {
+                            throw new Error("Sync to " + url + " failed.");
+                        }
+                        return;
+                    }
+                    var response = JSON.parse(txt);
+                    if (response.ok === true) {
+                     // NOTE: I did not forget an underscore here -- CouchDB's
+                     // response will have a "rev" property, not "_rev".
+                        that._rev = response.rev;
                         that.ready = true;
                     } else {
-                        callback.errs += 1;
-                        if (callback.errs === 2) {
-                            q.puts('The "sync" has gone horribly awry.');
-                            //throw new Error('The "sync" has gone awry ...');
+                     // This is uncommon, but it would still be bad news.
+                        count += 1;
+                        if (count === 2) {
+                            throw new Error("Sync to " + url + " failed.");
                         }
                     }
-                };
-                callback.errs = 0;
-                data = JSON.stringify(that);
-                url = bookmarks.db + that.uuid;
-                q.ajax$get(url, callback);
-                q.ajax$put(url, data, callback);
-            });
+                });
+            };
+            revision = parseInt(this._rev);
+            that = this;
+            url = bookmarks.db + that._id;
+         // Now, we invoke the functions simultaneously, but we don't need to
+         // block execution because each CouchDoc has a "ready" flag to allow
+         // the invoking function to choose its own appropriate strategy :-)
+            this.ready = false;
+            if (this._rev === null) {
+             // This part helps avoid errors that occur when you use a "_rev"
+             // property that wasn't assigned by CouchDB. We only need to do
+             // this when the object hasn't been synced to remote yet, which
+             // means the "pull" will fail -- avoid the "pull", then, because
+             // Chrome's console fills with lots of distracting error messages
+             // even though I'm catching the error. Ugh.
+                delete this._rev;
+            } else {
+                pull();
+            }
+            push();
         };
 
         q.base$registerType(CouchDoc);
 
-     // Declarations
-
-        var bookmarks, Duck, uuid;
-
-     // Definitions
+     // Private definitions
 
         bookmarks = {
             root: global.location.href.replace(global.location.pathname, '/')
@@ -142,22 +203,22 @@ chassis(function (q, global) {
             return uuid();
         };
 
-     // Exports
+     // Module "exports"
 
         q.quanah$bookmarks = bookmarks; //- this is temporary ...
 
-        q.quanah$doc = q.base$generic();
+        q.quanah$share = q.base$generic();
 
-        q.quanah$doc(Duck).def = function (x) {
-         // This function creates a CouchDoc instance generically and syncs it
-         // with Quanah invisibly. It's still experimental, so be careful!
-            var y;
-            if (x.isObjectLike()) {
-                y = new CouchDoc(x.raw);
-            } else {
-                y = new CouchDoc();
-                y.uuid = x.raw;
-            }
+        q.quanah$share(CouchDoc).def = function (x) {
+            x.sync();
+            return x;
+        };
+
+        q.quanah$share(Duck).def = function (x) {
+         // This function creates a CouchDoc instance and syncs it to CouchDB
+         // asynchronously as a convenience. You can choose whether or not to
+         // block execution by conditioning on the "ready" property :-)
+            var y = new CouchDoc(x.raw);
             y.sync();
             return y;
         };
@@ -218,13 +279,65 @@ chassis(function (q, global) {
             });
         };
 
+     // Generic extensions to the "base" library methods for CouchDocs use the
+     // same mechanism that Web Chassis itself uses -- we treat a function to
+     // be run against the variable as a transform that we may push onto a
+     // stack for later execution. I will add some conventional event handlers
+     // to the CouchDoc type to allow for an "onload" definition, etc.
+
+        q.base$map(CouchDoc).def = function (x) {
+            q.puts("(map found)");
+        };
+
+        q.base$ply(CouchDoc).def = function (x) {
+            return {
+                by: function (f) {
+                 // Although this looks really strange to return the input
+                 // argument, we need to do this so users can check status.
+                    x.whenready(function () {
+                        q.base$ply(x.data).by(f);
+                    });
+                    return x;
+                }
+            };
+        };
+
+        q.base$ply(CouchDoc, Function).def = function (x, f) {
+            return q.base$ply(x).by(f);
+        };
+
      // And finally, here's the one for Jonas ...
 
         Object.prototype.Q = function (f) {
-            var that = this;
-            chassis(function (q, global) {
-                f.call(that, q, global);
-            });
+            "use strict";               //- for extra emphasis ;-)
+
+         // Prerequisites
+
+            if ((f instanceof Function) !== true) {
+                throw new Error('Method "Q" expects a function as argument.');
+            }
+
+         // Declarations
+
+            var x;
+
+         // Definitions
+
+            x = q.quanah$share(this);   //- NOTE: This only shares the data to
+                                        //  Quanah. What I really need to do is
+                                        //  to construct some sort of QuanahJob
+                                        //  object that encapsulates the task.
+
+         // Invocations
+
+            if (q.hasOwnProperty(f.name) === true) {
+                return q[f.name](x, f);
+            } else if (typeof x[f.name] === 'function') {
+                return x[f.name].apply(x, arguments);
+            } else {
+                throw new Error('Method "Q" could not find "' + f.name + '".');
+            }
+
         };
 
     };
