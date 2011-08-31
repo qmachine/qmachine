@@ -340,6 +340,14 @@ chassis(function (q) {
             }
         };
 
+        q.base$filter(Array, Function).def = function (x, f) {
+            return q.base$filter(x).using(f);
+        };
+
+        q.base$filter(Duck, Function).def = function (x, f) {
+            return q.base$filter(x).using(f);
+        };
+
         q.base$format(Array).def = function (x) {
             var y = q.base$map(x).using(q.base$format);
             return Array.prototype.join.call(y, ",");
@@ -476,14 +484,26 @@ chassis(function (q) {
             }
         };
 
+        q.base$map(Array, Function).def = function (x, f) {
+            return q.base$map(x).using(f);
+        };
+
+        q.base$map(Duck, Function).def = function (x, f) {
+            return q.base$map(x).using(f);
+        };
+
         q.base$ply(Array).def = function (x) {
             if (typeof Array.prototype.forEach === 'function') {
                 q.base$ply(Array).def = function (x) {
                     return {
                         by: function (f) {
+                         // Although this looks really strange to return the
+                         // input argument, we need to do this consistently in
+                         // all types so that users can monitor remote jobs.
                             Array.prototype.forEach.call(x, function (v, k) {
                                 f(k, v);
                             });
+                            return x;
                         }
                     };
                 };
@@ -496,6 +516,7 @@ chassis(function (q) {
                             for (i = 0; i < n; i += 1) {
                                 f(i, x[i]);
                             }
+                            return x;   //- see note in Array definition
                         }
                     };
                 };
@@ -517,15 +538,25 @@ chassis(function (q) {
                                 f(key, temp[key]);
                             }
                         }
+                        return x.raw;   //- see note in Array definition
                     }
                 };
             } else {
                 return {
                     by: function (f) {
                         f(undefined, x.raw);
+                        return x.raw;   //- see note in Array definition
                     }
                 };
             }
+        };
+
+        q.base$ply(Array, Function).def = function (x, f) {
+            return q.base$ply(x).by(f);
+        };
+
+        q.base$ply(Duck, Function).def = function (x, f) {
+            return q.base$ply(x).by(f);
         };
 
         q.base$reduce(Array).def = function (x) {
@@ -559,6 +590,14 @@ chassis(function (q) {
                     return y;
                 }
             };
+        };
+
+        q.base$reduce(Array, Function).def = function (x, f) {
+            return q.base$reduce(x).using(f);
+        };
+
+        q.base$reduce(Duck, Function).def = function (x, f) {
+            return q.base$reduce(x).using(f);
         };
 
         q.base$seq(Duck).def = function (x) {
@@ -617,6 +656,10 @@ chassis(function (q) {
             } else {
                 throw new Error("q.base$zip is for array-like objects.");
             }
+        };
+
+        q.base$zip(Duck, Function).def = function (x, f) {
+            return q.base$zip(x).using(f);
         };
 
      // And while we're at it, we'll go ahead and replace one of the builtins.

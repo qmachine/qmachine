@@ -66,7 +66,7 @@ while getopts ":-:hv" option; do
 done
 
 ENVJS=${JS};
-JS=$(available ${JS} js jsc d8 v8 node rhino ringo narwhal);
+JS=$(available ${JS} v8 js jsc d8 node rhino ringo narwhal);
 SHORTJS="${JS##*\/}";
 Q=$0;
 ARGV="$0 $*";
@@ -181,16 +181,22 @@ esac
  // object in which we may store related properties, methods, and data :-)
 
     q.detects = function (property) {
-     // This is a memoized lazy-loading function for feature detection :-)
-        var cache = {};
+     // This function detects properties available on the global object as a
+     // means to configure Web Chassis to the current environment. I wrote it
+     // as a lazy-loader to allow for memoization on a private variable instead
+     // of on the function itself -- I hit a really nasty bug once where the
+     // program needed to memoize an "arguments" property onto the function
+     // itself, and that fails silently in strict mode.
+        var cache = {
+         // This is a special local-scope-only value in CommonJS ...
+            module: (typeof module === 'object')
+        };
         q.detects = function (property) {
             if (cache.hasOwnProperty(property) === false) {
                 cache[property] = (global[property]) ? true : false;
             }
             return cache[property];
         };
-     // Some special values ...
-        q.detects.module = (typeof module === 'object');
         return q.detects(property);
     };
 
