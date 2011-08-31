@@ -46,13 +46,18 @@ chassis(function (q, global) {
             this._rev = null;
             this.data = obj || null;
             this.ready = true;
+<<<<<<< local
+=======
             this.queue = [];
+>>>>>>> other
             this.type = "CouchDoc";     //- useful for writing CouchDB filters
             return this;
         }
 
      // Constructor prototypes
 
+<<<<<<< local
+=======
         CouchDoc.prototype.onload = null;
 
         CouchDoc.prototype.revive = function () {
@@ -74,10 +79,18 @@ chassis(function (q, global) {
             return this;
         };
 
+>>>>>>> other
         CouchDoc.prototype.sync = function () {
          // This function syncs a CouchDoc to the remote CouchDB instance in
          // the same sense that Git and Mercurial would sync two repositories.
+<<<<<<< local
+         // I'm not sure how to circumvent the race condition that may exist
+         // between concurrent syncs ...
+=======
+>>>>>>> other
             var count, push, pull, revision, that, url;
+<<<<<<< local
+=======
             that = this;
             if (that.ready === false) {
              // If the object is being used right now, we'll just exit for now,
@@ -86,6 +99,7 @@ chassis(function (q, global) {
              // how to avoid creating an endless list of consecutive syncs.
                 return;
             }
+>>>>>>> other
             count = 0;
             pull = function () {
              // This function updates the local version if it's out-of-date.
@@ -279,6 +293,9 @@ chassis(function (q, global) {
             });
         };
 
+<<<<<<< local
+     // Generic extensions
+=======
      // Generic extensions to the "base" library methods for CouchDocs use the
      // same mechanism that Web Chassis itself uses -- we treat a function to
      // be run against the variable as a transform that we may push onto a
@@ -288,34 +305,73 @@ chassis(function (q, global) {
         q.base$map(CouchDoc).def = function (x) {
             q.puts("(map found)");
         };
+>>>>>>> other
 
         q.base$ply(CouchDoc).def = function (x) {
             return {
                 by: function (f) {
+<<<<<<< local
+                 // First, we block until the document has synced locally.
+                 // Since it may be unavailable, we _do_ need to "block", and
+                 // my idea is to attempt to do something constructive while
+                 // we are waiting by either reviving or volunteering ...
+                    while (x.ready === false) {
+                        q.puts("Document is busy ...");
+                        q(function () {});
+                    }
+                 // Now, we will ply the local document's "data" property :-)
+                    q.base$ply(x.data).by(f);
+=======
                  // Although this looks really strange to return the input
                  // argument, we need to do this so users can check status.
                     x.whenready(function () {
                         q.base$ply(x.data).by(f);
                     });
                     return x;
+>>>>>>> other
                 }
             };
         };
 
+<<<<<<< local
+=======
         q.base$ply(CouchDoc, Function).def = function (x, f) {
             return q.base$ply(x).by(f);
         };
 
+>>>>>>> other
      // And finally, here's the one for Jonas ...
 
         Object.prototype.Q = function (f) {
+<<<<<<< local
+            if ((f instanceof Function) === false) {
+                throw new Error('Method "Q" takes functions as arguments.');
+=======
             "use strict";               //- for extra emphasis ;-)
 
          // Prerequisites
 
             if ((f instanceof Function) !== true) {
                 throw new Error('Method "Q" expects a function as argument.');
+>>>>>>> other
             }
+<<<<<<< local
+         // First, we share the object to Quanah. We don't need to block here,
+         // either, because we can leave that up to the reserved methods :-)
+            var shared = q.quanah$share(this);
+            if (f.name !== "") {
+                switch (f.name) {
+                case "map":
+                    return chassis.base$map(shared).using(f);
+                case "ply":
+                    return chassis.base$ply(shared).by(f);
+                case "reduce":
+                    return chassis.base$reduce(shared).using(f);
+                default:
+                 // If the name has no rule, we need to warn the user.
+                    throw new Error('No explicit rule for "Q" to use.');
+                }
+=======
 
          // Declarations
 
@@ -334,10 +390,19 @@ chassis(function (q, global) {
                 return q[f.name](x, f);
             } else if (typeof x[f.name] === 'function') {
                 return x[f.name].apply(x, arguments);
+>>>>>>> other
             } else {
+<<<<<<< local
+             // Default to "ply", which doesn't actually return values.
+                return chassis.base$ply(shared).by(f);
+=======
                 throw new Error('Method "Q" could not find "' + f.name + '".');
+>>>>>>> other
             }
+<<<<<<< local
+=======
 
+>>>>>>> other
         };
 
     };
