@@ -205,8 +205,6 @@ chassis(function (q, global) {
 
      // Module "exports"
 
-        q.quanah$bookmarks = bookmarks; //- this is temporary ...
-
         q.quanah$share = q.base$generic();
 
         q.quanah$share(CouchDoc).def = function (x) {

@@ -43,30 +43,28 @@ div.question:before {
 }
 
 li {
-    background-color: #002469;          /*  Rice blue       */
-    color: white;
+    background-color: inherit;
+    color: black;
     display: inline;
-    margin: 1px;
-    padding: 0.2em;
+    margin: 0;
+    padding: 0;
     text-align: center;
 }
 
-li:hover {
-    background-color: yellow;
-    color: black;
-}
-
 li a {
-    background-color: inherit;
-    color: inherit;
+    background-color: #002469;          /*  Rice blue  */
     border-bottom: none;
-    margin: 1em;
-    color: inherit;
+    color: white;
+    margin: 0em;
+    padding-bottom: 0.2em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.2em;
 }
 
 li a:hover {
-    background-color: inherit;
-    color: inherit;
+    background-color: yellow;
+    color: black;
 }
 
 noscript {

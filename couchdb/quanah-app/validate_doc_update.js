@@ -1,3 +1,40 @@
+//- JavaScript source code
+
+//- validate_doc_update.js ~~
+//
+//  This validator function will be run on the server-side by CouchDB prior to
+//  any new upload's admission into the database. Make no mistake -- this isn't
+//  a concession to conventional server-side computation! The choice to use a
+//  server-side preprocessor is for both robustness and security.
+//
+//  Preprocessing increases the robustness of the system by catching syntax
+//  errors and other "lint" that might otherwise cause jobs to fail during the
+//  execution stage. A related consideration for a system like Quanah is the
+//  productivity lost by the programmer whose job waits in the queue for hours
+//  before failing immediately due to a syntax error. In JavaScript, problems
+//  such as these are not caught by a compilation stage prior to submission.
+//
+//  Of course, the security implications of running untrusted code on volunteer
+//  machines are enormous. Preprocessing cannot prevent the submission of evil
+//  codes, but it does make it a little harder.
+//
+//  "Alright", you say, "I agree that preprocessing is a savvy move, but why
+//  not do it in a client-side worker?"
+//
+//  Well, Quanah's HTTP API immediately implies that many, if not all, of the
+//  output a worker might submit to the server can be duplicated by some other
+//  external program, thereby circumventing the preprocessing stage. The easy
+//  way to gain the advantages outlined here is to use server-side validation.
+//
+//  NOTE: Even though the documentation doesn't mention it, validators seem to
+//  use persistent contexts, rather than disposable contexts ...
+//
+//                                                      ~~ (c) SRW, 01 Sep 2011
+
+// The next section is JSLINT, inlined verbatim from its GitHub repository.
+
+/******************************************************************************/
+
 // jslint.js
 // 2011-08-15
 
@@ -1420,9 +1457,11 @@ var JSLINT = (function () {
         function it(type, value, quote) {
             var id, the_token;
             if (type === '(string)' || type === '(range)') {
-                if (jx.test(value)) {
+//<SRW>
+                if (RegExp.prototype.test.call(jx, value)) {
                     warn_at('url', line, from);
                 }
+//</SRW>
             }
             the_token = Object.create(syntax[(
                 type === '(punctuator)' ||
@@ -1460,8 +1499,9 @@ var JSLINT = (function () {
             return the_token;
         }
 
+//<SRW>
         function match(x) {
-            var exec = x.exec(source_row), first;
+            var first, exec = RegExp.prototype.exec.call(x, source_row);
             if (exec) {
                 length = exec[0].length;
                 first = exec[1];
@@ -1472,6 +1512,7 @@ var JSLINT = (function () {
                 return first;
             }
         }
+//</SRW>
 
         function string(x) {
             var c, pos = 0, r = '';
@@ -6933,3 +6974,37 @@ klass:              do {
     return itself;
 
 }());
+
+/******************************************************************************/
+
+function (newDoc, savedDoc, userCtx) {
+    "use strict";
+
+    var code, options;
+
+    if (newDoc.type === "CouchDoc") {
+        if (newDoc.data.hasOwnProperty("code") === true) {
+            code = newDoc.data.code;
+            if (code.length === 0) {
+                throw {
+                    forbidden: "The code provided has zero length."
+                };
+            }
+            options = {
+                predef: {
+                    chassis: true
+                },
+                sloppy: true,           //- ignore missing "use strict" pragma?
+                white:  true            //- ignore inconsistent indentation?
+            };
+            if (JSLINT(code, options) === false) {
+                throw {
+                    forbidden: JSLINT.errors[0].reason
+                };
+            }
+        }
+    }
+
+}
+
+//- vim:set syntax=javascript:

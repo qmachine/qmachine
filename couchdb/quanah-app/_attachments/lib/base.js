@@ -37,7 +37,7 @@ chassis(function (q) {
             }
         };
 
-        Duck.prototype.has = function (type, name) {
+        Duck.prototype.has = function (name, type) {
             return ((this.raw !== null)                 &&
                     (typeof this.raw !== 'undefined')   &&
                     (typeof this.raw[name] === type)
@@ -49,12 +49,25 @@ chassis(function (q) {
         };
 
         Duck.prototype.toNumber = function () {
-            return parseFloat(this.raw);
+         // This function implements the abstract operation ToNumber defined
+         // in Section 9.3 of the ES5 specification (Jan. 2011, pp.43-46).
+            switch (this.raw) {
+            case undefined:
+                return NaN;
+            case null:
+                return 0;
+            case true:
+                return 1;
+            case false:
+                return 0;
+            default:
+                return parseFloat(this.raw);
+            }
         };
 
      // Declarations
 
-        var duck, fakeObject, generic, guts, key_gen, known_types;
+        var duck, fakeObject, generic, guts, known_types;
 
      // Definitions
 
@@ -123,121 +136,122 @@ chassis(function (q) {
         };
 
         guts = function () {
-         // This is the "fake prototype" for all generic functions. Yes, it
-         // intentionally forces you to use nine named arguments or less. If
-         // that offends you, you may contact me directly to state your case,
-         // because it is entirely possible I have made a misjudgment.
-         // NOTE: Currently, you cannot define generic rules that expect zero
-         // input arguments. I will deal with this soon.
-            var args, def, key, i, index, n, temp;
+         // This function acts as a "fake prototype" for all generics, because
+         // JavaScript doesn't allow inheritance from a Function object. Yes,
+         // I have deliberately forced you to use nine or less named arguments.
+         // If that offends you, contact me directly to state your case; it's
+         // entirely possible I have made a misjudgment. Also, note that the
+         // value of 'known_types[0]' is always the 'Duck' constructor; I have
+         // hard-coded that assumption to avoid nested "for" loops that would
+         // otherwise make the function slower and uglier.
+            var args, def, flag, i, j, key, temp;
             args = Array.prototype.slice.call(arguments, 0, 9);
             def = this.def;
-            key = key_gen(args);
-            index = key.index;
-            n = args.length;
-            if (key.special === true) {
+            flag = true;                //- Is this a definition? --> true
+            temp = [];
+            if (args.length === 0) {
+             // I have now added minimal support for generic definitions that
+             // take zero arguments. Currently, you cannot redefine the rule
+             // once it has been defined. I have some ideas how to extend the
+             // behavior completely, but my main focus for development right
+             // now is Quanah, not Web Chassis. I'll improve this when I can.
+                flag = (def.hasOwnProperty("zero") === false);
+                key  = "zero";
+            } else {
+                for (i = 0; i < args.length; i += 1) {
+                    if (flag === true) {
+                        for (j = 0; j < known_types.length; j += 1) {
+                            if (args[i] === known_types[j]) {
+                                temp[i] = j;
+                                break;
+                            }
+                        }
+                        if (temp.hasOwnProperty(i) === false) {
+                            flag = false;
+                            temp = [];
+                            i = -1;
+                        }
+                    } else {
+                        for (j = 0; j < known_types.length; j += 1) {
+                            if (args[i].constructor === known_types[j]) {
+                                temp[i] = j;
+                            }
+                        }
+                        if (temp.hasOwnProperty(i) === false) {
+                         // If it isn't a known type, we'll treat it as a Duck.
+                            args[i] = duck(args[i]);
+                            temp[i] = 0;
+                        }
+                    }
+                }
+                key = Array.prototype.join.call(temp, "-");
+            }
+            if (flag === true) {
+             // Hooray! You're (probably) defining a new generic rule. If not,
+             // well, I must admit your invocation is rather odd ... :-P
                 return fakeObject.defineProperty({}, "def", {
-                    configurable: false,
-                    enumerable:   false,
+                    configurable:   false,
+                    enumerable:     false,
                     get: function () {
-                        return def[index];
+                        return def[key];
                     },
-                    set: function (g) {
-                        def[index] = g;
+                    set: function (f) {
+                        if (typeof f !== 'function') {
+                            throw new Error("Generic defs must be functions.");
+                        }
+                        def[key] = f;
                     }
                 });
-            }
-            if (typeof def[index] === 'function') {
-                return def[index].apply(this, args);
-            }
-         // Try converting the arguments to Duck types using a 'map' pattern.
-            temp = [];
-            for (i = 0; i < n; i += 1) {
-                temp[i] = duck(args[i]);
-            }
-            index = key_gen(temp).index;
-            if (typeof def[index] === 'function') {
-                return def[index].apply(this, temp);
-            }
-         // We're not ever supposed to fall this far, but if we do, it's
-         // nice to have some debugging advice. (This may be removed ...)
-            temp = [];
-            for (i = 0; i < n; i += 1) {
-                temp[i] = Function;     //- a "map-along" pattern :-P
-            }
-            if (key_gen(temp).index === key_gen(args).index) {
-                if (args.length === 1) {
-                    throw new Error("Unregistered type");
-                } else {
-                    throw new Error("Unregistered types");
-                }
             } else {
-                throw new Error("No definition found (" + this + ").");
+             // You are invoking a generic function to act on some arguments.
+             // If an appropriate definition already exists, we will skip the
+             // "for" loop and use that definition, but otherwise we will have
+             // to try converting the arguments to Duck types. In that case,
+             // proceed one at a time from left to right while checking to see
+             // if a matching definition exists for the transformed arguments.
+             // If we find one, we will use it, and otherwise we'll "panic" ;-)
+                flag = (typeof def[key] === 'function');
+                for (i = 0; (flag === false) && (i < temp.length); i += 1) {
+                    if (temp[i] !== 0) {
+                        args[i] = duck(args[i]);
+                        temp[i] = 0;
+                        key = Array.prototype.join.call(temp, "-");
+                        flag = (typeof def[key] === 'function');
+                    }
+                }
+                if (flag === true) {
+                    return def[key].apply(this, args);
+                } else {
+                    throw new Error("No generic def for given arguments.");
+                }
             }
         };
 
         known_types = [
-         // These are listed in the order shown in the ES5 standard (Jan 2011,
-         // pp.110-111) under Section 15.1.4; performance is irrelevant here.
+         // This array contains a list of type constructors. I have listed the
+         // Duck type first to allow me to hardcode a default into 'guts'.
+            Duck,
+         // The rest are listed in the order shown in Section 15.1.4 of the
+         // ES5 standard (Jan 2011, pp.110-111). No consideration whatsoever
+         // has been given to optimizing this order for better performance.
             Object, Function, Array, String, Boolean, Number, Date, RegExp,
             Error, EvalError, RangeError, ReferenceError, SyntaxError,
             TypeError, URIError,
-         // This is a type I have defined in this closure itself, and ...
-            Duck,
-         // ... these are some "types" whose behavior isn't well-defined yet.
+         // These are "types" whose behavior isn't well-defined yet ...
             null, undefined
         ];
-
-        key_gen = function (x) {
-            var find;
-            if (typeof Array.prototype.indexOf === 'function') {
-                find = function (x) {
-                    var i = Array.prototype.indexOf.call(known_types, x);
-                    return {
-                        special:    (i !== -1),
-                        index:      (i !== -1) ? i : find(x.constructor).index
-                    };
-                };
-            } else {
-                find = function (x) {
-                    var i, index, n;
-                    i = -1;
-                    n = known_types.length;
-                    for (index = 0; index < n; index += 1) {
-                        if (x === known_types[index]) {
-                            i = index;
-                        }
-                    }
-                    return {
-                        special:    (i !== -1),
-                        index:      (i !== -1) ? i : find(x.constructor).index
-                    };
-                };
-            }
-            key_gen = function (x) {
-                var i, n, special, temp, y;
-                n = x.length;
-                special = true;
-                y = [];
-                for (i = 0; i < n; i += 1) {
-                 // We map over one return variable and reduce on the other :-)
-                    temp = find(x[i]);
-                    special = (special && temp.special);
-                    y[i] = temp.index;
-                }
-                return {
-                    special:    special,
-                    index:      Array.prototype.join.call(y, "-")
-                };
-            };
-            return key_gen(x);
-        };
 
         q.base$duck     =   duck;
         q.base$generic  =   generic;
 
         q.base$registerType = function (x) {
-            if (key_gen([x]).special === false) {
+            var flag, i;
+            flag = false;
+            while ((flag === false) && (i < known_types.length)) {
+                flag = (x === known_types[i]);
+                i += 1;
+            }
+            if (flag === false) {
                 known_types.push(x);
             }
         };
@@ -353,6 +367,14 @@ chassis(function (q) {
             return Array.prototype.join.call(y, ",");
         };
 
+        q.base$format(Date).def = function (x) {
+            if (x.hasOwnProperty("toJSON")) {
+                return x.toJSON();
+            } else {
+                return JSON.parse(JSON.stringify(x));
+            }
+        };
+
         q.base$format(Duck).def = function (x) {
             var keys, temp, y;
             if (x.isObjectLike()) {
@@ -378,7 +400,7 @@ chassis(function (q) {
                     return "{}";
                 }
             } else {
-                if (x.has("function", "toSource")) {
+                if (x.has("toSource", "function") === true) {
                     y = x.raw.toSource();
                 } else {
                     y = x.raw.toString();
@@ -427,6 +449,10 @@ chassis(function (q) {
 
         q.base$format(String).def = function (x) {
             return x;
+        };
+
+        q.base$format(undefined).def = function (x) {
+            return "undefined";
         };
 
         q.base$map(Array).def = function (x) {

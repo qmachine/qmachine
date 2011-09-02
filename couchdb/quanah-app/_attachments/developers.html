@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <!--
     developers.html ~~
-                                                        ~~ (c) SRW, 21 Aug 2011
+
+    This page sets up a simple development environment for programming Quanah.
+
+                                                        ~~ (c) SRW, 02 Sep 2011
 -->
 <html lang="en">
   <head>
@@ -14,7 +17,7 @@
   </head>
   <body>
     <noscript>Please enable JavaScript in your browser.</noscript>
-    <form id="editor" style="display: none;">
+    <form id="editor"><!-- style="display: none;"> -->
       <textarea
         id="codebox" autofocus cols="80" rows="24"></textarea>
       <br/>
@@ -30,49 +33,52 @@
         chassis(function (q, global) {
             "use strict";
 
-         // Environment checks
-
-            if (q.detects("Worker") === false) {
-                throw new Error("Please try a different browser.");
-            }
-
          // Prerequisites
 
+            q.load("lib/quanah.js");
             q.lib("quanah");
 
-         // Declarations
+         // Private declarations
 
-            var bee, button;
+            var button, code, mode;
 
-         // Create the Web Worker and direct its output appropriately.
-
-            bee = new Worker("bee-dev.js");
-
-            bee.onmessage = function (evt) {
-             // This function receives a MessageEvent object.
-                q.puts(evt.data);
-            };
-
-            bee.onerror = function (evt) {
-             // This function receives an ErrorEvent object.
-                q.puts(evt);            //- not sure what to do with it yet ...
-            };
-
-         // Grab a reference to the button entitled "Run" and tie its event
-         // listener to the Web Worker so that the textarea's content pipes
-         // straight into the background context.
+         // Private definitions
 
             button = global.document.getElementById("runButton");
 
-            button.onclick = function (evt) {
-                bee.postMessage({
-                    code: global.document.getElementById("codebox").value,
-                    mode: global.document.getElementById("devmode").value
-                });
+            code = function () {
+                return global.document.getElementById("codebox").value;
             };
+
+            mode = function () {
+                return global.document.getElementById("devmode").value;
+            };
+
+         // Global-scope definitions
+
+            button.onclick = function (evt) {
+                var ans;
+                switch (mode()) {
+                case "local":
+                    ans = eval(code());
+                    if (q.flags.debug) {
+                        q.puts(ans);
+                    }
+                    break;
+                case "remote":
+                    ans = q.quanah$share({code: code()});
+                    if (q.flags.debug) {
+                        q.puts(ans);
+                    }
+                    break;
+                default:
+                    alert("What have you done to this computer?!");
+                }
+            };
+
+            q.puts("Welcome to Quanah 2.0-\u03B1.");
 
         });
     </script>
-    <script src="lib/quanah.js"></script>
   </body>
 </html>

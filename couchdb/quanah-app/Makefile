@@ -126,9 +126,11 @@ reset:
 
 run: $(APPRC) $(APP)
 	@   $(CP) _attachments $(APP)/                                  ;   \
+            $(CP) couchapp.json $(APP)/                                 ;   \
+            $(CP) .couchappignore $(APP)/                               ;   \
             $(CP) filters $(APP)/                                       ;   \
             $(CP) rewrites.json $(APP)/                                 ;   \
-            $(CP) .couchappignore $(APP)/                               ;   \
+            $(CP) validate_doc_update.js $(APP)/                        ;   \
             cd $(APP) && $(COUCHAPP) push -bq                           ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(call hilite, "Deployment succeeded.")                 ;   \
@@ -141,8 +143,9 @@ run: $(APPRC) $(APP)
 $(APP):
 	@   $(call hilite, "Generating the app ...")                    ;   \
             $(COUCHAPP) generate $(APP)                                 ;   \
-            $(RM) $(APP)/_attachments/* README.md                       ;   \
-            $(RM) $(APP)/{evently,lists,shows,updates,vendor,views}
+            $(RM) $(APP)/_attachments/* $(APP)/evently $(APP)/lists         \
+                $(APP)/README.md $(APP)/shows $(APP)/updates                \
+                $(APP)/vendor $(APP)/views
 
 $(APPRC): $(APP)
 	@   $(strip $(call hilite, "Deploying to $(DB) ...")            ;   \
