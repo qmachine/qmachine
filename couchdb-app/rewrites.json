@@ -1,0 +1,26 @@
+[
+    {
+        "from":     "/",
+        "to":       "/index.html",
+        "method":   "GET",
+        "query":    {}
+    },
+    {
+        "from":     "/db/*",
+        "to":       "/../../*",
+        "method":   "GET",
+        "query":    {}
+    },
+    {
+        "from":     "/db/*",
+        "to":       "/../../*",
+        "method":   "PUT",
+        "query":    {}
+    },
+    {
+        "from":     "*",
+        "to":       "/*",
+        "method":   "GET",
+        "query":    {}
+    }
+]

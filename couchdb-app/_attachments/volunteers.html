@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+    volunteers.html ~~
+                                                        ~~ (c) SRW, 22 Aug 2011
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Sean Wilkinson"/>
+    <title>Quanah: Volunteers' Page</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <script src="bin/web-chassis.js"></script>
+  </head>
+  <body>
+    <noscript>Please enable JavaScript in your browser.</noscript>
+    <div>
+      Thanks for helping out!
+    </div>
+    <script>
+        chassis(function (q, global) {
+            "use strict";
+
+         // Environment checks
+
+            if (q.detects("Worker") === false) {
+                throw new Error("Please try a different browser.");
+            }
+
+         // Prerequisites
+
+            q.lib("quanah");
+
+         // Declarations
+
+            var bee;
+
+         // Definitions
+
+            bee = new Worker("bee-vol.js");
+
+            bee.onmessage = bee.onerror = function restart(evt) {
+                console.log(evt.data);
+                bee.terminate();
+                bee = new Worker("bee-vol.js");
+                bee.onmessage = bee.onerror = restart;
+            };
+
+        });
+    </script>
+    <script src="lib/quanah.js"></script>
+  </body>
+</html>
