@@ -1,24 +1,16 @@
-//- JavaScript source code
+//- JavaScript source code -- CouchDB filter --> /db/_changes/_filter/quanah
 
 //- waiting.js ~~
-//
-//  This program defines a CouchDB filter function that isolates programs that
-//  have not run yet by checking for the existence of a "code" property and a
-//  "state" property that indicates it is waiting to be processed. I don't know
-//  if I will stick with this exact idea in Quanah 2, but I have upgraded it
-//  for robustness anyway. Its results are accessible at
-//      .../db/_changes?filter=quanah/waiting .
-//
-//                                                      ~~ (c) SRW, 22 Aug 2011
+//  This function isolates programs with a "status" member indicating that it
+//  is waiting to be processed.
+//                                                          ~~ SRW, 01 Oct 2010
 
 function (doc, req) {
-    "use strict";
-    if (doc.hasOwnProperty("code") && doc.hasOwnProperty("state")) {
-        if (doc.state === "waiting") {
-            return true;
-        }
+    if ((doc.code) && (doc.state === "waiting")) {
+        return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 //- vim:set syntax=javascript:

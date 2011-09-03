@@ -1,53 +1,24 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <!--
     volunteers.html ~~
-                                                        ~~ (c) SRW, 22 Aug 2011
+                                                            ~~ SRW, 12 Nov 2010
 -->
-<html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="author" content="Sean Wilkinson"/>
-    <title>Quanah: Volunteers' Page</title>
-    <link rel="stylesheet" href="style.css"/>
-    <link rel="shortcut icon" href="favicon.ico"/>
-    <script src="bin/web-chassis.js"></script>
-  </head>
-  <body>
-    <noscript>Please enable JavaScript in your browser.</noscript>
-    <div>
-      Thanks for helping out!
-    </div>
-    <script>
-        chassis(function (q, global) {
-            "use strict";
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Quanah 1.0: Volunteers' Page</title>
+        <link rel="stylesheet" href="style.css"/>
+        <link rel="shortcut icon" href="favicon.ico"/>
+    </head>
 
-         // Environment checks
+    <body onload="launch.volunteer();">
 
-            if (q.detects("Worker") === false) {
-                throw new Error("Please try a different browser.");
-            }
+<!--    First, load Quanah's basic library.                                 -->
+        <script src="quanah.js"></script>
 
-         // Prerequisites
+<!--    Next, we need to load the framework to make it usable.              -->
+        <script src="launch.js"></script>
 
-            q.lib("quanah");
+    </body>
 
-         // Declarations
-
-            var bee;
-
-         // Definitions
-
-            bee = new Worker("bee-vol.js");
-
-            bee.onmessage = bee.onerror = function restart(evt) {
-                console.log(evt.data);
-                bee.terminate();
-                bee = new Worker("bee-vol.js");
-                bee.onmessage = bee.onerror = restart;
-            };
-
-        });
-    </script>
-    <script src="lib/quanah.js"></script>
-  </body>
 </html>
