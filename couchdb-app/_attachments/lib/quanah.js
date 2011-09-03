@@ -171,7 +171,7 @@ chassis(function (q, global) {
             bookmarks = {
                 app:    loc.href.replace(loc.pathname, '/'),
                 db:     loc.href.replace(loc.pathname, '/db/'),
-                uuids:  loc.href.replace(loc.pathname, '/_uuids?count=10')
+                uuids:  loc.href.replace(loc.pathname, '/_uuids?count=1000')
             };
         } else if (loc.port === "5984") {
          // This is CouchDB's default debugging port, and the convention here
@@ -184,7 +184,7 @@ chassis(function (q, global) {
                 db:     loc.href.replace(loc.pathname, '/') +
                             loc.pathname.match(/([\w]+\/){1}/)[0],
                 uuids:  loc.href.replace(loc.pathname, '/') +
-                            "_uuids?count=10"
+                            "_uuids?count=1000"
             };
         } else {
          // Because this detection is still experimental, I really need to be
@@ -201,7 +201,7 @@ chassis(function (q, global) {
          // the blocking form of XHR in order to guarantee correct behavior.
             var cache = [];
             uuid = function () {
-                if (cache.length < 5) {
+                if (cache.length < 500) {
                     q.ajax$get(bookmarks.uuids, function (err, txt) {
                         if (err) {
                             throw err;
