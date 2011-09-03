@@ -22,13 +22,20 @@ PDF         :=  $(SRC:%.tex=%.pdf)
 APPLE_TOUCH :=  apple-touch-icon.png
 FAVICON     :=  favicon.ico
 GOOGLECODE  :=  googlecode.png
+GOOGWEBAPP1 :=  128_icon.png
+GOOGWEBAPP2 :=  112_icon.png
 LOGO        :=  logo.jpg
 
 REF_BG      :=  background.png
 REF_FG      :=  foreground.png
 REF_PNG     :=  reference.png
 
-ICONS       :=  $(APPLE_TOUCH) $(FAVICON) $(GOOGLECODE) $(LOGO)
+ICONS       :=  $(APPLE_TOUCH) \
+                $(FAVICON) \
+                $(GOOGLECODE) \
+                $(GOOGWEBAPP1) \
+                $(GOOGWEBAPP2) \
+                $(LOGO)
 
 #-  Since we're converting a vector format (PDF) into raster formats, we will
 #   need to alert ImageMagick to the original image resolution. In the case of
@@ -75,6 +82,12 @@ $(FAVICON): $(REF_PNG)
 
 $(GOOGLECODE): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,55) $< $@
+
+$(GOOGWEBAPP1): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS,128) $< $@
+
+$(GOOGWEBAPP2): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS,112) $< $@
 
 $(LOGO): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS_REF,128) $< $@

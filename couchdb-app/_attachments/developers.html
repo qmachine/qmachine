@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!--
+    developers.html ~~
+
+    This page sets up a simple development environment for programming Quanah.
+
+                                                        ~~ (c) SRW, 02 Sep 2011
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Sean Wilkinson"/>
+    <title>Quanah: Developers' Page</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <script src="bin/web-chassis.js"></script>
+  </head>
+  <body>
+    <noscript>Please enable JavaScript in your browser.</noscript>
+    <form id="editor"><!-- style="display: none;"> -->
+      <textarea
+        id="codebox" autofocus cols="80" rows="24"></textarea>
+      <br/>
+      <select id="devmode">
+        <optgroup label="Execution Mode">
+          <option value="local">Local</option>
+          <option value="remote">Remote</option>
+        </optgroup>
+      </select>
+      <input id="runButton" type="button" value="Run"/>
+    </form>
+    <script>
+        chassis(function (q, global) {
+            "use strict";
+
+         // Prerequisites
+
+            q.load("lib/quanah.js");
+            q.lib("quanah");
+
+         // Private declarations
+
+            var button, code, mode;
+
+         // Private definitions
+
+            button = global.document.getElementById("runButton");
+
+            code = function () {
+                return global.document.getElementById("codebox").value;
+            };
+
+            mode = function () {
+                return global.document.getElementById("devmode").value;
+            };
+
+         // Global-scope definitions
+
+            button.onclick = function (evt) {
+                var ans;
+                switch (mode()) {
+                case "local":
+                    ans = eval(code());
+                    if (q.flags.debug) {
+                        q.puts(ans);
+                    }
+                    break;
+                case "remote":
+                    ans = q.quanah$share({code: code()});
+                    if (q.flags.debug) {
+                        q.puts(ans);
+                    }
+                    break;
+                default:
+                    alert("What have you done to this computer?!");
+                }
+            };
+
+            q.puts("Welcome to Quanah 2.0-\u03B1.");
+
+        });
+    </script>
+  </body>
+</html>
