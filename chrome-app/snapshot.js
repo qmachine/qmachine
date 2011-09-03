@@ -21,7 +21,7 @@
 
     var address, output, page, size;
 
-    address = "http://localhost/";
+    address = "http://quanah.couchone.com";
 
     output = argv[1];
 
