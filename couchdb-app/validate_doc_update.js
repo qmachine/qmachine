@@ -6983,9 +6983,14 @@ function (newDoc, savedDoc, userCtx) {
     var code, options;
 
     if (newDoc.type === "CouchDoc") {
-        if (newDoc.data.hasOwnProperty("code") === true) {
-            code = newDoc.data.code;
-            if ((savedDoc !== null) && (code !== savedDoc.data.code)) {
+        if (newDoc.hasOwnProperty("value") === false) {
+            throw {
+                forbidden: JSON.stringify(newDoc)
+            };
+        }
+        if (newDoc.value.hasOwnProperty("code") === true) {
+            code = newDoc.value.code;
+            if ((savedDoc !== null) && (code !== savedDoc.value.code)) {
                 throw {
                     forbidden: "Shared code is immutable."
                 };
