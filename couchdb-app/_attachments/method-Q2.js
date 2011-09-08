@@ -116,6 +116,14 @@ Object.prototype.Q = (function (global) {
                     if (__DEBUG__ === true) {
                         console.log("(unknown trigger)");
                     }
+                    if ((x instanceof Error) === true) {
+                        if (x.hasOwnProperty("stack")) {
+                         // I find this very useful in Google Chrome.
+                            console.error(x.stack);
+                        } else {
+                            console.error(x);
+                        }
+                    }
                     return that;
                 }
             }
@@ -263,9 +271,9 @@ Object.prototype.Q = (function (global) {
             };
             return y;
         case "ply":
-            x.onready = function (x) {
-                ply(x, f);
-                celebrate('(finished "ply")');
+            x.onready = function (data) {
+                ply(data, f);
+                celebrate.call(x, '(finished "ply")');
             };
             return x;
         case "reduce":
