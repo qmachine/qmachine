@@ -1,15 +1,19 @@
 //- JavaScript source code
 
 //- method-Q2.js ~~
+//
+//  For now, this supports some vaguely generalized array patterns, but they
+//  can only be executed locally -- I don't want to deal with AJAX quite yet.
+//
 //                                                      ~~ (c) SRW, 07 Sep 2011
 
-Object.prototype.Q = (function () {     //- (begin strict anonymous closure)
+Object.prototype.Q = (function (global) {
     "use strict";
 
  // Declarations
 
-    var __DEBUG__, bookmarks, celebrate, define, die, map, methodQ, ply,
-        postpone, reduce;
+    var __DEBUG__, bookmarks, celebrate, define, die, filter, map, methodQ,
+        ply, postpone, reduce;
 
  // Fake macros
 
@@ -85,25 +89,34 @@ Object.prototype.Q = (function () {     //- (begin strict anonymous closure)
         define(that, "trigger", {
             configurable: false,
             enumerable: true,
-         // (no getter defined)
+            get: function () {
+             // (this is a placeholder so console inspection works correctly)
+            },
             set: function (x) {
                 switch (x.constructor) {
                 case ExitSuccess:
-                    console.log("(exit success)");
+                    if (__DEBUG__ === true) {
+                        console.log("(exit success)");
+                    }
                     ready = true;
-                    return;
+                    return that;
                 case ExitFailure:
-                    console.log("(exit failure)");
-                    return;
+                    if (__DEBUG__ === true) {
+                        console.log("(exit failure)");
+                    }
+                    return that;
                 case TryAgainLater:
-                    console.log("(try again later)");
-                    stack.push(job);
-                    ready = true;
-                    return;
+                    if (__DEBUG__ === true) {
+                        console.log("(try again later)");
+                    }
+                    stack.unshift(job); //- put it back in front of the rest
+                    ready = false;
+                    return that;
                 default:
-                    console.log(x);
-                    console.log("(unknown trigger)");
-                    return;
+                    if (__DEBUG__ === true) {
+                        console.log("(unknown trigger)");
+                    }
+                    return that;
                 }
             }
         });
@@ -194,44 +207,79 @@ Object.prototype.Q = (function () {     //- (begin strict anonymous closure)
         this.trigger = new ExitFailure(message);
     };
 
-    methodQ = function (f) {
-        var x, y;
-        x = new QuanahVar(this);
-        switch (f.name) {
-        case "map":
-            x.onready = function (x) {
-                y = map(x, f);
-                celebrate.call(x, '(finished "map")');
-            };
-            return y;
-        case "ply":
-            x.onready = function (x) {
-                ply(x, f);
-                celebrate.call(x, '(finished "ply")');
-            };
-            return x;
-        case "reduce":
-            x.onready = function (x) {
-                y = reduce(x, f);
-                celebrate.call(x, '(finished "reduce")');
-            };
-            return y;
-        default:
-            x.onready = f;
-            return x;
+    filter = function (x, f) {
+     // NOTE: This is only one possible interpretation of a generalized filter
+     // pattern, and I wrote it sort of off-the-cuff. It may change!
+        var y;
+        if ((x instanceof Object) === false) {
+         // For now, we simply won't allow it ...
+            throw new Error('Cannot "filter" a primitive.');
+        } else {
+            y = Object.create(Object.getPrototypeOf(x));
+            ply(x, function (key, val) {
+                if (f(val) === true) {
+                    y[key] = val;
+                }
+            });
         }
+        return y;
     };
 
     map = function (x, f) {
         var y;
         if ((x instanceof Object) === false) {
-            return f(x);
+            //y = f(x);
+            throw new Error('Cannot "map" a primitive.');
         } else {
             y = Object.create(Object.getPrototypeOf(x));
             ply(x, function (key, val) {
                 y[key] = f(val);
             });
+        }
+        return y;
+    };
+
+    methodQ = function (f) {
+        var x, y;
+        x = (this instanceof QuanahVar) ? this : new QuanahVar(this);
+        y = new QuanahVar(null);
+        switch (f.name) {
+        case "filter":
+            y.onready = function () {
+                x.onready = function (data) {
+                    y.content = filter(data, f);
+                    celebrate.call(x, '(finished "filter")');
+                    celebrate.call(y, '(finished "filter")');
+                };
+            };
             return y;
+        case "map":
+            y.onready = function () {
+                x.onready = function (data) {
+                    y.content = map(data, f);
+                    celebrate.call(x, '(finished "map")');
+                    celebrate.call(y, '(finished "map")');
+                };
+            };
+            return y;
+        case "ply":
+            x.onready = function (x) {
+                ply(x, f);
+                celebrate('(finished "ply")');
+            };
+            return x;
+        case "reduce":
+            y.onready = function () {
+                x.onready = function (data) {
+                    y.content = reduce(data, f);
+                    celebrate.call(x, '(finished "reduce")');
+                    celebrate.call(y, '(finished "reduce")');
+                };
+            };
+            return y;
+        default:
+            x.onready = f;
+            return x;
         }
     };
 
@@ -272,23 +320,107 @@ Object.prototype.Q = (function () {     //- (begin strict anonymous closure)
 
     return methodQ;
 
-}());                                   //- (end strict anonymous closure)
-
-//- Demonstrations -- FOR DEBUGGING PURPOSES ONLY!
-
-console.log([1, 2, 3, 4, 5].Q(function map(each) {
+}(function (outer_scope) {
     "use strict";
-    return 3 * each;
-}));
+    return (this === null) ? outer_scope : this;
+}.call(null, this)));
 
-[1, 2, 3, 4, 5].Q(function ply(key, val) {
-    "use strict";
-    console.log(key + ": " + val);
-});
+//- Demonstrations -- FOR DEBUGGING PURPOSES ONLY! The biggest thing to note
+//  here is that my nice messaging functions are NOT available in this scope!
 
-console.log([1, 2, 3, 4, 5].Q(function reduce(a, b) {
+(function demos() {
     "use strict";
-    return a + b;
-}));
+
+ // Declarations
+
+    var puts, q, x, y;
+
+ // Definitions
+
+    puts = function () {
+        console.log.apply(console, arguments);
+    };
+
+    //(q is defined at the end of this scope for clarity)
+
+    x = [1, 2, 3, 4, 5];
+
+    y = [];
+
+ // Invocations
+
+    y[0] = x.Q(function map(each) {
+        return 3 * each;
+    });
+
+    y[0].onready = function (data) {
+        console.log(data);              //> [3, 6, 9, 12, 15]
+    };
+
+    y[1] = x.Q(function reduce(a, b) {
+        return a + b;
+    });
+
+    y[1].onready = function (data) {
+        console.log(data);              //> 15
+    };
+
+    y[2] = x.
+        Q(function map(each) {
+            return each + 2;
+        }).
+        Q(function reduce(a, b) {
+            return a * b;
+        });
+
+    y[2].onready = function (data) {
+        console.log(data);              //> 2520
+    };
+
+    y[3] = x.
+        Q(function filter(each) {
+            return (each > 2);
+        }).
+        Q(function map(each) {
+            return 2 * each;
+        }).
+        Q(function reduce(a, b) {
+            return a + b;
+        });
+
+    y[3].onready = function (data) {
+        console.log(data);              //> 24
+    };
+
+ // That part surprised me, so I wanted to take a closer look ...
+
+    y[4] = x.
+        Q(function filter(each) {
+            return (each > 2);
+        }).
+        Q(function ply(key, val) {
+            console.log(key + ": " + val);
+        });
+
+ // Also, I wanted to see how difficult it would be to modify the current
+ // design to support a different invocation pattern -- it's trivial :-)
+
+    q = function (f) {
+        return function (x) {
+            return x.Q(f);
+        };
+    };
+
+    y[5] = q(function map(each) { return 2 * each; })(x);
+
+    y[5].onready = function (data) {
+        console.log(data);
+    };
+
+ // Finally, we'll just go ahead and print y to see what it looks like :-)
+
+    console.log(y);
+
+}());
 
 //- vim:set syntax=javascript:
