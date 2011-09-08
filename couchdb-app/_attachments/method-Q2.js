@@ -12,8 +12,9 @@ Object.prototype.Q = (function (global) {
 
  // Declarations
 
-    var __DEBUG__, bookmarks, celebrate, define, die, filter, map, methodQ,
-        ply, postpone, reduce;
+    var __DEBUG__, ajax$get, ajax$getNOW, ajax$put, ajax$putNOW, bookmarks,
+        celebrate, define, die, filter, isFunction, map, methodQ, ply,
+        postpone, reduce, uuid;
 
  // Fake macros
 
@@ -78,7 +79,7 @@ Object.prototype.Q = (function (global) {
                 return (stack.length === 0) ? null : stack[0];
             },
             set: function (f) {
-                if ((f instanceof Function) && (typeof f === 'function')) {
+                if (isFunction(f) === true) {
                     stack.push(f);
                     revive();
                 } else {
@@ -133,6 +134,23 @@ Object.prototype.Q = (function (global) {
             enumerable: true,
             value: "QuanahVar"
         });
+        that.onready = function (data) {
+            var obj, url;
+            obj = {
+                "_id":      uuid(),
+                content:    data
+            };
+            url = bookmarks.db + obj._id;
+            ajax$put(url, JSON.stringify(obj), function (err, txt) {
+                if (err === null) {
+                    that.url = url;
+                    ready = true;
+                    revive();
+                } else {
+                    that.trigger = err;
+                }
+            });
+        };
         return that;
     }
 
@@ -147,6 +165,72 @@ Object.prototype.Q = (function (global) {
     TryAgainLater.prototype = new Error();
 
  // Definitions
+
+    ajax$get = function (url, callback) {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+            var err, txt;
+            err = null;
+            txt = null;
+            if (req.readyState === 4) {
+                if (req.status === 200) {
+                    txt = req.responseText;
+                } else {
+                    err = new Error('Could not GET from "' + url + '".');
+                }
+                if (isFunction(callback) === true) {
+                    callback(err, txt);
+                }
+            }
+        };
+        req.open("GET", url, true);
+        req.send(null);
+        return req;
+    };
+
+    ajax$getNOW = function (url) {
+     // This wrapper uses the synchronous version of XHR, which means your
+     // program will be using JAX, not AJAX, when you use this function.
+     // In other words, this, like other blocking calls, is an enemy of
+     // concurrency and should be used as infrequently as possible!
+        var req = new XMLHttpRequest();
+        req.open("GET", url, false);
+        req.send();
+        return req.responseText;
+    };
+
+    ajax$put = function (url, data, callback) {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+            var err, txt;
+            err = null;
+            txt = null;
+            if (req.readyState === 4) {
+                if (req.status === 201) {
+                    txt = req.responseText;
+                } else {
+                    err = new Error('Could not PUT to "' + url + '".');
+                }
+                if (isFunction(callback) === true) {
+                    callback(err, txt);
+                }
+            }
+        };
+        req.open("PUT", url, true);
+        req.setRequestHeader("Content-type", "application/json");
+        req.send(data);
+        return req;
+    };
+
+    ajax$putNOW = function (url, data) {
+     // (see note in "ajax$getNOW" :-)
+        data = data || "";
+        var req = new XMLHttpRequest();
+        req.open('PUT', url, false);
+        req.setRequestHeader("Content-type", "application/json");
+        req.send(data);
+        return req.responseText;
+    };
 
     if (location.port === "") {
      // This happens if we are actually using the rewrite rules I created
@@ -231,6 +315,10 @@ Object.prototype.Q = (function (global) {
             });
         }
         return y;
+    };
+
+    isFunction = function (f) {
+        return ((f instanceof Function) && (typeof f === 'function'));
     };
 
     map = function (x, f) {
@@ -324,6 +412,30 @@ Object.prototype.Q = (function (global) {
             });
             return y;
         }
+    };
+
+    uuid = function () {
+     // This function dispenses a UUID from a memoized cache of values it has
+     // already fetched from CouchDB. It refills the cache using AJAX, and if
+     // the cache actually runs out at any point, it refills itself using the
+     // blocking form of XHR in order to guarantee correct behavior.
+        var cache = [];
+        uuid = function () {
+            if (cache.length < 500) {
+                ajax$get(bookmarks.uuids, function (err, txt) {
+                    if (err) {
+                        throw err;
+                    }
+                    cache.push.apply(cache, JSON.parse(txt).uuids);
+                });
+                if (cache.length === 0) {
+                    cache.push.apply(cache,
+                        JSON.parse(ajax$getNOW(bookmarks.uuids)).uuids);
+                }
+            }
+            return cache.pop();
+        };
+        return uuid();
     };
 
     return methodQ;
