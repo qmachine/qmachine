@@ -29,5 +29,15 @@
                 innerHTML += Array.prototype.join.call(arguments, " ");
         };
     </script>
+    <script>
+        var x, y;
+        x = [1, 2, 3, 4, 5];
+        y = x.Q(function (data) {
+            return data;
+        });
+        y.onready = function (data) {
+            console.log(data);
+        };
+    </script>
   </body>
 </html>
