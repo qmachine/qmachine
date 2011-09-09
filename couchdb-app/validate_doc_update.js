@@ -6980,34 +6980,30 @@ klass:              do {
 function (newDoc, savedDoc, userCtx) {
     "use strict";
 
-    var code, options;
+    var content, options;
 
-    if (newDoc.type === "CouchDoc") {
-        if (newDoc.hasOwnProperty("value") === false) {
-            throw {
-                forbidden: JSON.stringify(newDoc)
-            };
-        }
-        if (newDoc.value.hasOwnProperty("code") === true) {
-            code = newDoc.value.code;
-            if ((savedDoc !== null) && (code !== savedDoc.value.code)) {
+    if (newDoc.type === "QuanahFxn") {
+        if (savedDoc.hasOwnProperty("content")) {
+            if (newDoc.content !== savedDoc.content) {
                 throw {
                     forbidden: "Shared code is immutable."
                 };
             }
-            if (code.length === 0) {
+        } else {
+            content = newDoc.content;
+            if (content.length === 0) {
                 throw {
                     forbidden: "Submitted code has length zero."
                 };
             }
             options = {
                 predef: {
-                    chassis: true
+                 // (placeholder)
                 },
-                sloppy: true,           //- ignore missing "use strict" pragma?
-                white:  true            //- ignore inconsistent indentation?
+                sloppy: true,           //- ignore missing "use strict" pragma
+                white:  true            //- ignore whitespace inconsistencies
             };
-            if (JSLINT(code, options) === false) {
+            if (JSLINT(content, options) === false) {
                 throw {
                     forbidden: JSLINT.errors[0].reason
                 };

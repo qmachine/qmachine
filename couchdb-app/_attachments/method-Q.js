@@ -2,22 +2,13 @@
 
 //- method-Q.js ~~
 //
-//  This file defines Quanah as a self-contained, standalone Object method. It
-//  does not use Web Chassis, but much of its code has been adapted directly
-//  from Web Chassis under the assumption of a browser-based environment.
+//  I bombed it back to the Pseudocode Age :-P
 //
-//  Here's a nice example program, by the way:
+//  NOTES:
+//  -   I think I can encapsulate the "revive"-related stuff into its own type
+//      that I could then instantiate privately inside each new QuanahVar ...
 //
-//      var x;
-//      x = [1, 2, 3, 4, 5].
-//          Q(function map(each) {
-//              return 3 * each;
-//          }).
-//          Q(function reduce(a, b) {
-//              return a + b;
-//          });
-//
-//                                                      ~~ (c) SRW, 03 Sep 2011
+//                                                      ~~ (c) SRW, 08 Sep 2011
 
 /*jslint indent: 4, maxlen: 80 */
 
@@ -26,134 +17,104 @@ Object.prototype.Q = (function (global) {
 
  // Declarations
 
-    var ajax$get, ajax$getNOW, ajax$put, ajax$putNOW, bookmarks, def, loc,
-        map, ply, reduce, share, uuid, volunteer;
+    var ajax$get, ajax$getNOW, ajax$put, ajax$putNOW, bookmarks, define,
+        isFunction, uuid;
 
  // Constructors
 
-    function CouchDoc(obj) {
-     // This function is a constructor that produces CouchDoc objects. A
-     // CouchDoc object corresponds directly to a document on CouchDB, and
-     // this one-to-one correspondence keeps things simple. I build Quanah's
-     // basic data structures using this as a building block.
-        if (obj instanceof CouchDoc) {
-            return obj;
+    function QuanahFxn(f) {
+        if (isFunction(f) === false) {
+            throw new Error("Method Q expects a function as its argument.");
         }
-        var queue, ready, that, url;
-        queue = [];
-        ready = false;
-        that = this;
-        def(that, "onready", {
-            configurable:   false,
-            enumerable:     true,
-            get: function () {
-                return (queue.length > 0) ? queue[0] : null;
-            },
-            set: function (f) {
-                if (typeof f === 'function') {
-                    queue.push(f);
-                } else {
-                    throw new Error('"onready" assignment must be function.');
-                }
-                if (ready === true) {
-                 // If it's already ready, trigger its "ready" setter :-P
-                    that.ready = true;
-                }
-            }
-        });
-        def(that, "ready", {
-            configurable:   false,
-            enumerable:     true,
-            get: function () {
-                return ready;
-            },
-            set: function (state) {
-             // First, we set the CouchDoc's ready state.
-                if (typeof state === 'boolean') {
-                    ready = state;
-                } else {
-                    throw new Error('"ready" assignment must be Boolean.');
-                }
-             // Then, we run the next function in the queue :-)
-                if (ready === true) {
-                    ready = false;
-                    if (queue.length > 0) {
-                        queue.pop()();
-                    }
-                }
-            }
-        });
-        that._id = uuid();
-        that.value = (typeof obj !== 'undefined') ? obj : null;
-        that.type = "CouchDoc";     //- useful for writing CouchDB filters
-        url = bookmarks.db + that._id;
-        ajax$put(url, JSON.stringify(that), function (err, txt) {
-            if (err !== null) {
-                throw err;
-            }
-            var response = JSON.parse(txt);
-            if (response.ok === true) {
-                that._rev = response.rev;
-                that.ready = true;
-            } else {
-                throw new Error(txt);
-            }
-        });
+        var that = this;
+        if (isFunction(f.toJSON)) {
+            that.content = f.toJSON();
+        } else if (typeof f.toSource === 'function') {
+            that.content = f.toSource();
+        } else if (typeof f.toString === 'function') {
+            that.content = f.toString();
+        } else {
+            throw new Error("Method Q cannot stringify the given function.");
+        }
+        that.type = "QuanahFxn";
         return that;
     }
 
-    CouchDoc.prototype.sync = function () {
-     // Here, we set the convention that "ready" <=> "synced".
-        if (this.ready === true) {
-            return;
-        }
-        var that, url;
-        that = this;
-        url = bookmarks.db + that._id;
-     // Pull
-        ajax$get(url, function (err, txt) {
-            if (err !== null) {
-             // (ignore for now)
-            }
-            var key, response, rev;
-            response = JSON.parse(txt);
-            rev = parseInt(that._rev) || 0;
-            if (rev < parseInt(response._rev)) {
-                for (key in that) {
-                    if (that.hasOwnProperty(key) === true) {
-                        if (response.hasOwnProperty(key) === true) {
-                            that[key] = response[key];
-                        } else {
-                            delete that[key];
-                        }
-                    }
-                }
-                that.ready = true;
-            } else {
-             // Push
-                ajax$put(url, JSON.stringify(that), function (err, txt) {
-                    if (err !== null) {
-                     // (ignore for now)
-                    }
-                    var response = JSON.stringify(txt);
-                    if (response.ok === true) {
-                        that._rev = response.rev;
-                        that.ready = true;
-                    } else {
-                     // (ignore for now)
-                    }
-                });
+    function QuanahTask(f, x, y) {
+        var that = this;
+        define(that, "argv", {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+             // (placeholder)
+            },
+            set: function (url) {
+             // (placeholder)
             }
         });
+        define(that, "main", {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+             // (placeholder)
+            },
+            set: function (url) {
+             // (placeholder)
+            }
+        });
+        define(that, "onready", {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+             // (placeholder)
+            },
+            set: function (f) {
+             // (placeholder)
+            }
+        });
+        define(that, "results", {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+             // (placeholder)
+            },
+            set: function (url) {
+             // (placeholder)
+            }
+        });
+        f.onready = function (url) {
+            that.main = url;
+        };
+        x.onready = function (url) {
+            that.argv = url;
+        };
+        y.onready = function (url) {
+            that.results = url;
+        };
+        return that;
+    }
+
+    function QuanahVar(x) {
+     // (placeholder)
+    }
+
+ // Constructor prototype definitions
+
+    QuanahFxn.prototype = new QuanahVar(null);
+
+    QuanahTask.prototype = new QuanahVar(null);
+
+    QuanahVar.prototype.pull = function () {
+     // (placeholder)
+    };
+
+    QuanahVar.prototype.push = function () {
+     // (placeholder)
     };
 
  // Definitions
 
     ajax$get = function (url, callback) {
-        if ((callback instanceof Function) === false) {
-         // This test is not quite specific enough ...
-            callback = function () {};
-        }
         var req = new XMLHttpRequest();
         req.onreadystatechange = function () {
             var err, txt;
@@ -165,7 +126,9 @@ Object.prototype.Q = (function (global) {
                 } else {
                     err = new Error('Could not GET from "' + url + '".');
                 }
-                callback(err, txt);
+                if (isFunction(callback) === true) {
+                    callback(err, txt);
+                }
             }
         };
         req.open("GET", url, true);
@@ -185,9 +148,6 @@ Object.prototype.Q = (function (global) {
     };
 
     ajax$put = function (url, data, callback) {
-        if ((callback instanceof Function) === false) {
-            callback = function () {};
-        }
         var req = new XMLHttpRequest();
         req.onreadystatechange = function () {
             var err, txt;
@@ -199,7 +159,9 @@ Object.prototype.Q = (function (global) {
                 } else {
                     err = new Error('Could not PUT to "' + url + '".');
                 }
-                callback(err, txt);
+                if (isFunction(callback) === true) {
+                    callback(err, txt);
+                }
             }
         };
         req.open("PUT", url, true);
@@ -209,10 +171,7 @@ Object.prototype.Q = (function (global) {
     };
 
     ajax$putNOW = function (url, data) {
-     // This wrapper uses the synchronous version of XHR, which means your
-     // program will be using JAX, not AJAX, when you use this function.
-     // In other words, this, like other blocking calls, is an enemy of
-     // concurrency and should be used as infrequently as possible!
+     // (see note in "ajax$getNOW" :-)
         data = data || "";
         var req = new XMLHttpRequest();
         req.open('PUT', url, false);
@@ -221,14 +180,41 @@ Object.prototype.Q = (function (global) {
         return req.responseText;
     };
 
-    def = function (obj, key, params) {
+    if (location.port === "") {
+     // This happens if we are actually using the rewrite rules I created
+     // for my personal machine, but I haven't tested them on CouchOne ...
+        bookmarks = {
+            app:    location.href.replace(location.pathname, '/'),
+            db:     location.href.replace(location.pathname, '/db/'),
+            uuids:  location.href.replace(location.pathname,
+                        '/_uuids?count=1000')
+        };
+    } else if (location.port === "5984") {
+     // This is CouchDB's default debugging port, and the convention then
+     // is to disable rewrite rules when using that port. In that case, I
+     // have avoided hard-coding assumptions about the deployment target
+     // by instead opting to navigate paths relative to the current URL.
+        bookmarks = {
+            app:    location.href.replace(location.pathname, '/') +
+                        location.pathname.match(/([\w]+\/){3}/)[0],
+            db:     location.href.replace(location.pathname, '/') +
+                        location.pathname.match(/([\w]+\/){1}/)[0],
+            uuids:  location.href.replace(location.pathname,
+                        '/_uuids?count=1000')
+        };
+    } else {
+     // Because this is still experimental, we may find problems.
+        throw new Error("Relative path detection fell through.");
+    }
+
+    define = function (obj, key, params) {
         if (typeof Object.defineProperty === 'function') {
-            def = function (obj, key, params) {
+            define = function (obj, key, params) {
                 return Object.defineProperty(obj, key, params);
             };
         } else {
-            def = function (obj, key, params) {
-                var each;
+            define = function (obj, key, params) {
+                var prop;
                 for (prop in params) {
                     if (params.hasOwnProperty(prop) === true) {
                         switch (prop) {
@@ -240,132 +226,21 @@ Object.prototype.Q = (function (global) {
                             break;
                         case "value":
                             delete obj[key];
-                            obj[key] = params[each];
+                            obj[key] = params[prop];
                             break;
                         default:
-                            // (placeholder)
+                         // (placeholder)
                         }
                     }
                 }
                 return obj;
             };
         }
-        return def(obj, key, params);
+        return define(obj, key, params);
     };
 
-    loc = global.location;
-
-    if (loc.port === "") {
-     // This happens if we are actually using the rewrite rules I created for
-     // my personal machine, but I haven't tested them yet on CouchOne ...
-        bookmarks = {
-            app:    loc.href.replace(loc.pathname, '/'),
-            db:     loc.href.replace(loc.pathname, '/db/'),
-            uuids:  loc.href.replace(loc.pathname, '/_uuids?count=1000')
-        };
-    } else if (loc.port === "5984") {
-     // This is CouchDB's default debugging port, and the convention here is
-     // to disable rewrite rules when using that port. In that case, I have
-     // avoided hard-coding assumptions about the deployment target by instead
-     // opting to navigate paths relative to the current URL.
-        bookmarks = {
-            app:    loc.href.replace(loc.pathname, '/') +
-                        loc.pathname.match(/([\w]+\/){3}/)[0],
-            db:     loc.href.replace(loc.pathname, '/') +
-                        loc.pathname.match(/([\w]+\/){1}/)[0],
-            uuids:  loc.href.replace(loc.pathname, '/_uuids?count=1000')
-        };
-    } else {
-     // Because this detection is still experimental, we may find problems.
-        throw new Error("Relative path detection fell through.");
-    }
-
-    map = function (x, f) {
-        var y;
-        switch (typeof x) {
-        case "undefined":
-            return undefined;
-        case "null":
-            return null;
-        case "boolean":
-            return f(x);
-        case "number":
-            return f(x);
-        case "string":
-            return f(x);
-        default:
-            if ((x instanceof CouchDoc) === true) {
-                y = share({});
-                y.onready = function () {
-                    x.onready = function () {
-                        y.value = map(x.value, f);
-                        y.sync();
-                        x.sync();
-                    };
-                };
-            } else {
-                y = Object.create(Object.getPrototypeOf(x));
-                ply(x, function (key, val) {
-                    y[key] = f(val);
-                });
-            }
-            return y;
-        }
-    };
-
-    ply = function (x, f) {
-     // This is a general-purpose functional iterator for key-value pairs. The
-     // version shown here is _clearly_ not optimized for performance. I still
-     // don't think we need to return the original object from "ply" itself.
-        var key;
-        if ((x instanceof Object) === false) {
-            f(x);
-        }
-        if ((x instanceof CouchDoc) === true) {
-            x.onready = function () {
-                ply(x.value, f);
-                x.sync();
-            };
-        } else {
-            for (key in x) {
-                if (x.hasOwnProperty(key) === true) {
-                    f(key, x[key]);
-                }
-            }
-        }
-    };
-
-    reduce = function (x, f) {
-        if ((x instanceof Object) === false) {
-            throw new Error('Method "Q" cannot reduce a primitive.');
-        }
-        var first, y;
-        first = true;
-        if ((x instanceof CouchDoc) === true) {
-            y = share({});
-            y.onready = function () {
-                x.onready = function () {
-                    y.value = reduce(x.value, f);
-                    y.sync();
-                    x.sync();
-                };
-            };
-        } else {
-            ply(x, function (key, val) {
-                if (first === true) {
-                    first = false;
-                    y = val;
-                } else {
-                    y = f(y, val);
-                }
-            });
-        }
-        return y;
-    };
-
-    share = function (x) {
-     // This function provides a simple way to push arbitrary data to Quanah.
-        return new CouchDoc(x);
+    isFunction = function (f) {
+        return ((typeof f === 'function') && (f instanceof Function));
     };
 
     uuid = function () {
@@ -392,47 +267,14 @@ Object.prototype.Q = (function (global) {
         return uuid();
     };
 
-    volunteer = function (x, f) {
-     // This function encapsulates the tasks of the volunteer machines into a
-     // private closure that can be called from method Q :-)
-        return "(volunteer function was invoked correctly :-)";
-    };
+ // Finally, we will define and return that definition for "Method Q" :-)
 
- // Finally, we will define and return the definition for method Q :-)
-
-    return function (f) {
-        "use strict";
-
-     // Prerequisites
-
-        if ((f instanceof Function) !== true) {
-            throw new Error('Method "Q" expects a function as its argument.');
-        }
-
-     // Declarations
-
-        var x;
-
-     // Definitions
-
-        x = share(this);
-
-     // Invocations
-
-        switch (f.name) {
-        case "map":
-            return map(x, f);
-        case "ply":
-            ply(x, f);
-            return x;
-        case "reduce":
-            return reduce(x, f);
-        case "volunteer":
-            return volunteer(x, f);
-        default:
-            throw new Error('Method "Q" has no command "' + f.name + '".');
-        }
-
+    return function (func) {
+        var f, x, y;
+        f = new QuanahFxn(func);
+        x = new QuanahVar(this);
+        y = new QuanahVar(null);
+        return new QuanahTask(f, x, y);
     };
 
 }(function (outer_scope) {
