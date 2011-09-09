@@ -13,6 +13,23 @@
   </head>
   <body>
     <noscript>Please enable JavaScript in your browser.</noscript>
+    <!--
     <script src="method-Q2.js"></script>
+    -->
+    <script>
+        var bee, puts;
+        bee = new Worker("jsonp-worker.js");
+        bee.onmessage = function (evt) {
+            if (evt.hasOwnProperty("data")) {
+                puts(JSON.stringify(evt.data));
+            } else {
+                puts("???");
+            }
+        };
+        puts = function () {
+            document.body.appendChild(document.createElement("div")).
+                innerHTML += Array.prototype.join.call(arguments, " ");
+        };
+    </script>
   </body>
 </html>

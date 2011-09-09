@@ -5,7 +5,7 @@
 //  For now, this supports some vaguely generalized array patterns, but they
 //  can only be executed locally -- I don't want to deal with AJAX quite yet.
 //
-//                                                      ~~ (c) SRW, 07 Sep 2011
+//                                                      ~~ (c) SRW, 08 Sep 2011
 
 Object.prototype.Q = (function (global) {
     "use strict";
@@ -39,8 +39,11 @@ Object.prototype.Q = (function (global) {
         ready = true;
         revive = function () {
             if (ready === true) {
+                ready = false;
                 job = stack.shift();
-                if (job !== undefined) {
+                if (job === undefined) {
+                    ready = true;
+                } else {
                     try {
                         job.call(that, that.content);
                     } catch (err) {
@@ -65,9 +68,18 @@ Object.prototype.Q = (function (global) {
                 if (__DEBUG__ === true) {
                     console.log("(tripped setter)");
                 }
+                //that.push();
                 return content;
             }
         });
+        (function (id) {
+            that.meta = {
+                _id:    id,
+                _rev:   null,
+                type:   "QuanahVar",
+                url:    bookmarks.db + id
+            };
+        }(uuid()));
         define(that, "onready", {
             configurable: false,
             enumerable: true,
@@ -100,23 +112,24 @@ Object.prototype.Q = (function (global) {
                         console.log("(exit success)");
                     }
                     ready = true;
-                    return that;
+                    revive();
+                    break;
                 case ExitFailure:
-                    if (__DEBUG__ === true) {
-                        console.log("(exit failure)");
-                    }
-                    return that;
+                    //if (__DEBUG__ === true) {
+                        console.error("(exit failure)");
+                    //}
+                    break;
                 case TryAgainLater:
                     if (__DEBUG__ === true) {
                         console.log("(try again later)");
                     }
                     stack.unshift(job); //- put it back in front of the rest
-                    ready = false;
-                    return that;
+                    //ready = false;
+                    break;
                 default:
-                    if (__DEBUG__ === true) {
-                        console.log("(unknown trigger)");
-                    }
+                    //if (__DEBUG__ === true) {
+                        console.error("(unknown trigger)");
+                    //}
                     if ((x instanceof Error) === true) {
                         if (x.hasOwnProperty("stack")) {
                          // I find this very useful in Google Chrome.
@@ -125,34 +138,75 @@ Object.prototype.Q = (function (global) {
                             console.error(x);
                         }
                     }
-                    return that;
                 }
+                return that;
             }
         });
-        define(that, "type", {
-            configurable: false,
-            enumerable: true,
-            value: "QuanahVar"
-        });
+        that.push();
+        return that;
+    }
+
+    QuanahVar.prototype.pull = function () {
+        var that = this;
         that.onready = function (data) {
-            var obj, url;
+            if (that.meta._rev === null) {
+             // We have not synced to CouchDB yet. We should try again later!
+                postpone("Cannot GET from CouchDB until PUT succeeds.");
+            } else {
+                ajax$get(that.meta.url, function (err, txt) {
+                    var response;
+                    if (err === null) {
+                        response = JSON.parse(txt);    
+                     // NOTE: Should it be "content" or "that.content" ?
+                        that.content = response.content;
+                        that.meta._rev = response._rev;
+                        return celebrate.call(that, '(finished "pull")');
+                    } else {
+                        that.trigger = err;
+                    }
+                });
+            }
+        };
+        return that;
+    };
+
+    QuanahVar.prototype.push = function () {
+        var that = this;
+        that.onready = function (data) {
+            var obj;
             obj = {
-                "_id":      uuid(),
+                "_id":      that.meta._id,
                 content:    data
             };
-            url = bookmarks.db + obj._id;
-            ajax$put(url, JSON.stringify(obj), function (err, txt) {
+            if (that.meta._rev !== null) {
+                //console.log("(adding revision -->", that, that.content);
+                obj._rev = that.meta._rev;
+            }
+            ajax$put(that.meta.url, JSON.stringify(obj), function (err, txt) {
+                var response;
                 if (err === null) {
-                    that.url = url;
-                    ready = true;
-                    revive();
+                 // We can test for the presence of this property to see if
+                 // the variable has been initialized on CouchDB yet or not.
+                    response = JSON.parse(txt);
+                    if (response.hasOwnProperty("ok")) {
+                        if (response.ok === true) {
+                         // A push succeeded ...
+                            that.meta._rev = response.rev;
+                            celebrate.call(that, '(finished "push")');
+                        } else {
+                         // A push failed ...
+                            die.call(that, '(failure during "push")');
+                        }
+                    } else {
+                        die.call(that, '(no "ok" property?!)');
+                    }
                 } else {
-                    that.trigger = err;
+                    die.call(that, err);
                 }
             });
         };
         return that;
-    }
+    };
 
     function TryAgainLater(message) {
         if (message.toString().length === 0) {
@@ -337,22 +391,29 @@ Object.prototype.Q = (function (global) {
 
     methodQ = function (f) {
         var x, y;
-        x = (this instanceof QuanahVar) ? this : new QuanahVar(this);
-        y = new QuanahVar(null);
+        if ((this instanceof QuanahVar) === true) {
+            x = this.pull();
+        } else {
+            x = new QuanahVar(this);    //- contains a hidden "push"
+        }
         switch (f.name) {
         case "filter":
+            y = new QuanahVar(null);
             y.onready = function () {
                 x.onready = function (data) {
                     y.content = filter(data, f);
+                    //y.push();
                     celebrate.call(x, '(finished "filter")');
                     celebrate.call(y, '(finished "filter")');
                 };
             };
             return y;
         case "map":
+            y = new QuanahVar(null);
             y.onready = function () {
                 x.onready = function (data) {
                     y.content = map(data, f);
+                    //y.push();
                     celebrate.call(x, '(finished "map")');
                     celebrate.call(y, '(finished "map")');
                 };
@@ -361,21 +422,25 @@ Object.prototype.Q = (function (global) {
         case "ply":
             x.onready = function (data) {
                 ply(data, f);
+                x.push();
                 celebrate.call(x, '(finished "ply")');
             };
             return x;
         case "reduce":
+            y = new QuanahVar(null);
             y.onready = function () {
                 x.onready = function (data) {
                     y.content = reduce(data, f);
+                    //y.push();
                     celebrate.call(x, '(finished "reduce")');
                     celebrate.call(y, '(finished "reduce")');
                 };
             };
             return y;
         default:
-            x.onready = f;
-            return x;
+            return methodQ.call(x, function ply(key, val) {
+                f(key, val);
+            });
         }
     };
 
@@ -448,7 +513,7 @@ Object.prototype.Q = (function (global) {
 //- Demonstrations -- FOR DEBUGGING PURPOSES ONLY! The biggest thing to note
 //  here is that my nice messaging functions are NOT available in this scope!
 
-(function demos() {
+var y = (function demos() {
     "use strict";
 
  // Declarations
@@ -534,13 +599,19 @@ Object.prototype.Q = (function (global) {
     y[5] = q(function map(each) { return 2 * each; })(x);
 
     y[5].onready = function (data) {
-        console.log(data);
+        console.log(data);              //> [2, 4, 6, 8, 10]
     };
 
- // Finally, we'll just go ahead and print y to see what it looks like :-)
+ // Finally, we'll go ahead and return "y" so we can inspect it interactively.
 
-    console.log(y);
+    return y;
 
 }());
+
+function proof() {
+    y.forEach(function (each) {
+        console.log(each.meta.url);
+    });
+}
 
 //- vim:set syntax=javascript:
