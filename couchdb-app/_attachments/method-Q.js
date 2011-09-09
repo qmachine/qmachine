@@ -17,8 +17,8 @@ Object.prototype.Q = (function (global) {
 
  // Declarations
 
-    var ajax$get, ajax$getNOW, ajax$put, ajax$putNOW, bookmarks, define,
-        isFunction, uuid;
+    var add_meta, add_onready, add_pusher, ajax$get, ajax$getNOW, ajax$put,
+        ajax$putNOW, bookmarks, define, isFunction, uuid;
 
  // Constructors
 
@@ -27,92 +27,119 @@ Object.prototype.Q = (function (global) {
             throw new Error("Method Q expects a function as its argument.");
         }
         var that = this;
-        if (isFunction(f.toJSON)) {
-            that.content = f.toJSON();
-        } else if (typeof f.toSource === 'function') {
-            that.content = f.toSource();
-        } else if (typeof f.toString === 'function') {
-            that.content = f.toString();
-        } else {
-            throw new Error("Method Q cannot stringify the given function.");
-        }
-        that.type = "QuanahFxn";
+        that = add_meta(that, "QuanahFxn");
+        that = add_onready(that);
+        that = add_pusher(that, "content", (function () {
+            if (isFunction(f.toJSON)) {
+                return f.toJSON();
+            } else if (isFunction(f.toSource)) {
+                return f.toSource();
+            } else if (isFunction(f.toString)) {
+                return f.toString();
+            } else {
+                throw new Error("Method Q cannot stringify this function.");
+            }
+        }())); 
         return that;
     }
 
     function QuanahTask(f, x, y) {
-        var that = this;
-        define(that, "argv", {
-            configurable: false,
-            enumerable: true,
-            get: function () {
-             // (placeholder)
-            },
-            set: function (url) {
-             // (placeholder)
-            }
-        });
-        define(that, "main", {
-            configurable: false,
-            enumerable: true,
-            get: function () {
-             // (placeholder)
-            },
-            set: function (url) {
-             // (placeholder)
-            }
-        });
-        define(that, "onready", {
-            configurable: false,
-            enumerable: true,
-            get: function () {
-             // (placeholder)
-            },
-            set: function (f) {
-             // (placeholder)
-            }
-        });
-        define(that, "results", {
-            configurable: false,
-            enumerable: true,
-            get: function () {
-             // (placeholder)
-            },
-            set: function (url) {
-             // (placeholder)
-            }
-        });
-        f.onready = function (url) {
-            that.main = url;
+        var content, that;
+        content = {
+            argv: null,
+            main: null,
+            results: null
         };
-        x.onready = function (url) {
-            that.argv = url;
+        that = this;
+        that = add_meta(that, "QuanahTask");
+        that = add_onready(that);
+        that = add_pusher(that, "content", content);
+        f.onready = function () {
+            that.content.main = f.meta.url;
+            that.push();
         };
-        y.onready = function (url) {
-            that.results = url;
+        x.onready = function () {
+            that.content.argv = x.meta.url;
+            that.push();
+        };
+        y.onready = function () {
+            that.content.results = y.meta.url;
+            that.push();
         };
         return that;
     }
 
     function QuanahVar(x) {
-     // (placeholder)
+        var that;
+        that = this;
+        that = add_meta(that, "QuanahVar");
+        that = add_onready(that);
+        that = add_pusher(that, "content", x);
+        return that;
     }
 
- // Constructor prototype definitions
-
-    QuanahFxn.prototype = new QuanahVar(null);
-
-    QuanahTask.prototype = new QuanahVar(null);
-
-    QuanahVar.prototype.pull = function () {
-     // (placeholder)
-    };
-
-    QuanahVar.prototype.push = function () {
-     // (placeholder)
-    };
-
  // Definitions
+
+    add_meta = function (that, typename) {
+        var id = uuid();
+        that.meta = {
+            _id:    id,
+            _rev:   null,
+            type:   typename,
+            url:    bookmarks.db + id
+        };
+        return that;
+    };
+
+    add_onready = function (that) {
+        var ready, revive, stack;
+        ready = true;
+        revive = function () {
+            var f;
+            if (ready === true) {
+                ready = false;
+                f = stack.shift();
+                if (f === undefined) {
+                    ready = true;
+                } else {
+                    f.call(that, that.content);
+                }
+            }
+        };
+        stack = [];
+        define(that, "onready", {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+                return (stack.length > 0) ? stack[0] : null;
+            },
+            set: function (f) {
+                if (isFunction(f) === false) {
+                    throw new Error('"onready" callbacks must be functions.');
+                }
+                stack.push(f);
+                revive();
+            }
+        });
+        return that;
+    };
+
+    add_pusher = function (that, name, initial_value) {
+        var content;
+        content = initial_value;
+        define(that, name, {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+                return content;
+            },
+            set: function (x) {
+                content = x;
+                that.push();
+            }
+        });
+        return that;
+    };
 
     ajax$get = function (url, callback) {
         var req = new XMLHttpRequest();
@@ -265,6 +292,55 @@ Object.prototype.Q = (function (global) {
             return cache.pop();
         };
         return uuid();
+    };
+
+ // Constructor prototype definitions
+
+    QuanahFxn.prototype = new QuanahVar(null);
+
+    QuanahTask.prototype = new QuanahVar(null);
+
+    QuanahVar.prototype.pull = function () {
+     // (placeholder)
+    };
+
+    QuanahVar.prototype.push = function () {
+        var that = this;
+        that.onready = function (data) {
+            var obj;
+            obj = {
+                _id:        that.meta._id,
+                content:    data,
+                type:       that.meta.type
+            };
+            if (that.meta._rev !== null) {
+                obj._rev = that.meta._rev;
+            }
+            ajax$put(that.meta.url, JSON.stringify(obj), function (err, txt) {
+                var response;
+                if (err === null) {
+                 // We can test for the presence of this property to see if
+                 // the variable has been initialized on CouchDB yet or not.
+                    response = JSON.parse(txt);
+                    if (response.hasOwnProperty("ok")) {
+                        if (response.ok === true) {
+                         // A push succeeded ...
+                            that.meta._rev = response.rev;
+                            //celebrate.call(that, '(finished "push")');
+                        } else {
+                         // A push failed ...
+                            throw new Error('Failure during "push"');
+                        }
+                    } else {
+                        throw new Error('No "ok" property?');
+                    }
+                } else {
+                    throw err;
+                }
+            });
+        };
+        console.log(that);
+        return that;
     };
 
  // Finally, we will define and return that definition for "Method Q" :-)
