@@ -13,11 +13,11 @@
     <title>Quanah: Developers' Page</title>
     <link rel="stylesheet" href="style.css"/>
     <link rel="shortcut icon" href="favicon.ico"/>
-    <script src="bin/web-chassis.js"></script>
+    <script src="method-Q.js"></script>
   </head>
   <body>
     <noscript>Please enable JavaScript in your browser.</noscript>
-    <form id="editor"><!-- style="display: none;"> -->
+    <form id="editor" style="display: none;">
       <textarea
         id="codebox" autofocus cols="80" rows="24"></textarea>
       <br/>
@@ -29,6 +29,42 @@
       </select>
       <input id="runButton" type="button" value="Run"/>
     </form>
+    <script>
+        var bee, puts;
+        bee = new Worker("queue-stats.js");
+        bee.onmessage = function (evt) {
+            if (evt.hasOwnProperty("data")) {
+                puts(evt.data.name + ": " + evt.data.queue.length);
+            } else {
+                puts("???");
+            }
+        };
+        puts = function () {
+            document.body.appendChild(document.createElement("pre")).
+                innerHTML += Array.prototype.join.call(arguments, " ");
+        };
+    </script>
+    <script>
+        var x, y;
+        x = [1, 2, 3, 4, 5];
+        y = x.Q(function uno(x, exit) { //- unfortunately, JSLINT hates the
+            try {                       //  functions if they aren't named ...
+                var i, y;
+                y = [];
+                for (i = 0; i < x.length; i += 1) {
+                    y[i] = x[i] + 3;
+                }
+                exit.success(y);
+            } catch (err) {
+                exit.failure(err);
+            }
+        });
+        y.onready = function dos(data, exit) {
+            console.log(data);
+            exit.success('(printed y)');
+        };
+    </script>
+  <!--
     <script>
         chassis(function (q, global) {
             "use strict";
@@ -80,5 +116,6 @@
 
         });
     </script>
+  -->
   </body>
 </html>

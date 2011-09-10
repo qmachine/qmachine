@@ -10,13 +10,23 @@
     <title>Quanah: Volunteers' Page</title>
     <link rel="stylesheet" href="style.css"/>
     <link rel="shortcut icon" href="favicon.ico"/>
-    <script src="bin/web-chassis.js"></script>
   </head>
   <body>
     <noscript>Please enable JavaScript in your browser.</noscript>
-    <div>
-      Thanks for helping out!
-    </div>
+    <script>
+        var bee, puts;
+        bee = new Worker("volunteer.js");
+        bee.onmessage = function (evt) {
+            if (evt.hasOwnProperty("data")) {
+                puts(evt.data);
+            }
+        };
+        puts = function () {
+            document.body.appendChild(document.createElement("pre")).
+                innerHTML += Array.prototype.join.call(arguments, " ");
+        };
+    </script>
+  <!--
     <script>
         chassis(function (q, global) {
             "use strict";
@@ -49,5 +59,6 @@
         });
     </script>
     <script src="lib/quanah.js"></script>
+  -->
   </body>
 </html>

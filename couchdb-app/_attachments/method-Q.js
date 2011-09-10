@@ -2,11 +2,9 @@
 
 //- method-Q.js ~~
 //
-//  I bombed it back to the Pseudocode Age :-P
-//
-//  NOTES:
-//  -   I think I can encapsulate the "revive"-related stuff into its own type
-//      that I could then instantiate privately inside each new QuanahVar ...
+//  I bombed it back to the Pseudocode Age, but it's nearly completed anyway.
+//  All jobs on Quanah are currently zombies because I haven't written the
+//  "is it done yet?" part yet.
 //
 //                                                      ~~ (c) SRW, 08 Sep 2011
 
@@ -43,41 +41,18 @@ Object.prototype.Q = (function (global) {
         return that;
     }
 
-    function QuanahTask(f, x, y) {
+    function QuanahTask(init) {
         var content, that;
         content = {
-            argv: null,
-            main: null,
-            results: null
+            argv:       init,
+            main:       init,
+            results:    init,
+            status:     init
         };
         that = this;
         that = add_meta(that, "QuanahTask");
         that = add_onready(that);
         that = add_pusher(that, "content", content);
-        f.onready = function (data, exit) {
-            try {
-                that.content.main = f.meta.url;
-                exit.success('Stored the "main" property.');
-            } catch (err) {
-                exit.failure(err);
-            }
-        };
-        x.onready = function (data, exit) {
-            try {
-                that.content.argv = x.meta.url;
-                exit.success('Stored the "argv" property.');
-            } catch (err) {
-                exit.failure(err);
-            }
-        };
-        y.onready = function (data, exit) {
-            try {
-                that.content.results = y.meta.url;
-                exit.success('Stored the "results" property.');
-            } catch (err) {
-                exit.failure(err);
-            }
-        };
         return that;
     }
 
@@ -367,7 +342,47 @@ Object.prototype.Q = (function (global) {
         f = (new QuanahFxn(func)).push();
         x = (new QuanahVar(this)).push();
         y = (new QuanahVar(null)).push();
-        return (new QuanahTask(f, x, y)).push();
+        z = (new QuanahTask(null)).push();
+        z.onready = function (data_z, exit_z) {
+            var counter, n;
+            counter = function () {
+                n += 1;
+                if (n === 3) {
+                    data_z.status = "waiting";
+                    z.push();
+                    exit_z.success(data_z);
+                }
+            };
+            n = 0;
+            f.onready = function (data, exit) {
+                try {
+                    z.content.main = f.meta.url;
+                    exit.success('Stored the "main" property.');
+                    counter();
+                } catch (err) {
+                    exit.failure(err);
+                }
+            };
+            x.onready = function (data, exit) {
+                try {
+                    z.content.argv = x.meta.url;
+                    exit.success('Stored the "argv" property.');
+                    counter();
+                } catch (err) {
+                    exit.failure(err);
+                }
+            };
+            y.onready = function (data, exit) {
+                try {
+                    z.content.results = y.meta.url;
+                    exit.success('Stored the "results" property.');
+                    counter();
+                } catch (err) {
+                    exit.failure(err);
+                }
+            };
+        };
+        return z;
     };
 
 }(function (outer_scope) {

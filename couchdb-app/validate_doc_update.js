@@ -6982,7 +6982,10 @@ function (newDoc, savedDoc, userCtx) {
 
     var content, options;
 
-    if (newDoc.type === "QuanahFxn") {
+    switch (newDoc.type) {
+
+    case "QuanahFxn":
+
         if ((savedDoc !== null) && savedDoc.hasOwnProperty("content")) {
             if (newDoc.content !== savedDoc.content) {
                 throw {
@@ -7005,10 +7008,16 @@ function (newDoc, savedDoc, userCtx) {
             };
             if (JSLINT(content, options) === false) {
                 throw {
-                    forbidden: JSLINT.errors[0].reason + '<code>' + JSLINT.errors[0].evidence + '</code>'
+                    forbidden: JSLINT.errors[0].reason +
+                        '<code>' + JSLINT.errors[0].evidence + '</code>'
                 };
             }
         }
+
+    default:
+
+     // (placeholder)
+
     }
 
 }
