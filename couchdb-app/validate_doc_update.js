@@ -6983,7 +6983,7 @@ function (newDoc, savedDoc, userCtx) {
     var content, options;
 
     if (newDoc.type === "QuanahFxn") {
-        if (savedDoc.hasOwnProperty("content")) {
+        if ((savedDoc !== null) && savedDoc.hasOwnProperty("content")) {
             if (newDoc.content !== savedDoc.content) {
                 throw {
                     forbidden: "Shared code is immutable."
@@ -7005,7 +7005,7 @@ function (newDoc, savedDoc, userCtx) {
             };
             if (JSLINT(content, options) === false) {
                 throw {
-                    forbidden: JSLINT.errors[0].reason
+                    forbidden: JSLINT.errors[0].reason + '<code>' + JSLINT.errors[0].evidence + '</code>'
                 };
             }
         }

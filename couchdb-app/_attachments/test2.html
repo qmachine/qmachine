@@ -32,11 +32,25 @@
     <script>
         var x, y;
         x = [1, 2, 3, 4, 5];
-        y = x.Q(function (data) {
-            return data;
+        y = x.Q(function uno(x, exit) { //- unfortunately, JSLINT hates the
+            try {                       //  functions if they aren't named ...
+                var i, y;
+                y = [];
+                for (i = 0; i < x.length; i += 1) {
+                    y[i] = x[i] + 3;
+                }
+                exit.success(y);
+            } catch (err) {
+                exit.failure(err);
+            }
         });
-        y.onready = function (data) {
-            console.log(data);
+        y.onready = function dos(data, exit) {
+            try {
+                console.log(data);
+                exit.success('(printed y)');
+            } catch (err) {
+                exit.failure(err);
+            }
         };
     </script>
   </body>
