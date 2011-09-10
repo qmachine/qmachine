@@ -75,7 +75,7 @@ noscript {
 }
 
 pre {
-    font-family: Menlo, AndaleMono, monospace;
+    font-family: Menlo, AndaleMono, Courier, monospace;
     font-size: 8pt;
     margin-bottom: -1em;
 }
