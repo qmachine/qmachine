@@ -39,7 +39,7 @@ Object.prototype.Q = (function (global) {
             } else {
                 throw new Error("Method Q cannot stringify this function.");
             }
-        }())); 
+        }()));
         return that;
     }
 
@@ -54,17 +54,29 @@ Object.prototype.Q = (function (global) {
         that = add_meta(that, "QuanahTask");
         that = add_onready(that);
         that = add_pusher(that, "content", content);
-        f.onready = function () {
-            that.content.main = f.meta.url;
-            that.push();
+        f.onready = function (data, exit) {
+            try {
+                that.content.main = f.meta.url;
+                exit.success('Stored the "main" property.');
+            } catch (err) {
+                exit.failure(err);
+            }
         };
-        x.onready = function () {
-            that.content.argv = x.meta.url;
-            that.push();
+        x.onready = function (data, exit) {
+            try {
+                that.content.argv = x.meta.url;
+                exit.success('Stored the "argv" property.');
+            } catch (err) {
+                exit.failure(err);
+            }
         };
-        y.onready = function () {
-            that.content.results = y.meta.url;
-            that.push();
+        y.onready = function (data, exit) {
+            try {
+                that.content.results = y.meta.url;
+                exit.success('Stored the "results" property.');
+            } catch (err) {
+                exit.failure(err);
+            }
         };
         return that;
     }
@@ -92,7 +104,19 @@ Object.prototype.Q = (function (global) {
     };
 
     add_onready = function (that) {
-        var ready, revive, stack;
+        var exit_generator, ready, revive, stack;
+        exit_generator = function () {
+            return {
+                failure: function (message) {
+                    console.error(message);
+                },
+                success: function (message) {
+                    //console.log(message);
+                    ready = true;
+                    revive();
+                }
+            };
+        };
         ready = true;
         revive = function () {
             var f;
@@ -102,7 +126,7 @@ Object.prototype.Q = (function (global) {
                 if (f === undefined) {
                     ready = true;
                 } else {
-                    f.call(that, that.content);
+                    f.call(that, that.content, exit_generator());
                 }
             }
         };
@@ -306,7 +330,7 @@ Object.prototype.Q = (function (global) {
 
     QuanahVar.prototype.push = function () {
         var that = this;
-        that.onready = function (data) {
+        that.onready = function (data, exit) {
             var obj;
             obj = {
                 _id:        that.meta._id,
@@ -322,35 +346,28 @@ Object.prototype.Q = (function (global) {
                  // We can test for the presence of this property to see if
                  // the variable has been initialized on CouchDB yet or not.
                     response = JSON.parse(txt);
-                    if (response.hasOwnProperty("ok")) {
-                        if (response.ok === true) {
-                         // A push succeeded ...
-                            that.meta._rev = response.rev;
-                            //celebrate.call(that, '(finished "push")');
-                        } else {
-                         // A push failed ...
-                            throw new Error('Failure during "push"');
-                        }
+                    if (response.ok === true) {
+                        that.meta._rev = response.rev;
+                        exit.success('Finished "push" :-)');
                     } else {
-                        throw new Error('No "ok" property?');
+                        exit.failure(response);
                     }
                 } else {
-                    throw err;
+                    exit.failure(err);
                 }
             });
         };
-        console.log(that);
         return that;
     };
 
  // Finally, we will define and return that definition for "Method Q" :-)
 
     return function (func) {
-        var f, x, y;
-        f = new QuanahFxn(func);
-        x = new QuanahVar(this);
-        y = new QuanahVar(null);
-        return new QuanahTask(f, x, y);
+        var f, x, y, z;
+        f = (new QuanahFxn(func)).push();
+        x = (new QuanahVar(this)).push();
+        y = (new QuanahVar(null)).push();
+        return (new QuanahTask(f, x, y)).push();
     };
 
 }(function (outer_scope) {
