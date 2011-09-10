@@ -28,12 +28,17 @@ Object.prototype.Q = (function (global) {
         that = add_meta(that, "QuanahFxn");
         that = add_onready(that);
         that = add_pusher(that, "content", (function () {
+         // NOTE: This is just _begging_ for malicious code injection ...
+            var front, back;
+            front = '(function main() {\nreturn ';
+            back  = ';\n}());'
             if (isFunction(f.toJSON)) {
-                return f.toJSON();
+                return front + f.toJSON() + back;
             } else if (isFunction(f.toSource)) {
-                return f.toSource();
+                return front + f.toSource() + back;
             } else if (isFunction(f.toString)) {
-                return f.toString();
+                console.log(front + f.toString() + back);
+                return front + f.toString() + back;
             } else {
                 throw new Error("Method Q cannot stringify this function.");
             }

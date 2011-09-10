@@ -47,19 +47,15 @@
     <script>
         var x, y;
         x = [1, 2, 3, 4, 5];
-        y = x.Q(function uno(x, exit) { //- unfortunately, JSLINT hates the
-            try {                       //  functions if they aren't named ...
-                var i, y;
-                y = [];
-                for (i = 0; i < x.length; i += 1) {
-                    y[i] = x[i] + 3;
-                }
-                exit.success(y);
-            } catch (err) {
-                exit.failure(err);
+        y = x.Q(function (x) {
+            var i, y;
+            y = [];
+            for (i = 0; i < x.length; i += 1) {
+                y[i] = x[i] + 3;
             }
+            return y;
         });
-        y.onready = function dos(data, exit) {
+        y.onready = function (data, exit) {
             console.log(data);
             exit.success('(printed y)');
         };
