@@ -2,62 +2,16 @@
 
 //- volunteer.js ~~
 //
-//  Yes, it's hard-coded, but I'll deal with that later. It's working pretty
-//  well, but I'm tired of mixing hard code and copy/paste -- the revision
-//  "gotchas" in CouchDB are pretty inconvenient when you have to handle them
-//  manually. I'm going to bed.
+//  Yes, it's hard-coded, but I'll deal with that later.
 //
 //                                                      ~~ (c) SRW, 10 Sep 2011
 
-var ajax$put, bookmarks, cache, isFunction;
+importScripts(
+    "quanah.js",
+    "method-Q.js"
+);
 
-ajax$put = function (url, data, callback) {
-    var req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-        var err, txt;
-        err = null;
-        txt = null;
-        if (req.readyState === 4) {
-            if (req.status === 201) {
-                txt = req.responseText;
-            } else {
-                err = new Error('Could not PUT to "' + url + '".');
-            }
-            if (isFunction(callback) === true) {
-                callback(err, txt);
-            }
-        }
-    };
-    req.open("PUT", url, true);
-    req.setRequestHeader("Content-type", "application/json");
-    req.send(data);
-    return req;
-};
-
-if (location.port === "") {
- // This happens if we are actually using the rewrite rules I created
- // for my personal machine, but I haven't tested them on CouchOne ...
-    bookmarks = {
-        app:    location.href.replace(location.pathname, '/'),
-        db:     location.href.replace(location.pathname, '/db/'),
-        uuids:  location.href.replace(location.pathname, '/_uuids?count=1000')
-    };
-} else if (location.port === "5984") {
- // This is CouchDB's default debugging port, and the convention then
- // is to disable rewrite rules when using that port. In that case, I
- // have avoided hard-coding assumptions about the deployment target
- // by instead opting to navigate paths relative to the current URL.
-    bookmarks = {
-        app:    location.href.replace(location.pathname, '/') +
-                    location.pathname.match(/([\w]+\/){3}/)[0],
-        db:     location.href.replace(location.pathname, '/') +
-                    location.pathname.match(/([\w]+\/){1}/)[0],
-        uuids:  location.href.replace(location.pathname, '/_uuids?count=1000')
-    };
-} else {
- // Because this is still experimental, we may find problems.
-    throw new Error("Relative path detection fell through.");
-}
+var cache;
 
 cache = {
     argv: function (x) {
@@ -65,59 +19,47 @@ cache = {
     },
     main: function (x) {
         cache.main = eval(x.content);
-        cache.main$original = x;
+        cache.main$raw = x;
     },
     queue: function (x) {
         cache.queue = x.hasOwnProperty("results") ? x.results : [];
-        cache.queue$original = x;
+        cache.queue$raw = x;
     },
     results: function (x) {
         cache.results = x.content;
-        cache.results$original = x;
+        cache.results$raw = x;
     },
     task: function (x) {
-        cache.task = x.content;
-        cache.task$original = x;
+        cache.argv$url = x.content.argv;
+        cache.main$url = x.content.main;
+        cache.results$url = x.content.results;
+        cache.task$raw = x;
     }
 };
 
-isFunction = function (f) {
-    return ((typeof f === 'function') && (f instanceof Function));
-};
-
 importScripts(
-    "method-Q.js",
-    (bookmarks.db + "_changes?filter=quanah/waiting&callback=cache.queue")
+    (QUANAH.bookmarks.db +
+        "_changes?filter=quanah/waiting&callback=cache.queue")
 );
 
 if (cache.queue.length > 0) {
 
-    importScripts(
-        (bookmarks.db + cache.queue[0].id + "?callback=cache.task")
-    );
-
-    cache.task$original.content.status = "running";
-
-    ajax$put(bookmarks.db + cache.queue[0].id,
-        JSON.stringify(cache.task$original),
-        function (err, txt) {
-            var response;
-            if (err !== null) {
-                postMessage(err);
-            } else {
-                response = JSON.parse(txt);
-                if (response.ok) {
-                    cache.task$original._rev = response.rev;
-                    postMessage(txt);
-                }
-            }
-        }
-    );
+    cache.task$url = QUANAH.bookmarks.db + cache.queue[0].id;
 
     importScripts(
-        (cache.task.argv + "?callback=cache.argv"),
-        (cache.task.main + "?callback=cache.main"),
-        (cache.task.results + "?callback=cache.results")
+        (cache.task$url + "?callback=cache.task")
+    );
+
+    cache.task$raw.content.status = "running";
+
+    cache.task$raw._rev = JSON.parse(
+        QUANAH.ajax$putNOW(cache.task$url, JSON.stringify(cache.task$raw))
+    ).rev;
+
+    importScripts(
+        (cache.argv$url + "?callback=cache.argv"),
+        (cache.main$url + "?callback=cache.main"),
+        (cache.results$url + "?callback=cache.results")
     );
 
     try {
@@ -125,32 +67,34 @@ if (cache.queue.length > 0) {
     } catch (err) {
         cache.results = err;
     } finally {
-        cache.results$original.content = cache.results;
+        cache.results$raw.content = cache.results;
     }
 
-    ajax$put(bookmarks.db + cache.queue[0].id,
-        JSON.stringify(cache.task$original),
+    QUANAH.ajax$put(cache.results$url,
+        JSON.stringify(cache.results$raw),
         function (err, txt) {
-            var response;
             if (err !== null) {
-                postMessage(err);
+                postMessage(JSON.stringify(err));
             } else {
-                response = JSON.parse(txt);
-                if (response.ok) {
-                    cache.task$original._rev = response.rev;
-                    postMessage(txt);
-                }
+                postMessage("results: " + txt);
             }
         }
     );
 
-    ajax$put(cache.task$original.content.results,
-        JSON.stringify(cache.results$original),
+    cache.task$raw.content.status = "done";
+
+    QUANAH.ajax$put(cache.task$url,
+        JSON.stringify(cache.task$raw),
         function (err, txt) {
+            var response;
             if (err !== null) {
-                postMessage(err);
+                postMessage(JSON.stringify(err));
             } else {
-                postMessage(txt);
+                response = JSON.parse(txt);
+                if (response.ok) {
+                    cache.task$raw._rev = response.rev;
+                    postMessage("task done:" + txt);
+                }
             }
         }
     );
