@@ -2,24 +2,28 @@
 
 #-  Makefile ~~
 #
-#   This contains live instructions for building Quanah 2.0, which has been
-#   thoroughly reworked in order to take advantage of Web Chassis :-)
+#   This contains live instructions for building and deploying Quanah to a
+#   CouchDB instance as a "CouchApp". I have tried to maintain as much POSIX
+#   compatibility as possible, but because I mainly use Mac or GNOME-based
+#   Linux distributions, there are some non-standard calls hidden here. I have
+#   included macros that should help highlight where these prerequisites have
+#   not been met. The Python-based "couchapp" program is also required, but I
+#   may add directions at some point for using the Ruby-based "soca" instead.
 #
-#   NOTE: I have included many of the same macros I use in Web Chassis, which
-#   means I will have to review open-source licenses before I release this!
-#
-#                                                       ~~ (c) SRW, 20 Aug 2011
+#                                                       ~~ (c) SRW, 11 Sep 2011
 
 include ../tools/macros.make
 
 APP         :=  quanah
 DB          :=  localhost:5984/app
+URL         :=  http://localhost
 #DB         :=  sean.couchone.com/dmz
 #DB         :=  quanah.couchone.com/app
 APPRC       :=  $(APP)/.couchapprc
 
 COUCHAPP    :=  $(call contingent, couchapp)
 CP          :=  $(call contingent, rsync) --archive
+OPEN        :=  $(call contingent, gnome-open open)
 RM          :=  $(call contingent, rm) -rf
 STTY        :=  $(call contingent, stty)
 
@@ -55,8 +59,9 @@ run: $(APPRC) $(APP)
             $(CP) filters $(APP)/                                       ;   \
             $(CP) rewrites.json $(APP)/                                 ;   \
             $(CP) validate_doc_update.js $(APP)/                        ;   \
-            cd $(APP) && $(COUCHAPP) push -bq                           ;   \
+            cd $(APP) && $(COUCHAPP) push -q                            ;   \
             if [ $$? -eq 0 ]; then                                          \
+                $(OPEN) $(URL)                                          ;   \
                 $(call hilite, "Deployment succeeded.")                 ;   \
             else                                                            \
                 $(call alert, "$$?")                                    ;   \
