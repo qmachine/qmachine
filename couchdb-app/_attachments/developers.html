@@ -30,21 +30,6 @@
       <input id="runButton" type="button" value="Run"/>
     </form>
     <script>
-        var bee, puts;
-        bee = new Worker("queue-stats.js");
-        bee.onmessage = function (evt) {
-            if (evt.hasOwnProperty("data")) {
-                puts(evt.data.name + ": " + evt.data.queue.length);
-            } else {
-                puts("???");
-            }
-        };
-        puts = function () {
-            document.body.appendChild(document.createElement("pre")).
-                innerHTML += Array.prototype.join.call(arguments, " ");
-        };
-    </script>
-    <script>
         var x, y;
         x = [1, 2, 3, 4, 5];
         y = x.Q(function (x) {
