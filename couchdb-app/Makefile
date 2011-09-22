@@ -15,10 +15,10 @@
 include ../tools/macros.make
 
 APP         :=  quanah
-DB          :=  localhost:5984/app
 URL         :=  http://localhost
-#DB         :=  sean.couchone.com/dmz
-#DB         :=  quanah.couchone.com/app
+DB          :=  localhost:5984/app
+#URL         :=  http://quanah.couchone.com
+#DB          :=  quanah.couchone.com:5984/app
 APPRC       :=  $(APP)/.couchapprc
 
 COUCHAPP    :=  $(call contingent, couchapp)
