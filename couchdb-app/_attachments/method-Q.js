@@ -1,7 +1,10 @@
 //- JavaScript source code
 
 //- method-Q.js ~~
-//                                                      ~~ (c) SRW, 11 Sep 2011
+//
+//  Time to slim things down :-)
+//
+//                                                      ~~ (c) SRW, 23 Sep 2011
 
 Object.prototype.Q = (function (global) {
     "use strict";
