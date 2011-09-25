@@ -474,7 +474,8 @@ Object.prototype.Q = (function (global) {
 
     methodQ.volunteer = function () {
      // This function encapsulates all the necessary functions of a volunteer
-     // machine into a method callable as "Object.prototype.Q.volunteer".
+     // machine into a method callable as "Object.prototype.Q.volunteer". I
+     // plan to read in an external copy of JSLINT in the future :-)
         var bee, readURL, puts, write;
         if (parseURI(global.location.href).flags.volunteer !== true) {
          // This function was called directly by a mouse-click, so we will
