@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     index.html ~~
-                                                        ~~ (c) SRW, 11 Sep 2011
+                                                        ~~ (c) SRW, 30 Sep 2011
 -->
 <html lang="en">
   <head>
@@ -10,20 +10,28 @@
     <title>Quanah: Home Page</title>
     <link rel="stylesheet" href="style.css"/>
     <link rel="shortcut icon" href="favicon.ico"/>
-    <script src="method-Q.js"></script>
   </head>
   <body>
     <noscript>Please enable JavaScript in your browser.</noscript>
     <ul>
       <li>
-        <a href="faq.html">read</a>
+        <a href="javascript:BUTTON.dev();">Developers</a>
       </li>
       <li>
-        <a href="developers.html">write</a>
-      </li>
-      <li>
-        <a href="javascript:Object.prototype.Q.volunteer();">execute</a>
+        <a href="javascript:BUTTON.vol();">Volunteers</a>
       </li>
     </ul>
+    <script src="method-Q.js"></script>
+    <script>
+        var BUTTON;
+        BUTTON = {
+            dev: function () {
+                alert('(coming soon)');
+            },
+            vol: function () {
+                alert('(coming soon)');
+            }
+        };
+    </script>
   </body>
 </html>
