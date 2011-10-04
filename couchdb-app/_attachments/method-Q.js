@@ -34,9 +34,6 @@
 
  // Private definitions
 
-    argv = {};
-    bookmarks = {};
-
     (function () {
      // This anonymous closure is based in part on parseUri 1.2.2 by Steven
      // Levithan (stevenlevithan.com, MIT License). It treats 'location.search'
@@ -44,7 +41,7 @@
      // keys are valid JS identifiers and whose values are either "true" or
      // "false" (without quotes). The function accepts an object whose own
      // properties will be used to override flags that are already present.
-        var key, opts, parseURI, results, uri;
+        var i, key, m, opts, uri;
         opts = {
             key: [
                 'source', 'protocol', 'authority', 'userInfo', 'user',
@@ -59,34 +56,28 @@
                 parser: /(?:^|&)([^&=]*)=?([^&]*)/g
             }
         };
-        parseURI = function (str) {
-            var i, m, uri;
-            i = 14;
-            m = opts.parser.exec(str);
-            uri = {};
-            for (i = 14; i > 0; i -= 1) {
-                uri[opts.key[i]] = m[i] || '';
+        m = opts.parser.exec(global.location.href);
+        uri = {};
+        for (i = 14; i > 0; i -= 1) {
+            uri[opts.key[i]] = m[i] || '';
+        }
+        uri[opts.q.name] = {};
+        uri[opts.key[12]].replace(opts.q.parser, function ($0, $1, $2) {
+            if ($1) {
+                uri[opts.q.name][$1] = ($2 !== 'false') ? true : false;
             }
-            uri[opts.q.name] = {};
-            uri[opts.key[12]].replace(opts.q.parser, function ($0, $1, $2) {
-                if ($1) {
-                    uri[opts.q.name][$1] = ($2 !== 'false') ? true : false;
-                }
-            });
-            return uri;
-        };
-        uri = parseURI(global.location.href);
+        });
      // First, let's compute the "command-line arguments" :-)
+        argv = {};
         for (key in uri.flags) {
             if (uri.flags.hasOwnProperty(key)) {
                 argv[key] = uri.flags[key];
             }
         }
      // Now, let's define some bookmarks we will need during execution.
-        bookmarks.db = uri.protocol + '://' + uri.authority + '/db/';
-        bookmarks.uuids = function (n) {
-            return uri.protocol + '://' + uri.authority +
-                '/_uuids?count=' + parseInt(n >> 0);
+        bookmarks = {
+            db:     uri.protocol + '://' + uri.authority + '/db/',
+            uuids:  uri.protocol + '://' + uri.authority + '/_uuids'
         };
     }());
 
@@ -94,7 +85,9 @@
         var total = (n >> 0);
         return function () {
             total -= 1;
-            return (total === 0) ? callback() : null;
+            if (total === 0) {
+                callback();
+            }
         };
     }; 
 
@@ -167,7 +160,7 @@
         uuid = function () {
             var req, uuids, x;
             if (cache.length < 500) {
-                read(bookmarks.uuids(1000), function (err, txt) {
+                read(bookmarks.uuids + '?count=1000', function (err, txt) {
                     if (err !== null) {
                         throw err;
                     } else {
@@ -179,7 +172,7 @@
                  // Alternatively, though, we could just one of our own real
                  // quick; if it fails, we could try again recursively ... ?
                     req = new XMLHttpRequest();
-                    req.open('GET', bookmarks.uuids(1000), false);
+                    req.open('GET', bookmarks.uuids + '?count=1000', false);
                     req.send();
                     uuids = JSON.parse(req.responseText).uuids;
                     cache.push.apply(cache, uuids);
@@ -215,48 +208,83 @@
 
  // Private constructors
 
-    function QuanahFxn(obj) {
+    function QuanahFxn(func) {          //- BROKEN
         obj = ((typeof obj === 'object') && (obj !== null)) ? obj : {};
-        var id, that;
-        id = obj.hasOwnProperty('_id') ? obj._id : uuid();
+        var content, id, meta, that;
+        content = (obj.hasOwnProperty('content')) ? obj.content : {};
+        meta = (obj.hasOwnProperty('meta')) ? obj.meta : {};
+        id = (meta.hasOwnProperty('_id')) ? meta._id : uuid();
         that = this;
         that.meta = {
             _id:    id,
-            _rev:   obj.hasOwnProperty('_rev') ? obj._rev : null,
+            _rev:   (meta.hasOwnProperty('_rev')) ? meta._rev : null,
+            key:    (meta.hasOwnProperty('key')) ? meta.key : null,
+            status: (meta.hasOwnProperty('status')) ? meta.status : null,
             type:   'QuanahFxn',
-            url:    bookmarks.db + id
+            url:    (meta.hasOwnProperty('url')) ? meta.url : bookmarks.db + id
         };
-        that.content = obj.hasOwnProperty('content') ? obj.content : function () {};
+        that.content = {
+            main:   (content.hasOwnProperty('main')) ? content.main : null,
+            argv:   (content.hasOwnProperty('argv')) ? content.argv : null,
+            result: (content.hasOwnProperty('result')) ? content.result : null
+        };
         return that;
     }
 
-    function QuanahTask(obj) {
+    function QuanahTask(key) {          //- BROKEN
         obj = ((typeof obj === 'object') && (obj !== null)) ? obj : {};
-        var id, that;
-        id = obj.hasOwnProperty('_id') ? obj._id : uuid();
+        var content, id, meta, that;
+        content = (obj.hasOwnProperty('content')) ? obj.content : {};
+        meta = (obj.hasOwnProperty('meta')) ? obj.meta : {}; 
+        id = (meta.hasOwnProperty('_id')) ? meta._id : uuid();
         that = this;
         that.meta = {
             _id:    id,
-            _rev:   obj.hasOwnProperty('_rev') ? obj._rev : null,
+            _rev:   (meta.hasOwnProperty('_rev')) ? meta._rev : null,
+            key:    (meta.hasOwnProperty('key')) ? meta.key : null,
+            status: (meta.hasOwnProperty('status')) ? meta.status : null,
             type:   'QuanahTask',
-            url:    bookmarks.db + id
+            url:    (meta.hasOwnProperty('url')) ? meta.url : bookmarks.db + id
         };
-        that.content = obj.hasOwnProperty('content') ? obj.content : function () {};
+        that.content = {
+            main:   (content.hasOwnProperty('main')) ? content.main : null,
+            argv:   (content.hasOwnProperty('argv')) ? content.argv : null,
+            result: (content.hasOwnProperty('result')) ? content.result : null
+        };
         return that;
     }
 
-    function QuanahVar(obj) {
-        obj = ((typeof obj === 'object') && (obj !== null)) ? obj : {};
-        var id, that;
-        id = obj.hasOwnProperty('_id') ? obj._id : uuid();
+    function QuanahVar(x) {             //- BROKEN
+        var content, id, meta, that;
+        if ((typeof x === 'object') && (x !== null)) {
+            if (x.hasOwnProperty('content') && x.hasOwnProperty('meta')) {
+                content = x.content;
+                meta = x.meta;
+            } else {
+                content = x;
+                meta = 
+
+
+            content = (x.hasOwnProperty('content')) ? x.content : x
+        if (x.hasOwnProperty('content')
+        content = (x.hasOwnProperty('content')) ? x.content : 
+        content = (obj.hasOwnProperty('content')) ? obj.content : {};
+        meta = (obj.hasOwnProperty('meta')) ? obj.meta : {};
+        id = (meta.hasOwnProperty('_id')) ? meta._id : uuid();
         that = this;
         that.meta = {
             _id:    id,
-            _rev:   obj.hasOwnProperty('_rev') ? obj._rev : null,
+            _rev:   (meta.hasOwnProperty('_rev')) ? meta._rev : null,
+            key:    (meta.hasOwnProperty('key')) ? meta.key : null,
+            status: (meta.hasOwnProperty('status')) ? meta.status : null,
             type:   'QuanahVar',
-            url:    bookmarks.db + id
+            url:    (meta.hasOwnProperty('url')) ? meta.url : bookmarks.db + id
         };
-        that.content = obj.hasOwnProperty('content') ? obj.content : function () {};
+        that.content = {
+            main:   (content.hasOwnProperty('main')) ? content.main : null,
+            argv:   (content.hasOwnProperty('argv')) ? content.argv : null,
+            result: (content.hasOwnProperty('result')) ? content.result : null
+        };
         return that;
     }
 
@@ -314,6 +342,30 @@
         };
         return that;
     };
+
+    define(QuanahVar.prototype, 'content', {
+        configurable: false,
+        enumerable: true,
+        get: function () {
+         // (placeholder)
+        },
+        set: function (x) {
+            var content, that;
+            that = this;
+            define(that, 'content', {
+                configurable: false,
+                enumerable: true,
+                get: function () {
+                    return content;
+                },
+                set: function (x) {
+                    content = x;
+                    that.push();
+                }
+            });
+            return (that.content = x);
+        }
+    });
 
     define(QuanahVar.prototype, 'onready', {
         configurable: false,
@@ -375,16 +427,16 @@
 
     Object.prototype.Q = function (key, func) {
         var f, x, y, z;
-        f = (new QuanahFxn({content: func})).push();
-        x = (new QuanahVar({content: this})).push();
-        y = (new QuanahVar({content: null})).push();
-        z = (new QuanahTask({content: null})).push();
-        z.onready = function (z, exit) {
+        f = new QuanahFxn(func);
+        x = new QuanahVar(this);
+        y = new QuanahVar(null);
+        z = new QuanahTask(key);
+        z.onready = function (content, exit) {
             var count;
             count = countdown(3, function () {
-                z.status = "waiting";
-                z.push();
-                exit.success(z);
+                z.meta.status = "waiting";
+                exit.success(content);
+                //z.push();
             });
             f.onready = function (content, exit) {
                 try {
@@ -406,7 +458,7 @@
             };
             y.onready = function (content, exit) {
                 try {
-                    z.results = y.meta.url;
+                    z.result = y.meta.url;
                     exit.success(content);
                     count();
                 } catch (err) {
@@ -421,13 +473,17 @@
 
     if (argv.developer === true) {
         (function developer() {
-            console.log('--- DEVELOPER MODE ENABLED ---');
+            if (global.hasOwnProperty('console')) {
+                console.log('--- DEVELOPER MODE ENABLED ---');
+            }
         }());
     }
 
     if (argv.volunteer === true) {
         (function volunteer() {
-            console.log('--- VOLUNTEER MODE ENABLED ---');
+            if (global.hasOwnProperty('console')) {
+                console.log('--- VOLUNTEER MODE ENABLED ---');
+            }
         }());
     }
 

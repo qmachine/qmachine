@@ -1,14 +1,12 @@
 //- JavaScript source code
 
 //- validate_doc_update.js ~~
-//
-//  I have removed JSLINT to slim things down a bit :-)
-//
-//                                                      ~~ (c) SRW, 23 Sep 2011
+//                                                      ~~ (c) SRW, 01 Oct 2011
 
 function (newDoc, savedDoc, userCtx) {
     "use strict";
 
+ /*
     var content;
 
     switch (newDoc.type) {
@@ -35,6 +33,7 @@ function (newDoc, savedDoc, userCtx) {
      // (placeholder)
 
     }
+ */
 
 }
 
