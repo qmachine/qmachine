@@ -9,7 +9,11 @@
 
 function (doc, req) {
     'use strict';
-    return (doc.val.status === 'waiting');
+    if (doc.hasOwnProperty('val') && doc.val.hasOwnProperty('status')) {
+        return (doc.val.status === 'waiting');
+    } else {
+        return false;
+    }
 }
 
 //- vim:set syntax=javascript:
