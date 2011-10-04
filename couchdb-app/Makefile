@@ -56,9 +56,8 @@ run: $(APPRC) $(APP)
 	@   $(CP) _attachments $(APP)/                                  ;   \
             $(CP) couchapp.json $(APP)/                                 ;   \
             $(CP) .couchappignore $(APP)/                               ;   \
-            $(CP) filters $(APP)/                                       ;   \
             $(CP) rewrites.json $(APP)/                                 ;   \
-            $(CP) validate_doc_update.js $(APP)/                        ;   \
+            $(CP) views $(APP)/                                         ;   \
             cd $(APP) && $(COUCHAPP) push -q                            ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(OPEN) $(URL)                                          ;   \
@@ -72,9 +71,9 @@ run: $(APPRC) $(APP)
 $(APP):
 	@   $(call hilite, "Generating the app ...")                    ;   \
             $(COUCHAPP) generate $(APP)                                 ;   \
-            $(RM) $(APP)/_attachments/* $(APP)/evently $(APP)/lists         \
-                $(APP)/README.md $(APP)/shows $(APP)/updates                \
-                $(APP)/vendor $(APP)/views
+            $(RM) $(APP)/_attachments/* $(APP)/evently $(APP)/filters       \
+                $(APP)/lists $(APP)/README.md $(APP)/shows                  \
+                $(APP)/updates $(APP)/vendor $(APP)/views
 
 $(APPRC): $(APP)
 	@   $(strip $(call hilite, "Deploying to $(DB) ...")            ;   \
