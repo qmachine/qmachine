@@ -142,8 +142,10 @@
      // am a lot more concerned with correctness than performance right now.
         var bookmarks, key2meta;
         bookmarks = {
-         // NOTE: This will be initialized by a "parseURI" function soon ...
-            db: 'http://localhost/db/'
+         // NOTE: This part will be initialized by a "parseURI" function soon,
+         // but for now I have hardcoded it and matched development settings
+         // to the deployment settings :-P
+            db: 'http://' + global.location.host + '/db/'
         };
         key2meta = {};
         QuanahVar.prototype.sync = function () {
