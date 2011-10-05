@@ -140,14 +140,20 @@
     QuanahVar.prototype.sync = function () {
      // This prototype method implements the "transfer layer" completely. I
      // am a lot more concerned with correctness than performance right now.
-        var bookmarks, key2meta;
+        var base, bookmarks, key2meta;
+        base = 'http://' + global.location.host;
         bookmarks = {
          // NOTE: This part will be initialized by a "parseURI" function soon,
          // but for now I have hardcoded it and matched development settings
          // to the deployment settings :-P
-            db: 'http://' + global.location.host + '/db/'
+            db:         base + '/db/',
+            done:       base + '/_view/status?key="done"',
+            running:    base + '/_view/status?key="running"',
+            uuids:      base + '/_uuids?count=1000',
+            waiting:    base + '/_view/status?key="waiting"'
         };
         key2meta = {};
+        console.log(bookmarks);         //- DEBUGGING ONLY!
         QuanahVar.prototype.sync = function () {
             var that = this;
             that.onready = function (x, exit) {
@@ -262,7 +268,7 @@
                     main:       null,
                     argv:       null,
                     results:    null,
-                    status:     'initializing'
+                    status:     null
                 }
             });
             z.onready = function (z, exit) {
