@@ -247,57 +247,51 @@
 
  // Global definitions
 
-    Object.prototype.Q = function (key, func) {
+    Object.prototype.Q = function (func) {  //  y = x.Q(f);
         if (arguments.length < 2) {
             throw new Error('Method "Q" requires two input arguments.');
         }
-        var f, x, y, z;
-        if ((key === null) || (key === undefined)) {
-         // USE CASE #1 --> y = x.Q(null, f);
-            f = new QuanahVar({
-                val: func
+        var argv, main, results, task;
+        argv = new QuanahVar({
+            val: this
+        });
+        main = new QuanahVar({
+            val: func
+        });
+        results = new QuanahVar({
+            val: null
+        });
+        task = new QuanahVar({
+            val: {
+                main:       null,
+                argv:       null,
+                results:    null,
+                status:     null
+            }
+        });
+        task.onready = function (task, exit) {
+            var count;
+            count = countdown(3, function () {
+                task.status = 'waiting';
+                exit.success(task);
             });
-            x = new QuanahVar({
-                val: this
-            });
-            y = new QuanahVar({
-                val: null
-            });
-            z = new QuanahVar({
-                val: {
-                    main:       null,
-                    argv:       null,
-                    results:    null,
-                    status:     null
-                }
-            });
-            z.onready = function (z, exit) {
-                var count;
-                count = countdown(3, function () {
-                    z.status = 'waiting';
-                    exit.success(z);
-                });
-                f.onready = function (val, exit) {
-                    z.main = f.key;
-                    exit.success(val);
-                    count();
-                };
-                x.onready = function (val, exit) {
-                    z.argv = x.key;
-                    exit.success(val);
-                    count();
-                };
-                y.onready = function (val, exit) {
-                    z.results = y.key;
-                    exit.success(val);
-                    count();
-                };
+            argv.onready = function (val, exit) {
+                task.argv = argv.key;
+                exit.success(val);
+                count();
             };
-            return z;
-        } else {
-         // USE CASE #2 --> y = [].Q(key, f);
-            throw new Error('(query support is forthcoming)');
-        }
+            main.onready = function (val, exit) {
+                task.main = main.key;
+                exit.success(val);
+                count();
+            };
+            results.onready = function (val, exit) {
+                task.results = results.key;
+                exit.success(val);
+                count();
+            };
+        };
+        return task;
     };
 
  // Invocations
