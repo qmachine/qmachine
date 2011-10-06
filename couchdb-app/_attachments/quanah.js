@@ -1,6 +1,12 @@
 //- JavaScript source code
 
 //- quanah.js ~~
+//
+//  TO-DO:
+//  -   argument parsing
+//  -   automatic polling
+//  -   worker script
+//
 //                                                      ~~ (c) SRW, 03 Oct 2011
 
 (function (global) {
@@ -13,19 +19,28 @@
         return;
     }
 
-    if (global.hasOwnProperty('location') === false) {
-        throw new Error('"Method Q" is currently browser-only.');
-    }
-
  // Private declarations
 
-    var argv, countdown, define, isFunction, uuid;
+    var argv, bookmarks, countdown, define, isFunction, uuid;
 
  // Private definitions
 
     argv = {
         developer:  false,
-        volunteer:  false
+        volunteer:  true
+    };
+
+    bookmarks = {
+        doc: function (id) {
+            return 'http://' + global.location.host + '/db/' + id;
+        },
+        queue: function (key) {
+            return 'http://' + global.location.host + '/_view/tasks?key="' +
+                key + '"';
+        },
+        uuids: function (n) {
+            return 'http://' + global.location.host + '/_uuids?count=' + n;
+        }
     };
 
     countdown = function (n, callback) {
@@ -140,20 +155,7 @@
     QuanahVar.prototype.sync = function () {
      // This prototype method implements the "transfer layer" completely. I
      // am a lot more concerned with correctness than performance right now.
-        var base, bookmarks, key2meta;
-        base = 'http://' + global.location.host;
-        bookmarks = {
-         // NOTE: This part will be initialized by a "parseURI" function soon,
-         // but for now I have hardcoded it and matched development settings
-         // to the deployment settings :-P
-            db:         base + '/db/',
-            done:       base + '/_view/status?key="done"',
-            running:    base + '/_view/status?key="running"',
-            uuids:      base + '/_uuids?count=1000',
-            waiting:    base + '/_view/status?key="waiting"'
-        };
-        key2meta = {};
-        console.log(bookmarks);         //- DEBUGGING ONLY!
+        var key2meta = {};
         QuanahVar.prototype.sync = function () {
             var that = this;
             that.onready = function (x, exit) {
@@ -165,7 +167,7 @@
                     meta = key2meta[that.key] = {
                         '_id':  that.key,
                         '_rev': null,
-                        'url':  bookmarks.db + that.key
+                        'url':  bookmarks.doc(that.key)
                     };
                 } else {
                     meta = key2meta[that.key];
@@ -291,29 +293,31 @@
                 count();
             };
         };
-        return task;
+        return task.sync();             //- returns a reference to task
     };
 
  // Invocations
 
-    if (argv.developer === true) {
-        (function developer() {
-            console.log('--- DEVELOPER MODE ENABLED ---');
-        }());
-    }
+    // (DEVELOPER SCRIPT GOES HERE)
 
     if (argv.volunteer === true) {
         (function volunteer() {
-            console.log('--- VOLUNTEER MODE ENABLED ---');
+            var bee;
+            if (global.hasOwnProperty('window')) {
+             // This part runs in a web browser.
+                bee = new Worker('quanah.js');
+                bee.onmessage = function (evt) {
+                    console.log(evt);
+                };
+                bee.onerror = function (evt) {
+                    console.error(evt);
+                };
+            } else {
+             // This part runs in a Web Worker.
+                importScripts(bookmarks.queue('waiting') + '&callback=postMessage');
+            }
         }());
     }
-
- // Demonstrations (for testing only)
-
-    console.log(([1, 2, 3, 4, 5].Q(null, function (x, exit) {
-        console.log(x);
-        exit.success(x);
-    })).sync());
 
 }(function (outer) {
     'use strict';
