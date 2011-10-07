@@ -27,7 +27,7 @@
  // Private definitions
 
     argv = {
-        developer:  false,
+        developer:  true,
         volunteer:  true
     };
 
@@ -167,93 +167,108 @@
         QuanahVar.prototype.sync = function () {
             var that = this;
             that.onready = function (x, exit) {
-                var count, meta, pull, push, y;
+                var count, flags, meta, pull, push, y;
                 count = countdown(2, function () {
                     exit.failure(x);
                 });
+                flags = {
+                    pull:   false,
+                    push:   false
+                };
+                pull = function () {
+                    var req = new XMLHttpRequest();
+                    req.onreadystatechange = function () {
+                        var response;
+                        if (req.readyState === 4) {
+                            response = JSON.parse(req.responseText);
+                            if (req.status === 200) {
+                             // NOTE: I may need to compare version numbers ...
+                                meta.rev = response._rev;
+                                if (flags.push === true) {
+                                 // NOTE: Be careful here, too ... ???
+                                    that.val = response.val;
+                                    push();
+                                } else {
+                                    exit.success(response.val);
+                                }
+                            } else {
+                                count();
+                            }
+                        }
+                    };
+                    req.open('GET', meta.url, true);
+                    req.send(null);
+                };
+                push = function () {
+                    var req = new XMLHttpRequest();
+                    req.onreadystatechange = function () {
+                        var response;
+                        if (req.readyState === 4) {
+                            response = JSON.parse(req.responseText);
+                            if (req.status === 201) {
+                                if (response.ok === true) {
+                                    meta.rev = response.rev;
+                                    exit.success(x);    // WTF ???
+                                } else {
+                                    count();
+                                }
+                            } else {
+                                count();
+                            }
+                        }
+                    };
+                    req.open('PUT', meta.url, true);
+                    req.setRequestHeader('Content-type', 'application/json');
+                    req.send(JSON.stringify(y));
+                };
                 if (that.hasOwnProperty('key')) {
-                 // ==> pull
+                 // Instance may be initializing from key ==> pull.
+                    flags.pull = true;
                     if (that.hasOwnProperty('val')) {
-                     // Instance is out-of-date and needs only be synced.
-                     // ==> push also (and let one fail?)
-                    } else {
-                     // Instance is being revived from a known key.
+                     // Instance needs to be synced ==> push _also_ :-)
+                        flags.push = true;
                     }
                 } else {
-                 // Instance is being initialized from value.
+                 // Instance is initializing from value ==> push.
+                    flags.push = true;
                     that.key = uuid();
                     that.val = (that.hasOwnProperty('val')) ? that.val : null;
-                 // ==> push
                 }
                 if (key2meta.hasOwnProperty(that.key) === false) {
                     key2meta[that.key] = {
                         id:     that.key,
-                        rev:    null,
+                        rev:    undefined,
                         url:    bookmarks.doc(that.key)
                     };
                 }
                 meta = key2meta[that.key];
                 y = {
                     '_id':  meta.id,
-                    //'_rev': meta.rev, //- this line can be troublesome ...
+                    '_rev': meta.rev,
                     'type': (typeof that.val),
                     'val':  (function (val) {
-                     // Here, I am experimenting with using 'eval' to revive
-                     // _all_ values for consistency rather than security. I
-                     // don't care to rant about Crockford here ... ;-)
                         var left, right;
                         left = '(function () {\nreturn ';
                         right = ';\n}());';
-                        if (isFunction(val.toJSON)) {
-                            return left + val.toJSON() + right;
-                        } else if (isFunction(val.toSource)) {
-                            return left + val.toSource() + right;
+                        if (isFunction(val)) {
+                            if (isFunction(val.toJSON)) {
+                                return left + val.toJSON() + right;
+                            } else if (isFunction(val.toSource)) {
+                                return left + val.toSource() + right;
+                            } else if (isFunction(val.toString)) {
+                                return left + val.toString() + right;
+                            } else {
+                                return left + val + right;
+                            }
                         } else {
-                            return left + JSON.stringify(val) + right;
+                            return val;
                         }
                     }(that.val))
                 };
-                pull = new XMLHttpRequest();
-                push = new XMLHttpRequest();
-                pull.onreadystatechange = function () {
-                    var response;
-                    if (pull.readyState === 4) {
-                        if (pull.status === 200) {
-                            response = JSON.parse(pull.responseText);
-                         // NOTE: I need to compare the version numbers ...
-                            meta.rev = response._rev;
-                            exit.success(response.val);
-                        } else {
-                            count();
-                        }
-                    }
-                };
-                push.onreadystatechange = function () {
-                    var response;
-                    if (push.readyState === 4) {
-                        if (push.status === 201) {
-                            response = JSON.parse(push.responseText);
-                            if (response.ok === true) {
-                                meta.rev = response.rev;
-                                exit.success(x);
-                            } else {
-                                count();
-                            }
-                        } else {
-                            count();
-                        }
-                    }
-                };
-                pull.open('GET', meta.url, true);
-                push.open('PUT', meta.url, true);
-                push.setRequestHeader('Content-type', 'application/json');
-                if (meta.rev === null) {
-                    pull.send(null);
-                    push.send(JSON.stringify(y));
+                if ((flags.pull === false) && (flags.push === true)) {
+                    push();
                 } else {
-                    y._rev = meta.rev;
-                    pull.send(null);
-                    push.send(JSON.stringify(y));
+                    pull();
                 }
                 return that;
             };
@@ -265,9 +280,6 @@
  // Global definitions
 
     Object.prototype.Q = function (func) {  //  y = x.Q(f);
-        if (arguments.length < 2) {
-            throw new Error('Method "Q" requires two input arguments.');
-        }
         var argv, main, results, task;
         argv = new QuanahVar({
             val: this
@@ -275,9 +287,7 @@
         main = new QuanahVar({
             val: func
         });
-        results = new QuanahVar({
-            val: null
-        });
+        results = new QuanahVar();
         task = new QuanahVar({
             val: {
                 main:       null,
@@ -313,7 +323,32 @@
 
  // Invocations
 
-    // (DEVELOPER SCRIPT GOES HERE)
+    if (argv.developer === true) {
+        (function developer() {
+            var x, y;
+            if (global.hasOwnProperty('window')) {
+                x = [1, 2, 3, 4, 5];
+                y = x.Q(function (x) {
+                    var i, n, y;
+                    n = x.length;
+                    y = [];
+                    for (i = 0; i < n; i += 1) {
+                        y[i] = 3 * x[i];
+                    }
+                    return y;
+                });
+                y.onready = function (val, exit) {
+                    console.log(val);
+                    exit.success(val);
+                };
+                y.sync();
+                y.onready = function (val, exit) {
+                    console.log(val);
+                    exit.success(val);
+                };
+            }
+        }());
+    }
 
     if (argv.volunteer === true) {
         (function volunteer() {
@@ -338,20 +373,14 @@
                      // TO-DO: Select "obj" randomly ...
                         obj = queue.rows[0];
                         task = new QuanahVar({
-                            key: obj.id || obj._id,
-                            val: {
-                                main:       obj.value.main,
-                                argv:       obj.value.argv,
-                                results:    obj.value.results,
-                                status:     obj.key
-                            }
+                            key: obj.id
                         });
                         task.onready = function (val, exit) {
-                            val.status = "running";
+                            val.status = 'running';
+                            task.sync();
                             task.onready = function (val, exit) {
                              // This part is purely for debugging :-P
                                 postMessage(task);
-                                task.sync();
                                 exit.success(val);
                             };
                             exit.success(val);
