@@ -6,6 +6,7 @@
 //  -   argument parsing
 //  -   automatic polling
 //  -   worker script
+//  -   the "define" function can probably disappear soon :-)
 //
 //                                                      ~~ (c) SRW, 03 Oct 2011
 
@@ -21,7 +22,7 @@
 
  // Private declarations
 
-    var argv, bookmarks, countdown, define, isFunction, uuid;
+    var argv, bookmarks, countdown, define, isFunction;
 
  // Private definitions
 
@@ -89,24 +90,16 @@
         return ((typeof f === 'function') && (f instanceof Function));
     };
 
-    uuid = function () {
-     // This function generates hexadecimal UUIDs of length 32.
-        var x = '';
-        while (x.length < 32) {
-            x += Math.random().toString(16).slice(2, (32 + 2 - x.length));
-        }
-        return x;
-    };
-
  // Private constructors
 
     function QuanahVar(obj) {
-        if ((typeof obj !== 'object') || (obj === null)) {
-            obj = {};
-        }
+        obj = ((typeof obj === 'object') && (obj !== null)) ? obj : {};
         var egress, ready, revive, stack, that;
         egress = function () {
             return {
+             // I wish these synced automatically, and I may attempt to do it
+             // soon either by removing "sync"'s internal "onready" or else by
+             // directly manipulating the stack ...
                 failure: function (x) {
                     that.val = x;
                 },
@@ -132,8 +125,6 @@
         };
         stack = [];
         that = this;
-        that.key = (obj.hasOwnProperty('key')) ? obj.key : uuid();
-        that.val = (obj.hasOwnProperty('val')) ? obj.val : null;
         define(that, 'onready', {
             configurable: false,
             enumerable: true,
@@ -148,14 +139,31 @@
                 revive();
             }
         });
-        that.sync();
-        return that;
+     // Here, we add user-specified properties directly to the new object.
+        if (obj.hasOwnProperty('key')) {
+            that.key = obj.key;
+        }
+        if (obj.hasOwnProperty('val')) {
+            that.val = obj.val;
+        }
+     // We don't worry if either property is missing, though, because we take
+     // care of that during the invocation of the "sync" method :-)
+        return that.sync();
     }
 
     QuanahVar.prototype.sync = function () {
      // This prototype method implements the "transfer layer" completely. I
      // am a lot more concerned with correctness than performance right now.
-        var key2meta = {};
+        var key2meta, uuid;
+        key2meta = {};
+        uuid = function () {
+         // This function generates hexadecimal UUIDs of length 32.
+            var x = '';
+            while (x.length < 32) {
+                x += Math.random().toString(16).slice(2, (32 + 2 - x.length));
+            }
+            return x;
+        };
         QuanahVar.prototype.sync = function () {
             var that = this;
             that.onready = function (x, exit) {
@@ -163,15 +171,48 @@
                 count = countdown(2, function () {
                     exit.failure(x);
                 });
-                if (key2meta.hasOwnProperty(that.key) === false) {
-                    meta = key2meta[that.key] = {
-                        '_id':  that.key,
-                        '_rev': null,
-                        'url':  bookmarks.doc(that.key)
-                    };
+                if (that.hasOwnProperty('key')) {
+                 // ==> pull
+                    if (that.hasOwnProperty('val')) {
+                     // Instance is out-of-date and needs only be synced.
+                     // ==> push also (and let one fail?)
+                    } else {
+                     // Instance is being revived from a known key.
+                    }
                 } else {
-                    meta = key2meta[that.key];
+                 // Instance is being initialized from value.
+                    that.key = uuid();
+                    that.val = (that.hasOwnProperty('val')) ? that.val : null;
+                 // ==> push
                 }
+                if (key2meta.hasOwnProperty(that.key) === false) {
+                    key2meta[that.key] = {
+                        id:     that.key,
+                        rev:    null,
+                        url:    bookmarks.doc(that.key)
+                    };
+                }
+                meta = key2meta[that.key];
+                y = {
+                    '_id':  meta.id,
+                    //'_rev': meta.rev, //- this line can be troublesome ...
+                    'type': (typeof that.val),
+                    'val':  (function (val) {
+                     // Here, I am experimenting with using 'eval' to revive
+                     // _all_ values for consistency rather than security. I
+                     // don't care to rant about Crockford here ... ;-)
+                        var left, right;
+                        left = '(function () {\nreturn ';
+                        right = ';\n}());';
+                        if (isFunction(val.toJSON)) {
+                            return left + val.toJSON() + right;
+                        } else if (isFunction(val.toSource)) {
+                            return left + val.toSource() + right;
+                        } else {
+                            return left + JSON.stringify(val) + right;
+                        }
+                    }(that.val))
+                };
                 pull = new XMLHttpRequest();
                 push = new XMLHttpRequest();
                 pull.onreadystatechange = function () {
@@ -180,7 +221,7 @@
                         if (pull.status === 200) {
                             response = JSON.parse(pull.responseText);
                          // NOTE: I need to compare the version numbers ...
-                            meta._rev = response._rev;
+                            meta.rev = response._rev;
                             exit.success(response.val);
                         } else {
                             count();
@@ -193,7 +234,7 @@
                         if (push.status === 201) {
                             response = JSON.parse(push.responseText);
                             if (response.ok === true) {
-                                meta._rev = response.rev;
+                                meta.rev = response.rev;
                                 exit.success(x);
                             } else {
                                 count();
@@ -206,37 +247,11 @@
                 pull.open('GET', meta.url, true);
                 push.open('PUT', meta.url, true);
                 push.setRequestHeader('Content-type', 'application/json');
-                y = {
-                    '_id':  meta._id,
-                    'type': (typeof x)  //- this will be one of the "basic 5"
-                };
-                if (isFunction(x)) {
-                    if (isFunction(x.toJSON)) {
-                        y.val = [
-                            '(function main() {\nreturn ',
-                            x.toJSON(),
-                            ';\n}());'
-                        ].join(''); 
-                    } else if (isFunction(x.toSource)) {
-                        y.val = [
-                            '(function main() {\nreturn ',
-                            x.toSource(),
-                            ';\n}());' 
-                        ].join('');
-                    } else {
-                        y.val = [
-                            '(function main() {\nreturn ',
-                            x.toString(),
-                            ';\n}());' 
-                        ].join('');
-                    }
-                } else {
-                    y.val = x;
-                }
-                if (meta._rev === null) {
+                if (meta.rev === null) {
+                    pull.send(null);
                     push.send(JSON.stringify(y));
                 } else {
-                    y._rev = meta._rev;
+                    y._rev = meta.rev;
                     pull.send(null);
                     push.send(JSON.stringify(y));
                 }
@@ -307,14 +322,43 @@
              // This part runs in a web browser.
                 bee = new Worker('quanah.js');
                 bee.onmessage = function (evt) {
-                    console.log(evt);
+                    console.log(evt.data);
                 };
                 bee.onerror = function (evt) {
                     console.error(evt);
                 };
             } else {
              // This part runs in a Web Worker.
-                importScripts(bookmarks.queue('waiting') + '&callback=postMessage');
+                global.run = function (queue) {
+                    var n, obj, task;
+                    n = queue.rows.length;
+                    if (n === 0) {
+                        postMessage('Nothing to do ...');
+                    } else {
+                     // TO-DO: Select "obj" randomly ...
+                        obj = queue.rows[0];
+                        task = new QuanahVar({
+                            key: obj.id || obj._id,
+                            val: {
+                                main:       obj.value.main,
+                                argv:       obj.value.argv,
+                                results:    obj.value.results,
+                                status:     obj.key
+                            }
+                        });
+                        task.onready = function (val, exit) {
+                            val.status = "running";
+                            task.onready = function (val, exit) {
+                             // This part is purely for debugging :-P
+                                postMessage(task);
+                                task.sync();
+                                exit.success(val);
+                            };
+                            exit.success(val);
+                        };
+                    }
+                };
+                importScripts(bookmarks.queue('waiting') + '&callback=run');
             }
         }());
     }

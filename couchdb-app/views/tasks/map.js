@@ -25,9 +25,9 @@ function (doc) {
             x.hasOwnProperty('status')  ;
         if (y === true) {
             emit(x.status, {
-                main: x.main,
-                argv: x.argv,
-                results: x.results
+                main:       x.main,
+                argv:       x.argv,
+                results:    x.results
             });
         }
     }
