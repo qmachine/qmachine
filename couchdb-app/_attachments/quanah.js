@@ -5,10 +5,8 @@
 //  TO-DO:
 //  -   argument parsing
 //  -   automatic polling
-//  -   worker script
-//  -   the "define" function can probably disappear soon :-)
 //
-//                                                      ~~ (c) SRW, 03 Oct 2011
+//                                                      ~~ (c) SRW, 08 Oct 2011
 
 (function (global) {
     'use strict';
@@ -152,8 +150,9 @@
     }
 
     QuanahVar.prototype.sync = function () {
-     // This prototype method implements the "transfer layer" completely. I
-     // am a lot more concerned with correctness than performance right now.
+     // This prototype method implements the "transfer layer" completely, with
+     // small exceptions noted for the "bookmarks" variable and the initial
+     // "importScripts" invocation in the Web Worker script.
         var key2meta, uuid;
         key2meta = {};
         uuid = function () {
@@ -185,7 +184,6 @@
                              // NOTE: I may need to compare version numbers ...
                                 meta.rev = response._rev;
                                 if (flags.push === true) {
-                                 // NOTE: Be careful here, too ... ???
                                     that.val = response.val;
                                     push();
                                 } else {
@@ -208,7 +206,8 @@
                             if (req.status === 201) {
                                 if (response.ok === true) {
                                     meta.rev = response.rev;
-                                    exit.success(x);    // WTF ???
+                                 // NOTE: Check that (x === that.val)?
+                                    exit.success(x);
                                 } else {
                                     count();
                                 }
@@ -280,40 +279,29 @@
  // Global definitions
 
     Object.prototype.Q = function (func) {  //  y = x.Q(f);
-        var argv, main, results, task;
-        argv = new QuanahVar({
-            val: this
-        });
-        main = new QuanahVar({
-            val: func
-        });
-        results = new QuanahVar();
-        task = new QuanahVar({
-            val: {
-                main:       null,
-                argv:       null,
-                results:    null,
-                status:     null
-            }
-        });
+        var f, task, x, y;
+        f = new QuanahVar({val: func});
+        x = new QuanahVar({val: this});
+        y = new QuanahVar();
+        task = new QuanahVar({val: {f: null, x: null, y: null, status: null}});
         task.onready = function (task, exit) {
             var count;
             count = countdown(3, function () {
                 task.status = 'waiting';
                 exit.success(task);
             });
-            argv.onready = function (val, exit) {
-                task.argv = argv.key;
+            x.onready = function (val, exit) {
+                task.x = x.key;
                 exit.success(val);
                 count();
             };
-            main.onready = function (val, exit) {
-                task.main = main.key;
+            f.onready = function (val, exit) {
+                task.f = f.key;
                 exit.success(val);
                 count();
             };
-            results.onready = function (val, exit) {
-                task.results = results.key;
+            y.onready = function (val, exit) {
+                task.y = y.key;
                 exit.success(val);
                 count();
             };
@@ -337,15 +325,7 @@
                     }
                     return y;
                 });
-                y.onready = function (val, exit) {
-                    console.log(val);
-                    exit.success(val);
-                };
                 y.sync();
-                y.onready = function (val, exit) {
-                    console.log(val);
-                    exit.success(val);
-                };
             }
         }());
     }
@@ -365,25 +345,16 @@
             } else {
              // This part runs in a Web Worker.
                 global.run = function (queue) {
-                    var argv, n, main, obj, results, task;
+                    var x, n, f, obj, y, task;
                     n = queue.rows.length;
                     if (n === 0) {
                         postMessage('Nothing to do ...');
                     } else {
-                     // TO-DO: Select "obj" randomly ...
                         obj = queue.rows[0];
-                        argv = new QuanahVar({
-                            key: obj.value.argv
-                        });
-                        main = new QuanahVar({
-                            key: obj.value.main
-                        });
-                        results = new QuanahVar({
-                            key: obj.value.results
-                        });
-                        task = new QuanahVar({
-                            key: obj.id
-                        });
+                        f = new QuanahVar({key: obj.value.f});
+                        x = new QuanahVar({key: obj.value.x});
+                        y = new QuanahVar({key: obj.value.y});
+                        task = new QuanahVar({key: obj.id});
                         task.onready = function (val, exit) {
                             val.status = 'running';
                             exit.success(val);
@@ -392,32 +363,18 @@
                         task.onready = function (val, exit) {
                             var count;
                             count = countdown(3, function () {
-                                results.val = (eval(main.val))(argv.val);
-                                results.sync();
-                                postMessage(results.val);
+                                y.val = (eval(f.val))(x.val);
+                                y.sync();
+                                postMessage(y.val);
                                 task.val.status = 'done';
                                 task.sync();
-                                task.onready = function (val, exit) {
-                                    postMessage('DONE!');
-                                    exit.success(val);
-                                };
                                 exit.success(val);
                             });
-                            argv.onready = function (val, exit) {
-                                postMessage(val);
-                                exit.success(val);
-                                count();
-                            };
-                            main.onready = function (val, exit) {
-                                postMessage(val);
-                                exit.success(val);
-                                count();
-                            };
-                            results.onready = function (val, exit) {
-                                postMessage(val);
-                                exit.success(val);
-                                count();
-                            };
+                            f.onready = x.onready = y.onready =
+                                function (val, exit) {
+                                    exit.success(val);
+                                    count();
+                                };
                         };
                     }
                 };

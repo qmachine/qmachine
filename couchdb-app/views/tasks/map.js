@@ -19,15 +19,15 @@ function (doc) {
     var x, y;
     if (doc.hasOwnProperty('val') === true) {
         x = doc.val;
-        y = x.hasOwnProperty('main')    &&
-            x.hasOwnProperty('argv')    &&
-            x.hasOwnProperty('results') &&
+        y = x.hasOwnProperty('f')    &&
+            x.hasOwnProperty('x')    &&
+            x.hasOwnProperty('y') &&
             x.hasOwnProperty('status')  ;
         if (y === true) {
             emit(x.status, {
-                main:       x.main,
-                argv:       x.argv,
-                results:    x.results
+                f:  x.f,
+                x:  x.x,
+                y:    x.y
             });
         }
     }
