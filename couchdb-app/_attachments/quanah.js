@@ -365,25 +365,59 @@
             } else {
              // This part runs in a Web Worker.
                 global.run = function (queue) {
-                    var n, obj, task;
+                    var argv, n, main, obj, results, task;
                     n = queue.rows.length;
                     if (n === 0) {
                         postMessage('Nothing to do ...');
                     } else {
                      // TO-DO: Select "obj" randomly ...
                         obj = queue.rows[0];
+                        argv = new QuanahVar({
+                            key: obj.value.argv
+                        });
+                        main = new QuanahVar({
+                            key: obj.value.main
+                        });
+                        results = new QuanahVar({
+                            key: obj.value.results
+                        });
                         task = new QuanahVar({
                             key: obj.id
                         });
                         task.onready = function (val, exit) {
                             val.status = 'running';
-                            task.sync();
-                            task.onready = function (val, exit) {
-                             // This part is purely for debugging :-P
-                                postMessage(task);
-                                exit.success(val);
-                            };
                             exit.success(val);
+                        };
+                        task.sync();
+                        task.onready = function (val, exit) {
+                            var count;
+                            count = countdown(3, function () {
+                                results.val = (eval(main.val))(argv.val);
+                                results.sync();
+                                postMessage(results.val);
+                                task.val.status = 'done';
+                                task.sync();
+                                task.onready = function (val, exit) {
+                                    postMessage('DONE!');
+                                    exit.success(val);
+                                };
+                                exit.success(val);
+                            });
+                            argv.onready = function (val, exit) {
+                                postMessage(val);
+                                exit.success(val);
+                                count();
+                            };
+                            main.onready = function (val, exit) {
+                                postMessage(val);
+                                exit.success(val);
+                                count();
+                            };
+                            results.onready = function (val, exit) {
+                                postMessage(val);
+                                exit.success(val);
+                                count();
+                            };
                         };
                     }
                 };
