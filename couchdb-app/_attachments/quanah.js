@@ -137,15 +137,15 @@
                 revive();
             }
         });
-     // Here, we add user-specified properties directly to the new object.
+     // Here, we add user-specified properties directly to the new object; we
+     // don't worry if either is missing, though, because the "sync" method
+     // handles that. NOTE: "sync" won't be defined till the very end!
         if (obj.hasOwnProperty('key')) {
             that.key = obj.key;
         }
         if (obj.hasOwnProperty('val')) {
             that.val = obj.val;
         }
-     // We don't worry if either property is missing, though, because we take
-     // care of that during the invocation of the "sync" method :-)
         return that.sync();
     }
 
@@ -273,7 +273,7 @@
             };
             return that;
         };
-        return this.sync();
+        return this.sync();             //- returns a reference to "this"
     };
 
  // Global definitions
@@ -306,7 +306,7 @@
                 count();
             };
         };
-        return task.sync();             //- returns a reference to task
+        return task.sync();             //- returns a reference to "task"
     };
 
  // Invocations
@@ -363,6 +363,9 @@
                         task.onready = function (val, exit) {
                             var count;
                             count = countdown(3, function () {
+                             // Yes, I know this is begging for a malicious
+                             // code injection -- that's precisely the reason
+                             // I was using JSLINT as a preprocessor ...
                                 y.val = (eval(f.val))(x.val);
                                 y.sync();
                                 postMessage(y.val);
