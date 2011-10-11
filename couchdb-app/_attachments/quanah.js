@@ -301,7 +301,7 @@
             task.sync();
         });
         f = new QuanahVar({val: func});
-        x = new QuanahVar({val: this});
+        x = (this instanceof QuanahVar) ? this : new QuanahVar({val: this});
         y = new QuanahVar();
         task = new QuanahVar({val: {f: null, x: null, y: null, status: null}});
         f.onready = x.onready = y.onready = function (val, exit) {
