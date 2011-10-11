@@ -37,4 +37,27 @@
 
 }());
 
+(function () {
+    'use strict';
+
+ // Here is the "same" program as above, implemented with a monadic style :-)
+
+    [1, 2, 3, 4, 5].
+        Q(function (x) {
+            return x.map(function (each) {
+                return 3 * each;
+            });
+        }).
+        Q(function (x) {
+            return x.reduce(function (a, b) {
+                return a + b;
+            });
+        }).
+        onready = function (x, exit) {
+            console.log(x);
+            exit.success(x);
+        };
+
+}());
+
 //- vim:set syntax=javascript:
