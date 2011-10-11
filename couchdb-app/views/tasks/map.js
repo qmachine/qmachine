@@ -16,19 +16,13 @@
 
 function (doc) {
     'use strict';
-    var x, y;
+    var v, y;
     if (doc.hasOwnProperty('val') === true) {
-        x = doc.val;
-        y = x.hasOwnProperty('f')    &&
-            x.hasOwnProperty('x')    &&
-            x.hasOwnProperty('y') &&
-            x.hasOwnProperty('status')  ;
+        v = doc.val;
+        y = v.hasOwnProperty('f') && v.hasOwnProperty('x') &&
+            v.hasOwnProperty('y') && v.hasOwnProperty('status');
         if (y === true) {
-            emit(x.status, {
-                f:  x.f,
-                x:  x.x,
-                y:    x.y
-            });
+            emit(v.status, {f: v.f, x: v.x, y: v.y});
         }
     }
 };
