@@ -32,16 +32,6 @@ div {
     margin-bottom: 1em;                 /** skip a line after each end tag */
 }
 
-div.question, div.answer {
-    text-align: justify;
-}
-
-div.question:before {
-    content: "Q";
-    margin-left: -2em;
-    position: absolute;
-}
-
 li {
     background-color: inherit;
     color: black;

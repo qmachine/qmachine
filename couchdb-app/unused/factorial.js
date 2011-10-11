@@ -25,7 +25,7 @@
             y2.onready = function (y2, exit) {
                 exit.success(x * y2);
             };
-            return y2;
+            return y2.sync();
         }
     });
 

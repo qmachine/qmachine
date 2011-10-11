@@ -4,7 +4,7 @@
 //
 //  Browser features that are required:
 //  -   XMLHttpRequest object
-//  -   [Web] Worker object
+//  -   [Web] Worker object (although I'll be able to remove this part soon)
 //  -   getters and setters (ES5 recommended!)
 //
 //  TO-DO:
@@ -323,10 +323,6 @@
                                     exit.failure(res.val);
                                 }
                             });
-                        } else {
-                            console.log(bookmarks.doc(task.key) + ': ' +
-                                response.val.status
-                            );
                         }
                     }
                 });
