@@ -22,7 +22,12 @@ function (doc) {
         y = v.hasOwnProperty('f') && v.hasOwnProperty('x') &&
             v.hasOwnProperty('y') && v.hasOwnProperty('status');
         if (y === true) {
-            emit(v.status, {f: v.f, x: v.x, y: v.y});
+            if (v.hasOwnProperty('token')) {
+             // Here is preliminary token support, per Jonas's request.
+                emit([v.status, v.token], {f: v.f, x: v.x, y: v.y});
+            } else {
+                emit(v.status, {f: v.f, x: v.x, y: v.y});
+            }
         }
     }
 };
