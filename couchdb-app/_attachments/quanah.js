@@ -25,8 +25,8 @@
 
  // Private declarations
 
-    var argv, bookmarks, countdown, define, isFunction, key2meta, read, uuid,
-        write;
+    var argv, bookmarks, countdown, define, isFunction, key2meta, read, token,
+        uuid, write;
 
  // Private definitions
 
@@ -47,6 +47,8 @@
             return 'http://' + global.location.host + '/_uuids?count=' + n;
         }
     };
+
+    token = null;                       //- TODO: retrieve this using parseURI
 
     countdown = function (n, callback) {
         var t = n;
