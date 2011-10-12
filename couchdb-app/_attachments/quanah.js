@@ -141,11 +141,13 @@
         var egress, ready, revive, stack, that;
         egress = function () {
             return {
-             // I wish these synced automatically, and I may attempt to do it
-             // soon either by removing "sync"'s internal "onready" or else by
-             // directly manipulating the stack ...
                 failure: function (x) {
+                    that.status = 'failed';
                     that.val = x;
+                    stack.splice(0, stack.length);
+                    ready = true;
+                 // I'm not sure if this works correctly yet ...
+                    global.setTimeout(that.sync, 1000);
                 },
                 success: function (x) {
                     that.val = x;
@@ -315,7 +317,8 @@
             check = function () {
                 read(bookmarks.doc(task.key), function (request, response) {
                     if (request.status === 200) {
-                        if (response.val.status === 'done') {
+                        switch (response.val.status) {
+                        case 'done':
                          // Exit with current value so the "sync" can occur.
                             global.clearInterval(timer);
                             read(bookmarks.doc(y.key), function (req, res) {
@@ -325,6 +328,15 @@
                                     exit.failure(res.val);
                                 }
                             });
+                            break;
+                        case 'failed':
+                            global.clearInterval(timer);
+                            read(bookmarks.doc(y.key), function (req, res) {
+                                exit.failure(res.val);
+                            });
+                            break;
+                        default:
+                         // (placeholder)
                         }
                     }
                 });
@@ -389,8 +401,7 @@
                                         y.val = (eval(f.val))(x.val);
                                         task.val.status = 'done';
                                     } catch (err) {
-                                        y.val = err;
-                                        task.val.status = 'failed';
+                                        exit.failure(err);
                                     } finally {
                                         y.sync();
                                         task.sync();
