@@ -1,0 +1,32 @@
+#-  Git configuration file
+
+#-  .gitignore ~~
+#
+#   This file contains user-defined filename patterns that Git should ignore
+#   when it computes changes. Typically, we want to ignore any hidden or
+#   temporary files created by the operating system or text editor, but I must
+#   stress that we do not, under _any_ circumstances, want to add a rule that
+#   may cause us to exclude an important file accidentally. Thus, my own policy
+#   is to script and monitor every step of my workflow except for version
+#   control -- always execute your commits manually!
+#
+#                                                       ~~ (c) SRW, 19 Oct 2011
+
+#-  CouchApp configuration files -- these may contain passwords!
+.couchapprc
+
+#-  JavaScript interpreter history files
+.d8_history
+.v8_history
+
+#-  Vim swap files
+*.swp
+
+#-  OS generated files
+.DS_Store*
+ehthumbs.db
+Icon?
+.localized
+Thumbs.db
+
+#-  vim:set syntax=gitconfig:
