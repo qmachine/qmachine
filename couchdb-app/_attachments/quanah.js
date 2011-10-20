@@ -13,19 +13,21 @@
 //
 //                                                      ~~ (c) SRW, 11 Oct 2011
 
-(function (global) {
+chassis(function (q, global) {
     'use strict';
 
- // Assertions
+ // Prerequisites
 
     if (typeof Object.prototype.Q === 'function') {
      // Avoid unnecessary work if Method Q already exists.
         return;
     }
 
+    q.lib('fs');
+
  // Private declarations
 
-    var argv, bookmarks, countdown, define, isFunction, key2meta, read, token,
+    var argv, bookmarks, countdown, isFunction, key2meta, read, sync, token,
         uuid, write;
 
  // Private definitions
@@ -60,38 +62,6 @@
         };
     };
 
-    define = function (obj, name, params) {
-        if (typeof Object.defineProperty === 'function') {
-            define = function (obj, name, params) {
-                return Object.defineProperty(obj, name, params);
-            };
-        } else {
-            define = function (obj, name, params) {
-                var key;
-                for (key in params) {
-                    if (params.hasOwnProperty(key) === true) {
-                        switch (key) {
-                        case 'get':
-                            obj.__defineGetter__(name, params[key]);
-                            break;
-                        case 'set':
-                            obj.__defineSetter__(name, params[key]);
-                            break;
-                        case 'value':
-                            delete obj[name];
-                            obj[name] = params[key];
-                            break;
-                        default:
-                         // (placeholder)
-                        }
-                    }
-                }
-                return obj;
-            };
-        }
-        return define(obj, name, params);
-    };
-
     isFunction = function (f) {
         return ((typeof f === 'function') && (f instanceof Function));
     };
@@ -110,6 +80,8 @@
         request.open('GET', url, true);
         request.send(null);
     };
+
+    sync = q.fs$sync;
 
     uuid = function () {
      // This function generates hexadecimal UUIDs of length 32.
@@ -136,160 +108,6 @@
 
  // Private constructors
 
-    function QuanahVar(obj) {
-        obj = ((typeof obj === 'object') && (obj !== null)) ? obj : {};
-        var egress, ready, revive, stack, that;
-        egress = function () {
-            return {
-                failure: function (x) {
-                    that.status = 'failed';
-                    that.val = x;
-                    stack.splice(0, stack.length);
-                    ready = true;
-                 // I'm not sure if this works correctly yet ...
-                    global.setTimeout(that.sync, 1000);
-                },
-                success: function (x) {
-                    that.val = x;
-                    ready = true;
-                    revive();
-                }
-            };
-        }; 
-        ready = true;
-        revive = function () {
-            var f;
-            if (ready === true) {
-                ready = false;
-                f = stack.shift();
-                if (f === undefined) {
-                    ready = true;
-                } else {
-                    f.call(that, that.val, egress());
-                }
-            }
-        };
-        stack = [];
-        that = this;
-        define(that, 'onready', {
-            configurable: false,
-            enumerable: true,
-            get: function () {
-                return (stack.length > 0) ? stack[0] : null;
-            },
-            set: function (f) {
-                if (isFunction(f) === false) {
-                    throw new Error('"onready" method expects a function.');
-                }
-                stack.push(f);
-                revive();
-            }
-        });
-     // Here, we add user-specified properties directly to the new object; we
-     // don't worry if either is missing, though, because the "sync" method
-     // handles that. NOTE: "sync" won't be defined till the very end!
-        if (obj.hasOwnProperty('key')) {
-            that.key = obj.key;
-        }
-        if (obj.hasOwnProperty('val')) {
-            that.val = obj.val;
-        }
-        return that.sync();
-    }
-
-    QuanahVar.prototype.sync = function () {
-        var that = this;
-        that.onready = function (x, exit) {
-            var count, flags, meta, pull, push, y;
-            count = countdown(2, function () {
-                exit.failure(x);
-            });
-            flags = {
-                pull:   false,
-                push:   false
-            };
-            pull = function () {
-                read(meta.url, function (request, response) {
-                    if (request.status === 200) {
-                        meta.rev = response._rev;
-                        if (flags.push === true) {
-                            that.val = response.val;
-                            push();
-                        } else {
-                            exit.success(response.val);
-                        }
-                    } else {
-                        count();
-                    }
-                });
-            };
-            push = function () {
-                write(meta.url, y, function (request, response) {
-                    if (request.status === 201) {
-                        if (response.ok === true) {
-                            meta.rev = response.rev;
-                            exit.success(x);
-                        } else {
-                            count();
-                        }
-                    } else {
-                        count();
-                    }
-                });
-            };
-            if (that.hasOwnProperty('key')) {
-             // Instance may be initializing from key ==> pull.
-                flags.pull = true;
-                if (that.hasOwnProperty('val')) {
-                 // Instance needs to be synced ==> push _also_ :-)
-                    flags.push = true;
-                }
-            } else {
-             // Instance is initializing from value ==> push.
-                flags.push = true;
-                that.key = uuid();
-                that.val = (that.hasOwnProperty('val')) ? that.val : null;
-            }
-            if (key2meta.hasOwnProperty(that.key) === false) {
-                key2meta[that.key] = {
-                    id:     that.key,
-                    rev:    undefined,
-                    url:    bookmarks.doc(that.key)
-                };
-            }
-            meta = key2meta[that.key];
-            y = {
-                '_id':  meta.id,
-                '_rev': meta.rev,
-                'type': (typeof that.val),
-                'val':  (function (val) {
-                    var left, right;
-                    left = '(function () {\nreturn ';
-                    right = ';\n}());';
-                    if (isFunction(val)) {
-                        if (isFunction(val.toJSON)) {
-                            return left + val.toJSON() + right;
-                        } else if (isFunction(val.toSource)) {
-                            return left + val.toSource() + right;
-                        } else if (isFunction(val.toString)) {
-                            return left + val.toString() + right;
-                        } else {
-                            return left + val + right;
-                        }
-                    } else {
-                        return val;
-                    }
-                }(that.val))
-            };
-            if ((flags.pull === false) && (flags.push === true)) {
-                push();
-            } else {
-                pull();
-            }
-        };
-        return that;
-    };
-
  // Global definitions
 
     Object.prototype.Q = function (func) {  //  y = x.Q(f);
@@ -302,12 +120,19 @@
                 val.status = 'waiting';
                 exit.success(val);
             };
-            task.sync();
+            sync(task);
         });
-        f = new QuanahVar({val: func});
-        x = (this instanceof QuanahVar) ? this : new QuanahVar({val: this});
-        y = new QuanahVar();
-        task = new QuanahVar({val: {f: null, x: null, y: null, status: null}});
+        f = sync({val: func});
+        x = sync((this instanceof (f.constructor)) ? this : {val: this});
+        y = sync({val: null});
+        task = sync({
+            val: {
+                f:      f.key,
+                x:      x.key,
+                y:      y.key,
+                status: 'initializing'
+            }
+        });
         f.onready = x.onready = y.onready = function (val, exit) {
             count();
             exit.success(val);
@@ -382,15 +207,15 @@
                             global.postMessage('Nothing to do ...');
                         } else {
                             obj = queue.rows[0];
-                            f = new QuanahVar({key: obj.value.f});
-                            x = new QuanahVar({key: obj.value.x});
-                            y = new QuanahVar({key: obj.value.y});
-                            task = new QuanahVar({key: obj.id});
+                            f = sync({key: obj.value.f});
+                            x = sync({key: obj.value.x});
+                            y = sync({key: obj.value.y});
+                            task = sync({key: obj.id});
                             task.onready = function (val, exit) {
                                 val.status = 'running';
                                 exit.success(val);
                             };
-                            task.sync();
+                            sync(task);
                             task.onready = function (tval, exit) {
                                 var count, func;
                                 count = countdown(3, function () {
@@ -403,8 +228,8 @@
                                     } catch (err) {
                                         exit.failure(err);
                                     } finally {
-                                        y.sync();
-                                        task.sync();
+                                        sync(y);
+                                        sync(task);
                                         exit.success(tval);
                                     }
                                 });
@@ -423,9 +248,6 @@
         }());
     }
 
-}(function (outer) {
-    'use strict';
-    return (this === null) ? outer : this;
-}.call(null, this)));
+});
 
 //- vim:set syntax=javascript:
