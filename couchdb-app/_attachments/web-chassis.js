@@ -309,7 +309,49 @@ esac
     };
 
     if (q.detects("location")) {
-        q.argv = global.location.search.slice(1).split(",");
+        q.argv = (function () {
+         // This anonymous closure is based in part on parseUri 1.2.2 by
+         // Steven Levithan (stevenlevithan.com, MIT License). It treats the
+         // 'location.search' value as a set of ampersand-separated Boolean
+         // key=value parameters whose keys are valid JS identifiers and whose
+         // values are either "true" or "false" (without quotes). The function
+         // accepts an object whose own properties will be used to override
+         // flags that are already present.
+            var argv, i, key, m, opts, uri;
+            opts = {
+                key: [
+                    'source', 'protocol', 'authority', 'userInfo', 'user',
+                    'password', 'host', 'port', 'relative', 'path',
+                    'directory', 'file', 'query', 'anchor'
+                ],
+                parser: new RegExp('^(?:([^:\\/?#]+):)?(?:\\/\\/((?:(([^:@' +
+                    ']*)(?::([^:@]*))?)?@)?([^:\\/?#]*)(?::(\\d*))?))?((('  +
+                    '(?:[^?#\\/]*\\/)*)([^?#]*))(?:\\?([^#]*))?(?:#(.*))?)'),
+                q: {
+                    name:   'flags',
+                    parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+                }
+            };
+            m = opts.parser.exec(global.location.href);
+            uri = {};
+            for (i = 14; i > 0; i -= 1) {
+                uri[opts.key[i]] = m[i] || '';
+            }
+            uri[opts.q.name] = {};
+            uri[opts.key[12]].replace(opts.q.parser, function ($0, $1, $2) {
+                if ($1) {
+                    uri[opts.q.name][$1] = ($2 !== 'false') ? true : false;
+                }
+            });
+         // First, let's compute the "command-line arguments" :-)
+            argv = {};
+            for (key in uri.flags) {
+                if (uri.flags.hasOwnProperty(key)) {
+                    argv[key] = uri.flags[key];
+                }
+            }
+            return argv;
+        }());
         if (q.detects("window")) {
          // Web Chassis is running inside a web browser -- hooray!
             q.load = function (uri) {
