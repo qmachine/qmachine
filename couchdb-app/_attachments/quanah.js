@@ -82,6 +82,8 @@ chassis(function (q, global) {
 
  // Invocations
 
+    q.puts('Welcome to Quanah.');
+
     if (q.argv.developer === true) {
         (function developer_startup() {
          // This is just a demonstration script, actually ...
