@@ -20,6 +20,7 @@ SRC         :=  quanah-logo.tex
 PDF         :=  $(SRC:%.tex=%.pdf)
 
 APPLE_TOUCH :=  apple-touch-icon.png
+BITBUCKET   :=  bitbucket.jpg
 FAVICON     :=  favicon.ico
 GOOGLECODE  :=  googlecode.png
 GOOGWEBAPP1 :=  128_icon.png
@@ -30,11 +31,12 @@ REF_BG      :=  background.png
 REF_FG      :=  foreground.png
 REF_PNG     :=  reference.png
 
-ICONS       :=  $(APPLE_TOUCH) \
-                $(FAVICON) \
-                $(GOOGLECODE) \
-                $(GOOGWEBAPP1) \
-                $(GOOGWEBAPP2) \
+ICONS       :=  $(APPLE_TOUCH)  \
+                $(BITBUCKET)    \
+                $(FAVICON)      \
+                $(GOOGLECODE)   \
+                $(GOOGWEBAPP1)  \
+                $(GOOGWEBAPP2)  \
                 $(LOGO)
 
 #-  Since we're converting a vector format (PDF) into raster formats, we will
@@ -79,6 +81,9 @@ $(APPLE_TOUCH): $(REF_PNG)
 
 $(FAVICON): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,16) $< $@
+
+$(BITBUCKET): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS_REF,35) $< $@
 
 $(GOOGLECODE): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,55) $< $@
