@@ -22,7 +22,7 @@ chassis(function (q, global) {
 
  // Private declarations
 
-    var countdown, isFunction, sync;
+    var countdown, sync;
 
  // Private definitions
 
@@ -36,17 +36,13 @@ chassis(function (q, global) {
         };
     };
 
-    isFunction = function (f) {
-        return ((typeof f === 'function') && (f instanceof Function));
-    };
-
     sync = q.fs$sync;
 
  // Global definitions
 
     Object.prototype.Q = function (func) {
         var count, f, x, y, task;
-        if (isFunction(func)) {
+        if ((typeof f === 'function') && (f instanceof Function)) {
             count = countdown(3, function () {
                 task.onready = function (val, exit) {
                     val.f = f.key;
@@ -74,7 +70,31 @@ chassis(function (q, global) {
             };
             y.onready = function (val, exit) {
              // NOTE: See polling mechanism at http://goo.gl/TwYXA .
+                var check, timer;
+                check = function () {
+                    q.fs$read(task.key, function (err, res) {
+                        var temp;
+                        if (err === null) {
+                            if (res.val === 'done' || res.val === 'failed') {
+                                global.clearInterval(timer);
+                                console.log('Cleared timer :-)');
+                                temp = sync({key: y.key});
+                                temp.onready = function (val, exit_temp) {
+                                    exit.success(val);
+                                    exit_temp.success(val);
+                                };
+                            }
+                        } else {
+                            throw new Error(res);
+                        }
+                    });
+                    console.log('Checking ...', new Date());
+                    exit.success(val);
+                };
+                console.log('Starting timer ...');
+                timer = global.setInterval(check, 1000);    //- 1 Hz polling
             };
+            return y;
         } else {
             throw new Error('Method Q expects a function as its argument.');
         }
@@ -85,22 +105,11 @@ chassis(function (q, global) {
     q.puts('Welcome to Quanah.');
 
     if (q.argv.developer === true) {
-        (function developer_startup() {
-         // This is just a demonstration script, actually ...
-            console.log('--- Developer mode ---');
-            var x;
-            x = sync({key: 'lala'});
-            x.onready = function (val, exit) {
-                console.log(val);
-                exit.success(val);
-            };
-        }());
+        q.load('developer.js');
     }
 
     if (q.argv.volunteer === true) {
-        (function volunteer_startup() {
-            console.log('--- Volunteer mode ---');
-        }());
+        q.load('volunteer.js');
     }
 
 });
