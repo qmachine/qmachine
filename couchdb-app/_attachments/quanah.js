@@ -22,7 +22,7 @@ chassis(function (q, global) {
 
  // Private declarations
 
-    var countdown, sync;
+    var countdown, sync, token;
 
  // Private definitions
 
@@ -38,17 +38,20 @@ chassis(function (q, global) {
 
     sync = q.fs$sync;
 
+    token = Math.random();              //- TODO: load value from environment
+
  // Global definitions
 
     Object.prototype.Q = function (func) {
         var count, f, x, y, task;
-        if ((typeof f === 'function') && (f instanceof Function)) {
+        if ((typeof func === 'function') && (func instanceof Function)) {
             count = countdown(3, function () {
                 task.onready = function (val, exit) {
                     val.f = f.key;
                     val.x = x.key;
                     val.y = y.key;
                     val.status = 'waiting';
+                    val.token = token;
                     exit.success(val);
                 };
                 sync(task);
@@ -75,7 +78,8 @@ chassis(function (q, global) {
                     q.fs$read(task.key, function (err, res) {
                         var temp;
                         if (err === null) {
-                            if (res.val === 'done' || res.val === 'failed') {
+                            if (res.val.status === 'done' ||
+                                res.val.status === 'failed') {
                                 global.clearInterval(timer);
                                 console.log('Cleared timer :-)');
                                 temp = sync({key: y.key});
@@ -85,11 +89,11 @@ chassis(function (q, global) {
                                 };
                             }
                         } else {
-                            throw new Error(res);
+                            exit.failure(res);
                         }
                     });
-                    console.log('Checking ...', new Date());
-                    exit.success(val);
+                    console.log('Checking ...' + task.key, new Date());
+                    //exit.success(val);
                 };
                 console.log('Starting timer ...');
                 timer = global.setInterval(check, 1000);    //- 1 Hz polling

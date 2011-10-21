@@ -25,16 +25,31 @@ chassis(function (q, global) {
 
      // Declarations
 
-        var deserialize, doc, read, serialize;
+        var deserialize, doc, isFunction, read, serialize;
 
      // Definitions
 
         deserialize = function (obj) {
-            return JSON.parse(obj);     //- PLACEHOLDER
+            return JSON.parse(obj, function revive(key, val) {
+                var isFxn;
+                if (val instanceof Object) {
+                    isFxn = val.hasOwnProperty('type')  &&
+                            val.hasOwnProperty('val')   &&
+                            val.type === 'true-function';
+                    if (isFxn === true) {
+                        return eval(val.val);
+                    }
+                }
+                return val;
+            });
         };
 
         doc = function (id) {
             return 'http://' + global.location.host + '/db/' + id;
+        };
+
+        isFunction = function (f) {
+            return ((typeof f === 'function') && (f instanceof Function));
         };
 
         read = function (url, callback) {
@@ -56,8 +71,28 @@ chassis(function (q, global) {
             request.send(null);
         };
 
-        serialize = function (obj) {
-            return JSON.stringify(obj); //- PLACEHOLDER
+        serialize = function (x) {
+            return JSON.stringify(x, function replacer(key, val) {
+                var left, obj, right;
+                obj = {};
+                if (isFunction(val)) {
+                    left = '(function () {\nreturn ';
+                    right = ';\n}());';
+                    obj.type = 'true-function';
+                    if (isFunction(val.toJSON)) {
+                        obj.val = left + val.toJSON() + right;
+                    } else if (isFunction(val.toSource)) {
+                        obj.val = left + val.toSource() + right;
+                    } else if (isFunction(val.toString)) {
+                        obj.val = left + val.toString() + right;
+                    } else {
+                        obj.val = left + val + right;
+                    }
+                    return obj;
+                } else {
+                    return val;
+                }
+            });
         };
 
      // Rainman initialization
@@ -138,6 +173,7 @@ chassis(function (q, global) {
         };
 
         q.fs$sync = function (obj) {
+         // Ideally, I'll be able to write "y.onready = sync;" eventually ...
             return global.RAINMAN(obj);
         };
 
