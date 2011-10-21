@@ -49,7 +49,7 @@ IMGOPTS      =  -density 600 -gravity center -quality 100 -resize '$(1)x$(1)'
 COLOR       :=  "\#CCCCCC"
 IMGOPTS_REF  =  $(IMGOPTS) -extent '$(1)x$(1)' -bordercolor $(COLOR)        \
                 -border "1x1" -matte -fill none -fuzz "20%"                 \
-                -draw "matte 0,0 floodfill" -shave "1x1" -background $(COLOR)
+                -draw "matte 0,0 floodfill" -shave "1x1" -background "\#FFFFFF"
 
 .PHONY: all clean clobber reset run
 

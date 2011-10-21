@@ -10,15 +10,13 @@
     <title>Quanah: Home Page</title>
     <link rel="stylesheet" href="style.css"/>
     <link rel="shortcut icon" href="favicon.ico"/>
+    <script src="web-chassis.js"></script>
   </head>
   <body>
     <noscript>Please enable JavaScript in your browser.</noscript>
     <ul>
       <li>
-        <a href="javascript:BUTTON.dev();">Developers</a>
-      </li>
-      <li>
-        <a href="javascript:BUTTON.vol();">Volunteers</a>
+        <a href="http://quanah.couchone.com:5984/_utils">Admin</a>
       </li>
       <li>
         <a href="http://goo.gl/tRxfM">Source code</a>
@@ -27,17 +25,7 @@
         <a href="_view/tasks">Queue</a>
       </li>
     </ul>
-    <script>
-        var BUTTON;
-        BUTTON = {
-            dev: function () {
-                alert('(coming soon)');
-            },
-            vol: function () {
-                alert('(coming soon)');
-            }
-        };
-    </script>
     <script src="quanah.js"></script>
+    <script src="fs.js"></script>
   </body>
 </html>
