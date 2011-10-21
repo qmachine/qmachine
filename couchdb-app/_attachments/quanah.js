@@ -4,7 +4,7 @@
 //
 //  This program defines Quanah in terms of Web Chassis. It depends on global
 //  variables "chassis" and "RAINMAN" (the latter indirectly), but ultimately
-//  I plan to encapsulate all parts into a single file someday ...
+//  I plan to hand-roll an optimized, self-contained version some day :-)
 //
 //                                                      ~~ (c) SRW, 19 Oct 2011
 
