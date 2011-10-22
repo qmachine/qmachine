@@ -56,8 +56,8 @@ run: $(APPRC) $(APP)
 	@   $(CP) _attachments $(APP)/                                  ;   \
             $(CP) couchapp.json $(APP)/                                 ;   \
             $(CP) .couchappignore $(APP)/                               ;   \
+            $(CP) filters $(APP)/                                       ;   \
             $(CP) rewrites.json $(APP)/                                 ;   \
-            $(CP) views $(APP)/                                         ;   \
             cd $(APP) && $(COUCHAPP) push -q                            ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(OPEN) $(URL)                                          ;   \
