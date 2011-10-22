@@ -12,7 +12,7 @@ chassis(function (q, global) {
 
  // Declarations
 
-    var countdown, sync, task;
+    var countdown, sync, waiting;
 
  // Definitions (n/a)
 
@@ -28,23 +28,29 @@ chassis(function (q, global) {
 
     sync = q.fs$sync;
 
+    waiting = '_changes?filter=quanah/queue&status=waiting';
+
  // Invocations
 
-    q.fs$read('_design/quanah/_view/tasks?key="waiting"', function (err, res) {
+    q.fs$read(waiting, function (err, res) {
+
+        var queue, task;
 
         if (err !== null) {
          // This is sloppy but very helpful for debugging right now ...
             console.error(err, res);
         }
 
-        if (res.rows.length === 0) {
+        queue = res.results;
+
+        if (queue.length === 0) {
             console.log('Nothing to do ...');
             return;
         }
 
      // For now, take the first entry, run it, and upload its results.
 
-        task = sync({key: res.rows[0].id});
+        task = sync({key: queue[0].id});
 
         task.onready = function (val, exit) {
             val.status = 'running';
