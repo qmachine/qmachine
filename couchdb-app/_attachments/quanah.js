@@ -111,13 +111,13 @@ chassis(function (q, global) {
 
  // Invocations
 
-    q.puts('Welcome to Quanah.');
-
     if (q.argv.developer === true) {
+        q.puts('Welcome to Quanah.');
         q.load('developer.js');
     }
 
     if (q.argv.volunteer === true) {
+        q.puts('Thanks for helping out!');
         q.load('volunteer.js');
     }
 
