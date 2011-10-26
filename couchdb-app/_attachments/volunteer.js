@@ -33,11 +33,15 @@ chassis(function (q, global) {
             var queue, task;
             if (err !== null) {
              // This is sloppy but very helpful for debugging right now ...
-                console.error(err, res);
+                if (q.argv.debug === true) {
+                    console.error(err, res);
+                }
             }
-            queue = res.results;
+            queue = res.results || [];
             if (queue.length === 0) {
-                console.log('Nothing to do ...');
+                if (q.argv.debug === true) {
+                    q.puts('Nothing to do ...');
+                }
                 return;
             } else {
                 global.clearInterval(timer);                //- quit polling
@@ -66,7 +70,9 @@ chassis(function (q, global) {
                     sync(y);
                     y.onready = function (val_y, exit_y) {
                         exit_task.success(val_task);
-                        console.log(val_y);
+                        if (q.argv.debug === true) {
+                            q.puts(val_y);
+                        }
                         exit_y.success(val_y);
                     };
                 });

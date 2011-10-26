@@ -6,7 +6,9 @@
 chassis(function (q, global) {
     'use strict';
 
-    q.puts('--- Developer mode ---');
+    if (q.argv.debug === true) {
+        q.puts('--- Developer mode ---');
+    }
 
     var x, y;
 
@@ -19,7 +21,7 @@ chassis(function (q, global) {
     });
 
     y.onready = function (val, exit) {
-        console.log(val);
+        q.puts(val);
         exit.success(val);
     };
 
