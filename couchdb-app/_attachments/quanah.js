@@ -38,7 +38,8 @@ chassis(function (q, global) {
 
     sync = q.fs$sync;
 
-    token = Math.random();              //- TODO: load value from environment
+    token = 'sean';
+    //token = Math.random();            //- TODO: load value from environment
 
  // Global definitions
 
