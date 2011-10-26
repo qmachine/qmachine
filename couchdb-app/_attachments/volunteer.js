@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- volunteer.js ~~
-//                                                      ~~ (c) SRW, 21 Oct 2011
+//                                                      ~~ (c) SRW, 26 Oct 2011
 
 chassis(function (q, global) {
     'use strict';
