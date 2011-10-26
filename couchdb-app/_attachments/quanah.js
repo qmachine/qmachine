@@ -6,7 +6,7 @@
 //  variables "chassis" and "RAINMAN" (the latter indirectly), but ultimately
 //  I plan to hand-roll an optimized, self-contained version some day :-)
 //
-//                                                      ~~ (c) SRW, 19 Oct 2011
+//                                                      ~~ (c) SRW, 26 Oct 2011
 
 chassis(function (q, global) {
     'use strict';
@@ -38,8 +38,7 @@ chassis(function (q, global) {
 
     sync = q.fs$sync;
 
-    token = 'sean';
-    //token = Math.random();            //- TODO: load value from environment
+    token = 'sean';                     //- TODO: load value from environment
 
  // Global definitions
 
@@ -82,7 +81,9 @@ chassis(function (q, global) {
                             if (res.val.status === 'done' ||
                                 res.val.status === 'failed') {
                                 global.clearInterval(timer);
-                                console.log('Cleared timer :-)');
+                                if (q.argv.debug === true) {
+                                    q.puts('Cleared timer :-)');
+                                }
                                 temp = sync({key: y.key});
                                 temp.onready = function (val, exit_temp) {
                                     exit.success(val);
@@ -93,10 +94,13 @@ chassis(function (q, global) {
                             exit.failure(res);
                         }
                     });
-                    console.log('Checking ...' + task.key, new Date());
-                    //exit.success(val);
+                    if (q.argv.debug === true) {
+                        q.puts('Checking ' + task.key + ' ...');
+                    }
                 };
-                console.log('Starting timer ...');
+                if (q.argv.debug === true) {
+                    q.puts('Starting timer ...');
+                }
                 timer = global.setInterval(check, 1000);    //- 1 Hz polling
             };
             return y;
