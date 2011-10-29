@@ -26,8 +26,8 @@ function (doc, req) {
             if (q.hasOwnProperty(key) && v.hasOwnProperty(key)) {
              // NOTE: This ignores keys that don't exist on the document so
              // that CouchDB's special filter keywords won't interfere. Then,
-             // you can still specify "limit=10", for example, to shorten a
-             // list of results without blacklisting the keywords explicitly.
+             // you can still specify "limit=10" or "since=100", for example,
+             // to subset results without blacklisting keywords explicitly :-)
                 if (q[key] !== v[key]) {
                     return false;
                 }
