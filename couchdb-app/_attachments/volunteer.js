@@ -12,7 +12,7 @@ chassis(function (q, global) {
 
  // Declarations
 
-    var countdown, sync, timer, volunteer, waiting;
+    var countdown, limit, sync, timer, volunteer, waiting;
 
  // Definitions (n/a)
 
@@ -26,11 +26,13 @@ chassis(function (q, global) {
         };
     };
 
+    limit = 20;
+
     sync = q.fs$sync;
 
     volunteer = function () {
         q.fs$read(waiting, function (err, res) {
-            var queue, task;
+            var queue, index, task;
             if (err !== null) {
              // This is sloppy but very helpful for debugging right now ...
                 if (q.argv.debug === true) {
@@ -92,7 +94,7 @@ chassis(function (q, global) {
         });
     };
 
-    waiting = '_changes?filter=quanah/queue&status=waiting';
+    waiting = '_changes?filter=quanah/queue&status=waiting&limit=' + limit;
 
  // Invocations
 
