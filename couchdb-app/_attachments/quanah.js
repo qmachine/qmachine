@@ -79,7 +79,7 @@ chassis(function (q, global) {
                         var temp;
                         if (err === null) {
                             if (res.val.status === 'done' ||
-                                res.val.status === 'failed') {
+                                    res.val.status === 'failed') {
                                 global.clearInterval(timer);
                                 if (q.argv.debug === true) {
                                     q.puts('Cleared timer :-)');
