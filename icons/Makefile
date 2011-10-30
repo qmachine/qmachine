@@ -19,24 +19,29 @@ BGPDF       :=  $(BGSRC:%.tex=%.pdf)
 SRC         :=  quanah-logo.tex
 PDF         :=  $(SRC:%.tex=%.pdf)
 
-APPLE_TOUCH :=  apple-touch-icon.png
 BITBUCKET   :=  bitbucket.jpg
 FAVICON     :=  favicon.ico
 GOOGLECODE  :=  googlecode.png
 GOOGWEBAPP1 :=  128_icon.png
 GOOGWEBAPP2 :=  112_icon.png
+IPAD        :=  touch-icon-ipad.png
+IPHONE      :=  touch-icon-iphone.png
+IPHONE4     :=  touch-icon-iphone4.png
 LOGO        :=  logo.jpg
 
 REF_BG      :=  background.png
 REF_FG      :=  foreground.png
+REF_JPG     :=  reference.jpg
 REF_PNG     :=  reference.png
 
-ICONS       :=  $(APPLE_TOUCH)  \
-                $(BITBUCKET)    \
+ICONS       :=  $(BITBUCKET)    \
                 $(FAVICON)      \
                 $(GOOGLECODE)   \
                 $(GOOGWEBAPP1)  \
                 $(GOOGWEBAPP2)  \
+                $(IPAD)         \
+                $(IPHONE)       \
+                $(IPHONE4)      \
                 $(LOGO)
 
 #-  Since we're converting a vector format (PDF) into raster formats, we will
@@ -47,6 +52,7 @@ ICONS       :=  $(APPLE_TOUCH)  \
 IMGOPTS      =  -density 600 -gravity center -quality 100 -resize '$(1)x$(1)'
 
 COLOR       :=  "\#CCCCCC"
+
 IMGOPTS_REF  =  $(IMGOPTS) -extent '$(1)x$(1)' -bordercolor $(COLOR)        \
                 -border "1x1" -matte -fill none -fuzz "20%"                 \
                 -draw "matte 0,0 floodfill" -shave "1x1" -background "\#FFFFFF"
@@ -59,7 +65,7 @@ clean: reset
 	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(PDF) $(REF_FG) $(REF_BG)
 
 clobber: clean
-	@   $(RM) $(ICONS) $(REF_PNG)
+	@   $(RM) $(ICONS) $(REF_JPG) $(REF_PNG)
 
 reset:
 	@   clear
@@ -71,19 +77,16 @@ run: $(ICONS)
 
 .PHONY: test
 
-test: $(APPLE_TOUCH)
+test: $(IPHONE4)
 	@   $(OPEN) $<
 
 ###
 
-$(APPLE_TOUCH): $(REF_PNG)
-	@   $(CONVERT) $(call IMGOPTS,114) $< $@
+$(BITBUCKET): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS_REF,35) $< $@
 
 $(FAVICON): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,16) $< $@
-
-$(BITBUCKET): $(REF_PNG)
-	@   $(CONVERT) $(call IMGOPTS_REF,35) $< $@
 
 $(GOOGLECODE): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,55) $< $@
@@ -94,6 +97,15 @@ $(GOOGWEBAPP1): $(REF_PNG)
 $(GOOGWEBAPP2): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,112) $< $@
 
+$(IPHONE): $(REF_JPG)
+	@   $(CONVERT) $(call IMGOPTS,57) $< $@
+
+$(IPAD): $(REF_JPG)
+	@   $(CONVERT) $(call IMGOPTS,72) $< $@
+
+$(IPHONE4): $(REF_JPG)
+	@   $(CONVERT) $(call IMGOPTS,114) $< $@
+
 $(LOGO): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS_REF,128) $< $@
 
@@ -102,6 +114,9 @@ $(REF_BG): $(BGPDF)
 
 $(REF_FG): $(PDF)
 	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
+
+$(REF_JPG): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS_REF,512) $< $@
 
 $(REF_PNG): $(REF_BG) $(REF_FG)
 	@   $(CONVERT) $(call IMGOPTS,512) $(REF_FG) $(REF_BG) \
