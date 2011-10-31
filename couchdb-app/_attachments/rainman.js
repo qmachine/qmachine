@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- rainman.js ~~
-//                                                      ~~ (c) SRW, 17 Oct 2011
+//                                                      ~~ (c) SRW, 31 Oct 2011
 
 (function (global) {
     'use strict';
@@ -20,7 +20,7 @@
  // Definitions
 
     define = function (obj, name, params) {
-        if (typeof Object.defineProperty === 'function') {
+        if (isFunction(Object.defineProperty)) {
             define = function (obj, name, params) {
                 return Object.defineProperty(obj, name, params);
             };
@@ -28,7 +28,7 @@
             define = function (obj, name, params) {
                 var key;
                 for (key in params) {
-                    if (params.hasOwnProperty(key) === true) {
+                    if (params.hasOwnProperty(key)) {
                         switch (key) {
                         case 'get':
                             obj.__defineGetter__(name, params[key]);
