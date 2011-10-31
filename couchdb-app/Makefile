@@ -10,7 +10,7 @@
 #   not been met. The Python-based "couchapp" program is also required, but I
 #   may add directions at some point for using the Ruby-based "soca" instead.
 #
-#                                                       ~~ (c) SRW, 11 Sep 2011
+#                                                       ~~ (c) SRW, 31 Oct 2011
 
 include ../tools/macros.make
 
