@@ -5,7 +5,7 @@
 #   This is a custom version of Web Chassis (web-chassis.googlecode.com) that
 #   has been adapted for use with Quanah and Rainman (rainman.googlecode.com).
 #
-#                                                       ~~ (c) SRW, 19 Oct 2011
+#                                                       ~~ (c) SRW, 31 Oct 2011
 
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
     emulate sh;
@@ -132,28 +132,32 @@ esac
 \******************************************************************************/
 
 (function (global) {                    //- This strict anonymous closure can
-    "use strict";                       //  still access the global object :-)
+    'use strict';                       //  still access the global object :-)
 
  // Constructors (these would get lifted to the top of the scope anyway ...)
 
     function TryAgainLater(message) {
-        this.message = message || "Dying ...";
+        this.message = message || 'Dying ...';
     }
 
     TryAgainLater.prototype = new Error();
 
  // Private declarations
 
-    var q, revive, stack1, stack2;
+    var isFunction, q, revive, stack1, stack2;
 
  // Private definitions
 
+    isFunction = function (f) {
+        return ((typeof f === 'function') && (f instanceof Function));
+    };
+
     q = global.chassis = function chassis(f) {
-        if ((typeof f === 'function') && (f instanceof Function)) {
+        if (isFunction(f)) {
             stack1.unshift(f);
             revive();
         } else {
-            throw new Error("Web Chassis expects functions as arguments.");
+            throw new Error('Web Chassis expects functions as arguments.');
         }
     };
 
@@ -213,7 +217,7 @@ esac
         q.include = function (libname) {
             var key, re;
             if (loaded[libname] !== true) {
-                re = new RegExp("^" + libname + "\\$(.+)$");
+                re = new RegExp('^' + libname + '\\$(.+)$');
                 for (key in q) {
                     if (q.hasOwnProperty(key) && re.test(key)) {
                         q[key.match(re)[1]] = q[key];
@@ -227,23 +231,23 @@ esac
 
     q.lib = function (libname) {
         var defineProperty, loaded;
-        if (typeof Object.defineProperty === 'function') {
+        if (isFunction(Object.defineProperty)) {
             defineProperty = Object.defineProperty;
         } else {
-            defineProperty = function (obj, key, params) {
-                var each;
-                for (each in params) {
-                    if (params.hasOwnProperty(each)) {
-                        switch (each) {
-                        case "get":
-                            obj.__defineGetter__(key, params[each]);
+            defineProperty = function (obj, name, params) {
+                var key;
+                for (key in params) {
+                    if (params.hasOwnProperty(key)) {
+                        switch (key) {
+                        case 'get':
+                            obj.__defineGetter__(name, params[key]);
                             break;
-                        case "set":
-                            obj.__defineSetter__(key, params[each]);
+                        case 'set':
+                            obj.__defineSetter__(name, params[key]);
                             break;
-                        case "value":
-                            delete obj[key];
-                            obj[key] = params[each];
+                        case 'value':
+                            delete obj[name];
+                            obj[name] = params[key];
                             break;
                         default:
                          // (placeholder)
@@ -308,7 +312,7 @@ esac
         q.lib(libname);
     };
 
-    if (q.detects("location")) {
+    if (q.detects('location')) {
         q.argv = (function () {
          // This anonymous closure is based in part on parseUri 1.2.2 by
          // Steven Levithan (stevenlevithan.com, MIT License). It treats the
@@ -352,7 +356,7 @@ esac
             }
             return argv;
         }());
-        if (q.detects("window")) {
+        if (q.detects('window')) {
          // Web Chassis is running inside a web browser -- hooray!
             q.load = function (uri) {
                 var loaded = {};
@@ -365,7 +369,7 @@ esac
                         return;
                     } else {
                         loaded[uri] = false;
-                        var script = global.document.createElement("script");
+                        var script = global.document.createElement('script');
                         script.src = uri;
                         script.onload = function () {
                             loaded[uri] = true;
@@ -378,16 +382,16 @@ esac
             };
             q.puts = function () {
                 var join = Array.prototype.join;
-                if (q.detects("console")) {
+                if (q.detects('console')) {
                     q.puts = function () {
-                        global.console.log(join.call(arguments, " "));
+                        global.console.log(join.call(arguments, ' '));
                     };
                 } else {
                     q.puts = function () {
                         var d, f, p;
                         d = global.document;
-                        p = d.body.appendChild(d.createElement("pre"));
-                        p.innerHTML += join.call(arguments, " ");
+                        p = d.body.appendChild(d.createElement('pre'));
+                        p.innerHTML += join.call(arguments, ' ');
                         d = p = null;
                     };
                 }
@@ -421,12 +425,12 @@ esac
                 global.postMessage(Array.prototype.slice.call(arguments));
             };
         }
-    } else if (q.detects("load") && q.detects("print")) {
+    } else if (q.detects('load') && q.detects('print')) {
      // You're running this in a developer shell, not a browser -- good luck!
-        if (q.detects("scriptArgs")) {
+        if (q.detects('scriptArgs')) {
             q.argv = Array.prototype.slice.call(global.scriptArgs, 1);
-        } else if (q.detects("arguments")) {
-            q.argv = Array.prototype.slice.call(global["arguments"], 1);
+        } else if (q.detects('arguments')) {
+            q.argv = Array.prototype.slice.call(global['arguments'], 1);
         } else {
             q.argv = [];
         }
@@ -450,12 +454,12 @@ esac
             q.load(uri);
         };
         q.puts = function () {
-            global.print(Array.prototype.join.call(arguments, " "));
+            global.print(Array.prototype.join.call(arguments, ' '));
         };
-    } else if (q.detects("process")) {
+    } else if (q.detects('process')) {
      // You're running this in Node.js, not a browser -- good luck!
-        global.fs = require("fs");
-        global.vm = require("vm");
+        global.fs = require('fs');
+        global.vm = require('vm');
         q.argv = global.process.argv.slice(2);
         q.load = function (uri) {
             var loaded = {};
@@ -469,7 +473,7 @@ esac
                     return;
                 } else {
                     loaded[uri] = false;
-                    global.fs.readFile(uri, "utf8", function (err, data) {
+                    global.fs.readFile(uri, 'utf8', function (err, data) {
                         if (err) {
                             throw err;
                         }
@@ -482,11 +486,11 @@ esac
             q.load(uri);
         };
         q.puts = function () {
-            global.console.log(Array.prototype.join.call(arguments, " "));
+            global.console.log(Array.prototype.join.call(arguments, ' '));
         };
     } else {
      // Seriously, do contact me so I can add support for your platform, ok?
-        throw new Error("Platform detection failed -- please file a report!");
+        throw new Error('Platform detection failed -- please file a report!');
     }
 
  // The formatting conventions here for valid arguments are as follows:
@@ -503,20 +507,20 @@ esac
         f = function (x, pattern) {
             x.replace(pattern, function (matches, key, val) {
                 switch (val) {
-                case "true":
+                case 'true':
                     val = true;
                     break;
-                case "false":
+                case 'false':
                     val = false;
                     break;
-                case "":
+                case '':
                     val = true;
                     break;
                 default:
                     val = (isNaN(parseFloat(val))) ? val : parseFloat(val);
                 }
                 if (q.flags.hasOwnProperty(key)) {
-                    if (q.flags[key].hasOwnProperty("length")) {
+                    if (q.flags[key].hasOwnProperty('length')) {
                         Array.prototype.push.call(q.flags[key], val);
                     } else {
                         q.flags[key] = [q.flags[key], val];
@@ -558,7 +562,7 @@ esac
     }
 
 }(function (outer_scope) {
-    "use strict";
+    'use strict';
 
  // This strict anonymous closure encapsulates the logic for detecting which
  // object in the environment should be treated as _the_ global object. It's
