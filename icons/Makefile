@@ -4,18 +4,21 @@
 #
 #   These directions build Quanah's icons from LaTeX source code.
 #
-#                                                           ~~ SRW, 21 Oct 2010
+#                                                           ~~ SRW, 31 Oct 2011
 
-SHELL       :=  bash                        #-  GNU bash        v. 3.2.48(1)
+include ../tools/macros.make
 
-RENDER      :=  pdflatex -no-shell-escape   #-  MacTeX 2010     v. 1.40.11-2.2
-CROP        :=  pdfcrop                     #   "               v. 1.31
-CONVERT     :=  convert                     #-  ImageMagick     v. 6.6.7-1
-CP          :=  rsync -va                   #-  rsync.samba.org v. 3.0.7
-OPEN        :=  open
+COMPOSITE   :=  $(call contingent, composite)                   #-  ImageMagick
+CONVERT     :=  $(call contingent, convert)                     #-  "
+CP          :=  $(call contingent, rsync) -va                   #-  Samba
+CROP        :=  $(call contingent, pdfcrop)                     #-  TeX Live
+OPEN        :=  $(call contingent, gnome-open open)
+RENDER      :=  $(call contingent, pdflatex) -no-shell-escape   #-  TeX Live
 
 BGSRC       :=  background.tex
 BGPDF       :=  $(BGSRC:%.tex=%.pdf)
+DARKBGSRC   :=  dark-background.tex
+DARKBGPDF   :=  $(DARKBGSRC:%.tex=%.pdf)
 SRC         :=  quanah-logo.tex
 PDF         :=  $(SRC:%.tex=%.pdf)
 
@@ -24,11 +27,13 @@ FAVICON     :=  favicon.ico
 GOOGLECODE  :=  googlecode.png
 GOOGWEBAPP1 :=  128_icon.png
 GOOGWEBAPP2 :=  112_icon.png
-IPAD        :=  touch-icon-ipad.png
-IPHONE      :=  touch-icon-iphone.png
-IPHONE4     :=  touch-icon-iphone4.png
+IOS_STARTUP :=  apple-touch-startup-image.png
+IPAD        :=  apple-touch-icon-ipad.png
+IPHONE      :=  apple-touch-icon-iphone.png
+IPHONE4     :=  apple-touch-icon-iphone4.png
 LOGO        :=  logo.jpg
 
+DARK_BG     :=  dark-background.png
 REF_BG      :=  background.png
 REF_FG      :=  foreground.png
 REF_JPG     :=  reference.jpg
@@ -39,6 +44,7 @@ ICONS       :=  $(BITBUCKET)    \
                 $(GOOGLECODE)   \
                 $(GOOGWEBAPP1)  \
                 $(GOOGWEBAPP2)  \
+                $(IOS_STARTUP)  \
                 $(IPAD)         \
                 $(IPHONE)       \
                 $(IPHONE4)      \
@@ -55,14 +61,15 @@ COLOR       :=  "\#CCCCCC"
 
 IMGOPTS_REF  =  $(IMGOPTS) -extent '$(1)x$(1)' -bordercolor $(COLOR)        \
                 -border "1x1" -matte -fill none -fuzz "20%"                 \
-                -draw "matte 0,0 floodfill" -shave "1x1" -background "\#FFFFFF"
+                -draw "matte 0,0 floodfill" -shave "1x1" -background "\#929292"
 
 .PHONY: all clean clobber reset run
 
 all: run
 
 clean: reset
-	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(PDF) $(REF_FG) $(REF_BG)
+	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(DARKBGPDF) $(PDF)      \
+                $(DARK_BG) $(REF_FG) $(REF_BG)
 
 clobber: clean
 	@   $(RM) $(ICONS) $(REF_JPG) $(REF_PNG)
@@ -97,6 +104,9 @@ $(GOOGWEBAPP1): $(REF_PNG)
 $(GOOGWEBAPP2): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,112) $< $@
 
+$(IOS_STARTUP): $(DARK_BG) $(LOGO)
+	@   $(COMPOSITE) -gravity center $(LOGO) $(DARK_BG) $@
+
 $(IPHONE): $(REF_JPG)
 	@   $(CONVERT) $(call IMGOPTS,57) $< $@
 
@@ -108,6 +118,9 @@ $(IPHONE4): $(REF_JPG)
 
 $(LOGO): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS_REF,128) $< $@
+
+$(DARK_BG): $(DARKBGPDF)
+	@   $(CONVERT) $(call IMGOPTS,512) -extent '320x460' $< $@
 
 $(REF_BG): $(BGPDF)
 	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
