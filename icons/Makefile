@@ -90,7 +90,11 @@ test: $(IPHONE4)
 ###
 
 $(BITBUCKET): $(REF_PNG)
-	@   $(CONVERT) $(call IMGOPTS_REF,35) $< $@
+	@   $(CONVERT) \
+                -density 600 -gravity center -quality 100 -resize '35x35'   \
+                -extent '35x35' -bordercolor $(COLOR) -border "1x1" -matte  \
+                -fill none -fuzz "20%" -draw "matte 0,0 floodfill" -shave   \
+                "1x1" -background white $< $@
 
 $(FAVICON): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,16) $< $@
