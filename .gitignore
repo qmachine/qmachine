@@ -10,7 +10,7 @@
 #   is to script and monitor every step of my workflow except for version
 #   control -- always execute your commits manually!
 #
-#                                                       ~~ (c) SRW, 19 Oct 2011
+#                                                       ~~ (c) SRW, 31 Oct 2011
 
 #-  CouchApp configuration files -- these may contain passwords!
 .couchapprc
@@ -18,6 +18,9 @@
 #-  JavaScript interpreter history files
 .d8_history
 .v8_history
+
+#-  Mercurial repository itself (if present)
+.hg/
 
 #-  Vim swap files
 *.swp
