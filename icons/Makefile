@@ -108,8 +108,8 @@ $(GOOGWEBAPP1): $(REF_PNG)
 $(GOOGWEBAPP2): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,112) $< $@
 
-$(IOS_STARTUP): $(DARK_BG) $(LOGO)
-	@   $(COMPOSITE) -gravity center $(LOGO) $(DARK_BG) $@
+$(IOS_STARTUP): $(DARK_BG) $(GOOGWEBAPP1)
+	@   $(COMPOSITE) -gravity center $(GOOGWEBAPP1) $(DARK_BG) $@
 
 $(IPHONE): $(REF_JPG)
 	@   $(CONVERT) $(call IMGOPTS,57) $< $@
@@ -123,8 +123,10 @@ $(IPHONE4): $(REF_JPG)
 $(LOGO): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS_REF,128) $< $@
 
+###
+
 $(DARK_BG): $(DARKBGPDF)
-	@   $(CONVERT) $(call IMGOPTS,512) -extent '320x460' $< $@
+	@   $(CONVERT) $(call IMGOPTS,512) -extent '320x480' $< $@
 
 $(REF_BG): $(BGPDF)
 	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
@@ -144,6 +146,8 @@ $(REF_PNG): $(REF_BG) $(REF_FG)
 $(BGPDF): $(BGSRC)
 
 $(PDF): $(SRC)
+
+###
 
 %.pdf: %.tex
 	@   $(RENDER) $<                                                ;   \
