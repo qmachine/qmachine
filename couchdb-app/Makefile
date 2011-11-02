@@ -17,8 +17,9 @@ include ../tools/macros.make
 APP         :=  quanah
 #URL         :=  http://localhost
 #DB          :=  localhost:5984/app
-URL         :=  http://quanah.couchone.com
-DB          :=  quanah.ic.ht:5984/app   #-  quanah.couchone.com:5984/app ... ?
+URL         :=  https://quanah.couchone.com
+DB          :=  quanah.ic.ht:5984/app
+#DB          :=  quanah.ic.ht:5984/app   #-  quanah.couchone.com:5984/app ... ?
 APPRC       :=  $(APP)/.couchapprc
 
 COUCHAPP    :=  $(call contingent, couchapp)
@@ -58,6 +59,7 @@ run: $(APPRC) $(APP)
             $(CP) .couchappignore $(APP)/                               ;   \
             $(CP) filters $(APP)/                                       ;   \
             $(CP) rewrites.json $(APP)/                                 ;   \
+            echo "# $${RANDOM}" >> $(APP)/_attachments/cache.manifest   ;   \
             cd $(APP) && $(COUCHAPP) push -q                            ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(OPEN) $(URL)                                          ;   \
