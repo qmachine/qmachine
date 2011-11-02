@@ -38,6 +38,7 @@ LOGO        :=  logo.jpg
 DARK_BG     :=  dark-background.png
 DARK_BG_HI  :=  dark-background-hires.png
 DARK_BG_LO  :=  dark-background-lores.png
+PNG128      :=  reference-128.png
 PNG256      :=  reference-256.png
 REF_BG      :=  background.png
 REF_FG      :=  foreground.png
@@ -76,10 +77,11 @@ all: run
 
 clean: reset
 	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(DARKBGPDF) $(PDF)      \
-                $(DARK_BG) $(DARK_BG_HI) $(DARK_BG_LO) $(REF_FG) $(REF_BG)
+                $(DARK_BG) $(DARK_BG_HI) $(DARK_BG_LO) $(PNG128) $(PNG256)  \
+                $(REF_FG) $(REF_BG)
 
 clobber: clean
-	@   $(RM) $(ICONS) $(PNG256) $(REF_JPG) $(REF_PNG)
+	@   $(RM) $(ICONS) $(REF_JPG) $(REF_PNG)
 
 reset:
 	@   $(call contingent, clear)
@@ -115,8 +117,8 @@ $(GOOGWEBAPP1): $(REF_PNG)
 $(GOOGWEBAPP2): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,112) $< $@
 
-$(IOS_LORES): $(DARK_BG) $(GOOGWEBAPP1)
-	@   $(COMPOSITE) -gravity center $(GOOGWEBAPP1) $(DARK_BG) $@
+$(IOS_LORES): $(DARK_BG) $(PNG128)
+	@   $(COMPOSITE) -gravity center $(PNG128) $(DARK_BG) $@
 
 $(IOS_HIRES): $(DARK_BG_HI) $(PNG256)
 	@   $(COMPOSITE) -gravity center $(PNG256) $(DARK_BG_HI) $@
@@ -137,6 +139,9 @@ $(LOGO): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS_REF,128) $< $@
 
 ###
+
+$(PNG128): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS,128) $< $@
 
 $(PNG256): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,256) $< $@
