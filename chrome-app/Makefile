@@ -40,10 +40,10 @@ run: $(SC_SHOT) $(SM_TILE) $(ZIPFILE)
 ###
 
 $(SC_SHOT):
-	@   $(PHANTOM) $(SRC) $(SC_SHOT:%.jpg=%) $@
+	@   $(PHANTOM) $(SRC) $(@:%.jpg=%) $@
 
 $(SM_TILE):
-	@   $(PHANTOM) $(SRC) $(SM_TILE:%.png=%) $@
+	@   $(PHANTOM) $(SRC) $(@:%.png=%) $@
 
 ###
 
