@@ -45,7 +45,8 @@ chassis(function (q, global) {
         };
 
         doc = function (id) {
-            return 'http://' + global.location.host + '/db/' + id;
+            return global.location.protocol + '//' +
+                global.location.host + '/db/' + id;
         };
 
         isFunction = function (f) {

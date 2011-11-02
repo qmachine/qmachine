@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <!--
-    index.html ~~
-                                                        ~~ (c) SRW, 31 Oct 2011
+    debug.html ~~
+
+    This page is for debugging (obviously), but specifically it contains lots
+    of useful links that would annoy users, adds a "debug" query parameter,
+    and foregoes the application cache to help shows _exactly_ what is wrong.
+
+                                                        ~~ (c) SRW, 02 Nov 2011
 -->
-<html lang="en" manifest="./cache.manifest">
+<html lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta name="author" content="Sean Wilkinson"/>
-    <title>Quanah</title>
+    <title>Quanah: Debug</title>
     <link rel="stylesheet" href="./style.css"/>
     <link rel="shortcut icon" href="./favicon.ico"/>
   <!--
@@ -29,13 +34,16 @@
     <noscript>Please enable JavaScript in your browser.</noscript>
     <ul>
       <li>
-        <a href="./?developer=true">Developer</a>
+        <a href="./index.html?debug=true">Home</a>
       </li>
       <li>
-        <a href="./?volunteer=true">Volunteer</a>
+        <a href="http://quanah.ic.ht/_log">Log</a>
       </li>
       <li>
         <a href="http://goo.gl/tRxfM">Source</a>
+      </li>
+      <li>
+        <a href="./db/_changes?filter=quanah/queue&limit=20">Queue</a>
       </li>
     </ul>
     <script src="./quanah.js"></script>
