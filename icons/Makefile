@@ -27,13 +27,16 @@ FAVICON     :=  favicon.ico
 GOOGLECODE  :=  googlecode.png
 GOOGWEBAPP1 :=  128_icon.png
 GOOGWEBAPP2 :=  112_icon.png
-IOS_STARTUP :=  apple-touch-startup-image.png
+IOS_LORES   :=  apple-touch-startup-image.png
+IOS_HIRES   :=  apple-touch-startup-image-hires.png
 IPAD        :=  apple-touch-icon-ipad.png
 IPHONE      :=  apple-touch-icon-iphone.png
 IPHONE4     :=  apple-touch-icon-iphone4.png
 LOGO        :=  logo.jpg
 
-DARK_BG     :=  dark-background.png
+DARK_BG     :=  dark-background-lores.png
+DARK_BG_HI  :=  dark-background-hires.png
+PNG256      :=  reference-256.png
 REF_BG      :=  background.png
 REF_FG      :=  foreground.png
 REF_JPG     :=  reference.jpg
@@ -44,7 +47,8 @@ ICONS       :=  $(BITBUCKET)    \
                 $(GOOGLECODE)   \
                 $(GOOGWEBAPP1)  \
                 $(GOOGWEBAPP2)  \
-                $(IOS_STARTUP)  \
+                $(IOS_LORES)    \
+                $(IOS_HIRES)    \
                 $(IPAD)         \
                 $(IPHONE)       \
                 $(IPHONE4)      \
@@ -69,13 +73,13 @@ all: run
 
 clean: reset
 	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(DARKBGPDF) $(PDF)      \
-                $(DARK_BG) $(REF_FG) $(REF_BG)
+                $(DARK_BG) $(DARK_BG_HI) $(REF_FG) $(REF_BG)
 
 clobber: clean
-	@   $(RM) $(ICONS) $(REF_JPG) $(REF_PNG)
+	@   $(RM) $(ICONS) $(PNG256) $(REF_JPG) $(REF_PNG)
 
 reset:
-	@   clear
+	@   $(call contingent, clear)
 
 run: $(ICONS)
 	@   for each in $(ICONS); do $(OPEN) $${each}; done
@@ -108,8 +112,11 @@ $(GOOGWEBAPP1): $(REF_PNG)
 $(GOOGWEBAPP2): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,112) $< $@
 
-$(IOS_STARTUP): $(DARK_BG) $(GOOGWEBAPP1)
+$(IOS_LORES): $(DARK_BG) $(GOOGWEBAPP1)
 	@   $(COMPOSITE) -gravity center $(GOOGWEBAPP1) $(DARK_BG) $@
+
+$(IOS_HIRES): $(DARK_BG_HI) $(PNG256)
+	@   $(COMPOSITE) -gravity center $(PNG256) $(DARK_BG_HI) $@
 
 $(IPHONE): $(REF_JPG)
 	@   $(CONVERT) $(call IMGOPTS,57) $< $@
@@ -125,20 +132,28 @@ $(LOGO): $(REF_PNG)
 
 ###
 
+$(PNG256): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS,256) $< $@
+
+###
+
 $(DARK_BG): $(DARKBGPDF)
 	@   $(CONVERT) $(call IMGOPTS,512) -extent '320x480' $< $@
 
+$(DARK_BG_HI): $(DARKBGPDF)
+	@   $(CONVERT) $(call IMGOPTS,1024) -extent '640x960' $< $@
+
 $(REF_BG): $(BGPDF)
-	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
+	@   $(CONVERT) $(call IMGOPTS,1024) -extent '1024x1024' $< $@
 
 $(REF_FG): $(PDF)
-	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
+	@   $(CONVERT) $(call IMGOPTS,1024) -extent '1024x1024' $< $@
 
 $(REF_JPG): $(REF_PNG)
-	@   $(CONVERT) $(call IMGOPTS_REF,512) $< $@
+	@   $(CONVERT) $(call IMGOPTS_REF,1024) $< $@
 
 $(REF_PNG): $(REF_BG) $(REF_FG)
-	@   $(CONVERT) $(call IMGOPTS,512) $(REF_FG) $(REF_BG) \
+	@   $(CONVERT) $(call IMGOPTS,1024) $(REF_FG) $(REF_BG) \
                 -compose ChangeMask -composite $@
 
 ###
