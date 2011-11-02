@@ -27,15 +27,17 @@ FAVICON     :=  favicon.ico
 GOOGLECODE  :=  googlecode.png
 GOOGWEBAPP1 :=  128_icon.png
 GOOGWEBAPP2 :=  112_icon.png
-IOS_LORES   :=  apple-touch-startup-image.png
+IOS_LORES   :=  apple-touch-startup-image-lores.png
 IOS_HIRES   :=  apple-touch-startup-image-hires.png
+IOS_SPLASH  :=  apple-touch-startup-image-splash.png
 IPAD        :=  apple-touch-icon-ipad.png
 IPHONE      :=  apple-touch-icon-iphone.png
 IPHONE4     :=  apple-touch-icon-iphone4.png
 LOGO        :=  logo.jpg
 
-DARK_BG     :=  dark-background-lores.png
+DARK_BG     :=  dark-background.png
 DARK_BG_HI  :=  dark-background-hires.png
+DARK_BG_LO  :=  dark-background-lores.png
 PNG256      :=  reference-256.png
 REF_BG      :=  background.png
 REF_FG      :=  foreground.png
@@ -49,6 +51,7 @@ ICONS       :=  $(BITBUCKET)    \
                 $(GOOGWEBAPP2)  \
                 $(IOS_LORES)    \
                 $(IOS_HIRES)    \
+                $(IOS_SPLASH)   \
                 $(IPAD)         \
                 $(IPHONE)       \
                 $(IPHONE4)      \
@@ -73,7 +76,7 @@ all: run
 
 clean: reset
 	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(DARKBGPDF) $(PDF)      \
-                $(DARK_BG) $(DARK_BG_HI) $(REF_FG) $(REF_BG)
+                $(DARK_BG) $(DARK_BG_HI) $(DARK_BG_LO) $(REF_FG) $(REF_BG)
 
 clobber: clean
 	@   $(RM) $(ICONS) $(PNG256) $(REF_JPG) $(REF_PNG)
@@ -118,6 +121,9 @@ $(IOS_LORES): $(DARK_BG) $(GOOGWEBAPP1)
 $(IOS_HIRES): $(DARK_BG_HI) $(PNG256)
 	@   $(COMPOSITE) -gravity center $(PNG256) $(DARK_BG_HI) $@
 
+$(IOS_SPLASH): $(DARK_BG) $(GOOGWEBAPP1)
+	@   $(COMPOSITE) -gravity center $(GOOGWEBAPP1) $(DARK_BG) $@
+
 $(IPHONE): $(REF_JPG)
 	@   $(CONVERT) $(call IMGOPTS,57) $< $@
 
@@ -138,6 +144,9 @@ $(PNG256): $(REF_PNG)
 ###
 
 $(DARK_BG): $(DARKBGPDF)
+	@   $(CONVERT) $(call IMGOPTS,512) -extent '320x460' $< $@
+
+$(DARK_BG_LO): $(DARKBGPDF)
 	@   $(CONVERT) $(call IMGOPTS,512) -extent '320x480' $< $@
 
 $(DARK_BG_HI): $(DARKBGPDF)
