@@ -10,13 +10,11 @@
             "web_url": "https://quanah.couchone.com"
         }
     },
-    "background_page": "https://quanah.couchone.com/?volunteer=true#0",
     "icons": {
         "128": "128_icon.png"
     },
     "offline_enabled": true,
     "permissions": [
-        "background",
         "unlimitedStorage",
         "notifications"
     ]
