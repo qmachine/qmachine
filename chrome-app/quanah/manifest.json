@@ -1,18 +1,19 @@
 {
     "name": "Quanah",
     "description": "The Web Computer as a hosted web app for Chrome",
-    "version": "3",
+    "version": "3.1.3",
     "app": {
         "urls": [
-            "http://quanah.couchone.com/"
+            "*://quanah.couchone.com/"
         ],
         "launch": {
-            "web_url": "http://quanah.couchone.com"
+            "web_url": "https://quanah.couchone.com"
         }
     },
     "icons": {
         "128": "128_icon.png"
     },
+    "offline_enabled": true,
     "permissions": [
         "unlimitedStorage",
         "notifications"

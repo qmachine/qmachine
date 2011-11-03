@@ -4,39 +4,58 @@
 #
 #   These directions build Quanah's icons from LaTeX source code.
 #
-#                                                           ~~ SRW, 21 Oct 2010
+#                                                           ~~ SRW, 31 Oct 2011
 
-SHELL       :=  bash                        #-  GNU bash        v. 3.2.48(1)
+include ../tools/macros.make
 
-RENDER      :=  pdflatex -no-shell-escape   #-  MacTeX 2010     v. 1.40.11-2.2
-CROP        :=  pdfcrop                     #   "               v. 1.31
-CONVERT     :=  convert                     #-  ImageMagick     v. 6.6.7-1
-CP          :=  rsync -va                   #-  rsync.samba.org v. 3.0.7
-OPEN        :=  open
+COMPOSITE   :=  $(call contingent, composite)                   #-  ImageMagick
+CONVERT     :=  $(call contingent, convert)                     #-  "
+CP          :=  $(call contingent, rsync) -va                   #-  Samba
+CROP        :=  $(call contingent, pdfcrop)                     #-  TeX Live
+OPEN        :=  $(call contingent, gnome-open open)
+RENDER      :=  $(call contingent, pdflatex) -no-shell-escape   #-  TeX Live
 
 BGSRC       :=  background.tex
 BGPDF       :=  $(BGSRC:%.tex=%.pdf)
+DARKBGSRC   :=  dark-background.tex
+DARKBGPDF   :=  $(DARKBGSRC:%.tex=%.pdf)
 SRC         :=  quanah-logo.tex
 PDF         :=  $(SRC:%.tex=%.pdf)
 
-APPLE_TOUCH :=  apple-touch-icon.png
 BITBUCKET   :=  bitbucket.jpg
 FAVICON     :=  favicon.ico
 GOOGLECODE  :=  googlecode.png
 GOOGWEBAPP1 :=  128_icon.png
 GOOGWEBAPP2 :=  112_icon.png
+IOS_LORES   :=  apple-touch-startup-image-lores.png
+IOS_HIRES   :=  apple-touch-startup-image-hires.png
+IOS_SPLASH  :=  apple-touch-startup-image-splash.png
+IPAD        :=  apple-touch-icon-ipad.png
+IPHONE      :=  apple-touch-icon-iphone.png
+IPHONE4     :=  apple-touch-icon-iphone4.png
 LOGO        :=  logo.jpg
 
+DARK_BG     :=  dark-background.png
+DARK_BG_HI  :=  dark-background-hires.png
+DARK_BG_LO  :=  dark-background-lores.png
+PNG128      :=  reference-128.png
+PNG256      :=  reference-256.png
 REF_BG      :=  background.png
 REF_FG      :=  foreground.png
+REF_JPG     :=  reference.jpg
 REF_PNG     :=  reference.png
 
-ICONS       :=  $(APPLE_TOUCH)  \
-                $(BITBUCKET)    \
+ICONS       :=  $(BITBUCKET)    \
                 $(FAVICON)      \
                 $(GOOGLECODE)   \
                 $(GOOGWEBAPP1)  \
                 $(GOOGWEBAPP2)  \
+                $(IOS_LORES)    \
+                $(IOS_HIRES)    \
+                $(IOS_SPLASH)   \
+                $(IPAD)         \
+                $(IPHONE)       \
+                $(IPHONE4)      \
                 $(LOGO)
 
 #-  Since we're converting a vector format (PDF) into raster formats, we will
@@ -47,22 +66,25 @@ ICONS       :=  $(APPLE_TOUCH)  \
 IMGOPTS      =  -density 600 -gravity center -quality 100 -resize '$(1)x$(1)'
 
 COLOR       :=  "\#CCCCCC"
+
 IMGOPTS_REF  =  $(IMGOPTS) -extent '$(1)x$(1)' -bordercolor $(COLOR)        \
                 -border "1x1" -matte -fill none -fuzz "20%"                 \
-                -draw "matte 0,0 floodfill" -shave "1x1" -background "\#FFFFFF"
+                -draw "matte 0,0 floodfill" -shave "1x1" -background "\#929292"
 
 .PHONY: all clean clobber reset run
 
 all: run
 
 clean: reset
-	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(PDF) $(REF_FG) $(REF_BG)
+	@   $(RM) $(wildcard *.aux *.log) $(BGPDF) $(DARKBGPDF) $(PDF)      \
+                $(DARK_BG) $(DARK_BG_HI) $(DARK_BG_LO) $(PNG128) $(PNG256)  \
+                $(REF_FG) $(REF_BG)
 
 clobber: clean
-	@   $(RM) $(ICONS) $(REF_PNG)
+	@   $(RM) $(ICONS) $(REF_JPG) $(REF_PNG)
 
 reset:
-	@   clear
+	@   $(call contingent, clear)
 
 run: $(ICONS)
 	@   for each in $(ICONS); do $(OPEN) $${each}; done
@@ -71,19 +93,20 @@ run: $(ICONS)
 
 .PHONY: test
 
-test: $(APPLE_TOUCH)
+test: $(IPHONE4)
 	@   $(OPEN) $<
 
 ###
 
-$(APPLE_TOUCH): $(REF_PNG)
-	@   $(CONVERT) $(call IMGOPTS,114) $< $@
+$(BITBUCKET): $(REF_PNG)
+	@   $(CONVERT) \
+                -density 600 -gravity center -quality 100 -resize '35x35'   \
+                -extent '35x35' -bordercolor $(COLOR) -border "1x1" -matte  \
+                -fill none -fuzz "20%" -draw "matte 0,0 floodfill" -shave   \
+                "1x1" -background white $< $@
 
 $(FAVICON): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,16) $< $@
-
-$(BITBUCKET): $(REF_PNG)
-	@   $(CONVERT) $(call IMGOPTS_REF,35) $< $@
 
 $(GOOGLECODE): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,55) $< $@
@@ -94,17 +117,57 @@ $(GOOGWEBAPP1): $(REF_PNG)
 $(GOOGWEBAPP2): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS,112) $< $@
 
+$(IOS_LORES): $(DARK_BG) $(PNG128)
+	@   $(COMPOSITE) -gravity center $(PNG128) $(DARK_BG) $@
+
+$(IOS_HIRES): $(DARK_BG_HI) $(PNG256)
+	@   $(COMPOSITE) -gravity center $(PNG256) $(DARK_BG_HI) $@
+
+$(IOS_SPLASH): $(DARK_BG) $(GOOGWEBAPP1)
+	@   $(COMPOSITE) -gravity center $(GOOGWEBAPP1) $(DARK_BG) $@
+
+$(IPHONE): $(REF_JPG)
+	@   $(CONVERT) $(call IMGOPTS,57) $< $@
+
+$(IPAD): $(REF_JPG)
+	@   $(CONVERT) $(call IMGOPTS,72) $< $@
+
+$(IPHONE4): $(REF_JPG)
+	@   $(CONVERT) $(call IMGOPTS,114) $< $@
+
 $(LOGO): $(REF_PNG)
 	@   $(CONVERT) $(call IMGOPTS_REF,128) $< $@
 
+###
+
+$(PNG128): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS,128) $< $@
+
+$(PNG256): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS,256) $< $@
+
+###
+
+$(DARK_BG): $(DARKBGPDF)
+	@   $(CONVERT) $(call IMGOPTS,512) -extent '320x460' $< $@
+
+$(DARK_BG_LO): $(DARKBGPDF)
+	@   $(CONVERT) $(call IMGOPTS,512) -extent '320x480' $< $@
+
+$(DARK_BG_HI): $(DARKBGPDF)
+	@   $(CONVERT) $(call IMGOPTS,1024) -extent '640x960' $< $@
+
 $(REF_BG): $(BGPDF)
-	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
+	@   $(CONVERT) $(call IMGOPTS,1024) -extent '1024x1024' $< $@
 
 $(REF_FG): $(PDF)
-	@   $(CONVERT) $(call IMGOPTS,512) -extent '512x512' $< $@
+	@   $(CONVERT) $(call IMGOPTS,1024) -extent '1024x1024' $< $@
+
+$(REF_JPG): $(REF_PNG)
+	@   $(CONVERT) $(call IMGOPTS_REF,1024) $< $@
 
 $(REF_PNG): $(REF_BG) $(REF_FG)
-	@   $(CONVERT) $(call IMGOPTS,512) $(REF_FG) $(REF_BG) \
+	@   $(CONVERT) $(call IMGOPTS,1024) $(REF_FG) $(REF_BG) \
                 -compose ChangeMask -composite $@
 
 ###
@@ -112,6 +175,8 @@ $(REF_PNG): $(REF_BG) $(REF_FG)
 $(BGPDF): $(BGSRC)
 
 $(PDF): $(SRC)
+
+###
 
 %.pdf: %.tex
 	@   $(RENDER) $<                                                ;   \

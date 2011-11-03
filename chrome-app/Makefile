@@ -14,7 +14,7 @@ PHANTOM :=  $(call contingent, phantomjs)
 SRC     :=  $(wildcard *.js)
 
 SC_SHOT :=  1280x800.jpg
-SM_TILE :=  480x240.png
+SM_TILE :=  440x280.png
 
 ZIPFILE :=  quanah.zip
 
@@ -40,10 +40,10 @@ run: $(SC_SHOT) $(SM_TILE) $(ZIPFILE)
 ###
 
 $(SC_SHOT):
-	@   $(PHANTOM) $(SRC) 1280x800 $@
+	@   $(PHANTOM) $(SRC) $(@:%.jpg=%) $@
 
 $(SM_TILE):
-	@   $(PHANTOM) $(SRC) 480x240 $@
+	@   $(PHANTOM) $(SRC) $(@:%.png=%) $@
 
 ###
 

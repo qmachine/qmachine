@@ -12,7 +12,7 @@
 #
 #   For more information, see hgignore(5).
 #
-#                                                       ~~ (c) SRW, 22 Aug 2011
+#                                                       ~~ (c) SRW, 31 Oct 2011
 
 #-  Vim swap files
 #   -   files that end with '.swp'
@@ -32,9 +32,14 @@
 
 ^\.couchapprc$
 
+#-  Git repository itself (if present)
+
+.git/
+
 #-  Google V8 debugging shell ("d8") interactive history files
 #   -   files named exactly '.d8_history'
 
+^\.v8_history$
 ^\.d8_history$
 
 #-  vim:set syntax=python:

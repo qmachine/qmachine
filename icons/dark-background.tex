@@ -1,17 +1,17 @@
 %-  LaTeX document file
 
-%-  background.tex ~~
+%-  dark-background.tex ~~
 %
-%   This is the known background that corresponds to "quanah-logo.tex".
+%   This is a dark background for compositing the iOS startup image.
 %
-%                                                           ~~ SRW, 21 Oct 2010
+%                                                           ~~ SRW, 31 Oct 2011
 
 \documentclass{article}
 
 \usepackage{eulervm}                    %-  use Zapf's "Euler" font
 \usepackage{xcolor}                     %-  allow colors to be defined :-)
     \definecolor{WebSafeNavy}{HTML}{000080}
-    \definecolor{ChromeGray}{HTML}{cccccc}
+    \definecolor{DarkGray}{HTML}{929292}
 
     \setlength{\fboxsep}{2pt}
     \setlength{\fboxrule}{1pt}
@@ -21,7 +21,7 @@
 \begin{document}
 
     \Huge
-    \colorbox{ChromeGray}{\color{WebSafeNavy}\phantom{$Q$}}%
+    \colorbox{DarkGray}{\color{WebSafeNavy}\phantom{$Q$}}%
 
 \end{document}
 
