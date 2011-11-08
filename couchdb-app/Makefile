@@ -10,13 +10,14 @@
 #   not been met. The Python-based "couchapp" program is also required, but I
 #   may add directions at some point for using the Ruby-based "soca" instead.
 #
-#                                                       ~~ (c) SRW, 31 Oct 2011
+#   NOTE: I may even just write 'curl' instructions, because the "couchapp"
+#   program drives me insane sometimes ...
+#
+#                                                       ~~ (c) SRW, 08 Nov 2011
 
 include ../tools/macros.make
 
-APP         :=  quanah
-#URL         :=  http://localhost
-#DB          :=  localhost:5984/app
+APP         :=  ./quanah
 #URL         :=  https://quanah-testing.couchone.com
 #DB          :=  quanah-testing.ic.ht:6984/app
 URL         :=  https://quanah.couchone.com
@@ -41,25 +42,33 @@ define read-secure
     printf '\n' ''
 endef
 
-.PHONY: all clean clobber reset run
+.PHONY: all check clean clobber dist distclean reset run
 
 all: run
+
+check:
+	@   $(call hilite, 'Coming soon ...')
 
 clean: reset
 	@   $(RM) $(APPRC)
 
 clobber: clean
-	@   $(RM) $(APP) $(DATA)
+	@   $(RM) $(APP)
+
+dist:
+	@   $(call hilite, 'Coming soon ...')
+
+distclean: clobber
 
 reset:
 	@   $(call contingent, clear)
 
 run: $(APPRC) $(APP)
-	@   $(CP) _attachments $(APP)/                                  ;   \
-            $(CP) couchapp.json $(APP)/                                 ;   \
-            $(CP) .couchappignore $(APP)/                               ;   \
-            $(CP) filters $(APP)/                                       ;   \
-            $(CP) rewrites.json $(APP)/                                 ;   \
+	@   $(CP) ./_attachments $(APP)/                                ;   \
+            $(CP) ./couchapp.json $(APP)/                               ;   \
+            $(CP) ./.couchappignore $(APP)/                             ;   \
+            $(CP) ./filters $(APP)/                                     ;   \
+            $(CP) ./rewrites.json $(APP)/                               ;   \
             echo "# $${RANDOM}" >> $(APP)/_attachments/cache.manifest   ;   \
             cd $(APP) && $(COUCHAPP) push -q                            ;   \
             if [ $$? -eq 0 ]; then                                          \

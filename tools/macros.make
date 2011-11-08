@@ -10,6 +10,8 @@
 
 SHELL   :=  sh
 
+.SUFFIXES: ;
+
 define gray-printf
     printf '\033[1;30m'$(strip $(1))'\033[1;0m' $(strip $(2))
 endef

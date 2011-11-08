@@ -16,8 +16,10 @@ function (doc, req) {
 
     if (doc.hasOwnProperty('val')) {
         v = ((doc.val !== null) && (doc.val !== undefined)) ? doc.val : {};
-        flag = ((v.hasOwnProperty('f')) && (v.hasOwnProperty('x')) &&
-                (v.hasOwnProperty('y')) && (v.hasOwnProperty('status')));
+        flag = ((v.hasOwnProperty('f')) &&
+                (v.hasOwnProperty('x')) &&
+                (v.hasOwnProperty('y')) &&
+                (v.hasOwnProperty('status')));
         if (flag !== true) {
             return false;
         }
