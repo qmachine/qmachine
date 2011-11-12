@@ -18,33 +18,41 @@
 
  // Private declarations
 
-    var silencer, window;
+    var doh, nav, silencer, win;
 
  // Private definitions
+
+    doh = global.alert;
+
+    nav = global.navigator;
 
     silencer = function (evt) {
      // (placeholder)
     };
 
-    window = global.window;
+    win = global.window;
 
- // Private constructors
+ // Private constructors (n/a)
 
  // Global definitions
 
-    if (window.hasOwnProperty('applicationCache')) {
-        window.applicationCache.oncached = silencer;
-        window.applicationCache.onchecking = silencer;
-        window.applicationCache.ondownloading = silencer;
-        window.applicationCache.onerror = silencer;
-        window.applicationCache.onnoupdate = silencer;
-        window.applicationCache.onobsolete = silencer;
-        window.applicationCache.onprogress = silencer;
-        window.applicationCache.onupdateready = silencer;
+    if (win.hasOwnProperty('applicationCache')) {
+        win.applicationCache.oncached = silencer;
+        win.applicationCache.onchecking = silencer;
+        win.applicationCache.ondownloading = silencer;
+        win.applicationCache.onerror = silencer;
+        win.applicationCache.onnoupdate = silencer;
+        win.applicationCache.onobsolete = silencer;
+        win.applicationCache.onprogress = silencer;
+        win.applicationCache.onupdateready = silencer;
     }
 
-    window.onoffline = window.ononline = function (evt) {
-        console.log('Are we online? ' + navigator.onLine);
+    win.onoffline = win.ononline = function (evt) {
+        if (nav.onLine) {
+            doh('Your computer is online.');
+        } else {
+            doh('Your computer is not online.');
+        }
     };
 
  // That's all, folks!
