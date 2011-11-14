@@ -22,7 +22,7 @@ OPEN    :=  $(call contingent, gnome-open open)
 RM      :=  $(call contingent, rm) -rf
 ZIP     :=  $(call contingent, zip)
 
-.PHONY: all clean clobber reset run
+.PHONY: all clean clobber distclean reset run
 
 all: run
 
@@ -31,6 +31,8 @@ clean: reset
 
 clobber: clean
 	@   $(RM) $(ZIPFILE)
+
+distclean: clobber
 
 reset:
 	@   $(call contingent, clear)
