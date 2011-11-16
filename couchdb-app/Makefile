@@ -18,10 +18,12 @@
 include ../tools/macros.make
 
 APP         :=  ./quanah
-#URL         :=  https://quanah-testing.couchone.com
-#DB          :=  quanah-testing.ic.ht:6984/app
-URL         :=  https://quanah.couchone.com
-DB          :=  quanah.ic.ht:6984/app
+#URL         :=  http://localhost/
+#DB          :=  127.0.0.1:5984/app
+URL         :=  https://quanah-testing.couchone.com
+DB          :=  quanah-testing.ic.ht:6984/app
+#URL         :=  https://quanah.couchone.com
+#DB          :=  quanah.ic.ht:6984/app
 APPRC       :=  $(APP)/.couchapprc
 
 COUCHAPP    :=  $(call contingent, couchapp)
@@ -69,6 +71,7 @@ run: $(APPRC) $(APP)
             $(CP) ./.couchappignore $(APP)/                             ;   \
             $(CP) ./filters $(APP)/                                     ;   \
             $(CP) ./rewrites.json $(APP)/                               ;   \
+            $(CP) ./validate_doc_update.js $(APP)/                      ;   \
             echo "# $${RANDOM}" >> $(APP)/_attachments/cache.manifest   ;   \
             cd $(APP) && $(COUCHAPP) push -q                            ;   \
             if [ $$? -eq 0 ]; then                                          \
