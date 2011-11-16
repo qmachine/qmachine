@@ -16,10 +16,11 @@ function (doc, req) {
 
     if (doc.hasOwnProperty('val')) {
         v = ((doc.val !== null) && (doc.val !== undefined)) ? doc.val : {};
-        flag = ((v.hasOwnProperty('f')) &&
-                (v.hasOwnProperty('x')) &&
-                (v.hasOwnProperty('y')) &&
-                (v.hasOwnProperty('status')));
+        flag = ((v.hasOwnProperty('f'))         &&
+                (v.hasOwnProperty('x'))         &&
+                (v.hasOwnProperty('y'))         &&
+                (v.hasOwnProperty('status'))    &&
+                (v.hasOwnProperty('token')));
         if (flag !== true) {
             return false;
         }
@@ -28,6 +29,10 @@ function (doc, req) {
     }
 
     q = (req.hasOwnProperty('query')) ? req.query : {};
+
+    if (q.hasOwnProperty('token') === false) {
+        return false;
+    }
 
     for (key in q) {
         if (q.hasOwnProperty(key) && v.hasOwnProperty(key)) {

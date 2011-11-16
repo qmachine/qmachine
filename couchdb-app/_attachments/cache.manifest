@@ -3,6 +3,7 @@ CACHE MANIFEST
 #-  cache.manifest ~~
 #                                                       ~~ (c) SRW, 02 Nov 2011
 
+CACHE:
 developer.js
 favicon.ico
 fs.js
@@ -16,9 +17,12 @@ rainman.js
 startup-image.png
 style.css
 volunteer.js
+wankel.js
 web-chassis.js
 
 NETWORK:
 *
+
+#FALLBACK:
 
 # EOF
