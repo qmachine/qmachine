@@ -18,10 +18,10 @@
 include ../tools/macros.make
 
 APP         :=  ./quanah
-#URL         :=  http://localhost/
-#DB          :=  127.0.0.1:5984/app
-URL         :=  https://quanah-testing.couchone.com
-DB          :=  quanah-testing.ic.ht:6984/app
+URL         :=  http://localhost/
+DB          :=  127.0.0.1:5984/app
+#URL         :=  https://quanah-testing.couchone.com
+#DB          :=  quanah-testing.ic.ht:6984/app
 #URL         :=  https://quanah.couchone.com
 #DB          :=  quanah.ic.ht:6984/app
 APPRC       :=  $(APP)/.couchapprc
@@ -92,7 +92,7 @@ $(APP):
 
 $(APPRC): $(APP)
 	@   $(strip $(call hilite, "Deploying to $(DB) ...")            ;   \
-            printf '%s' '{"env": {"default": {"db": "https://' > $@     ;   \
+            printf '%s' '{"env": {"default": {"db": "http://' > $@     ;   \
             $(call read-prompt, "Username: ") && USERNAME="$${REPLY}"   ;   \
             $(call read-secure, "Password: ") && PASSWORD="$${REPLY}"   ;   \
             printf '%s' "$${USERNAME}:$${PASSWORD}@$(DB)" '"}}}' >> $@  )
