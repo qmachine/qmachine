@@ -8,7 +8,8 @@ for running scientific computations using only web browsers and CouchDB. I am
 currently writing several papers about Quanah and applications that use it,
 but I promise I will write more documentation here soon!
 
-There are also mirrors on [GitHub](https://github.com/wilkinson/quanah),
+There are several "mirrors" available at
+[GitHub](https://github.com/wilkinson/quanah),
 [Bitbucket](https://bitbucket.org/wilkinson/quanah), and
 [Google Code](https://quanah.googlecode.com).
 
