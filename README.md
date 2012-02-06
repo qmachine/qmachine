@@ -1,4 +1,5 @@
-Quanah
-======
+Qmachine
+========
 
-Please see https://quanah.googlecode.com for more information.
+Documentation is forthcoming ;-)
+

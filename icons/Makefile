@@ -71,7 +71,7 @@ IMGOPTS_REF  =  $(IMGOPTS) -extent '$(1)x$(1)' -bordercolor $(COLOR)        \
                 -border "1x1" -matte -fill none -fuzz "20%"                 \
                 -draw "matte 0,0 floodfill" -shave "1x1" -background "\#929292"
 
-.PHONY: all clean clobber reset run
+.PHONY: all clean clobber distclean reset run
 
 all: run
 
@@ -82,6 +82,8 @@ clean: reset
 
 clobber: clean
 	@   $(RM) $(ICONS) $(REF_JPG) $(REF_PNG)
+
+distclean: clobber
 
 reset:
 	@   $(call contingent, clear)
@@ -181,5 +183,10 @@ $(PDF): $(SRC)
 %.pdf: %.tex
 	@   $(RENDER) $<                                                ;   \
             $(CROP) --margins "-1 0 -1 -1" $@ $@
+
+###
+
+%:
+	@   $(call alert, 'No target "$@" found.')
 
 #-  vim:set syntax=make:

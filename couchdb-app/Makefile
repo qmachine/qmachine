@@ -2,29 +2,18 @@
 
 #-  Makefile ~~
 #
-#   This contains live instructions for building and deploying Quanah to a
-#   CouchDB instance as a "CouchApp". I have tried to maintain as much POSIX
-#   compatibility as possible, but because I mainly use Mac or GNOME-based
-#   Linux distributions, there are some non-standard calls hidden here. I have
-#   included macros that should help highlight where these prerequisites have
-#   not been met. The Python-based "couchapp" program is also required, but I
-#   may add directions at some point for using the Ruby-based "soca" instead.
+#   This contains a live workflow for rapid webapp development with CouchDB.
 #
-#   NOTE: I may even just write 'curl' instructions, because the "couchapp"
-#   program drives me insane sometimes ...
-#
-#                                                       ~~ (c) SRW, 08 Nov 2011
+#                                                       ~~ (c) SRW, 06 Feb 2012
 
-include ../tools/macros.make
+include $(PWD)/../tools/macros.make
 
-APP         :=  ./quanah
+APP         :=  qmachine
 URL         :=  http://localhost/
 DB          :=  127.0.0.1:5984/app
-#URL         :=  https://quanah-testing.couchone.com
-#DB          :=  quanah-testing.ic.ht:6984/app
-#URL         :=  https://quanah.couchone.com
-#DB          :=  quanah.ic.ht:6984/app
-APPRC       :=  $(APP)/.couchapprc
+#URL         :=  http://quanah-testing.couchone.com
+#DB          :=  quanah-testing.iriscouch.com:5984/app
+APPRC       :=  $(PWD)/$(APP)/.couchapprc
 
 COUCHAPP    :=  $(call contingent, couchapp)
 CP          :=  $(call contingent, rsync) --archive
@@ -44,34 +33,30 @@ define read-secure
     printf '\n' ''
 endef
 
-.PHONY: all check clean clobber dist distclean reset run
+.PHONY: all clean clobber distclean reset run
 
 all: run
-
-check:
-	@   $(call hilite, 'Coming soon ...')
 
 clean: reset
 	@   $(RM) $(APPRC)
 
 clobber: clean
-	@   $(RM) $(APP)
-
-dist:
-	@   $(call hilite, 'Coming soon ...')
+	@   $(RM) $(APP) $(DATA)
 
 distclean: clobber
+	@   cd $(PWD)/_attachments && $(MAKE) -f Makefile distclean
 
 reset:
 	@   $(call contingent, clear)
 
-run: $(APPRC) $(APP)
-	@   $(CP) ./_attachments $(APP)/                                ;   \
-            $(CP) ./couchapp.json $(APP)/                               ;   \
-            $(CP) ./.couchappignore $(APP)/                             ;   \
-            $(CP) ./filters $(APP)/                                     ;   \
-            $(CP) ./rewrites.json $(APP)/                               ;   \
-            $(CP) ./validate_doc_update.js $(APP)/                      ;   \
+run: $(APPRC) $(APP) webpage
+	@   $(CP) $(PWD)/_attachments $(APP)/                           ;   \
+            $(CP) $(PWD)/.couchappignore $(APP)/                        ;   \
+            $(CP) $(PWD)/couchapp.json $(APP)/                          ;   \
+            $(CP) $(PWD)/filters $(APP)/                                ;   \
+            $(CP) $(PWD)/rewrites.json $(APP)/                          ;   \
+            $(CP) $(PWD)/validate_doc_update.js $(APP)/                 ;   \
+            $(RM) $(APP)/_attachments/Makefile                          ;   \
             echo "# $${RANDOM}" >> $(APP)/_attachments/cache.manifest   ;   \
             cd $(APP) && $(COUCHAPP) push -q                            ;   \
             if [ $$? -eq 0 ]; then                                          \
@@ -83,8 +68,18 @@ run: $(APPRC) $(APP)
 
 ###
 
-$(APP):
-	@   $(call hilite, "Generating the app ...")                    ;   \
+.PHONY: webpage
+
+webpage:
+	@   cd $(PWD)/_attachments                                      ;   \
+            $(MAKE) -f Makefile distclean                               ;   \
+            $(MAKE) -f Makefile browser                                 ;   \
+            cd $(PWD)
+
+###
+
+$(APP): | webpage
+	@   $(call hilite, 'Generating the app ...')                    ;   \
             $(COUCHAPP) generate $(APP)                                 ;   \
             $(RM) $(APP)/_attachments/* $(APP)/evently $(APP)/filters       \
                 $(APP)/lists $(APP)/README.md $(APP)/shows                  \
@@ -92,9 +87,14 @@ $(APP):
 
 $(APPRC): $(APP)
 	@   $(strip $(call hilite, "Deploying to $(DB) ...")            ;   \
-            printf '%s' '{"env": {"default": {"db": "http://' > $@     ;   \
+            printf '%s' '{"env": {"default": {"db": "http://' > $@      ;   \
             $(call read-prompt, "Username: ") && USERNAME="$${REPLY}"   ;   \
             $(call read-secure, "Password: ") && PASSWORD="$${REPLY}"   ;   \
             printf '%s' "$${USERNAME}:$${PASSWORD}@$(DB)" '"}}}' >> $@  )
+
+###
+
+%:
+	@   $(call alert, 'No target "$@" found.')
 
 #-  vim:set syntax=make:

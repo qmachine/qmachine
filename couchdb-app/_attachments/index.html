@@ -1,55 +1,34 @@
 <!DOCTYPE html>
 <!--
     index.html ~~
-                                                        ~~ (c) SRW, 31 Oct 2011
+                                                        ~~ (c) SRW, 06 Feb 2012
 -->
 <html lang="en" manifest="./cache.manifest">
   <head>
     <meta charset="utf-8"/>
     <meta name="author" content="Sean Wilkinson"/>
-    <title>Quanah</title>
-    <link rel="stylesheet" href="./style.css"/>
+    <title>Qmachine.org: Home Page</title>
+    <link rel="stylesheet" href="./print.css" media="print"/>
+    <link rel="stylesheet" href="./screen.css" media="screen"/>
     <link rel="shortcut icon" href="./favicon.ico"/>
-  <!--
-    Apple stuff
-  -->
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-    <link rel="apple-touch-icon" href="./icon-iphone.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="./icon-ipad.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="./icon-iphone4.png"/>
-    <link rel="apple-touch-startup-image" href="./startup-image.png"/>
-  <!--
-    Google web crawler stuff
-  -->
-    <!--
-    <link rel="canonical" href="https://qmachine.org/"/>
-    -->
-  <!--
-    JavaScript
-  -->
-    <script src="./web-chassis.js"></script>
+    <!-- (no favicon) -->
   </head>
   <body>
-    <noscript>Please enable JavaScript in your browser.</noscript>
-    <ul>
-      <li>
-        <a href="./?developer=true">Developer</a>
-      </li>
-      <li>
-        <a href="./?volunteer=true">Volunteer</a>
-      </li>
-      <li>
-        <a href="http://goo.gl/tRxfM">Source</a>
-      </li>
-    </ul>
-  <!--
-    <script src="./quanah.js"></script>
-    <script src="./fs.js"></script>
-  -->
-  <!--
-    <script src="wankel.js"></script>
-  -->
-    <script src="cloudCache.js"></script>
+    <noscript>This page requires JavaScript.</noscript>
+    <h1>Qmachine</h1>
+    <form>
+      <fieldset>
+        <legend>Options</legend>
+        <p>
+          <!-- <label>Check boxes</label> -->
+          <input type="checkbox" id="volunteer"/>
+          <label for="volunteer">Volunteer</label>
+        </p>
+      </fieldset>
+    </form>
+    <div style="text-align: center">
+        Thanks for testing -- I really appreciate your input!
+    </div>
+    <script src="./main.js"></script>
   </body>
 </html>
