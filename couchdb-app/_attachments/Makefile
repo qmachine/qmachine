@@ -6,15 +6,15 @@
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
 
-include ./tools/macros.make
+include ../../tools/macros.make
 
 JS      :=  v8 js jsc d8 node nodejs narwhal-jsc rhino ringo narwhal    \
                 couchjs phantomjs #avmshell
 ALLJS   :=  $(call available, $(sort $(JS)))
 USEJS   :=  $(strip $(call contingent, $(JS)))
 JSLIBS  :=  libs.js
-QUANAH  :=  src/quanah.js
-SRCJS   :=  $(JSLIBS) $(QUANAH) tests/demo.js
+QUANAH  :=  quanah.js
+SRCJS   :=  $(JSLIBS) $(QUANAH) fs.js demo.js
 EXEJS   :=  main.js
 HTML    :=  index.html
 
@@ -26,10 +26,10 @@ OPEN    :=  $(call contingent, gnome-open open)
 RM      :=  $(call contingent, rm) -rf
 TIME    :=  $(call contingent, time)
 TOUCH   :=  $(call contingent, touch)
-WEBPAGE :=  $(call contingent, ruby jruby) ./tools/webpage.rb
+WEBPAGE :=  $(call contingent, webpage) #-  a personal Ruby script
 
 define compile-js
-    $(call aside, "Processing $(2) ...")                                ;   \
+    $(call aside, 'Processing $(2) ...')                                ;   \
     $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS \
         --js $(1) --js_output_file $(2)
 endef
@@ -52,7 +52,7 @@ clobber: clean
 	@   $(RM) $(filter-out $(SRCJS), $(wildcard *.js))
 
 distclean: clobber
-	@   $(RM) .d8_history .v8_history libs.js $(HTML)
+	@   $(RM) .d8_history .v8_history libs.js
 
 reset:
 	@   $(call contingent, clear)
@@ -76,7 +76,7 @@ benchmark: $(EXEJS)
             $(call hilite, '(analysis placeholder)')
 
 browse: browser
-	@   if [ -f $(HTML) ]; then $(OPEN) $(HTML); fi
+	@   $(OPEN) $(HTML)
 
 browser: $(EXEJS) $(HTML)
 
@@ -108,17 +108,6 @@ check: $(EXEJS)
                 fi                                                      ;   \
             done
 
-fast: $(EXEJS)
-	@   QUICK_OUTFILE="$${RANDOM}-$(strip $(EXEJS))"                ;   \
-            $(call compile-js, $(EXEJS), $${QUICK_OUTFILE})             ;   \
-            $(call aside, "$(USEJS) $${QUICK_OUTFILE}")                 ;   \
-            $(TIME) $(USEJS) $${QUICK_OUTFILE}                          ;   \
-            if [ $$? -eq 0 ]; then                                          \
-                $(call hilite, 'Success.')                              ;   \
-            else                                                            \
-                $(call alert, 'Failure.')                               ;   \
-            fi
-
 quick:
 	@   QUICK_JS_FILE="$${RANDOM}-$(strip $(EXEJS))"                ;   \
             $(CAT) $(filter-out $(JSLIBS), $(SRCJS)) > $${QUICK_JS_FILE};   \
@@ -140,7 +129,10 @@ $(HTML): | $(EXEJS)
 	@   $(WEBPAGE) -o $@ $(EXEJS)
 
 $(JSLIBS): jslint.js json2.js
-	@   $(CAT) $^ > $@
+	@   TEMP_JS_FILE="$${RANDOM}-$(JSLIBS)"                         ;   \
+            $(CAT) $^ > $${TEMP_JS_FILE}                                ;   \
+            $(call compile-js, $${TEMP_JS_FILE}, $(JSLIBS))             ;   \
+            $(RM) $${TEMP_JS_FILE}
 
 ###
 

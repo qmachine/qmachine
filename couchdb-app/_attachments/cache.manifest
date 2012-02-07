@@ -1,0 +1,19 @@
+CACHE MANIFEST
+
+#-  cache.manifest ~~
+#                                                       ~~ (c) SRW, 06 Feb 2012
+
+CACHE:
+demo.js
+fs.js
+index.html
+print.css
+quanah.js
+screen.css
+
+NETWORK:
+*
+
+#FALLBACK:
+
+# EOF

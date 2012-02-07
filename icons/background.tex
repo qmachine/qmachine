@@ -1,0 +1,28 @@
+%-  LaTeX document file
+
+%-  background.tex ~~
+%
+%   This is the known background that corresponds to "quanah-logo.tex".
+%
+%                                                           ~~ SRW, 21 Oct 2010
+
+\documentclass{article}
+
+\usepackage{eulervm}                    %-  use Zapf's "Euler" font
+\usepackage{xcolor}                     %-  allow colors to be defined :-)
+    \definecolor{WebSafeNavy}{HTML}{000080}
+    \definecolor{ChromeGray}{HTML}{cccccc}
+
+    \setlength{\fboxsep}{2pt}
+    \setlength{\fboxrule}{1pt}
+
+\pagestyle{empty}                       %-  minimize document's bounding box
+
+\begin{document}
+
+    \Huge
+    \colorbox{ChromeGray}{\color{WebSafeNavy}\phantom{$Q$}}%
+
+\end{document}
+
+%-  vim:set syntax=tex:
