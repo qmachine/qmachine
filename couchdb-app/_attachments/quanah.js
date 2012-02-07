@@ -5,10 +5,21 @@
 //  As of this version, Quanah no longer contains 'generic' functionality or
 //  exports a generic 'ply' method because I extracted those into "generic.js".
 //
+//  Quanah does not support module systems and instead creates a single Object
+//  prototype method, 'Q', that it uses as a namespace. The general consensus
+//  is, of course, that modifying the native prototypes is a Bad Thing, but
+//  I have found that Quanah's "Method Q" is a really beautiful way to solve
+//  a number of problems with code reuse in JavaScript. It packages all of its
+//  methods and properties into a single, globally available object which runs
+//  correctly in "modern" JavaScript, and users can test for its existence
+//  without any special knowledge about a particular module system's quirks.
+//  In the end, the decision to use "Method Q" as a native prototype method is
+//  definitely motivated by the syntactic sugar it enables, but the only other
+//  alternative is to create a single global variable anyway, and I'd get just
+//  as many flames over that decision, too ;-)
+//
 //  To-do list:
 //
-//  -   deprecate the 'global' property of Q
-//      -   fix 'atob' and 'btoa' for Unicode (see comments)
 //  -   finish documenting all functions and "placeholders"
 //  -   optimize 'ply' for use with Arrays and Objects _only_, since it is no
 //      longer used as a duck-typed generic "fallback" function
@@ -23,7 +34,7 @@
 //  -   Could Quanah actually support ActionScript?
 //  -   Could Quanah solve nested 'when' dependencies? (see: 'demos[6]')
 //
-//                                                      ~~ (c) SRW, 05 Feb 2012
+//                                                      ~~ (c) SRW, 07 Feb 2012
 
 (function (global) {
     'use strict';
