@@ -1,0 +1,28 @@
+%-  LaTeX document file
+
+%-  dark-background.tex ~~
+%
+%   This is a dark background for compositing the iOS startup image.
+%
+%                                                           ~~ SRW, 31 Oct 2011
+
+\documentclass{article}
+
+\usepackage{eulervm}                    %-  use Zapf's "Euler" font
+\usepackage{xcolor}                     %-  allow colors to be defined :-)
+    \definecolor{WebSafeNavy}{HTML}{000080}
+    \definecolor{DarkGray}{HTML}{929292}
+
+    \setlength{\fboxsep}{2pt}
+    \setlength{\fboxrule}{1pt}
+
+\pagestyle{empty}                       %-  minimize document's bounding box
+
+\begin{document}
+
+    \Huge
+    \colorbox{DarkGray}{\color{WebSafeNavy}\phantom{$Q$}}%
+
+\end{document}
+
+%-  vim:set syntax=tex:
