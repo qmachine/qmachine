@@ -9,6 +9,6 @@ will write more documentation here soon!
 
 There are several "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),
-[GitHub](https://github.com/wilkinson/qmachine), and
+[GitHub](http://github.com/wilkinson/qmachine), and
 [Google Code](https://qmachine.googlecode.com).
 
