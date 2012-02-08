@@ -3,10 +3,11 @@
 #-  Makefile ~~
 #
 #   This contains live instructions for creating the zip file needed to upload
-#   Quanah to the Chrome Web Store as a hosted web app. Most of the process is
-#   done manually inside the browser, but this reduces the command-line tedium.
+#   Qmachine to the Chrome Web Store as a hosted web app. Most of the process
+#   is done manually inside the browser, but automated directions still reduce
+#   as much of the command-line tedium as possible.
 #
-#                                                       ~~ (c) SRW, 03 Sep 2011
+#                                                       ~~ (c) SRW, 07 Feb 2012
 
 include ../tools/macros.make
 
@@ -16,7 +17,7 @@ SRC     :=  $(wildcard *.js)
 SC_SHOT :=  1280x800.jpg
 SM_TILE :=  440x280.png
 
-ZIPFILE :=  quanah.zip
+ZIPFILE :=  qmachine.zip
 
 OPEN    :=  $(call contingent, gnome-open open)
 RM      :=  $(call contingent, rm) -rf

@@ -2,15 +2,17 @@
 
 #-  Makefile ~~
 #
-#   These directions build Quanah's icons from LaTeX source code.
+#   These directions create icons for Qmachine directly from LaTeX source code
+#   by rendering PDFs with TeX Live and rasterizing with ImageMagick. I have
+#   most recently tested these directions on Mac OS X 10.7.3.
 #
-#                                                           ~~ SRW, 31 Oct 2011
+#                                                       ~~ (c) SRW, 07 Feb 2012
 
 include ../tools/macros.make
 
 COMPOSITE   :=  $(call contingent, composite)                   #-  ImageMagick
-CONVERT     :=  $(call contingent, convert)                     #-  "
-CP          :=  $(call contingent, rsync) -va                   #-  Samba
+CONVERT     :=  $(call contingent, convert)                     #-  ImageMagick
+CP          :=  $(call contingent, rsync) --verbose --archive
 CROP        :=  $(call contingent, pdfcrop)                     #-  TeX Live
 OPEN        :=  $(call contingent, gnome-open open)
 RENDER      :=  $(call contingent, pdflatex) -no-shell-escape   #-  TeX Live

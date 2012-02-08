@@ -1,7 +1,7 @@
 //- JavaScript source code
 
-//- browser.js ~~
-//                                                      ~~ (c) SRW, 03 Feb 2012
+//- qmachine.js ~~
+//                                                      ~~ (c) SRW, 07 Feb 2012
 
 (function () {
     'use strict';
@@ -117,7 +117,8 @@
                 return;
             }
             var options = {
-                volunteer:  global.document.getElementById('volunteer')
+                volunteer:  global.document.getElementById('volunteer'),
+                pulse:      global.document.getElementById('pulse')
             };
             ply(args).by(function (key, val) {
              // This function needs documentation.
@@ -406,14 +407,25 @@
  // Browser configuration
 
     if (global.hasOwnProperty('document')) {
-     // There has GOT to be a better way -- jQuery, perhaps?
-        if (global.document.getElementById('volunteer') !== null) {
-            global.document.getElementById('volunteer').onclick = function () {
-                return relaunch({
-                    volunteer: this.checked
-                });
-            };
-        }
+     // This part would probably be cleaner with jQuery ...
+        (function () {
+            var options, temp;
+            options = ['volunteer', 'pulse'];
+            ply(options).by(function (key, val) {
+             // This function is necessary because I need to close inside a
+             // loop, which is error-prone without functional iteration.
+                var temp = global.document.getElementById(val);
+                if (temp !== null) {
+                    temp.onclick = function () {
+                        var obj = {};
+                        obj[val] = this.checked;
+                        return relaunch(obj);
+                    };
+                }
+                return;
+            });
+            return;
+        }());
     }
 
  // Demonstrations
@@ -444,7 +456,9 @@
                 global.setTimeout(f, dt);
                 return evt.exit();
             };
-            global.console.log('');
+            if (parseArgs().pulse === true) {
+                global.console.log('(pulse)');
+            }
             return;
         }());
     } else {
@@ -463,7 +477,9 @@
                 global.setTimeout(f, 1000);
                 return evt.exit();
             };
-            global.console.log('');
+            if (parseArgs().pulse === true) {
+                global.console.log('(pulse)');
+            }
             return;
         }());
     }

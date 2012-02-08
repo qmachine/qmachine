@@ -4,7 +4,7 @@
 #
 #   This contains live instructions for testing JavaScript programs :-)
 #
-#                                                       ~~ (c) SRW, 06 Feb 2012
+#                                                       ~~ (c) SRW, 07 Feb 2012
 
 include ../../tools/macros.make
 
@@ -14,7 +14,7 @@ ALLJS   :=  $(call available, $(sort $(JS)))
 USEJS   :=  $(strip $(call contingent, $(JS)))
 JSLIBS  :=  libs.js
 QUANAH  :=  quanah.js
-SRCJS   :=  $(JSLIBS) $(QUANAH) fs.js demo.js
+SRCJS   :=  $(JSLIBS) $(QUANAH) qmachine.js demo.js
 EXEJS   :=  main.js
 HTML    :=  index.html
 
@@ -26,12 +26,24 @@ OPEN    :=  $(call contingent, gnome-open open)
 RM      :=  $(call contingent, rm) -rf
 TIME    :=  $(call contingent, time)
 TOUCH   :=  $(call contingent, touch)
-WEBPAGE :=  $(call contingent, webpage) #-  a personal Ruby script
+WEBPAGE :=  $(call contingent, ruby jruby) ../../tools/webpage.rb
+YUICOMP :=  $(call contingent, yuicompressor)
+
+define compile-with-google-closure
+    $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS \
+        $(1:%=--js %) --js_output_file $(2)
+endef
+
+define compile-with-yuicompressor
+    JS_TEMP_FILE="$${RANDOM}-$(strip $(2))"                             ;   \
+    $(CAT) $(1) > $${JS_TEMP_FILE}                                      ;   \
+    $(YUICOMP) --type js $${JS_TEMP_FILE} -o $(2)                       ;   \
+    $(RM) $${JS_TEMP_FILE}
+endef
 
 define compile-js
-    $(call aside, 'Processing $(2) ...')                                ;   \
-    $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS \
-        --js $(1) --js_output_file $(2)
+    $(call aside, "Optimizing scripts: $(1) --> $(2)")                  ;   \
+    $(call compile-with-yuicompressor, $(1), $(2))
 endef
 
 define fetch-url
@@ -129,10 +141,7 @@ $(HTML): | $(EXEJS)
 	@   $(WEBPAGE) -o $@ $(EXEJS)
 
 $(JSLIBS): jslint.js json2.js
-	@   TEMP_JS_FILE="$${RANDOM}-$(JSLIBS)"                         ;   \
-            $(CAT) $^ > $${TEMP_JS_FILE}                                ;   \
-            $(call compile-js, $${TEMP_JS_FILE}, $(JSLIBS))             ;   \
-            $(RM) $${TEMP_JS_FILE}
+	@   $(call compile-js, $^, $@)
 
 ###
 
