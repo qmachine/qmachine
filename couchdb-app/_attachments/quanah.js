@@ -2,8 +2,9 @@
 
 //- quanah.js ~~
 //
-//  As of this version, Quanah no longer contains 'generic' functionality or
-//  exports a generic 'ply' method because I extracted those into "generic.js".
+//  NOTE: Quanah no longer contains 'generic' functionality or exports a
+//  generic 'ply' method because I extracted those into "generic.js", a new
+//  project I will release after I finish writing some papers.
 //
 //  Quanah does not support module systems and instead creates a single Object
 //  prototype method, 'Q', that it uses as a namespace. The general consensus
@@ -34,7 +35,7 @@
 //  -   Could Quanah actually support ActionScript?
 //  -   Could Quanah solve nested 'when' dependencies? (see: 'demos[6]')
 //
-//                                                      ~~ (c) SRW, 07 Feb 2012
+//                                                      ~~ (c) SRW, 09 Feb 2012
 
 (function (global) {
     'use strict';
@@ -371,7 +372,11 @@
     };
 
     init = function (obj) {
-     // This function needs documentation.
+     // This function enables the user to redefine "internal" functions from
+     // outside the giant anonymous closure. In particular, this allows users
+     // to port Quanah for use with any persistent storage system by simply
+     // implementing specific routines and providing them to Quanah by way of
+     // this 'init' function.
         ply(obj).by(function (key, val) {
          // This function is a filtered "map" ==> 'ply' is justified.
             if ((sys[key] === null) && (isFunction(val))) {
@@ -399,14 +404,32 @@
     };
 
     isClosed = function (x) {
-     // This function makes sure that the input argument 'x' isn't a function
-     // with external references or else an object with such a method as one
-     // of its own properties by using JSLint for static analysis. Note also
-     // that a function in JavaScript is actually a function object, so that
-     // we need to recurse over all properties of any object to be certain.
-     //
-     // NOTE: When debugging, it's helpful to check the output from
-     //     JSON.stringify(JSLINT.errors);
+     // This function tests an input argument 'x' for references that "close"
+     // over external references from another scope. This function solves a
+     // very important problem in JavaScript because function serialization is
+     // extremely difficult to perform rigorously. Most programmers consider a
+     // function only as its source code representation, but because it is also
+     // a closure and JavaScript has lexical scope, the exact "place" in the
+     // code where the code existed is important, too. A third consideration is
+     // that a function is also an object which can have methods and properties
+     // of its own, and these need to be included in the serializated form. I
+     // puzzled over this problem and eventually concluded that because I may
+     // not be able to serialize an entire scope (I haven't solve that yet), I
+     // _can_ get the source code representation of a function from within most
+     // JavaScript implementations even though it isn't part of the ECMAScript
+     // standard (June 2011). Thus, if a static analysis tool were able to
+     // parse the source code representation to confirm that the function did
+     // not depend on its scope, then I might be able to serialize it, provided
+     // that it did not contain any methods that depended on their scopes. Of
+     // course, writing such a tool is a huge undertaking, so instead I just
+     // used a fantastic program by Douglas Crockford, JSLINT, which contains
+     // an expertly-written parser with configurable parameters. A bonus here
+     // is that JSLINT allows me to avoid a number of other unsavory problems,
+     // such as functions that log messages to a console -- such functions may
+     // or may not be serializable, but their executions should definitely
+     // occur on the same machines that invoked them! Anyway, this function is
+     // only one solution to the serialization problem, and I welcome feedback
+     // from others who may have battled the same problems :-)
         var $f, flag, left, key, right;
         flag = false;
         left = '(function () {\nreturn ';
@@ -485,46 +508,74 @@
     };
 
     local_call = function (obj) {
-     // This function needs documentation.
+     // This function applies the transformation 'f' to 'x' for method 'f' and
+     // property 'x' of the input object 'obj' by calling 'f' with an input
+     // argument 'evt' and a 'this' value 'x'. The advantage of performing the
+     // transformation as shown, rather than simply computing 'f(x)', is that
+     // the user can explicitly indicate the program's logic even when the
+     // program's control is difficult or impossible to predict, as is commonly
+     // the case in JavaScript when using AJAX calls, for example.
         if ((obj.x instanceof AVar) === false) {
+         // I'm not sure if this condition is still necessary to check because
+         // it may actually be unreachable ...
             throw new TypeError('"local_call" expects "obj.x" to be an AVar');
         }
         var evt;
         try {
             evt = {
-             // This is the 'evt' object, defined here as an object literal
-             // so that its methods can be modified by the user at runtime on
-             // a case-by-case basis without affecting other invocations :-)
-             //
-             // NOTE: I still need to restrict invocation of these methods so
-             // that only one may be called, to prevent 'exit' from being
-             // called after 'fail', for example.
+             // This is the 'evt' object, an object literal with methods that
+             // send messages to 'obj.x' for execution control. Methods can
+             // be replaced by the user from within the calling function 'f'
+             // without affecting the execution of computations :-)
                 exit: function (message) {
-                 // This function needs documentation.
+                 // This function indicates successful completion.
                     obj.x.comm({done: message, secret: secret});
                     return;
                 },
                 fail: function (message) {
-                 // This function needs documentation.
+                 // This function indicates a failure, and it is intended to
+                 // replace the 'throw new Error(...)' idiom, primarily because
+                 // capturing errors that are thrown during remote execution
+                 // are very difficult to capture and return to the invoking
+                 // contexts otherwise. Although 'local_call' is named "local"
+                 // to indicate that the invocation and execution occur on the
+                 // same machine, the 'volunteer' function actually imports
+                 // tasks from other machines before invoking and executing
+                 // them; therefore, the "original invocation" may have come
+                 // from a "remote" machine, with respect to execution. Thus,
+                 // Quanah encourages users to replace 'throw' with 'fail' in
+                 // their programs to solve the remote error capture problem.
                     obj.x.comm({fail: message, secret: secret});
                     return;
                 },
                 stay: function (message) {
-                 // This function needs documentation.
+                 // This function allows a user to postpone execution, and it
+                 // is particularly useful for delaying execution until some
+                 // condition is met -- it can be used to write non-blocking
+                 // 'while' and 'until' constructs, for example. Since the
+                 // ECMAScript standard lacks anything resembling a package
+                 // manager, the 'stay' method also comes in handy for delaying
+                 // execution until an external library has loaded. Of course,
+                 // if you delay the execution, when will it run again? The
+                 // short answer is unsatisfying: you can never _know_. For a
+                 // longer answer, you'll have to wait for my upcoming papers
+                 // that explain why leaving execution guarantees to chance is
+                 // perfectly acceptable when the probability approachs 1 :-)
                     obj.x.comm({stay: message, secret: secret});
                     stack2.push(obj);
                     return;
                 }
             };
+         // After all the setup, the actual invocation is anticlimactic, huh?
             obj.f.call(obj.x, evt);
         } catch (err) {
-         // Since the 'stay' message no longer throws an error to alter the
-         // flow of execution, we can assume all caught errors are failures.
-         // I have deliberately reused 'evt.fail' here to enable the user to
-         // control this part themselves, if he or she is so inclined ;-)
+         // In early versions of Quanah, 'stay' threw a special Error type as
+         // a crude form of message passing, but because it no longer throws
+         // errors, we can assume that all caught errors are failures. Because
+         // the user may have chosen to replace the 'evt.fail' method with a
+         // personal routine, I have deliberately reused that reference here,
+         // to honor the user's wishes.
             evt.fail(err);
-        } finally {
-         // (placeholder)
         }
         return;
     };
@@ -537,7 +588,7 @@
      // giant anonymous closure to which it belongs. If performance becomes a
      // strong enough motivation, I will probably end up inlining the loops
      // anyway, but if you enjoy functional patterns as I do, take a look at
-     // my "generic.js" for a more caareful treatment of "basic" iteration :-)
+     // my "generic.js" for a more careful treatment of "basic" iteration :-)
         return {
             by: function (f) {
              // This function needs documentation.
@@ -546,6 +597,8 @@
                 }
                 var key, n;
                 if (isArrayLike(x)) {
+                 // This arm takes advantage of the fact that indexed 'for'
+                 // loops are substantially faster than 'for in' loops.
                     n = x.length;
                     for (key = 0; key < n; key += 1) {
                         f(key, x[key]);
@@ -557,6 +610,9 @@
                         }
                     }
                 } else {
+                 // I'm never quit sure if this is a good fallback definition,
+                 // but hopefully I'll get around to showing that this arm is
+                 // unnecessary anyway. In that case, I'll just remove it.
                     f(undefined, x);
                 }
                 return;
@@ -627,7 +683,6 @@
                         evt.exit();
                         break;
                     case 'failed':
-                        //evt.fail('Remote call failed (' + task.key + ')');
                         evt.fail(val.epitaph);
                         break;
                     default:
@@ -711,6 +766,15 @@
             f = function () {};
             obj = {};
             if (isFunction(val)) {
+             // If the input argument 'x' was actually a function, we have to
+             // perform two steps to serialize the function because functions
+             // are objects in JavaScript. The first step is to consider the
+             // function as only its "action", represented as the source code
+             // of the original function. The second step is to consider the
+             // function as only an object with its own methods and properties
+             // that must be preserved as source code also. (We can assume that
+             // scope need not be preserved because 'serialize' is only called
+             // when 'isClosed' returns 'false'.)
                 $val = '[FUNCTION ';
                 if (isFunction(val.toJSON)) {
                     $val += btoa(val.toJSON());
@@ -719,16 +783,23 @@
                 } else if (isFunction(val.toString)) {
                     $val += btoa(val.toString());
                 } else {
-                 // Hope for the best?
+                 // Here, we just hope for the best. We could also try using
+                 //     $val += btoa(String(val));
+                 // but it would just make JSLint angry and confuse people.
                     $val += btoa(val);
                 }
                 ply(val).by(function (key, val) {
-                 // This function is a "map" ==> 'ply' is justified.
+                 // This function copies methods and properties from the
+                 // function stored in 'val' onto an object 'obj' so they can
+                 // be serialized separately from the function itself. The
+                 // pattern used here is actually a "map", which justifies the
+                 // use of 'ply' because order of iteration isn't important.
                     if (f.hasOwnProperty(key) === false) {
                         obj[key] = val;
                     }
                     return;
                 });
+             // Now, we use recursion to serialize the methods and properties.
                 $val += (' ' + btoa(serialize(obj)) + ']');
             }
             return ($val === undefined) ? val : $val;
