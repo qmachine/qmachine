@@ -211,7 +211,7 @@
                 }
                 puts(this.val);
                 return evt.exit();
-            }
+            };
             return;
         },
 
