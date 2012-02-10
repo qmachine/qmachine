@@ -8,26 +8,23 @@
 //
 //  Quanah does not support module systems and instead creates a single Object
 //  prototype method, 'Q', that it uses as a namespace. The general consensus
-//  is, of course, that modifying the native prototypes is a Bad Thing, but
-//  I have found that Quanah's "Method Q" is a really beautiful way to solve
-//  a number of problems with code reuse in JavaScript. It packages all of its
-//  methods and properties into a single, globally available object which runs
-//  correctly in "modern" JavaScript, and users can test for its existence
-//  without any special knowledge about a particular module system's quirks.
-//  In the end, the decision to use "Method Q" as a native prototype method is
-//  definitely motivated by the syntactic sugar it enables, but the only other
-//  alternative is to create a single global variable anyway, and I'd get just
-//  as many flames over that decision, too ;-)
+//  in the community is that modifying the native prototypes is a Bad Thing,
+//  but I have found that Quanah's "Method Q" is actually a beautiful solution
+//  for a number of JavaScript's problems with code reuse. It packages methods
+//  and properties into a single, globally available object that runs correctly
+//  in "modern" JavaScript, and users can test for its existence without any
+//  special knowledge about a particular module system's quirks. In the end,
+//  the decision to use "Method Q" as a native prototype method is definitely
+//  motivated by the syntactic sugar it enables, but the only alternative would
+//  be to create a single global variable anyway, and I'd get just as many
+//  flames over that strategy ;-)
 //
 //  To-do list:
 //
 //  -   finish documenting all functions and "placeholders"
-//  -   optimize 'ply' for use with Arrays and Objects _only_, since it is no
-//      longer used as a duck-typed generic "fallback" function
 //  -   remove type-checks in user-unreachable functions where appropriate
 //  -   replace 'throw' statements with 'fail' statements for robustness
-//  -   rewrite 'onready' assignments as 'comm' invocations for performance
-//  -   update comments in 'AVar.prototype.toJSON'
+//  -   rewrite 'onready' assignments as 'comm' invocations (optional)
 //
 //  Open questions:
 //
@@ -35,7 +32,7 @@
 //  -   Could Quanah actually support ActionScript?
 //  -   Could Quanah solve nested 'when' dependencies? (see: 'demos[6]')
 //
-//                                                      ~~ (c) SRW, 09 Feb 2012
+//                                                      ~~ (c) SRW, 10 Feb 2012
 
 (function (global) {
     'use strict';
@@ -65,14 +62,15 @@
  // Definitions
 
     atob = function (input) {
-     // This function decodes a string which has been encoded using base64
-     // encoding. It isn't part of JavaScript or any standard, but it is a
-     // DOM Level 0 method, and it is extremely useful to have around ;-)
+     // This function redefines itself during its first invocation.
         if (isFunction(global.atob)) {
             atob = global.atob;
         } else {
             atob = function (input) {
-             // This function needs documentation.
+             // This function decodes a string which has been encoded using
+             // base64 encoding. It isn't part of JavaScript or any standard,
+             // but it is a DOM Level 0 method, and it is extremely useful to
+             // have around ;-)
                 /*jslint bitwise: true */
                 if ((/^[A-z0-9\+\/\=]*$/).test(input) === false) {
                     throw new Error('Invalid base64 characters: ' + input);
@@ -122,13 +120,15 @@
         };
         that = this;
         defineProperty(that, 'comm', {
-         // NOTE: We have to "hide" this method or else the avar cannot be
-         // serialized ==> we cannot simply assign it by 'that.comm = ...'!
             configurable: false,
             enumerable: false,
             writable: false,
             value: function (obj) {
-             // This function needs documentation.
+             // This function is a "hidden" instance method that forwards the
+             // messages it receives to 'comm' along with the internal 'state'
+             // of the avar that received the message. We "hide" this method
+             // by making it non-enumerable, which not only makes iteration
+             // over avars faster but also allows avars to be serialized :-)
                 comm.call(this, state, obj);
                 return;
             }
@@ -150,15 +150,16 @@
     };
 
     btoa = function () {
-     // This function encodes binary data into a base64 string. It isn't part
-     // of JavaScript or any standard, but it is a DOM Level 0 method, and it
-     // is extremely useful to have around. Unfortunately, it throws an error
-     // in most browsers if you hand it some Unicode --> http://goo.gl/3fLFs.
+     // This function redefines itself during its first invocation.
         if (isFunction(global.btoa)) {
             btoa = global.btoa;
         } else {
             btoa = function (input) {
-             // This function needs documentation.
+             // This function encodes binary data into a base64 string. It
+             // isn't part of JavaScript or any standard, but it _is_ a DOM
+             // Level 0 method, and it is extremely useful to have around.
+             // Unfortunately, it throws an error in most browsers if you feed
+             // it Unicode --> http://goo.gl/3fLFs.
                 /*jslint bitwise: true */
                 var a, output, ch1, ch2, ch3, en1, en2, en3, en4, i, n;
                 n = input.length;
@@ -455,11 +456,12 @@
              // returns 'false' if the scan fails, but that corresponds to a
              // 'true' flag for our problem; thus, we negate JSLINT's output.
                 flag = (false === JSLINT($f, {
-                 // JSLINT configuration options
+                 // JSLINT configuration options (version 2012-02-03):
+                    anon:       true,   //- ???
                     bitwise:    true,   //- bitwise operators are allowed?
                     browser:    false,  //- assume a browser as JS environment?
                     cap:        true,   //- uppercase HTML is allowed?
-                    confusion:  true,   //- types can be used inconsistently?
+                    //confusion:  true,   //- types can be used inconsistently?
                     'continue': true,   //- allow continuation statement?
                     css:        true,   //- allow CSS workarounds?
                     debug:      false,  //- allow debugger statements?
@@ -471,6 +473,7 @@
                     fragment:   true,   //- allow HTML fragments?
                     //indent:     4,
                     //maxlen:     80,
+                    //maxerr:     1,
                     newcap:     true,   //- constructors must be capitalized?
                     node:       false,  //- assume Node.js as JS environment?
                     nomen:      true,   //- allow names' dangling underscores?
@@ -591,9 +594,10 @@
      // my "generic.js" for a more careful treatment of "basic" iteration :-)
         return {
             by: function (f) {
-             // This function needs documentation.
+             // NOTE: I probably can't optimize this for Arrays and Objects
+             // after all because I use it on Functions in 'serialize' ...
                 if (isFunction(f) === false) {
-                    throw new TypeError('".by" expects a function.');
+                    throw new TypeError('"ply..by" expects a function');
                 }
                 var key, n;
                 if (isArrayLike(x)) {
@@ -762,8 +766,7 @@
      // I haven't found a test case yet that proves I need to work around the
      // problem, but if I do, I will follow the post at http://goo.gl/cciXV.
         return JSON.stringify(x, function replacer(key, val) {
-            var f, obj, $val;
-            f = function () {};
+            var obj, $val;
             obj = {};
             if (isFunction(val)) {
              // If the input argument 'x' was actually a function, we have to
@@ -788,12 +791,13 @@
                  // but it would just make JSLint angry and confuse people.
                     $val += btoa(val);
                 }
-                ply(val).by(function (key, val) {
+                ply(val).by(function f(key, val) {
                  // This function copies methods and properties from the
                  // function stored in 'val' onto an object 'obj' so they can
-                 // be serialized separately from the function itself. The
-                 // pattern used here is actually a "map", which justifies the
-                 // use of 'ply' because order of iteration isn't important.
+                 // be serialized separately from the function itself, but it
+                 // only transfers the ones a function wouldn't normally have.
+                 // As comparison, we reuse this function itself for reference.
+                 // Because order isn't important, use of 'ply' is justified.
                     if (f.hasOwnProperty(key) === false) {
                         obj[key] = val;
                     }
@@ -870,6 +874,7 @@
         if (y.length === 1) {
          // This arm shouldn't ever be used in JavaScript, but the Tamarin
          // environment has some weird quirks that derive from ActionScript.
+         // I'll remove this when I confirm that Quanah cannot support AS.
             y = '';
             while (y.length < 32) {
                 y += (Math.random() * 1e16).toString(16);
@@ -1012,7 +1017,6 @@
             return;
         };
         defineProperty(phantom, 'onready', {
-         // This function needs documentation.
             configurable: false,
             enumerable: false,
             get: function () {
@@ -1091,16 +1095,16 @@
             }
         });
         defineProperty(phantom, ((args.length < 2) ? 'is' : 'are') + 'ready', {
-         // This defines some syntactic sugar for the 'onready' handler. I
-         // have "hidden" it from iterators by making it non-enumerable :-P
             configurable: false,
             enumerable: false,
             get: function () {
-             // This function needs documentation.
+             // This getter "forwards" to the avar's 'onready' handler as a
+             // means to let the code read more idiomatically in English.
                 return phantom.onready;
             },
             set: function (f) {
-             // This function needs documentation.
+             // This setter "forwards" to the avar's 'onready' handler as a
+             // means to let the code read more idiomatically in English.
                 phantom.onready = f;
                 return;
             }
@@ -1121,10 +1125,14 @@
         },
         set: function (f) {
          // This function needs documentation.
-            if (isFunction(f) === false) {
-                throw new TypeError('Assigned value must be a function.');
+            if (isFunction(f)) {
+                this.comm({set_onerror: f, secret: secret});
+            } else {
+                this.comm({
+                    fail: 'Assigned value must be a function',
+                    secret: secret
+                });
             }
-            this.comm({set_onerror: f, secret: secret});
             return;
         }
     });
@@ -1140,10 +1148,14 @@
         },
         set: function (f) {
          // This function needs documentation.
-            if (isFunction(f) === false) {
-                throw new TypeError('Assigned value must be a function.');
+            if (isFunction(f)) {
+                this.comm({set_onready: f, secret: secret});
+            } else {
+                this.comm({
+                    fail: 'Assigned value must be a function',
+                    secret: secret
+                });
             }
-            this.comm({set_onready: f, secret: secret});
             return;
         }
     });
@@ -1153,11 +1165,12 @@
         enumerable: true,
         writable: false,
         value: function () {
-         // This function is obviously inefficient, but the reason we need to
-         // use 'JSON.parse' after serialization is because it saves a lot of
-         // overhead during queries of server-side queue systems. The idea is
-         // of putting as much computational load as possible on the client
-         // may seem odd at first, but it is really beautiful in practice!
+         // This function exists as a way to ensure that 'JSON.stringify' can
+         // serialize avars correctly, because that function will delegate to
+         // an input argument's 'toJSON' prototype method if one is available.
+         // Thus, providing this function allows Quanah to use its own format
+         // for serialization without making it impossibly hard for users to
+         // implement the abstract filesystem routines.
             return JSON.parse(serialize({
                 key: this.key,
                 val: this.val
@@ -1170,7 +1183,7 @@
         enumerable: true,
         writable: false,
         value: function () {
-         // This "forwards" the call to the avar's 'val' property if possible.
+         // This function "forwards" to the avar's 'val' property if possible.
             var val = this.val;
             if ((val === null) || (val === undefined)) {
                 return val;
@@ -1185,7 +1198,7 @@
         enumerable: true,
         writable: false,
         value: function () {
-         // This "forwards" the call to the avar's 'val' property if possible.
+         // This function "forwards" to the avar's 'val' property if possible.
             if ((this.val === null) || (this.val === undefined)) {
                 return this.val;
             } else {
@@ -1212,7 +1225,7 @@
          // else an avar whose value is such a function.
             var x = (this instanceof AVar) ? this : avar({val: this});
             when(f, x).areready = function (evt) {
-             // This function is the first half of the "sandwich" pattern.
+             // This function needs documentation.
                 var temp = avar({val: x.val});
                 temp.onerror = function (message) {
                  // This function needs documentation.
@@ -1233,11 +1246,12 @@
 
     (function () {
 
-     // This function needs documentation.
+     // This function constructs a temporary 'namespace' object and then
+     // copies its methods and properties onto Method Q for "export".
 
-        var template;
+        var namespace;
 
-        template = {
+        namespace = {
             avar:       avar,
             global:     global,         //- deprecated
             init:       init,
@@ -1246,8 +1260,10 @@
             when:       when
         };
 
-        ply(template).by(function (key, val) {
-         // This function has a "forEach" pattern ==> 'ply' is justified.
+        ply(namespace).by(function (key, val) {
+         // This function copies the methods and properties of 'namespace'
+         // onto Method Q as a simple means for "export". Because order is
+         // not important, the use of 'ply' here is justified.
             defineProperty(Object.prototype.Q, key, {
                 configurable: false,
                 enumerable: true,

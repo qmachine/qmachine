@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- demo.js ~~
-//                                                      ~~ (c) SRW, 06 Feb 2012
+//                                                      ~~ (c) SRW, 09 Feb 2012
 
 (function () {
     'use strict';
