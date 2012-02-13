@@ -2,10 +2,6 @@
 
 //- quanah.js ~~
 //
-//  NOTE: Quanah no longer contains 'generic' functionality or exports a
-//  generic 'ply' method because I extracted those into "generic.js", a new
-//  project I will release after I finish writing some papers.
-//
 //  Quanah does not support module systems and instead creates a single Object
 //  prototype method, 'Q', that it uses as a namespace. The general consensus
 //  in the community is that modifying the native prototypes is a Bad Thing,
@@ -21,7 +17,6 @@
 //
 //  To-do list:
 //
-//  -   finish documenting all functions and "placeholders"
 //  -   remove type-checks in user-unreachable functions where appropriate
 //  -   replace 'throw' statements with 'fail' statements for robustness
 //  -   rewrite 'onready' assignments as 'comm' invocations (optional)
@@ -30,9 +25,8 @@
 //
 //  -   Can Quanah return a remotely distributed memoized function?
 //  -   Could Quanah actually support ActionScript?
-//  -   Could Quanah solve nested 'when' dependencies? (see: 'demos[6]')
 //
-//                                                      ~~ (c) SRW, 10 Feb 2012
+//                                                      ~~ (c) SRW, 13 Feb 2012
 
 (function (global) {
     'use strict';
@@ -54,10 +48,10 @@
 
  // Declarations
 
-    var atob, AVar, avar, btoa, comm, defineProperty, deserialize, init,
-        isArrayLike, isClosed, isFunction, local_call, ply, puts, remote_call,
-        revive, secret, serialize, stack1, stack2, sys, update_local,
-        update_remote, uuid, volunteer, when;
+    var atob, AVar, avar, btoa, comm, defineProperty, deserialize,
+        init, isArrayLike, isClosed, isFunction, local_call, ply,
+        puts, remote_call, revive, secret, serialize, stack1, stack2,
+        sys, update_local, update_remote, uuid, volunteer, when;
 
  // Definitions
 
@@ -196,9 +190,15 @@
     comm = function (inside, outside) {
      // This function provides a simple messaging system for avars that uses
      // mutual closure over the 'secret' variable to restrict access to each
-     // avar's private state. This function won't respond to messages unless
-     // certain conditions are met, but I haven't decided if it should throw
-     // errors when conditions have not been met.
+     // avar's private state. This function could easily use a test such as
+     //
+     //     if ((outside instanceof Object) === false) {
+     //         this.comm({fail: ..., secret: secret});
+     //         return;
+     //     }
+     //
+     // but I have chosen not to use one because 'ply' will handle any input
+     // anyway, and unless certain flags are present, only 'revive' runs. 
         var args, message, special, x;
         special = false;
         x = this;
@@ -285,14 +285,15 @@
                 break;
             default:
              // When this arm is chosen, an error must exist in Quanah itself.
-             // In such a case, we will rely on user-submitted bug reports :-)
+             // In such a case, we will rely on user-submitted bug reports ;-)
                 throw new Error('No message "' + message + '" found.');
             }
         }
      // NOTE: Is it a good idea to invoke 'revive' every time? It does shorten
      // my code a little, of course, but the rationale here is that it helps
      // prevent a situation in which the progression through a non-empty queue
-     // halts because no events remain to trigger execution.
+     // halts because no events remain to trigger execution. Another advantage
+     // is that I can externally trigger a 'revive' by invoking 'x.comm()'.
         revive();
         return;
     };
@@ -345,22 +346,38 @@
     };
 
     deserialize = function ($x) {
-     // This function is a JSON-based deserialization utility that pairs with
-     // the 'serialize' function provided herein. Read more documentation in
-     // that function's definition, especially regarding UTF-8 conversions.
-        return JSON.parse($x, function revive(key, val) {
-         // This function needs documentation.
+     // This function is a JSON-based deserialization utility that can invert
+     // the 'serialize' function provided herein. Unfortunately, no 'fromJSON'
+     // equivalent exists for obvious reasons -- it would have to be a String
+     // prototype method, and it would have to be extensible for all types.
+     // NOTE: This definition could stand to be optimized, but I recommend
+     // leaving it as-is until improving performance is absolutely critical.
+        return JSON.parse($x, function (key, val) {
+         // This function is provided to 'JSON.parse' as the optional second
+         // parameter that its documentation refers to as a 'revive' function.
+         // NOTE: This is not the same kind of function as Quanah's 'revive'!
             var f, pattern;
             pattern = /^\[FUNCTION ([A-z0-9\+\/\=]+) ([A-z0-9\+\/\=]+)\]$/;
             if ((typeof val === 'string') || (val instanceof String)) {
                 if (pattern.test(val)) {
                     val.replace(pattern, function ($0, code, props) {
-                     // This function needs documentation.
+                     // This function is provided to the String prototype's
+                     // 'replace' method and uses references to the enclosing
+                     // scope to return results. I wrote things this way in
+                     // order to avoid changing the type of 'val' and thereby
+                     // confusing the JIT compilers, but I'm not certain that
+                     // using nested closures is any faster anyway. For that
+                     // matter, calling the regular expression twice may be
+                     // slower than calling it once and processing its output
+                     // conditionally, and that way might be clearer, too ...
                         /*jslint evil: true */
                         var obj = deserialize(atob(props));
                         f = ((new Function('return ' + atob(code)))());
                         ply(obj).by(function (key, val) {
-                         // This function is a "map" ==> 'ply' is justified.
+                         // This function copies methods and properties from
+                         // the "object-only" representation of a function back
+                         // onto the newly created function 'f'. Because order
+                         // isn't important, the use of 'ply' is justified.
                             f[key] = val;
                             return;
                         });
@@ -444,19 +461,28 @@
                 } else if (isFunction(x.toString)) {
                     $f = x.toString();
                 } else {
-                 // Hope for the best?
-                    $f = x;
+                 // If we fall this far, we're probably in trouble anyway, but
+                 // we aren't out of options yet. We could try to coerce to a
+                 // string by adding an empty string or calling the String
+                 // constructor without the 'new' keyword, but I'm not sure if
+                 // either would cause Quanah itself to fail JSLINT. Of course,
+                 // we can always just play it safe and return 'true' early to
+                 // induce local execution of the function -- let's do that!
+                    return true;
                 }
-             // Remove leading and trailing parentheses to appease JSLINT ...
+             // By this point, '$f' must be defined, and it must be a string
+             // or else the next line will fail when we try to remove leading
+             // and trailing parentheses in order to appease JSLINT.
                 $f = left + $f.replace(/^[(]|[)]$/g, '') + right;
-             // Here, we use JSLINT to analyze the function's "source code".
-             // We disable all options that do not directly pertain to the
-             // exact problem of determining whether the function will run
-             // correctly in a remote JavaScript environment or not. JSLINT
-             // returns 'false' if the scan fails, but that corresponds to a
-             // 'true' flag for our problem; thus, we negate JSLINT's output.
+             // Now, we send our function's serialized form '$f' into JSLINT
+             // for analysis, taking care to disable all options that are not
+             // directly relevant to determining if the function is suitable
+             // for running in some remote JavaScript environment. If JSLINT
+             // returns 'false' because the scan fails for some reason, the
+             // answer to our question would be 'true', which is why we have
+             // to negate JSLINT's output.
                 flag = (false === JSLINT($f, {
-                 // JSLINT configuration options (version 2012-02-03):
+                 // JSLINT configuration options, as of version 2012-02-03:
                     anon:       true,   //- ???
                     bitwise:    true,   //- bitwise operators are allowed?
                     browser:    false,  //- assume a browser as JS environment?
@@ -494,7 +520,9 @@
                 }));
             }
             ply(x).by(function (key, val) {
-             // This function has an "all" pattern ==> 'ply' is justified.
+             // This function examines all methods and properties of 'x'
+             // recursively to make sure none of those are closed, either.
+             // Because order isn't important, use of 'ply' is justified.
                 if (flag === false) {
                     flag = isClosed(val);
                 }
@@ -505,19 +533,21 @@
     };
 
     isFunction = function (f) {
-     // This function returns 'true' only if and only if 'f' is a Function.
-     // The second condition is necessary to return 'false' for a RegExp.
+     // This function returns 'true' only if and only if the input argument
+     // 'f' is a function. The second condition is necessary to avoid a false
+     // positive when 'f' is a regular expression. Please note that an avar
+     // whose 'val' property is a function will still return 'false'.
         return ((typeof f === 'function') && (f instanceof Function));
     };
 
     local_call = function (obj) {
      // This function applies the transformation 'f' to 'x' for method 'f' and
-     // property 'x' of the input object 'obj' by calling 'f' with an input
-     // argument 'evt' and a 'this' value 'x'. The advantage of performing the
-     // transformation as shown, rather than simply computing 'f(x)', is that
-     // the user can explicitly indicate the program's logic even when the
-     // program's control is difficult or impossible to predict, as is commonly
-     // the case in JavaScript when using AJAX calls, for example.
+     // property 'x' of the input object 'obj' by calling 'f' with 'evt' as an
+     // input argument and 'x' as the 'this' value. The advantage of performing
+     // transformations this way versus computing 'f(x)' directly is that it
+     // allows the user to indicate the program's logic explicitly even when
+     // the program's control is difficult or impossible to predict, as is
+     // commonly the case in JavaScript when working with callback functions.
         if ((obj.x instanceof AVar) === false) {
          // I'm not sure if this condition is still necessary to check because
          // it may actually be unreachable ...
@@ -569,7 +599,7 @@
                     return;
                 }
             };
-         // After all the setup, the actual invocation is anticlimactic, huh?
+         // After all the setup, the actual invocation is anticlimactic ;-)
             obj.f.call(obj.x, evt);
         } catch (err) {
          // In early versions of Quanah, 'stay' threw a special Error type as
@@ -614,9 +644,8 @@
                         }
                     }
                 } else {
-                 // I'm never quit sure if this is a good fallback definition,
-                 // but hopefully I'll get around to showing that this arm is
-                 // unnecessary anyway. In that case, I'll just remove it.
+                 // I've never really liked this as a fallback definition, but
+                 // it still helps to have it here, just in case.
                     f(undefined, x);
                 }
                 return;
@@ -625,8 +654,9 @@
     };
 
     puts = function () {
-     // This function is just a placeholder for testing purposes. It is also
-     // used in 'volunteer' to induce local execution :-)
+     // This function is just a placeholder for testing purposes. It can be
+     // useful for logging to a console, but to justify its inclusion here, I
+     // have also used it in 'volunteer' to induce local execution :-)
         return;
     };
 
@@ -641,9 +671,8 @@
      // require remote calls of its own! A publication is forthcoming, and at
      // that point I'll simply use a self-citation as an explanation :-)
         var f, x;
-     // First, we need to copy the computation's function and data into fresh
-     // instances, define some error handlers, and then write the copies to
-     // the abstract shared "filesystem".
+     // Step 1: copy the computation's function and data into fresh instances,
+     // define some error handlers, and write the copies to the "filesystem".
         f = avar({val: obj.f});
         x = avar({val: obj.x.val});
         f.onerror = x.onerror = function (message) {
@@ -652,10 +681,11 @@
             return;
         };
         f.onready = x.onready = update_remote;
-     // Step 2: (placeholder)
+     // Step 2: Use a 'when' statement to represent the remote computation and
+     // track its execution status on whatever system is using Quanah.
         when(f, x).areready = function (evt) {
          // This function creates a 'task' object to represent the computation
-         // and monitors its status by polling.
+         // and monitors its status by "polling" the "filesystem" for changes.
             var task;
             task = avar({
                 val: {
@@ -671,7 +701,7 @@
             task.onready = update_remote;
             task.onready = function (evt) {
              // This function polls for changes in the 'status' property using
-             // a variation on the 'update_local' function as an asynchronous
+             // a variation on the 'update_local' function as a non-blocking
              // 'while' loop -- hooray for disposable avars!
                 var temp = sys.read(task.key);
                 temp.onerror = function (message) {
@@ -679,8 +709,9 @@
                     return evt.fail(message);
                 };
                 temp.onready = function (temp_evt) {
+                 // This function analyzes the results of the 'read' operation
+                 // to determine if the 'task' computation is ready to proceed.
                     var val = deserialize(temp.val).val;
-                 // This function needs documentation.
                     switch (val.status) {
                     case 'done':
                         task.val = val;
@@ -697,21 +728,22 @@
                 return;
             };
             task.onready = function (task_evt) {
-             // This function simply releases 'f' and 'x'.
+             // This function ends the enclosing 'when' statement.
                 task_evt.exit();
                 return evt.exit();
             };
             return;
         };
-     // Step 3: (placeholder)
+     // Step 3: Update the local instances of 'f' and 'x' by retrieving the
+     // remote versions' representations. If possible, these operations will
+     // run concurrently.
         f.onready = x.onready = update_local;
-     // Step 4: (placeholder)
+     // Step 4: Use a 'when' statement to wait for the updates in Step 3 to
+     // finish before copying the new values into the original 'obj' argument.
         when(f, x).areready = function (evt) {
          // This function copies the new values into the old object. Please
          // note that we cannot simply write 'obj.foo = foo' because we would
-         // lose the original avar's internal state! Also, it may be better to
-         // separate these into explicit 'f.onready' and 'x.onready' events,
-         // but I haven't made a decision on that part yet.
+         // lose the original avar's internal state!
             obj.f = f.val;
             obj.x.val = x.val;
             obj.x.comm({done: [], secret: secret});
@@ -749,7 +781,7 @@
              // The task isn't serializable.
                 local_call(task);
             } else {
-             // The task is serializable and we are able to distribute it :-)
+             // The task is serializable, and we are able to distribute it :-)
                 remote_call(task);
             }
         }
@@ -786,9 +818,9 @@
                 } else if (isFunction(val.toString)) {
                     $val += btoa(val.toString());
                 } else {
-                 // Here, we just hope for the best. We could also try using
-                 //     $val += btoa(String(val));
-                 // but it would just make JSLint angry and confuse people.
+                 // Here, we just hope for the best. This arm shouldn't ever
+                 // run, actually, since we've likely already caught problems
+                 // that would land here in the 'isClosed' function.
                     $val += btoa(val);
                 }
                 ply(val).by(function f(key, val) {
@@ -861,7 +893,7 @@
             return evt.fail(message);
         };
         temp.onready = function (temp_evt) {
-         // This function needs documentation.
+         // This function just releases execution for the "outer" avar.
             temp_evt.exit();
             return evt.exit();
         };
@@ -891,13 +923,20 @@
     };
 
     volunteer = function () {
-     // This function needs documentation.
+     // This function, combined with 'remote_call', provides the remote code
+     // execution mechanism in Quanah. When 'remote_call' on one machine sends
+     // a serialized task to another machine, that other machine runs it with
+     // the 'volunteer' function. This function outputs the avar representing
+     // the task so that the underlying system (not Quanah) can control system
+     // resources itself. Examples will be included in the distribution that
+     // will accompany the upcoming publication(s).
         var f, task, x;
         f = avar();
         task = avar();
         x = avar();
         f.onerror = x.onerror = function (message) {
-         // This function needs documentation.
+         // This function notifies 'task' that something has gone awry so that
+         // it can attempt to push the 'message' back to the invoking machine.
             task.comm({fail: message, secret: secret});
             return;
         };
@@ -927,12 +966,22 @@
             }
             var temp = sys.queue();
             temp.onerror = function (message) {
-             // This function needs documentation.
+             // This function notifies 'task' that something has gone wrong
+             // during retrieval and interpretation of its description.
                 return evt.fail(message);
             };
             temp.onready = function (temp_evt) {
-             // This function needs documentation.
+             // This function chooses a task from the queue and runs it. The
+             // current form simply chooses the first available, but I could
+             // just as easily choose randomly by assigning weights to the
+             // elements of the queue.
                 if (temp.val.length === 0) {
+                 // Here, we choose to 'fail' not because this is a dreadful
+                 // occurrence or something, but because this decision allows
+                 // us to avoid running subsequent functions whose assumptions
+                 // depend precisely on having found a task to run. If we were
+                 // instead to 'stay' and wait for something to do, it would
+                 // be much harder to tune Quanah externally.
                     evt.fail('Nothing to do ...');
                 } else {
                     task.key = temp.val[0];
@@ -944,7 +993,10 @@
         };
         task.onready = update_local;
         when(f, task, x).areready = function (evt) {
-         // This function needs documentation.
+         // This function uses a Quanah idiom for "passing by reference" over
+         // machines by changing the UUIDs inside 'f' and 'x'. Additionally,
+         // we take this opportunity to "check out" the task by changing its
+         // status, thereby removing it from the "waiting" queue.
             f.key = task.val.f;
             x.key = task.val.x;
             task.val.status = 'running';
@@ -999,16 +1051,62 @@
     };
 
     when = function () {
-     // This function needs documentation because it has been completely
-     // rewritten in terms of a "phantom" AVar to which I have added some
-     // custom instance methods.
-        var args, phantom;
+     // This function takes any number of arguments, any number of which may
+     // be avars, and outputs a special "compound" avar whose 'val' property is
+     // an array of the original input arguments. The compound avar also has an
+     // extra instance method (either 'isready' or 'areready') that forwards
+     // its input arguments to the 'onready' handler to provide syntactic sugar
+     // with a nice interpretation in English. Any functions assigned to the
+     // 'onready' handler will wait for all input arguments' outstanding queues
+     // to empty before executing, and exiting will allow each of the inputs
+     // to begin working through its individual queue again. Also, a compound
+     // avar can still be used as a prerequisite to execution even when the
+     // compound avar depends on one of the other prerequisites, and although
+     // the immediate usefulness of this ability may not be obvious, it will
+     // turn out to be crucially important for expressing certain concurrency
+     // patterns idiomatically :-)
+        var args, x, y;
         args = Array.prototype.slice.call(arguments);
-        phantom = avar({val: args});
-        phantom.onerror = function (message) {
-         // This function needs documentation.
-            ply(args).by(function (key, val) {
-             // This function needs documentation.
+        x = (function union(x) {
+         // This 'union' function calls itself recursively to create an array
+         // 'x' of unique dependencies from the input arguments 'args'. In
+         // particular, the prerequisites of compound avars will be added, but
+         // the compound avars themselves will not be added. Performing this
+         // operation is what allows Quanah to "un-nest" 'when' statements in
+         // a single pass without constructing DAGs or preprocessing sources.
+            var y = [];
+            ply(x).by(function (i, xi) {
+             // This function iterates over each element in 'x'.
+                var flag;
+                if ((xi instanceof AVar) &&
+                        (xi.hasOwnProperty('isready') ||
+                        (xi.hasOwnProperty('areready')))) {
+                 // This arms "flattens" dependencies using recursion.
+                    y = union(y.concat(xi.val));
+                } else {
+                 // This arm ensures elements are unique.
+                    flag = true;
+                    ply(y).by(function (j, yj) {
+                     // This function iterates over each element in 'y'.
+                        if (flag === true) {
+                            flag = (xi !== yj);
+                        }
+                        return;
+                    });
+                    if (flag === true) {
+                        y.push(xi);
+                    }
+                }
+                return;
+            });
+            return y;
+        }(args));
+        y = avar({val: args});
+        y.onerror = function (message) {
+         // This function runs when something "terrible" has occurred.
+            ply(x).by(function (key, val) {
+             // This function passes the 'message' to each avar in 'x'. For
+             // the other elements, there really isn't much we can do ...
                 if (val instanceof AVar) {
                     val.comm({fail: message, secret: secret});
                 }
@@ -1016,23 +1114,25 @@
             });
             return;
         };
-        defineProperty(phantom, 'onready', {
+        defineProperty(y, 'onready', {
             configurable: false,
             enumerable: false,
             get: function () {
-             // This function needs documentation.
+             // This getter passes a temporary object to 'comm' in order to
+             // return a reference to the next function in the avar's queue,
+             // because 'comm' itself doesn't return anything.
                 var temp = {};
-                phantom.comm({get_onready: temp, secret: secret});
+                y.comm({get_onready: temp, secret: secret});
                 return temp.onready;
             },
             set: function (f) {
-             // This function needs documentation.
-                if (isFunction(f) === false) {
-                    throw new TypeError('Assigned value must be a function.');
-                }
+             // This setter "absorbs" 'f', which is expected to be a function,
+             // and it stores it in the queue for 'y' to execute later.
                 var count, egress, g, n, ready;
                 count = function () {
-                 // This function needs documentation.
+                 // This function is a simple counting semaphore that closes
+                 // over some private state variables in order to delay the
+                 // execution of 'f' until certain conditions are satisfied.
                     n -= 1;
                     if (n === 0) {
                         ready = true;
@@ -1042,13 +1142,24 @@
                 };
                 egress = [];
                 g = function (evt) {
-                 // This function needs documentation.
+                 // This function uses closure over private state variables
+                 // and the input argument 'f' to delay execution and to run
+                 // 'f' with a modified version of the 'evt' argument it will
+                 // receive. This function will be assigned to 'y.onready',
+                 // but it will not run until 'ready' is 'true'.
                     if (ready === false) {
                         return evt.stay('Acquiring "lock" ...');
                     }
+                    if (isFunction(f) === false) {
+                        return evt.fail('Assigned value must be a function');
+                    }
                     f.call(this, {
+                     // These methods close over the 'evt' argument as well as
+                     // the 'egress' array so that invocations of the control
+                     // statements 'exit', 'fail', and 'stay' are forwarded to
+                     // all of the original arguments given to 'when'.
                         exit: function (message) {
-                         // This function needs documentation.
+                         // This function signals successful completion :-)
                             ply(egress).by(function (key, evt) {
                              // This is a "forEach" ==> 'ply' is justified.
                                 return evt.exit(message);
@@ -1056,7 +1167,7 @@
                             return evt.exit(message);
                         },
                         fail: function (message) {
-                         // This function needs documentation.
+                         // This function signals a failed execution :-(
                             ply(egress).by(function (key, evt) {
                              // This is a "forEach" ==> 'ply' is justified.
                                 return evt.fail(message);
@@ -1064,7 +1175,7 @@
                             return evt.fail(message);
                         },
                         stay: function (message) {
-                         // This function needs documentation.
+                         // This function delays execution until later.
                             ply(egress).by(function (key, evt) {
                              // This is a "forEach" ==> 'ply' is justified.
                                 return evt.stay(message);
@@ -1074,13 +1185,15 @@
                     });
                     return;
                 };
-                n = args.length;
+                n = x.length;
                 ready = false;
-                ply(args).by(function (key, val) {
+                ply(x).by(function (key, val) {
                  // This function is a "forEach" ==> 'ply' is justified.
                     if (val instanceof AVar) {
                         val.onready = function (evt) {
-                         // Does this function need documentation?
+                         // This function stores the 'evt' argument into an
+                         // array so we can prevent further execution involving
+                         // 'val' until after 'g' calls the input argument 'f'.
                             egress.push(evt);
                             count();
                             return;
@@ -1090,26 +1203,26 @@
                     }
                     return;
                 });
-                phantom.comm({set_onready: g, secret: secret});
+                y.comm({set_onready: g, secret: secret});
                 return;
             }
         });
-        defineProperty(phantom, ((args.length < 2) ? 'is' : 'are') + 'ready', {
+        defineProperty(y, ((args.length < 2) ? 'is' : 'are') + 'ready', {
             configurable: false,
             enumerable: false,
             get: function () {
              // This getter "forwards" to the avar's 'onready' handler as a
              // means to let the code read more idiomatically in English.
-                return phantom.onready;
+                return y.onready;
             },
             set: function (f) {
              // This setter "forwards" to the avar's 'onready' handler as a
              // means to let the code read more idiomatically in English.
-                phantom.onready = f;
+                y.onready = f;
                 return;
             }
         });
-        return phantom;
+        return y;
     };
 
  // Prototype definitions
@@ -1118,13 +1231,16 @@
         configurable: false,
         enumerable: false,
         get: function () {
-         // This function needs documentation.
+         // This getter passes a temporary object to 'comm' in order to return
+         // a reference to the private 'onerror' value, since 'comm' itself
+         // doesn't return anything.
             var temp = {};
             this.comm({get_onerror: temp, secret: secret});
             return temp.onerror;
         },
         set: function (f) {
-         // This function needs documentation.
+         // This setter "absorbs" a function 'f' and forwards it to 'comm' so
+         // that it can be stored as a handler for 'this.onerror'.
             if (isFunction(f)) {
                 this.comm({set_onerror: f, secret: secret});
             } else {
@@ -1141,13 +1257,16 @@
         configurable: false,
         enumerable: false,
         get: function () {
-         // This function needs documentation.
+         // This getter passes a temporary object to 'comm' in order to return
+         // a reference to the private 'onready' value, since 'comm' itself
+         // doesn't return anything.
             var temp = {};
             this.comm({get_onready: temp, secret: secret});
             return temp.onready;
         },
         set: function (f) {
-         // This function needs documentation.
+         // This setter "absorbs" a function 'f' and forwards it to 'comm' so
+         // that it can be stored into a queue for subsequent execution.
             if (isFunction(f)) {
                 this.comm({set_onready: f, secret: secret});
             } else {
@@ -1225,15 +1344,24 @@
          // else an avar whose value is such a function.
             var x = (this instanceof AVar) ? this : avar({val: this});
             when(f, x).areready = function (evt) {
-             // This function needs documentation.
+             // This function closes over 'f' and 'x' to induce execution on
+             // the local (invoking) machine of the type-testing logic, but it
+             // doesn't actually force the computation 'x.Q(f)' itself to run
+             // locally. How? Well, by halting transformations of 'f' and 'x',
+             // we can guarantee that when the handler function executes, the
+             // value of 'f' will not change even if it's an avar. Thus, we can
+             // use a disposable avar ('temp') to stand for 'x' and assign the
+             // appropriate value of 'f' as an 'onready' handler which can run
+             // remotely if 'f' and 'x' were distributable to begin with :-)
                 var temp = avar({val: x.val});
                 temp.onerror = function (message) {
-                 // This function needs documentation.
+                 // This function sends the 'message' along to 'f' and 'x'.
                     return evt.fail(message);
                 };
                 temp.onready = (f instanceof AVar) ? f.val : f;
                 temp.onready = function (temp_evt) {
-                 // This function needs documentation.
+                 // This function updates the original avar's 'val' to match
+                 // and exits the 'when' statement.
                     x.val = temp.val;
                     temp_evt.exit();
                     return evt.exit();

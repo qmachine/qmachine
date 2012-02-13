@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- demo.js ~~
-//                                                      ~~ (c) SRW, 09 Feb 2012
+//                                                      ~~ (c) SRW, 10 Feb 2012
 
 (function () {
     'use strict';
@@ -217,10 +217,9 @@
 
         function () {
          // This function corresponds to demos[6]. It tests the ability to
-         // store the result of a 'when' statement for repeated uses. As of
-         // February 5, the 'when' statements work just fine but cannot handle
-         // circular dependencies, although there is an obvious way to do it
-         // that would involve my rewriting a lot of code ...
+         // store the result of a 'when' statement for repeated uses. It also
+         // tests the ability to "nest" 'when' statements -- versions before
+         // February 10 could not run this function correctly.
             var x, y, z;
             x = avar({val: 6});
             y = avar({val: 7});
@@ -245,9 +244,9 @@
                 puts('Ready:', x, y);
                 return evt.exit();
             };
-            when(x, y, z).areready = function (evt) {
-             // This function probably won't run ...
-                puts('Quanah can handle "circular" dependencies!');
+            when(x, when(y, z)).areready = function (evt) {
+             // This function did not run correctly in previous versions.
+                puts('Quanah can unnest "when" statements!');
                 return evt.exit();
             };
             return;
@@ -401,7 +400,7 @@
 
         var excludes, i, n;
 
-        excludes = [1, 5, 6];
+        excludes = [1, 5];
 
         n = demos.length;
 
