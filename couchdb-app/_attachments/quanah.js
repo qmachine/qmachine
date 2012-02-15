@@ -26,7 +26,7 @@
 //  -   Can Quanah return a remotely distributed memoized function?
 //  -   Could Quanah actually support ActionScript?
 //
-//                                                      ~~ (c) SRW, 13 Feb 2012
+//                                                      ~~ (c) SRW, 15 Feb 2012
 
 (function (global) {
     'use strict';
@@ -121,8 +121,7 @@
              // This function is a "hidden" instance method that forwards the
              // messages it receives to 'comm' along with the internal 'state'
              // of the avar that received the message. We "hide" this method
-             // by making it non-enumerable, which not only makes iteration
-             // over avars faster but also allows avars to be serialized :-)
+             // by making it non-enumerable so that avars can be serialized.
                 comm.call(this, state, obj);
                 return;
             }

@@ -1,7 +1,12 @@
 //- JavaScript source code
 
 //- demo.js ~~
-//                                                      ~~ (c) SRW, 10 Feb 2012
+//
+//  NOTE: Thanks to recent updates in Quanah's 'comm' function, a 'revive' can
+//  be triggered by simply invoking 'x.comm()' for some avar 'x'. It may be
+//  useful to take advantage of this new "hack" in this program.
+//
+//                                                      ~~ (c) SRW, 15 Feb 2012
 
 (function () {
     'use strict';
