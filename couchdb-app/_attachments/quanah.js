@@ -25,8 +25,9 @@
 //
 //  -   Can Quanah return a remotely distributed memoized function?
 //  -   Could Quanah actually support ActionScript?
+//  -   Can I prevent users' own JSLINT pragmas from circumventing 'isClosed'?
 //
-//                                                      ~~ (c) SRW, 15 Feb 2012
+//                                                      ~~ (c) SRW, 16 Feb 2012
 
 (function (global) {
     'use strict';
@@ -50,8 +51,8 @@
 
     var atob, AVar, avar, btoa, comm, defineProperty, deserialize,
         init, isArrayLike, isClosed, isFunction, local_call, ply,
-        puts, remote_call, revive, secret, serialize, stack1, stack2,
-        sys, update_local, update_remote, uuid, volunteer, when;
+        puts, remote_call, revive, secret, serialize, stack, sys,
+        update_local, update_remote, uuid, volunteer, when;
 
  // Definitions
 
@@ -104,7 +105,14 @@
 
     AVar = function AVar(obj) {
      // This function is a constructor for the fundamental building block of
-     // Quanah itself -- the avar "type".
+     // Quanah itself -- the AVar "type". An avar has its own mutable 'key' and
+     // 'val' properties as well as an immutable 'comm' method for simple
+     // message-passing. The idea behind avars is to distill concepts like
+     // "futures" and "lazy evaluation" into a simple API that encourages the
+     // programmer to specify a sequence of transformations to be applied in
+     // order to data. For each avar, such a sequence is stored as a first-in,
+     // first-out (FIFO) queue and executed according to messages the avar
+     // receives through its 'comm' method.
         var state, that;
         state = {
             epitaph:    null,
@@ -121,7 +129,9 @@
              // This function is a "hidden" instance method that forwards the
              // messages it receives to 'comm' along with the internal 'state'
              // of the avar that received the message. We "hide" this method
-             // by making it non-enumerable so that avars can be serialized.
+             // by making it non-enumerable so that avars can be serialized,
+             // and unfortunately this means we have to require ECMAScript 5
+             // metaprogramming features in order to support remote execution.
                 comm.call(this, state, obj);
                 return;
             }
@@ -220,7 +230,7 @@
                 inside.ready = true;
                 if (inside.queue.length > 0) {
                     inside.ready = false;
-                    stack1.unshift({
+                    stack.unshift({
                         f: inside.queue.shift(),
                         x: x
                     });
@@ -270,9 +280,16 @@
              // A computation has defined an 'onready' handler for this avar,
              // and to avoid overwriting the current handler, we will push it
              // onto the avar's individual queue and re-trigger execution.
-                Array.prototype.push.apply(inside.queue, args);
-                if (inside.ready === true) {
-                    x.comm({done: [], secret: secret});
+                if (isFunction(args[0])) {
+                    inside.queue.push(args[0]);
+                    if (inside.ready === true) {
+                        x.comm({done: [], secret: secret});
+                    }
+                } else {
+                    x.comm({
+                        fail: 'Assigned value must be a function',
+                        secret: secret
+                    });
                 }
                 break;
             case 'stay':
@@ -284,8 +301,12 @@
                 break;
             default:
              // When this arm is chosen, an error must exist in Quanah itself.
-             // In such a case, we will rely on user-submitted bug reports ;-)
-                throw new Error('No message "' + message + '" found.');
+             // In such a case, we may try to rely on user-submitted reports,
+             // but right now we just hope we can capture the error ...
+                x.comm({
+                    fail: 'Invalid "comm" message "' + message + '"',
+                    secret: secret
+                });
             }
         }
      // NOTE: Is it a good idea to invoke 'revive' every time? It does shorten
@@ -338,7 +359,12 @@
          // Why should I require platform support for getters and setters?
          // Some compelling arguments can be found here: http://goo.gl/e9rhh.
          // In the future, I may rewrite Quanah without getters and setters
-         // to increase performance, but for now, update your platform ;-)
+         // to increase performance, but for now, it's probably a better idea
+         // for you just to update your platform -- especially if you want to
+         // use Quanah to distribute your computations for you. Because each
+         // avar has a 'comm' method that must be "hidden" (non-enumerable) or
+         // else the avar cannot be serialized, your programs will always be
+         // run serially unless you use a reasonably modern platform!
             throw new Error('platform lacks support for getters and setters.');
         }
         return defineProperty(obj, name, params);
@@ -395,7 +421,12 @@
      // implementing specific routines and providing them to Quanah by way of
      // this 'init' function.
         ply(obj).by(function (key, val) {
-         // This function is a filtered "map" ==> 'ply' is justified.
+         // This function traverses the input object in search of definitions,
+         // but it will only store a definition as a method of the internal
+         // 'sys' object once per key. If an external definition has already
+         // been assigned internally, it cannot be redefined. The policy here
+         // is for simplicity, but it does add a small measure of security.
+         // Because order isn't important here, the use of 'ply' is justified.
             if ((sys[key] === null) && (isFunction(val))) {
                 sys[key] = val;
             }
@@ -547,11 +578,6 @@
      // allows the user to indicate the program's logic explicitly even when
      // the program's control is difficult or impossible to predict, as is
      // commonly the case in JavaScript when working with callback functions.
-        if ((obj.x instanceof AVar) === false) {
-         // I'm not sure if this condition is still necessary to check because
-         // it may actually be unreachable ...
-            throw new TypeError('"local_call" expects "obj.x" to be an AVar');
-        }
         var evt;
         try {
             evt = {
@@ -594,7 +620,7 @@
                  // that explain why leaving execution guarantees to chance is
                  // perfectly acceptable when the probability approachs 1 :-)
                     obj.x.comm({stay: message, secret: secret});
-                    stack2.push(obj);
+                    stack.push(obj);
                     return;
                 }
             };
@@ -752,20 +778,22 @@
     };
 
     revive = function () {
-     // This function contains the execution center for Quanah. It works by
-     // running the first available task in its primary queue, subject to some
-     // constraints, and then moving all tasks from a secondary queue into the
-     // primary before exiting. The secondary queue contains tasks that have
-     // been rescheduled. Then, our strategy is simply to ensure that 'revive'
-     // will be called as many times as necessary to progress through the
-     // entire queue. Because 'revive' makes no attempt to run every single
-     // task in the queue during a single invocation, the queue can be shared
-     // by multiple "contexts" that each invoke 'revive' at the same time, and
-     // it makes no difference if the separate contexts are due to recursion or
-     // to special object such as Web Workers. The constraints mentioned above
-     // are implemented as conditional tests that determine whether a given
-     // computation can be distributed to external resources for execution.
-        var task = stack1.shift();
+     // This function contains the execution center for Quanah. It's pretty
+     // simple, really -- it just runs the first available task in its queue
+     // ('stack'), and it selects an execution context conditionally. That's
+     // all it does. It makes no attempt to run every task in the queue every
+     // time it is called, because instead Quanah uses a strategy in which it
+     // tries to call 'revive' as many times as necessary to process an entire
+     // program correctly. For example, every time an avar receives a 'comm'
+     // message, 'revive' will run. Because 'revive' only runs a single task
+     // from the queue for each invocation, its queue can be shared safely
+     // across multiple execution "contexts" simultaneously, and it makes no
+     // difference if the separate contexts are due to recursion or to special
+     // objects such as Web Workers. The 'revive' function selects a context
+     // for execution using conditional tests that determine whether a given
+     // computation can be distributed to external resources for execution, but
+     // it can always fall back to executing on the invoking machine :-)
+        var task = stack.shift();
         if (task !== undefined) {
             if (typeof JSON === 'undefined') {
              // We can't serialize the computation anyway.
@@ -784,7 +812,6 @@
                 remote_call(task);
             }
         }
-        stack1.push.apply(stack1, stack2.splice(0, stack2.length));
         return;
     };
 
@@ -841,9 +868,7 @@
         });
     };
 
-    stack1 = [];
-
-    stack2 = [];
+    stack = [];
 
     sys = {
      // This object contains stubs for methods and properties that can be
@@ -1187,7 +1212,8 @@
                 n = x.length;
                 ready = false;
                 ply(x).by(function (key, val) {
-                 // This function is a "forEach" ==> 'ply' is justified.
+                 // This function traverses the unique arguments to 'when'.
+                 // Because order isn't important, using 'ply' is justified.
                     if (val instanceof AVar) {
                         val.onready = function (evt) {
                          // This function stores the 'evt' argument into an
@@ -1198,6 +1224,8 @@
                             return;
                         };
                     } else {
+                     // There's no reason to wait for it because it isn't an
+                     // avar, so we'll go ahead and decrement the counter.
                         count();
                     }
                     return;
@@ -1239,15 +1267,10 @@
         },
         set: function (f) {
          // This setter "absorbs" a function 'f' and forwards it to 'comm' so
-         // that it can be stored as a handler for 'this.onerror'.
-            if (isFunction(f)) {
-                this.comm({set_onerror: f, secret: secret});
-            } else {
-                this.comm({
-                    fail: 'Assigned value must be a function',
-                    secret: secret
-                });
-            }
+         // that it can be stored as a handler for 'this.onerror'. We don't
+         // actually need to use 'isFunction' because if it's not a function,
+         // it will never run anyway -- see the 'comm' definition.
+            this.comm({set_onerror: f, secret: secret});
             return;
         }
     });
@@ -1265,15 +1288,12 @@
         },
         set: function (f) {
          // This setter "absorbs" a function 'f' and forwards it to 'comm' so
-         // that it can be stored into a queue for subsequent execution.
-            if (isFunction(f)) {
-                this.comm({set_onready: f, secret: secret});
-            } else {
-                this.comm({
-                    fail: 'Assigned value must be a function',
-                    secret: secret
-                });
-            }
+         // that it can be stored into a queue for subsequent execution. As a
+         // bullet-proofing measure, I have moved the 'isFunction' check into
+         // the 'comm' definition. Because there's only one place in the code
+         // that can manipulate an avar's queue, assumptions about that queue
+         // should be located as near there as possible to avoid oversight.
+            this.comm({set_onready: f, secret: secret});
             return;
         }
     });
