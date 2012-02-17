@@ -1428,7 +1428,7 @@
 
     return;
 
-}([function (outer_scope) {
+}(Function.prototype.call.call(function (outer_scope) {
     'use strict';
 
  // This strict anonymous closure encapsulates the logic for detecting which
@@ -1442,12 +1442,15 @@
  // RingoJS confound the issue by modifying the scope chain, running scripts
  // in sandboxed contexts, and using identifiers like "global" carelessly ...
 
- // NOTE: This function is stored and retrieved immediately from an array as
- // a workaround for a JSLINT parser update (~ 16 Feb 2012). It replaces the
- // previous form 'function () {}.call()' --> '[function () {}][0].call()',
- // which is obviously inefficient but potentially more correct. I have not
- // yet examined the specification for ECMAScript 5.1 to see if I agree with
- // Crockford on this one, but in any case, this accomplishes my purpose :-)
+ // NOTE: This function is invoked by a "generic" 'call' to appease a recent
+ // JSLINT update (~ 16 Feb 2012) that hates the 'function () {}.call()' form.
+ // I first revised it to use a '[function () {}][0].call()' form that I have
+ // used previously for writing quines, but I realized that it would probably
+ // be "targeted" in the future as well, since '[].map()' won't pass JSLINT.
+ // Thus, we use 'call' "generically" in order to change the 'this' binding
+ // for an anonymous function without ever storing it (and thereby naming it).
+ // I'm not sure yet if JSLINT is even correct on this issue because I haven't
+ // dissected the ES5.1 syntax yet, but this does accomplish my purpose :-)
 
     /*jslint indent: 4, maxlen: 80 */
     /*global global: true */
@@ -1467,6 +1470,6 @@
 
     }
 
-}][0].call(null, this)));
+}, null, this)));
 
 //- vim:set syntax=javascript:
