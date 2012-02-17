@@ -34,7 +34,7 @@
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80 */
+    /*jslint indent: 4, maxlen: 80, unparam: true */
     /*global JSLINT: false */
 
  // Prerequisites
@@ -478,7 +478,7 @@
      // occur on the same machines that invoked them! Anyway, this function is
      // only one solution to the serialization problem, and I welcome feedback
      // from others who may have battled the same problems :-)
-        var $f, flag, left, key, right;
+        var $f, flag, left, right;
         flag = false;
         left = '(function () {\nreturn ';
         right = ';\n}());';

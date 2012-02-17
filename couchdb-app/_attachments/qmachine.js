@@ -1,14 +1,14 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 07 Feb 2012
+//                                                      ~~ (c) SRW, 17 Feb 2012
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80 */
+    /*jslint indent: 4, maxlen: 80, unparam: true */
 
  // Prerequisites
 
@@ -64,7 +64,7 @@
      // quotes). The function accepts an object whose own properties will be
      // used to override flags that are already present.
         /*jslint regexp: true */
-        var args, i, key, m, opts, uri;
+        var args, i, m, opts, uri;
         args = {};
         opts = {
             key: [
@@ -409,8 +409,7 @@
     if (global.hasOwnProperty('document')) {
      // This part would probably be cleaner with jQuery ...
         (function () {
-            var options, temp;
-            options = ['volunteer', 'pulse'];
+            var options = ['volunteer', 'pulse'];
             ply(options).by(function (key, val) {
              // This function is necessary because I need to close inside a
              // loop, which is error-prone without functional iteration.
