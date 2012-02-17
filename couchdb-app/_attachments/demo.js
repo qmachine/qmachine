@@ -285,6 +285,44 @@
                 return;
             };
             return;
+        },
+
+        function () {
+         // This function corresponds to demos[8]. Currently, Quanah won't
+         // allow you to assign an avar to an 'onready' handler, but it's not
+         // hard to do -- I just need to move most of Method Q's code directly
+         // into 'comm'. I haven't finished considering its consequences yet,
+         // so for now we're going to have to disable this demonstration.
+            var f, x;
+            f = avar();
+            x = avar();
+            f.onready = function (evt) {
+             // This function needs documentation.
+                f.val = function (evt) {
+                 // This function is intended to be assigned to an avar's
+                 // 'onready' "handler".
+                    puts(this);
+                    return evt.exit();
+                };
+                return evt.exit();
+            };
+            x.onerror = function (message) {
+             // This function needs documentation.
+                puts('ERROR:', message);
+                return;
+            };
+            x.onready = function (evt) {
+             // This function needs documentation.
+                x.val = 'I am an unsuspecting avar.';
+                return evt.exit();
+            };
+            x.onready = f;
+            x.onready = function (evt) {
+             // This function needs documentation.
+                puts('Holy cow, I really expected this to fail!');
+                return evt.exit();
+            };
+            return;
         }
 
     ];
@@ -405,7 +443,7 @@
 
         var excludes, i, n;
 
-        excludes = [1, 5];
+        excludes = [1, 5, 8];
 
         n = demos.length;
 

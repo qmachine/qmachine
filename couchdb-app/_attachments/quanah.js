@@ -27,7 +27,7 @@
 //  -   Could Quanah actually support ActionScript?
 //  -   Can I prevent users' own JSLINT pragmas from circumventing 'isClosed'?
 //
-//                                                      ~~ (c) SRW, 16 Feb 2012
+//                                                      ~~ (c) SRW, 17 Feb 2012
 
 (function (global) {
     'use strict';
@@ -1428,7 +1428,7 @@
 
     return;
 
-}(function (outer_scope) {
+}([function (outer_scope) {
     'use strict';
 
  // This strict anonymous closure encapsulates the logic for detecting which
@@ -1441,6 +1441,13 @@
  // that the global object is 'window', but CommonJS implementations such as
  // RingoJS confound the issue by modifying the scope chain, running scripts
  // in sandboxed contexts, and using identifiers like "global" carelessly ...
+
+ // NOTE: This function is stored and retrieved immediately from an array as
+ // a workaround for a JSLINT parser update (~ 16 Feb 2012). It replaces the
+ // previous form 'function () {}.call()' --> '[function () {}][0].call()',
+ // which is obviously inefficient but potentially more correct. I have not
+ // yet examined the specification for ECMAScript 5.1 to see if I agree with
+ // Crockford on this one, but in any case, this accomplishes my purpose :-)
 
     /*jslint indent: 4, maxlen: 80 */
     /*global global: true */
@@ -1460,6 +1467,6 @@
 
     }
 
-}.call(null, this)));
+}][0].call(null, this)));
 
 //- vim:set syntax=javascript:
