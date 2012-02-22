@@ -6,7 +6,7 @@
 #
 #                                                       ~~ (c) SRW, 20 Feb 2012
 
-include $(CODEBANK)/src/Make/lib/srw.make
+include ../tools/macros.make
 
 GIT     :=  $(call contingent, git)
 NODE    :=  $(call contingent, node)
