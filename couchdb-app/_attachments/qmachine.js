@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 17 Feb 2012
+//                                                      ~~ (c) SRW, 23 Feb 2012
 
 (function () {
     'use strict';
@@ -25,14 +25,12 @@
         return;
     }
 
-    if (({}).Q.global.hasOwnProperty('phantom')) {
-     // Exit early if running in PhantomJS (http://www.phantomjs.org).
-        return;
-    }
-
-    if (({}).Q.global.hasOwnProperty('system')) {
-     // Exit early if the current environment is a CommonJS implementation that
-     // impersonates a browser, such as the Cappuccino JSC version of Narwhal.
+    if (({}).Q.global.hasOwnProperty('phantom') ||
+            ({}).Q.global.hasOwnProperty('system')) {
+     // Exit early if running in PhantomJS or the Cappuccino JSC version of
+     // Narwhal. Both are server-side implementations that embed browsers, and
+     // thus both will pass the other checks. Unfortunately, both have security
+     // policies that freak out under the current version of Qmachine ...
         return;
     }
 
