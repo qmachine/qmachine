@@ -21,7 +21,7 @@
 
  // Declarations
 
-    var Q, avar, db, parseArgs, token, when;
+    var Q, avar, db, ms, parseArgs, tldr, token, when;
 
  // Definitions
 
@@ -30,6 +30,8 @@
     avar = Q.avar;
 
     db = avar();
+
+    ms = 100;
 
     parseArgs = function () {
      // This function needs documentation.
@@ -61,6 +63,11 @@
         return y;
     };
 
+    tldr = function (key) {
+     // This function needs documentation.
+        return '[' + key.slice(0, 5) + '...]';
+    };
+
     token = function () {
      // This function needs documentation.
         var args, secret;
@@ -86,7 +93,7 @@
 
     db.onerror = function (message) {
      // This function needs documentation.
-        console.error('ERROR:', message);
+        console.error('Error:', message);
         return;
     };
 
@@ -211,34 +218,69 @@
 
  // Initializations
 
-    if (parseArgs().volunteer === true) {
-        (function f() {
-         // This function needs documentation.
-            var task = Q.volunteer();
-            task.onerror = function (message) {
+    db.onready = function (evt) {
+     // This function needs documentation.
+        if (parseArgs().volunteer === true) {
+            (function f() {
              // This function needs documentation.
-                if (message !== 'Nothing to do ...') {
-                    console.error('ERROR:', message);
-                }
-                setTimeout(f, 1000);
+                var task = Q.volunteer();
+                task.onerror = function (message) {
+                 // This function needs documentation.
+                    if (message !== 'Nothing to do ...') {
+                        console.error('Error:', message);
+                    }
+                    setTimeout(f, ms);
+                    return;
+                };
+                task.onready = function (evt) {
+                 // This function needs documentation.
+                    console.log(tldr(task.val.x) + ':', task.val.status);
+                    setTimeout(f, ms);
+                    return evt.exit();
+                };
                 return;
-            };
-            task.onready = function (evt) {
+            }());
+        } else {
+            (function f() {
              // This function needs documentation.
-                console.log(task.val.status, '-->', task.key);
-                setTimeout(f, 20);
-                return evt.exit();
-            };
-            return;
-        }());
-    }
+                var x = avar();
+                x.onerror = function (message) {
+                 // This function needs documentation.
+                    console.error('Error:', message);
+                    setTimeout(f, ms);
+                    return;
+                };
+                x.onready = function (evt) {
+                 // This function needs documentation.
+                    setTimeout(f, ms);
+                    return evt.exit();
+                };
+                return;
+            }());
+
+        }
+        return evt.exit();
+    };
 
  // Demonstrations
 
-    if (parseArgs().demo === true) {
-        (function f() {
+    (function () {
+     // This function needs documentation.
+        var args = [
+            'qmachine> ',
+            undefined,
+            undefined,
+            true,
+            false
+        ];
+        if (parseArgs().volunteer === true) {
+            console.log('Thanks for volunteering!');
+        } else {
+            console.log('Run "demo()" for a live example :-)');
+        }
+        require('repl').start.apply(this, args).context.demo = function () {
          // This function needs documentation.
-            var before, after;
+            var after, before;
             (Math.random()).Q(function (evt) {
              // This function needs documentation.
                 before = JSON.stringify(this.val);
@@ -253,17 +295,17 @@
                 return evt.exit();
             }).Q(function (evt) {
              // This function needs documentation.
-                console.log(this.key + ':', before, '-->', after);
+                console.log(tldr(this.key) + ':', before, '-->', after);
                 return evt.exit();
             }).onerror = function (message) {
              // This function needs documentation.
-                console.error('ERROR:', message);
+                console.error('Error:', message);
                 return;
             };
-            setTimeout(f, 1000);
             return;
-        }());
-    }
+        };
+        return;
+    }());
 
  // That's all, folks!
 

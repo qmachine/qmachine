@@ -16,16 +16,17 @@ REPO    :=  https://github.com/developmentseed/node-sqlite3.git
 SRC     :=  jslint.js json2.js quanah.js qmachine.js
 MAINJS  :=  main.js
 SQLDB   :=  main.db
+TOKEN   :=  token=lala
 
 CAT     :=  $(call contingent, cat)
 CD      :=  $(call contingent, cd)
 CP      :=  $(call contingent, cp) -vrf
-CURL    :=  $(call contingent, curl) #-sS
+CURL    :=  $(call contingent, curl) -sS
 MKDIR   :=  $(call contingent, mkdir)
 RM      :=  $(call contingent, rm) -rf
 
 define run-each
-    $(NODE) $(MAINJS) $(QARGS)
+    $(NODE) $(MAINJS) $(TOKEN) $(QARGS)
 endef
 
 .PHONY: all clean clobber distclean reset run
@@ -50,13 +51,16 @@ run: $(MAINJS) node_modules/sqlite3
 
 ###
 
-.PHONY: update
+.PHONY: update volunteer
 
 update: node_modules/sqlite3
 	@   $(CD) $<                                                    ;   \
             $(GIT) pull                                                 ;   \
             ./configure                                                 ;   \
             $(MAKE)
+
+volunteer: $(MAINJS) node_modules/sqlite3
+	@   $(call run-each) volunteer
 
 ###
 
@@ -83,8 +87,8 @@ json2.js:
             if [ -f $(CODEBANK)/lib/JavaScript/json2.js ]; then             \
                 $(CP) $(CODEBANK)/lib/JavaScript/json2.js $@            ;   \
             else                                                            \
-                $(CURL) -o $@ $${CROCKFORD}/JSON-js/master/json2.js     ;   \
-            fi 
+                $(CURL) -o $@ $${CROCKHUB}/JSON-js/master/json2.js      ;   \
+            fi
 
 node_modules:
 	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi

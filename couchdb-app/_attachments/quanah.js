@@ -17,6 +17,7 @@
 //
 //  To-do list:
 //
+//  -   add support for 'x.onready = f' when 'f' is an avar
 //  -   remove type-checks in user-unreachable functions where appropriate
 //  -   replace 'throw' statements with 'fail' statements for robustness
 //  -   rewrite 'onready' assignments as 'comm' invocations (optional)
@@ -701,7 +702,7 @@
      // Step 1: copy the computation's function and data into fresh instances,
      // define some error handlers, and write the copies to the "filesystem".
         f = avar({val: obj.f});
-        x = avar({val: obj.x.val});
+        x = avar({key: obj.x.key, val: obj.x.val});
         f.onerror = x.onerror = function (message) {
          // This function tells the original 'x' that something has gone awry.
             obj.x.comm({fail: message, secret: secret});
