@@ -1,6 +1,11 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
+//
+//  To-do list:
+//
+//  -   prevent '409 (Conflict)' errors for PUT requests
+//
 //                                                      ~~ (c) SRW, 23 Feb 2012
 
 (function () {
