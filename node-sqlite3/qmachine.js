@@ -271,7 +271,7 @@
             undefined,
             undefined,
             true,
-            false
+            true
         ];
         if (parseArgs().volunteer === true) {
             console.log('Thanks for volunteering!');
