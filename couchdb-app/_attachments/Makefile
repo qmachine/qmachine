@@ -4,7 +4,7 @@
 #
 #   This contains live instructions for testing JavaScript programs :-)
 #
-#                                                       ~~ (c) SRW, 07 Feb 2012
+#                                                       ~~ (c) SRW, 25 Feb 2012
 
 include ../../tools/macros.make
 
@@ -163,7 +163,7 @@ json2.js:
             if [ -f $(CODEBANK)/lib/JavaScript/json2.js ]; then             \
                 $(CP) $(CODEBANK)/lib/JavaScript/json2.js $@            ;   \
             else                                                            \
-                $(CURL) -o $@ $${CROCKFORD}/JSON-js/master/json2.js     ;   \
+                $(CURL) -o $@ $${CROCKHUB}/JSON-js/master/json2.js      ;   \
             fi 
 
 ###

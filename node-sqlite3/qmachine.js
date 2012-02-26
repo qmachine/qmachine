@@ -4,7 +4,7 @@
 //
 //  This program implements Qmachine with Node.js and SQLite 3.
 //
-//                                                      ~~ (c) SRW, 22 Feb 2012
+//                                                      ~~ (c) SRW, 25 Feb 2012
 
 (function () {
     'use strict';
@@ -31,7 +31,7 @@
 
     db = avar();
 
-    ms = 100;
+    ms = 1000;
 
     parseArgs = function () {
      // This function needs documentation.
