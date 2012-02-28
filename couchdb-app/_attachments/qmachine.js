@@ -376,7 +376,7 @@
     setup.onready = function (evt) {
      // This function defines 'cache' methods for persistent local storage in
      // a web browser clients using HTML 5 'localStorage' if possible.
-        if (isBrowser() === false) {
+        if ((isBrowser() === false) || (parseArgs().cache !== 'local')) {
             return evt.exit();
         }
         var cache, db;
@@ -458,7 +458,7 @@
     setup.onready = function (evt) {
      // This function defines 'cache' methods for persistent local storage in
      // Node.js clients using SQLite 3.
-        if (isNodejs() === false) {
+        if ((isNodejs() === false) || (parseArgs().cache !== 'local')) {
             return evt.exit();
         }
         var cache, db;
@@ -623,7 +623,7 @@
                 var href, req;
                 href = mothership + [
                     '/db/_changes?filter=qmachine/queue',
-                    'limit=25',
+                    'limit=1',
                     'status=waiting',
                     'token=' + token()
                 ].join('&');
@@ -937,29 +937,6 @@
             };
             return y;
         };
-        return evt.exit();
-    };
-
-    setup.onready = function (evt) {
-     // This function ensures that all 'cache' methods have been implemented.
-        /*jslint unparam: true */
-        var cache, keys;
-        cache = this.val;
-        keys = [
-            'local_queue',
-            'local_read',
-            'local_write',
-            'remote_queue',
-            'remote_read',
-            'remote_write'
-        ];
-        ply(keys).by(function (key, val) {
-         // This function needs documentation.
-            if ((hOP(cache, val) && isFunction(cache[val])) === false) {
-                return evt.fail('Missing method: ' + val);
-            }
-            return;
-        });
         return evt.exit();
     };
 
