@@ -980,30 +980,38 @@
 
     setup.onready = function (evt) {
      // This function needs documentation.
-        var count = 0;
+        var count = 1;
         if (parseArgs().volunteer === true) {
             puts('Thanks for volunteering!');
             (function f() {
              // This function "daemonizes" a 'volunteer' process :-)
-                var task = Q.volunteer();
+                var first, task;
+                first = true;
+                task = Q.volunteer();
                 task.onerror = function (message) {
                  // This function needs documentation.
-                    count += 1;
-                    if (message instanceof Error) {
-                        puts('Error:', message.message);
-                    } else if (message !== 'Nothing to do ...') {
-                        puts('Error:', message);
-                    } else {
-                        puts('(pulse: ' + count + ')');
+                    if (first) {
+                        first = false;
+                        count += 1;
+                        setTimeout(f, 1000);
+                        if (message instanceof Error) {
+                            puts('Error:', message.message);
+                        } else if (message !== 'Nothing to do ...') {
+                            puts('Error:', message);
+                        } else {
+                            puts('(pulse: ' + count + ')');
+                        }
                     }
-                    setTimeout(f, 1000);
                     return;
                 };
                 task.onready = function (evt) {
                  // This function needs documentation.
-                    count += 1;
-                    puts('Completed:', this.key);
-                    setTimeout(f, 1000);
+                    if (first) {
+                        first = false;
+                        count += 1;
+                        setTimeout(f, 1000);
+                        puts(task.val.status + ':', task.key);
+                    }
                     return evt.exit();
                 };
                 return;
@@ -1028,6 +1036,12 @@
             true,
             true
         ]);
+        (function f(x) {
+         // This function needs documentation.
+            x.comm();
+            setTimeout(f, 1000, x);
+            return;
+        }(avar()));
         return evt.exit();
     };
 

@@ -30,7 +30,7 @@
 //  -   Is Quanah a kernel?
 //      -   If so, is it "re-entrant"? See http://goo.gl/985r.
 //
-//                                                      ~~ (c) SRW, 22 Feb 2012
+//                                                      ~~ (c) SRW, 28 Feb 2012
 
 (function (global) {
     'use strict';
@@ -957,33 +957,7 @@
      // the task so that the underlying system (not Quanah) can control system
      // resources itself. Examples will be included in the distribution that
      // will accompany the upcoming publication(s).
-        var f, task, x;
-        f = avar();
-        task = avar();
-        x = avar();
-        f.onerror = x.onerror = function (message) {
-         // This function notifies 'task' that something has gone awry so that
-         // it can attempt to push the 'message' back to the invoking machine.
-            task.comm({fail: message, secret: secret});
-            return;
-        };
-        task.onerror = function (message) {
-         // This function attempts to notify the remote representation of the
-         // task that an error has occurred, but depending on the nature of the
-         // error, of course, this function may not succeed, either! Luckily,
-         // a user can always redefine this handler -- 'volunteer' returns the
-         // 'task' object directly. One option, of course, is to redefine the
-         // 'onerror' handler here at the end of each 'onready' so that its
-         // assumptions will be up-to-date. Suggestions are welcomed :-)
-            var temp;
-            if (task.val instanceof Object) {
-                task.val.epitaph = message;
-                task.val.status = 'failed';
-                temp = avar({key: task.key, val: task.val});
-                temp.onready = update_remote;
-            }
-            return;
-        };
+        var task = avar();
         task.onready = function (evt) {
          // This function retrieves the key of a task from the queue so we
          // can retrieve that task's full description. If no tasks are found,
@@ -1006,7 +980,8 @@
                  // This seems like a common problem that will occur whenever
                  // users begin implementing custom storage mechanisms.
                     return temp_evt.fail('"queue" should return an array');
-                } else if (temp.val.length === 0) {
+                }
+                if (temp.val.length === 0) {
                  // Here, we choose to 'fail' not because this is a dreadful
                  // occurrence or something, but because this decision allows
                  // us to avoid running subsequent functions whose assumptions
@@ -1014,66 +989,58 @@
                  // instead to 'stay' and wait for something to do, it would
                  // be much harder to tune Quanah externally.
                     return temp_evt.fail('Nothing to do ...');
-                } else {
-                    task.key = temp.val[0];
-                    evt.exit();
                 }
-                return temp_evt.exit();
+                task.key = temp.val[0];
+                temp_evt.exit();
+                return evt.exit();
             };
             return;
         };
         task.onready = update_local;
-        when(f, task, x).areready = function (evt) {
-         // This function uses a Quanah idiom for "passing by reference" over
-         // machines by changing the UUIDs inside 'f' and 'x'. Additionally,
-         // we take this opportunity to "check out" the task by changing its
-         // status, thereby removing it from the "waiting" queue.
-            f.key = task.val.f;
-            x.key = task.val.x;
+        task.onready = function (evt) {
+         // This function needs documentation.
             task.val.status = 'running';
             return evt.exit();
         };
         task.onready = update_remote;
-        f.onready = x.onready = update_local;
-     // ------
-     //
-     // Now, we need to execute the computation 'f(x)' for avars 'f' and 'x'
-     // with robust error-handling. Although it would be really nice just to
-     // write 'x.Q(f)', doing so would simply distribute the task remotely,
-     // since the task was obviously serializable or it wouldn't even be here.
-     // To avoid an infinite loop, then, we need to solve the two problems of
-     // controlling _where_ and _when_ the computation will run. It turns out
-     // that there is a really easy solution -- close over 'f' inside an
-     // 'x.onready' function and then sandwich that function between a pair of
-     // 'when' statements. Closing over a local variable induces the local
-     // execution we want, and the 'when' statements block and release the
-     // two variables simultaneously. There are a number of other solutions
-     // out there, but I prefer this one at the moment.
-     //
-        when(f, x).areready = function (evt) {
-         // This function is the first half of the "sandwich" pattern.
-            puts(f, x);
-            return evt.exit();
-        };
-        x.onready = function (evt) {
-         // This function closes over 'f' to induce local execution of 'f(x)'.
-            f.val.call(this, evt);
+        task.onready = function (evt) {
+         // This function needs documentation.
+            var f, first, x;
+            f = avar({key: task.val.f});
+            first = true;
+            x = avar({key: task.val.x});
+            f.onerror = x.onerror = function (message) {
+             // This function needs documentation.
+                var temp_f, temp_x;
+                if (first) {
+                    first = false;
+                    task.val.epitaph = message;
+                    task.val.status = 'failed';
+                    temp_f = avar({key: f.key, val: f.val});
+                    temp_x = avar({key: x.key, val: x.val});
+                    temp_f = temp_x = update_remote;
+                    when(temp_f, temp_x).areready = function (temp_evt) {
+                     // This function needs documentation.
+                        temp_evt.exit();
+                        return evt.exit();
+                    };
+                }
+                return;
+            };
+            f.onready = x.onready = update_local;
+            when(f, x).areready = function (evt) {
+             // This function needs documentation.
+                f.val.call(x, evt);
+                return;
+            };
+            f.onready = x.onready = update_remote;
+            when(f, x).areready = function (temp_evt) {
+             // This function needs documentation.
+                task.val.status = 'done';
+                temp_evt.exit();
+                return evt.exit();
+            };
             return;
-        };
-        when(f, x).areready = function (evt) {
-         // This function is the second half of the "sandwich" pattern.
-            puts(f, x);
-            return evt.exit();
-        };
-     //
-     // ------
-        f.onready = x.onready = update_remote;
-        when(f, task, x).areready = function (evt) {
-         // This function prepares to signal successful completion by changing
-         // the value of the 'status' property; the signal will be sent when
-         // we update the remote copy of 'task'.
-            task.val.status = 'done';
-            return evt.exit();
         };
         task.onready = update_remote;
         return task;
@@ -1327,12 +1294,10 @@
         writable: false,
         value: function () {
          // This function "forwards" to the avar's 'val' property if possible.
-            var val = this.val;
-            if ((val === null) || (val === undefined)) {
-                return val;
-            } else {
-                return val.toString.apply(val, arguments);
+            if ((this.val === null) || (this.val === undefined)) {
+                return this.val;
             }
+            return this.val.toString.apply(this.val, arguments);
         }
     });
 
@@ -1344,9 +1309,8 @@
          // This function "forwards" to the avar's 'val' property if possible.
             if ((this.val === null) || (this.val === undefined)) {
                 return this.val;
-            } else {
-                return this.val.valueOf.apply(this.val, arguments);
             }
+            return this.val.valueOf.apply(this.val, arguments);
         }
     });
 
@@ -1466,14 +1430,12 @@
 
         return (typeof global === 'object') ? global : outer_scope;
 
-    } else {
+    }
 
      // Strict mode isn't supported in this environment, but we still need to
      // make sure we don't get fooled by Rhino's 'global' function.
 
-        return (typeof this.global === 'object') ? this.global : this;
-
-    }
+    return (typeof this.global === 'object') ? this.global : this;
 
 }, null, this)));
 
