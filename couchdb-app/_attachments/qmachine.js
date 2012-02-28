@@ -980,6 +980,7 @@
 
     setup.onready = function (evt) {
      // This function needs documentation.
+        var count = 0;
         if (parseArgs().volunteer === true) {
             puts('Thanks for volunteering!');
             (function f() {
@@ -987,18 +988,20 @@
                 var task = Q.volunteer();
                 task.onerror = function (message) {
                  // This function needs documentation.
+                    count += 1;
                     if (message instanceof Error) {
                         puts('Error:', message.message);
                     } else if (message !== 'Nothing to do ...') {
                         puts('Error:', message);
                     } else {
-                        puts('(pulse)');
+                        puts('(pulse: ' + count + ')');
                     }
                     setTimeout(f, 1000);
                     return;
                 };
                 task.onready = function (evt) {
                  // This function needs documentation.
+                    count += 1;
                     puts('Completed:', this.key);
                     setTimeout(f, 1000);
                     return evt.exit();
@@ -1008,6 +1011,23 @@
         } else {
             puts('Thanks for testing -- I really appreciate your input!');
         }
+        return evt.exit();
+    };
+
+    setup.onready = function (evt) {
+     // This function needs documentation.
+        /*jslint node: true */
+        if ((isNodejs() === false) || (parseArgs().repl !== true)) {
+            return evt.exit();
+        }
+        require('repl').start.apply(this, [
+         // See documentation at http://nodejs.org/docs/latest/api/repl.html.
+            'qmachine> ',
+            undefined,
+            undefined,
+            true,
+            true
+        ]);
         return evt.exit();
     };
 

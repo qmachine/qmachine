@@ -15,8 +15,7 @@ SQLITE  :=  $(call contingent, sqlite3)
 REPO    :=  https://github.com/developmentseed/node-sqlite3.git
 SRC     :=  jslint.js json2.js quanah.js qmachine.js
 MAINJS  :=  main.js
-SQLDB   :=  main.db
-TOKEN   :=  token=lala
+SQLDB   :=  Q.db
 
 CAT     :=  $(call contingent, cat)
 CD      :=  $(call contingent, cd)
@@ -26,7 +25,7 @@ MKDIR   :=  $(call contingent, mkdir)
 RM      :=  $(call contingent, rm) -rf
 
 define run-each
-    $(NODE) $(MAINJS) $(TOKEN) $(QARGS)
+    $(NODE) $(MAINJS) cache=local token=lala $(QARGS)
 endef
 
 .PHONY: all clean clobber distclean reset run
@@ -38,10 +37,10 @@ all: run
 clean: reset
 
 clobber: clean
-	@   $(RM) $(MAINJS) $(SQLDB) $(strip $(SQLDB))-journal
+	@   $(RM) $(MAINJS)
 
 distclean: clobber
-	@   $(RM) jslint.js json2.js node_modules
+	@   $(RM) jslint.js json2.js node_modules $(SQLDB)
 
 reset:
 	@   $(call contingent, clear)
@@ -51,7 +50,10 @@ run: $(MAINJS) node_modules/sqlite3
 
 ###
 
-.PHONY: update volunteer
+.PHONY: repl update volunteer
+
+repl: $(MAINJS) node_modules/sqlite3
+	@   $(call run-each) repl
 
 update: node_modules/sqlite3
 	@   $(CD) $<                                                    ;   \
