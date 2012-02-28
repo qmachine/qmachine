@@ -4,7 +4,7 @@
 #
 #   This contains live instructions for working with SQLite from Node.js.
 #
-#                                                       ~~ (c) SRW, 20 Feb 2012
+#                                                       ~~ (c) SRW, 28 Feb 2012
 
 include ../tools/macros.make
 
@@ -50,7 +50,10 @@ run: $(MAINJS) node_modules/sqlite3
 
 ###
 
-.PHONY: repl update volunteer
+.PHONY: db-dump repl update volunteer
+
+db-dump:
+	@   $(SQLITE) $(SQLDB) .dump
 
 repl: $(MAINJS) node_modules/sqlite3
 	@   $(call run-each) repl
