@@ -4,7 +4,7 @@
 #
 #   This contains live instructions for testing JavaScript programs :-)
 #
-#                                                       ~~ (c) SRW, 25 Feb 2012
+#                                                       ~~ (c) SRW, 28 Feb 2012
 
 include ../../tools/macros.make
 
@@ -119,6 +119,19 @@ check: $(EXEJS)
                     fi                                                  ;   \
                 fi                                                      ;   \
             done
+
+faster:
+	@   QUICK_JS_FILE="$${RANDOM}-$(strip $(EXEJS))"                ;   \
+            $(call compile-js,                                              \
+                $(filter-out $(JSLIBS), $(SRCJS)), $${QUICK_JS_FILE})   ;   \
+            $(call aside, "$(USEJS) $${QUICK_JS_FILE}")                 ;   \
+            $(TIME) $(USEJS) $${QUICK_JS_FILE}                          ;   \
+            if [ $$? -eq 0 ]; then                                          \
+                $(call hilite, 'Success.')                              ;   \
+            else                                                            \
+                $(call alert, 'Failure.')                               ;   \
+            fi                                                          ;   \
+            $(RM) $${QUICK_JS_FILE}
 
 quick:
 	@   QUICK_JS_FILE="$${RANDOM}-$(strip $(EXEJS))"                ;   \

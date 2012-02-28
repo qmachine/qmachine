@@ -6,7 +6,7 @@
 //  be triggered by simply invoking 'x.comm()' for some avar 'x'. It may be
 //  useful to take advantage of this new "hack" in this program.
 //
-//                                                      ~~ (c) SRW, 15 Feb 2012
+//                                                      ~~ (c) SRW, 28 Feb 2012
 
 (function () {
     'use strict';
@@ -493,6 +493,10 @@
     } else if (global.hasOwnProperty('system')) {
 
         global.demo();
+
+    } else {
+
+        puts('Run "demo()" for a live example :-)');
 
     }
 

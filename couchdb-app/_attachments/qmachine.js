@@ -1,19 +1,14 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//
-//  To-do list:
-//
-//  -   prevent '409 (Conflict)' errors for PUT requests
-//
-//                                                      ~~ (c) SRW, 23 Feb 2012
+//                                                      ~~ (c) SRW, 28 Feb 2012
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80, unparam: true */
+    /*jslint indent: 4, maxlen: 80 */
 
  // Prerequisites
 
@@ -21,28 +16,10 @@
         throw new Error('Method Q is missing.');
     }
 
-    if (({}).Q.hasOwnProperty('global') === false) {
-        throw new Error('Method Q has no "global" property.');
-    }
-
-    if (({}).Q.global.hasOwnProperty('navigator') === false) {
-     // Exit early if the current environment is not a web browser.
-        return;
-    }
-
-    if (({}).Q.global.hasOwnProperty('phantom') ||
-            ({}).Q.global.hasOwnProperty('system')) {
-     // Exit early if running in PhantomJS or the Cappuccino JSC version of
-     // Narwhal. Both are server-side implementations that embed browsers, and
-     // thus both will pass the other checks. Unfortunately, both have security
-     // policies that freak out under the current version of Qmachine ...
-        return;
-    }
-
  // Declarations
 
-    var Q, avar, global, isFunction, parseArgs, ply, queue, read, relaunch,
-        request, token, when, write;
+    var Q, avar, global, hOP, isBrowser, isFunction, isNodejs, parseArgs,
+        ply, puts, relaunch, setup, token, when;
 
  // Definitions
 
@@ -52,92 +29,163 @@
 
     global = Q.global;
 
+    hOP = function (obj, name) {
+     // This function needs documentation.
+        return ((obj !== null)      &&
+                (obj !== undefined) &&
+                (obj.hasOwnProperty(name)));
+    };
+
+    isBrowser = function () {
+     // This function needs documentation.
+        return ((global.hasOwnProperty('location'))             &&
+                (global.hasOwnProperty('navigator'))            &&
+                (global.hasOwnProperty('phantom') === false)    &&
+                (global.hasOwnProperty('system') === false));
+    };
+
     isFunction = function (f) {
-     // This function returns 'true' only if and only if 'f' is a Function.
-     // The second condition is necessary to return 'false' for a RegExp.
+     // This function needs documentation.
         return ((typeof f === 'function') && (f instanceof Function));
     };
 
+    isNodejs = function () {
+     // This function needs documentation.
+        return global.hasOwnProperty('process');
+    };
+
     parseArgs = function () {
-     // This function is based on "parseUri" by Steven Levithan (MIT license),
-     // but I have modified it here because I only care about parsing the
-     // query parameters. It treats the 'location.search' value as a set of
-     // ampersand-separated Boolean key=value parameters whose keys are valid
-     // JS identifiers and whose values are either "true" or "false" (without
-     // quotes). The function accepts an object whose own properties will be
-     // used to override flags that are already present.
-        /*jslint regexp: true */
-        var args, i, m, opts, uri;
-        args = {};
-        opts = {
-            key: [
-                'source', 'protocol', 'authority', 'userInfo',
-                'user', 'password', 'host', 'port', 'relative',
-                'path', 'directory', 'file', 'query', 'anchor'
-            ],
-            parser: new RegExp('^(?:([^:\\/?#]+):)?(?:\\/\\/((?:(([^:@' +
-                ']*)(?::([^:@]*))?)?@)?([^:\\/?#]*)(?::(\\d*))?))?((('  +
-                '(?:[^?#\\/]*\\/)*)([^?#]*))(?:\\?([^#]*))?(?:#(.*))?)'),
-            q: {
-                name:   'flags',
-                parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-            }
-        };
-        m = opts.parser.exec(global.location.href);
-        uri = {};
-        for (i = 14; i > 0; i -= 1) {
-            uri[opts.key[i]] = m[i] || '';
-        }
-        uri[opts.q.name] = {};
-        uri[opts.key[12]].replace(opts.q.parser, function ($0, $1, $2) {
-            if ($1) {
-             // These are "explicit coercions" ;-)
-                switch ($2) {
-                case '':
-                    uri[opts.q.name][$1] = true;
-                    break;
-                case 'false':
-                    uri[opts.q.name][$1] = false;
-                    break;
-                case 'true':
-                    uri[opts.q.name][$1] = true;
-                    break;
-                default:
-                    uri[opts.q.name][$1] = decodeURI($2);
+     // This function needs documentation.
+        if (isBrowser()) {
+            parseArgs = function () {
+             // This function is based on "parseUri" by Steven Levithan
+             // (MIT license), but I have modified it here because I only care
+             // about parsing the query parameters. It treats 'location.search'
+             // value as a set of ampersand-separated Boolean key=value
+             // parameters whose keys are valid JS identifiers and whose values
+             // are either "true" or "false" (without quotes). The function
+             // accepts an object whose own properties will be used to override
+             // flags that are already present.
+                /*jslint regexp: true */
+                var argv, i, m, o, uri;
+                argv = {};
+                o = {
+                 // This object needs documentation.
+                    key: [
+                        'source', 'protocol', 'authority', 'userInfo',
+                        'user', 'password', 'host', 'port', 'relative',
+                        'path', 'directory', 'file', 'query', 'anchor'
+                    ],
+                    parser: new RegExp('^(?:([^:\\/?#]+):)?(?:\\/\\/((?:((' +
+                        '[^:@]*)(?::([^:@]*))?)?@)?([^:\\/?#]*)(?::(\\d*))' +
+                        '?))?((((?:[^?#\\/]*\\/)*)([^?#]*))(?:\\?([^#]*))?' +
+                        '(?:#(.*))?)'),
+                    q: {
+                        name:   'flags',
+                        parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+                    }
+                };
+                m = o.parser.exec(global.location.href);
+                uri = {};
+                for (i = 14; i > 0; i -= 1) {
+                    uri[o.key[i]] = m[i] || '';
                 }
-            }
-        });
-     // Now, we'll copy the "command-line arguments" onto our output object.
-        ply(uri.flags).by(function (key, val) {
-         // Does this function need documentation?
-            args[key] = val;
-            return;
-        });
-     // Before exiting, let's make sure that our query parameters match the
-     // values shown in the form's options ...
-        (function () {
-            if (global.hasOwnProperty('document') === false) {
-                return;
-            }
-            var options = {
-                volunteer:  global.document.getElementById('volunteer'),
-                pulse:      global.document.getElementById('pulse')
+                uri[o.q.name] = {};
+                uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+                    if ($1) {
+                     // These are "explicit coercions" ;-)
+                        switch ($2) {
+                        case '':
+                            uri[o.q.name][$1] = true;
+                            break;
+                        case 'false':
+                            uri[o.q.name][$1] = false;
+                            break;
+                        case 'true':
+                            uri[o.q.name][$1] = true;
+                            break;
+                        default:
+                            uri[o.q.name][$1] = decodeURI($2);
+                        }
+                    }
+                    return;
+                });
+             // Now, we'll copy the "command-line arguments" onto 'argv'.
+                ply(uri.flags).by(function (key, val) {
+                 // Does this function need documentation?
+                    argv[key] = val;
+                    return;
+                });
+             // Before exiting, we'll ensure that the query parameters match
+             // the values shown in the form's options. This part may change
+             // soon because there is an open issue about it on GitHub.
+                (function () {
+                 // This function needs documentation.
+                    if (global.hasOwnProperty('document') === false) {
+                        return;
+                    }
+                    var doc, options;
+                    doc = global.document;
+                    options = {
+                        volunteer:  doc.getElementById('volunteer'),
+                        pulse:      doc.getElementById('pulse')
+                    };
+                    ply(argv).by(function (key, val) {
+                     // This function needs documentation.
+                        var flag;
+                        flag = ((options.hasOwnProperty(key)) &&
+                                (options[key] !== null) &&
+                                (options[key].checked !== undefined) &&
+                                (options[key].checked !== val));
+                        if (flag === true) {
+                            options[key].checked = val;
+                        }
+                        return;
+                    });
+                    return;
+                }());
+             // Finally, we return our object :-)
+                return argv;
             };
-            ply(args).by(function (key, val) {
+        } else if (isNodejs()) {
+            parseArgs = function () {
              // This function needs documentation.
-                var flag;
-                flag = ((options.hasOwnProperty(key)) &&
-                        (options[key] !== null) &&
-                        (options[key].checked !== undefined) &&
-                        (options[key].checked !== val));
-                if (flag === true) {
-                    options[key].checked = val;
+                /*jslint regexp: true */
+                var i, key, n, temp, val, x, y;
+                n = global.process.argv.length;
+                x = global.process.argv;
+                y = {};
+                for (i = 2; i < n; i += 1) {
+                    temp = (x[i]).match(/^([^=]+)(|=(.*))$/);
+                    if (temp !== null) {
+                        key = temp[1];
+                        switch (temp[3]) {
+                        case 'false':
+                            val = false;
+                            break;
+                        case 'true':
+                            val = true;
+                            break;
+                        case undefined:
+                            val = true;
+                            break;
+                        default:
+                            val = temp[3];
+                        }
+                        y[key] = val;
+                    }
                 }
-            });
-            return;
-        }());
-     // Finally, we return our object :-)
-        return args;
+                return y;
+            };
+        } else {
+            parseArgs = function () {
+             // This function needs documentation.
+                var argv = {};
+                // ...
+                return argv;
+            };
+        }
+        return parseArgs();
     };
 
     ply = function () {
@@ -181,104 +229,78 @@
         };
     };
 
-    queue = function () {
-     // This function needs documentation.
-        var y = avar({val: []});
-        y.onready = function (evt) {
-         // This function needs documentation.
-            var req, url;
-            req = request();
-            url = global.location.protocol + '//' + global.location.host +
-                '/db/_changes?filter=qmachine/queue&limit=25&status=waiting&' +
-                'token=' + token();
-            req.onreadystatechange = function () {
+    puts = function () {
+     // This function is my own self-contained output logging utility.
+        if (hOP(global, 'system') && isFunction(global.system.print)) {
+         // Narwhal-JSC, Narwhal (w/ Rhino engine), and RingoJS
+            puts = function () {
              // This function needs documentation.
-                var temp;
-                if (req.readyState === 4) {
-                    if (req.status === 200) {
-                        temp = JSON.parse(req.responseText).results;
-                        ply(temp).by(function (key, val) {
-                         // This function needs documentation.
-                            y.val.push(val.id);
-                            return;
-                        });
-                        return evt.exit();
-                    } else {
-                        return evt.fail(req.statusText);
-                    }
-                }
+                global.system.print(Array.prototype.join.call(arguments, ' '));
                 return;
             };
-            req.open('GET', url, true);
-            req.send(null);
-            return;
-        };
-        return y;
-    };
-
-    read = function (key) {
-     // This function needs documentation.
-        var y = avar();
-        y.onready = function (evt) {
-         // This function implements an HTTP GET request.
-            var req, url;
-            req = request();
-            url = global.location.protocol + '//' + global.location.host +
-                '/db/_all_docs?key="' + key + '"&include_docs=true';
-            req.onreadystatechange = function () {
+        } else if (hOP(global, 'console') && isFunction(global.console.log)) {
+         // Node.js and modern web browsers
+            puts = function () {
              // This function needs documentation.
-                var temp;
-                if (req.readyState === 4) {
-                    if (req.status === 200) {
-                        temp = JSON.parse(req.responseText).rows[0];
-                        if (temp === undefined) {
-                            return evt.fail('Remote missing: ' + url);
-                        }
-                        y.val = temp.doc.$avar;
-                        return evt.exit();
-                    } else {
-                        return evt.fail(req.statusText);
-                    }
-                }
+                global.console.log(Array.prototype.join.call(arguments, ' '));
                 return;
             };
-            req.open('GET', url, true);
-            req.send(null);
-            return;
-        };
-        return y;
+        } else if (isFunction(global.alert)) {
+         // Crusty old web browsers
+            puts = function () {
+             // This function needs documentation.
+                global.alert(Array.prototype.join.call(arguments, ' '));
+                return;
+            };
+        } else if (hOP(global, 'print') && isFunction(global.print)) {
+         // JavaScriptCore, Rhino, Spidermonkey (==> 'couchjs' also), D8/V8
+            puts = function () {
+             // This function needs documentation.
+                global.print(Array.prototype.join.call(arguments, ' '));
+                return;
+            };
+        } else if (isFunction(global.postMessage)) {
+         // Web Worker contexts (must be tied to some 'bee.onmessage' handler
+         // in the invoking webpage's environment, though ...).
+            puts = function () {
+             // This function needs documentation.
+                global.postMessage(Array.prototype.join.call(arguments, ' '));
+                return;
+            };
+        } else {
+         // This is the place where only the naughtiest of implementations
+         // will land. Unfortunately, Adobe/Mozilla Tamarin is one of them.
+            puts = function () {
+             // This is a last resort, trust me.
+                /*global print: false */
+                if (isFunction(print)) {
+                    print(Array.prototype.join.call(arguments, ' '));
+                    return;
+                }
+                throw new Error('The "puts" definition fell through.');
+            };
+        }
+        puts.apply(this, arguments);
+        return;
     };
 
     relaunch = function (obj) {
      // This function reloads the current webpage with new query parameters
      // by stringifying its input object, 'obj'.
-        var y = [];
-        ply(obj).by(function (key, val) {
-            y.push(key + '=' + val);
+        if (isBrowser()) {
+            var y = [];
+            ply(obj).by(function (key, val) {
+             // This function needs documentation.
+                y.push(key + '=' + val);
+                return;
+            });
+            global.location.search = y.join('&');
             return;
-        });
-        global.location.search = y.join('&');
+        }
         return;
     };
 
-    request = function () {
-     // This function generates a new AJAX request object. I have written it
-     // as a separate function so I can handle browser quirks conveniently.
-        if (global.location.protocol === 'file:') {
-            if (global.hasOwnProperty('ActiveXObject')) {
-             // Internet Explorer supports XMLHttpRequest, but that won't work
-             // over 'file:', so we'll use an ActiveXObject instead.
-                return new global.ActiveXObject('Microsoft.XMLHTTP');
-            }
-        }
-        if (global.hasOwnProperty('XMLHttpRequest')) {
-            return new global.XMLHttpRequest();
-        }
-        if (global.hasOwnProperty('ActiveXObject')) {
-            return new global.ActiveXObject('Microsoft.XMLHTTP');
-        }
-        throw new Error('This browser does not support AJAX.');
-    };
+    setup = avar();
 
     token = function () {
      // This function is mainly a placeholder for more elaborate security
@@ -300,6 +322,7 @@
             }
         }
         if (global.hasOwnProperty('localStorage')) {
+         // NOTE: Mozilla Firefox doesn't respond to this test correctly.
             secret = global.localStorage.getItem('QMACHINE_token');
          /*
         } else if (global.hasOwnProperty('moz_indexedDB')) {
@@ -319,172 +342,697 @@
 
     when = Q.when;
 
-    write = function (key, $val) {
+ // Invocations
+
+    setup.onerror = function (message) {
      // This function needs documentation.
-     //
-     // NOTE: Since 'revision' only exists in this function, how should I pass
-     // errors back to the user?
-     //
-        var revision, y;
-        revision = avar({val: undefined});
-        y = avar();
-        revision.onready = function (evt) {
-         // This function reads the revision number from CouchDB in such a way
-         // as to avoid 404 errors entirely -- I can't figure out how to keep
-         // those from cluttering Chrome's developer console. A more efficient
-         // way would use a HEAD request, but efficiency isn't the goal here.
-            var req, url;
-            req = request();
-            url = global.location.protocol + '//' + global.location.host +
-                '/db/_all_docs?key="' + key + '"&include_docs=false';
-            req.onreadystatechange = function () {
-             // This function doesn't fail if the status code returned isn't
-             // 200 because we're only interested in getting the revision
-             // number. If something really important has failed, it is highly
-             // probable that it's going to fail again during the 'when' ;-)
-                var temp;
-                if (req.readyState === 4) {
-                    if (req.status === 200) {
-                        temp = JSON.parse(req.responseText).rows[0];
-                        if (temp !== undefined) {
-                            revision.val = temp.value.rev;
-                        }
-                    }
-                    return evt.exit();
-                }
-                return;
-            };
-            req.open('GET', url, true);
-            req.send(null);
+        if (message instanceof Error) {
+            puts('Error:', message.message);
             return;
-        };
-        when(revision, y).areready = function (evt) {
-         // This function implements an HTTP PUT request.
-            /*jslint nomen: true */
-            var doc, req, temp, url;
-            doc = {
-                '_id':  key,
-                '_rev': revision.val,
-                $avar:  $val,
-                token:  token()
-            };
-            req = request();
-            temp = JSON.parse($val).val;
-            url = global.location.protocol + '//' + global.location.host +
-                '/db/' + key;
-            if ((temp !== null) && (temp !== undefined) &&
-                    (temp.hasOwnProperty('status'))) {
-             // This simplifies Qmachine's 'queue' filter in CouchDB.
-                doc.status = temp.status;
-            }
-            req.onreadystatechange = function () {
-             // This function needs documentation.
-                if (req.readyState === 4) {
-                    if (req.status === 201) {
-                        y.val = JSON.parse(req.responseText);
-                        return evt.exit();
-                    } else {
-                        return evt.fail(req.responseText);
-                    }
-                }
-                return;
-            };
-            req.open('PUT', url, true);
-            req.setRequestHeader('Content-type', 'application/json');
-            req.send(JSON.stringify(doc));
-            return;
-        };
-        return y;
+        }
+        if (message !== 'Nothing to do ...') {
+            puts('Error:', message);
+        }
+        return;
     };
 
- // Initialization
+    setup.onready = function (evt) {
+     // This function needs documentation.
+        if ((isBrowser() === false) && (isNodejs() === false)) {
+            return evt.fail('Qmachine does not support this platform.');
+        }
+        this.val = {
+         // This object needs documentation.
+            local_queue:    null,
+            local_read:     null,
+            local_write:    null,
+            remote_queue:   null,
+            remote_read:    null,
+            remote_write:   null
+        };
+        return evt.exit();
+    };
 
-    Q.init({
-        queue:  queue,
-        read:   read,
-        write:  write
-    });
-
-    token();
-
- // Browser configuration
-
-    if (global.hasOwnProperty('document')) {
-     // This part would probably be cleaner with jQuery ...
-        (function () {
-            var options = ['volunteer', 'pulse'];
-            ply(options).by(function (key, val) {
-             // This function is necessary because I need to close inside a
-             // loop, which is error-prone without functional iteration.
-                var temp = global.document.getElementById(val);
-                if (temp !== null) {
-                    temp.onclick = function () {
-                        var obj = {};
-                        obj[val] = this.checked;
-                        return relaunch(obj);
-                    };
+    setup.onready = function (evt) {
+     // This function defines 'cache' methods for persistent local storage in
+     // a web browser clients using HTML 5 'localStorage' if possible.
+        if (isBrowser() === false) {
+            return evt.exit();
+        }
+        var cache, db;
+        cache = this.val;
+        db = global.localStorage;       //- NOTE: test for existence first!
+        cache.local_queue = function () {
+         // This function needs documentation.
+            var y = avar({val: []});
+            y.onready = function (evt) {
+             // This function needs documentation.
+                var flag, i, key, n, val;
+                n = db.length;
+                for (i = 0; i < n; i += 1) {
+                    key = val = null;
+                    try {
+                        key = db.key(i);
+                        val = JSON.parse(db.getItem(key));
+                    } catch (err) {
+                        puts('Caught error:', err);
+                        val = err;
+                    } finally {
+                        flag = ((val !== null)                  &&
+                                (val !== undefined)             &&
+                                (val.hasOwnProperty('key'))     &&
+                                (val.hasOwnProperty('$avar'))   &&
+                                (val.hasOwnProperty('status'))  &&
+                                (val.status === 'waiting')      &&
+                                (val.hasOwnProperty('token'))   &&
+                                (val.token === token()));
+                        if (flag === true) {
+                            y.val.push(key);
+                        }
+                    }
                 }
+                return evt.exit();
+            };
+            return y;
+        };
+        cache.local_read = function (key) {
+         // This function needs documentation.
+            var y = avar();
+            y.onready = function (evt) {
+             // This function needs documentation.
+                var $val = db.getItem(key);
+                if ($val === null) {
+                    return evt.fail('no key "' + key + '" found');
+                }
+                this.val = JSON.parse($val).$avar;
+                return evt.exit();
+            };
+            return y;
+        };
+        cache.local_write = function (key, $val) {
+         // This function needs documentation.
+            var y = avar();
+            y.onready = function (evt) {
+             // This function needs documentation.
+                var doc, temp;
+                doc = {
+                    key:    key,
+                    $avar:  $val,
+                    token:  token()
+                };
+                temp = JSON.parse($val).val;
+                if ((temp !== null) && (temp !== undefined) &&
+                        (temp.hasOwnProperty('status'))) {
+                 // NOTE: The third condition here may be unnecessary.
+                    puts('status:', temp.status);
+                    doc.status = temp.status;
+                }
+                db.setItem(key, JSON.stringify(doc));
+                return evt.exit();
+            };
+            return y;
+        };
+        return evt.exit();
+    };
+
+    setup.onready = function (evt) {
+     // This function defines 'cache' methods for persistent local storage in
+     // Node.js clients using SQLite 3.
+        if (isNodejs() === false) {
+            return evt.exit();
+        }
+        var cache, db;
+        cache = this.val;
+        db = avar();
+        db.onerror = function (message) {
+         // This function needs documentation.
+            return evt.fail(message);
+        };
+        db.onready = function (evt) {
+         // This function needs documentation.
+            /*jslint node: true */
+            db.val = new (require('sqlite3').Database)('Q.db', function () {
+             // This callback function needs documentation.
+                db.val.serialize(function () {
+                 // This callback function needs documentation.
+                    var query;
+                    query = [
+                        'CREATE TABLE IF NOT EXISTS qmachine ' +
+                            '(_id TEXT, val TEXT, status TEXT, token TEXT)',
+                        'CREATE UNIQUE INDEX IF NOT EXISTS ' +
+                            'uuid ON qmachine (_id)'
+                    ];
+                    db.val.run(query[0], function (err) {
+                     // This callback function needs documentation.
+                        return (err) ? evt.fail(err) : undefined;
+                    });
+                    db.val.run(query[1], function (err) {
+                     // This callback function needs documentation.
+                        return (err) ? evt.fail(err) : evt.exit();
+                    });
+                    return;
+                });
                 return;
             });
             return;
-        }());
-    }
+        };
+        db.onready = function (evt) {
+         // This function needs documentation.
+            cache.local_queue = function () {
+             // This function gets the queue from a local SQLite 3 database in
+             // a Node.js client. It depends on the 'sqlite3' module.
+                var y = avar({val: []});
+                y.onready = function (evt) {
+                 // This function needs documentation.
+                    var query;
+                    query = [
+                        'SELECT _id',
+                        'FROM qmachine',
+                        'WHERE ' +
+                            'status = "waiting"' +
+                            ' AND ' +
+                            'token = "' + token() + '"'
+                    ];
+                    db.val.all(query.join(' '), function (err, rows) {
+                     // This function needs documentation.
+                        if (err) {
+                            return evt.fail(err);
+                        }
+                        y.val = rows.map(function (each) {
+                         // This function needs documentation.
+                            /*jslint nomen: true */
+                            return each._id;
+                        });
+                        return evt.exit();
+                    });
+                    return;
+                };
+                return y;
+            };
+            cache.local_read = function (key) {
+             // This function reads files from a local SQLite 3 database in
+             // a Node.js client. It depends on the 'sqlite3' module.
+                var y = avar({key: key});
+                y.onready = function (evt) {
+                 // This function needs documentation.
+                    var query;
+                    query = [
+                        'SELECT DISTINCT _id, val',
+                        'FROM qmachine',
+                        'WHERE ' +
+                            '_id = "' + key + '"'
+                    ];
+                    db.val.all(query.join(' '), function (err, rows) {
+                     // This function needs documentation.
+                        if (err) {
+                            return evt.fail(err);
+                        }
+                        y.val = rows[0].val;
+                        return evt.exit();
+                    });
+                    return;
+                };
+                return y;
+            };
+            cache.local_write = function (key, $val) {
+             // This function writes files to a local SQLite 3 database in
+             // a Node.js client. It depends on the 'sqlite3' module.
+                var y = avar({key: key});
+                y.onready = function (evt) {
+                 // This function needs documentation.
+                    var query, stmt, temp;
+                    query = [
+                        'INSERT OR REPLACE INTO qmachine',
+                        'VALUES (?, ?, ?, ?)'
+                    ];
+                    stmt = db.val.prepare(query.join(' '));
+                    temp = JSON.parse($val).val;
+                    if ((temp !== null) && (temp !== undefined) &&
+                            (temp.hasOwnProperty('status'))) {
+                        stmt.run(key, $val, temp.status, token());
+                    } else {
+                        stmt.run(key, $val, null, token());
+                    }
+                    stmt.finalize(function (err) {
+                     // This function needs documentation.
+                        return (err) ? evt.fail(err) : evt.exit();
+                    });
+                    return;
+                };
+                return y;
+            };
+            return evt.exit();
+        };
+        db.onready = function (db_evt) {
+         // This function needs documentation.
+            db_evt.exit();
+            return evt.exit();
+        };
+        return;
+    };
 
- // Demonstrations
-
-    if (parseArgs().volunteer === true) {
-        global.console.log('Thanks for volunteering!');
-        (function f() {
-         // This function just keeps things moving :-)
-            var dt, g, x;
-            dt = 1000;
-            x = Q.volunteer();
-            g = x.onerror;
-            x.onerror = function (message) {
-             // This function demonstrates that "errors" are not always a big
-             // deal, and that Quanah lets you handle errors however you want.
-                if ((typeof g === 'function') && (g instanceof Function)) {
-                    g(message);
-                }
-                if (message !== 'Nothing to do ...') {
-                    global.console.error(message);
-                }
-                global.setTimeout(f, dt);
+    setup.onready = function (evt) {
+     // This function defines 'cache' methods for persistent remote storage
+     // from a web browser client to http://qmachine.org, which uses CouchDB.
+        if (isBrowser() === false) {
+            return evt.exit();
+        }
+        var cache, mothership, request;
+        cache = this.val;
+        mothership = 'http://qmachine.org';
+        request = function () {
+         // This function generates a new AJAX request object. I have not yet
+         // experimented with Web Sockets, but unless CouchDB supports them,
+         // that is an exciting technology that must wait for another day ;-)
+            var req;
+            if (global.hasOwnProperty('XMLHttpRequest')) {
+                req = new global.XMLHttpRequest();
+            } else if (global.hasOwnProperty('ActiveXObject')) {
+                req = new global.ActiveXObject('Microsoft.XMLHTTP');
+            } else {
+                throw new Error('This browser does not support AJAX.');
+            }
+            return req;
+        };
+        cache.remote_queue = function () {
+         // This function gets the queue from http://qmachine.org with AJAX in
+         // a web browser.
+            var y = avar({val: []});
+            y.onready = function (evt) {
+             // This function needs documentation.
+                var href, req;
+                href = mothership + [
+                    '/db/_changes?filter=qmachine/queue',
+                    'limit=25',
+                    'status=waiting',
+                    'token=' + token()
+                ].join('&');
+                req = request();
+                req.onreadystatechange = function () {
+                 // This function needs documentation.
+                    var temp;
+                    if (req.readyState === 4) {
+                        if (req.status !== 200) {
+                            return evt.fail(req.responseText);
+                        }
+                        temp = JSON.parse(req.responseText).results;
+                        ply(temp).by(function (key, val) {
+                         // This function needs documentation.
+                            y.val.push(val.id);
+                            return;
+                        });
+                        return evt.exit();
+                    }
+                    return;
+                };
+                req.open('GET', href, true);
+                req.send(null);
                 return;
             };
-            x.onready = function (evt) {
-             // This function provides instant gratification :-)
-                global.console.log('Completed task: ' + x.key);
-                global.setTimeout(f, dt);
-                return evt.exit();
-            };
-            if (parseArgs().pulse === true) {
-                global.console.log('(pulse)');
-            }
-            return;
-        }());
-    } else {
-        global.console.log('Run "demo()" for a live example :-)');
-        (function f() {
-         // This function just keeps things moving :-)
-            var x = avar();
-            x.onerror = function (message) {
-             // I don't how this can possibly go wrong anyway ...
-                global.console.error(message);
-                global.setTimeout(f, 1000);
+            return y;
+        };
+        cache.remote_read = function (key) {
+         // This function reads files from http://qmachine.org with AJAX in a
+         // web browser.
+            var y = avar({key: key});
+            y.onready = function (evt) {
+             // This function sends an HTTP GET request.
+                var href, req;
+                href = mothership + [
+                    '/db/_all_docs?key="' + key + '"',
+                    'include_docs=true'
+                ].join('&');
+                req = request();
+                req.onreadystatechange = function () {
+                 // This function needs documentation.
+                    var temp;
+                    if (req.readyState === 4) {
+                        if (req.status !== 200) {
+                            return evt.fail(req.responseText);
+                        }
+                        temp = JSON.parse(req.responseText).rows[0];
+                        if (temp === undefined) {
+                            return evt.fail('Remote missing: ' + href);
+                        }
+                        y.val = temp.doc.$avar;
+                        return evt.exit();
+                    }
+                    return;
+                };
+                req.open('GET', href, true);
+                req.send(null);
                 return;
             };
-            x.onready = function (evt) {
-             // This function runs locally because it closes over 'f' :-)
-                global.setTimeout(f, 1000);
-                return evt.exit();
+            return y;
+        };
+        cache.remote_write = function (key, $val) {
+         // This function writes files to http://qmachine.org with AJAX in a
+         // web browser.
+            var y = avar({key: key});
+            y.onready = function (evt) {
+             // This function needs documentation.
+                var href, rev;
+                href = mothership + '/db/';
+                rev = avar({val: undefined});
+                rev.onerror = function (message) {
+                 // This function needs documentation.
+                    return evt.fail(message);
+                };
+                rev.onready = function (evt) {
+                 // This function reads the revision number from CouchDB in
+                 // such a way as to avoid 404 errors entirely because I can't
+                 // figure out how to keep the error output from cluttering
+                 // Chrome's developer console. A more efficient way would be
+                 // to send a HEAD request like the Node.js client does, but
+                 // efficiency isn't the goal here.
+                    var req, url;
+                    req = request();
+                    url = href + [
+                        '_all_docs?key="' + key + '"',
+                        'include_docs=false'
+                    ].join('&');
+                    req.onreadystatechange = function () {
+                     // This function needs documentation.
+                        var temp;
+                        if (req.readyState === 4) {
+                            if (req.status === 200) {
+                                temp = JSON.parse(req.responseText).rows[0];
+                                if (temp !== undefined) {
+                                    rev.val = temp.value.rev;
+                                }
+                                evt.exit();
+                            } else {
+                                evt.fail(req.responseText);
+                            }
+                        }
+                        return;
+                    };
+                    req.open('GET', url, true);
+                    req.send(null);
+                    return;
+                };
+                rev.onready = function (evt) {
+                 // This function sends an HTTP PUT request.
+                    /*jslint nomen: true */
+                    var doc, req, temp;
+                    doc = {
+                        '_id':  key,
+                        '_rev': rev.val,
+                        $avar:  $val,
+                        token:  token()
+                    };
+                    req = request();
+                    temp = JSON.parse($val).val;
+                    if ((temp !== null) && (temp !== undefined) &&
+                            (temp.hasOwnProperty('status'))) {
+                     // This simplifies Qmachine's 'queue' filter in CouchDB.
+                        doc.status = temp.status;
+                    }
+                    req.onreadystatechange = function () {
+                     // This function needs documentation.
+                        if (req.readyState === 4) {
+                            if (req.status !== 201) {
+                                return evt.fail(req.responseText);
+                            }
+                            y.val = JSON.parse(req.responseText);
+                            return evt.exit();
+                        }
+                        return;
+                    };
+                    req.open('PUT', href + key, true);
+                    req.setRequestHeader('Content-type', 'application/json');
+                    req.send(JSON.stringify(doc));
+                    return;
+                };
+                rev.onready = function (rev_evt) {
+                 // This function needs documentation.
+                    rev_evt.exit();
+                    return evt.exit();
+                };
+                return;
             };
-            if (parseArgs().pulse === true) {
-                global.console.log('(pulse)');
+            return y;
+        };
+        return evt.exit();
+    };
+
+    setup.onready = function (evt) {
+     // This function defines 'cache' methods for persistent remote storage
+     // from a Node.js client to http://qmachine.org, which uses CouchDB.
+        /*jslint node: true */
+        if (isNodejs() === false) {
+            return evt.exit();
+        }
+        var cache, http, mothership, url;
+        cache = this.val;
+        http = require('http');
+        mothership = 'http://qmachine.org';
+        url = require('url');
+        cache.remote_queue = function () {
+         // This function gets the queue from http://qmachine.org with Node.js.
+            var href, y;
+            href = mothership + [
+                '/db/_changes?filter=qmachine/queue',
+                'limit=25',
+                'status=waiting',
+                'token=' + token()
+            ].join('&');
+            y = avar({val: []});
+            y.onready = function (evt) {
+             // This function needs documentation.
+                http.get(url.parse(href), function (response) {
+                 // This function needs documentation.
+                    var txt = [];
+                    response.on('data', function (chunk) {
+                     // This function needs documentation.
+                        txt.push(chunk.toString());
+                        return;
+                    }).on('end', function () {
+                     // This function needs documentation.
+                        var data = JSON.parse(txt.join('')).results;
+                        ply(data).by(function (key, val) {
+                         // This function needs documentation.
+                            y.val.push(val.id);
+                            return;
+                        });
+                        return evt.exit();
+                    });
+                    return;
+                }).on('error', function (err) {
+                 // This function needs documentation.
+                    return evt.fail(err);
+                });
+                return;
+            };
+            return y;
+        };
+        cache.remote_read = function (key) {
+         // This function reads files from http://qmachine.org with Node.js.
+            var y = avar();
+            y.onready = function (evt) {
+             // This function needs documentation.
+                var href = mothership + '/db/' + key;
+                http.get(url.parse(href), function (response) {
+                 // This function needs documentation.
+                    var txt = [];
+                    response.on('data', function (chunk) {
+                     // This function needs documentation.
+                        txt.push(chunk.toString());
+                        return;
+                    }).on('end', function () {
+                     // This function needs documentation.
+                        y.val = JSON.parse(txt.join('')).$avar;
+                        return evt.exit();
+                    });
+                    return;
+                }).on('error', function (err) {
+                 // This function needs documentation.
+                    return evt.fail(err);
+                });
+                return;
+            };
+            return y;
+        };
+        cache.remote_write = function (key, $val) {
+         // This function writes files to http://qmachine.org with Node.js.
+            var y = avar({key: key});
+            y.onready = function (evt) {
+             // This function needs documentation.
+                var href, rev;
+                href = mothership + '/db/' + key;
+                rev = avar();
+                rev.onerror = function (message) {
+                 // This function needs documentation.
+                    return evt.fail(message);
+                };
+                rev.onready = function (evt) {
+                 // This function needs documentation.
+                    var options = url.parse(href);
+                    options.method = 'HEAD';
+                    http.request(options, function (response) {
+                     // This function needs documentation.
+                        response.on('end', function () {
+                         // This function needs documentation.
+                            if (response.statusCode === 404) {
+                                rev.val = undefined;
+                            } else {
+                                rev.val = JSON.parse(response.headers.etag);
+                            }
+                            return evt.exit();
+                        });
+                        return;
+                    }).on('error', function (err) {
+                     // This function needs documentation.
+                        return evt.fail(err);
+                    }).end();
+                    return;
+                };
+                rev.onready = function (evt) {
+                 // This function needs documentation.
+                    /*jslint nomen: true */
+                    var doc, options, req, temp;
+                    doc = {
+                        '_id':  key,
+                        '_rev': rev.val,
+                        $avar:  $val,
+                        token:  token()
+                    };
+                    options = url.parse(href);
+                    options.method = 'PUT';
+                    temp = JSON.parse($val).val;
+                    if (hOP(temp, 'status')) {
+                        doc.status = temp.status;
+                    }
+                    req = http.request(options, function (response) {
+                     // This function needs documentation.
+                        var txt = [];
+                        response.on('data', function (chunk) {
+                         // This function needs documentation.
+                            txt.push(chunk.toString());
+                            return;
+                        }).on('end', function () {
+                         // This function needs documentation.
+                            y.val = JSON.parse(txt.join(''));
+                            return evt.exit();
+                        });
+                        return;
+                    }).on('error', function (err) {
+                     // This function needs documentation.
+                        return evt.fail(err);
+                    });
+                    temp = JSON.parse($val).val;
+                    if (hOP(temp, 'status')) {
+                        doc.status = temp.status;
+                    }
+                    req.write(JSON.stringify(doc));
+                    req.end();
+                    return;
+                };
+                rev.onready = function (temp_evt) {
+                 // This function needs documentation.
+                    temp_evt.exit();
+                    return evt.exit();
+                };
+                return;
+            };
+            return y;
+        };
+        return evt.exit();
+    };
+
+    setup.onready = function (evt) {
+     // This function ensures that all 'cache' methods have been implemented.
+        /*jslint unparam: true */
+        var cache, keys;
+        cache = this.val;
+        keys = [
+            'local_queue',
+            'local_read',
+            'local_write',
+            'remote_queue',
+            'remote_read',
+            'remote_write'
+        ];
+        ply(keys).by(function (key, val) {
+         // This function needs documentation.
+            if ((hOP(cache, val) && isFunction(cache[val])) === false) {
+                return evt.fail('Missing method: ' + val);
             }
             return;
-        }());
-    }
+        });
+        return evt.exit();
+    };
+
+    setup.onready = function (evt) {
+     // This function configures the browser's interactive session.
+        if (isBrowser() === false) {
+            return evt.exit();
+        }
+        var doc;
+        token();
+        if (global.hasOwnProperty('document')) {
+         // There has GOT to be a better way -- jQuery, perhaps?
+            doc = global.document;
+            if (doc.getElementById('volunteer') !== null) {
+                doc.getElementById('volunteer').onclick = function () {
+                    return relaunch({
+                        volunteer: this.checked
+                    });
+                };
+            }
+        }
+        return evt.exit();
+    };
+
+    setup.onready = function (evt) {
+     // This function needs documentation.
+        var cache, flag;
+        cache = this.val;
+        flag = (parseArgs().cache === 'local');
+        if (flag && isBrowser()) {
+            puts('NOTE: The local cache methods are not stable yet.');
+        }
+        Q.init({
+         // This object needs documentation.
+            queue:  ((flag) ? cache.local_queue : cache.remote_queue),
+            read:   ((flag) ? cache.local_read  : cache.remote_read),
+            write:  ((flag) ? cache.local_write : cache.remote_write)
+        });
+        return evt.exit();
+    };
+
+    setup.onready = function (evt) {
+     // This function needs documentation.
+        if (parseArgs().volunteer === true) {
+            puts('Thanks for volunteering!');
+            (function f() {
+             // This function "daemonizes" a 'volunteer' process :-)
+                var task = Q.volunteer();
+                task.onerror = function (message) {
+                 // This function needs documentation.
+                    if (message instanceof Error) {
+                        puts('Error:', message.message);
+                    } else if (message !== 'Nothing to do ...') {
+                        puts('Error:', message);
+                    } else {
+                        puts('(pulse)');
+                    }
+                    setTimeout(f, 1000);
+                    return;
+                };
+                task.onready = function (evt) {
+                 // This function needs documentation.
+                    puts('Completed:', this.key);
+                    setTimeout(f, 1000);
+                    return evt.exit();
+                };
+                return;
+            }());
+        } else {
+            puts('Thanks for testing -- I really appreciate your input!');
+        }
+        return evt.exit();
+    };
 
  // That's all, folks!
 
