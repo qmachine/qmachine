@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 28 Feb 2012
+//                                                      ~~ (c) SRW, 29 Feb 2012
 
 (function () {
     'use strict';
@@ -128,7 +128,6 @@
                     doc = global.document;
                     options = {
                         volunteer:  doc.getElementById('volunteer'),
-                        pulse:      doc.getElementById('pulse')
                     };
                     ply(argv).by(function (key, val) {
                      // This function needs documentation.
