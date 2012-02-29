@@ -1348,8 +1348,9 @@
                 };
                 temp.onready = (f instanceof AVar) ? f.val : f;
                 temp.onready = function (temp_evt) {
-                 // This function updates the original avar's 'val' to match
-                 // and exits the 'when' statement.
+                 // This function updates the original avar to match and then
+                 // exits the enclosing 'when' statement.
+                    x.key = temp.key;   //- NOTE: is this a good idea?
                     x.val = temp.val;
                     temp_evt.exit();
                     return evt.exit();
