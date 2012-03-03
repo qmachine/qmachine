@@ -30,7 +30,7 @@
 //  -   Is Quanah a kernel?
 //      -   If so, is it "re-entrant"? See http://goo.gl/985r.
 //
-//                                                      ~~ (c) SRW, 28 Feb 2012
+//                                                      ~~ (c) SRW, 03 Mar 2012
 
 (function (global) {
     'use strict';
@@ -698,14 +698,18 @@
      // remote calls of their own, but execution of a remote call should not
      // require remote calls of its own! A publication is forthcoming, and at
      // that point I'll simply use a self-citation as an explanation :-)
-        var f, x;
+        var f, first, x;
      // Step 1: copy the computation's function and data into fresh instances,
      // define some error handlers, and write the copies to the "filesystem".
         f = avar({val: obj.f});
+        first = true;
         x = avar({key: obj.x.key, val: obj.x.val});
         f.onerror = x.onerror = function (message) {
          // This function tells the original 'x' that something has gone awry.
-            obj.x.comm({fail: message, secret: secret});
+            if (first === true) {
+                first = false;
+                obj.x.comm({fail: message, secret: secret});
+            }
             return;
         };
         f.onready = x.onready = update_remote;
