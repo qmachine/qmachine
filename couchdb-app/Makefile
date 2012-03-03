@@ -55,9 +55,9 @@ run: $(APPRC) $(APP) webpage
 	@   $(CP) $(PWD)/_attachments $(APP)/                           ;   \
             $(CP) $(PWD)/.couchappignore $(APP)/                        ;   \
             $(CP) $(PWD)/couchapp.json $(APP)/                          ;   \
-            $(CP) $(PWD)/filters $(APP)/                                ;   \
             $(CP) $(PWD)/rewrites.json $(APP)/                          ;   \
             $(CP) $(PWD)/validate_doc_update.js $(APP)/                 ;   \
+            $(CP) $(PWD)/views $(APP)/                                  ;   \
             $(RM) $(APP)/_attachments/Makefile                          ;   \
             echo "# $${RANDOM}" >> $(APP)/_attachments/cache.manifest   ;   \
             cd $(APP) && $(COUCHAPP) push -q                            ;   \

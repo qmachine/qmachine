@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 29 Feb 2012
+//                                                      ~~ (c) SRW, 02 Mar 2012
 
 (function () {
     'use strict';
@@ -620,11 +620,9 @@
             y.onready = function (evt) {
              // This function needs documentation.
                 var href, req;
-                href = mothership + [
-                    '/db/_changes?filter=qmachine/queue',
-                    'limit=1',
-                    'status=waiting',
-                    'token=' + token()
+                href = mothership + '/_view/queue?' + [
+                    'key=["' + token() + '","waiting"]',
+                    'limit=1'
                 ].join('&');
                 req = request();
                 req.onreadystatechange = function () {
@@ -634,7 +632,7 @@
                         if (req.status !== 200) {
                             return evt.fail(req.responseText);
                         }
-                        temp = JSON.parse(req.responseText).results;
+                        temp = JSON.parse(req.responseText).rows;
                         ply(temp).by(function (key, val) {
                          // This function needs documentation.
                             y.val.push(val.id);
@@ -790,11 +788,9 @@
         cache.remote_queue = function () {
          // This function gets the queue from http://qmachine.org with Node.js.
             var href, y;
-            href = mothership + [
-                '/db/_changes?filter=qmachine/queue',
-                'limit=25',
-                'status=waiting',
-                'token=' + token()
+            href = mothership + '/_view/queue?' + [
+                'key=["' + token() + '","waiting"]',
+                'limit=1'
             ].join('&');
             y = avar({val: []});
             y.onready = function (evt) {
