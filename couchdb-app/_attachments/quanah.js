@@ -1370,13 +1370,14 @@
      // This function constructs a temporary 'namespace' object and then
      // copies its methods and properties onto Method Q for "export".
 
+     // NOTE: New methods are coming soon: 'map', 'ply', and 'reduce' :-)
+
         var namespace;
 
         namespace = {
             avar:       avar,
-            global:     global,         //- deprecated
             init:       init,
-            uuid:       uuid,           //- may be deprecated soon ...
+            uuid:       uuid,
             volunteer:  volunteer,
             when:       when
         };

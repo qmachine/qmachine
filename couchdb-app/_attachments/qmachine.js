@@ -1,9 +1,9 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 02 Mar 2012
+//                                                      ~~ (c) SRW, 03 Mar 2012
 
-(function () {
+(function (global) {
     'use strict';
 
  // Pragmas
@@ -18,16 +18,14 @@
 
  // Declarations
 
-    var Q, avar, global, hOP, isBrowser, isFunction, isNodejs, parseArgs,
-        ply, puts, relaunch, setup, token, when;
+    var Q, avar, hOP, isBrowser, isFunction, isNodejs, parseArgs, ply, puts,
+        relaunch, setup, token, when;
 
  // Definitions
 
     Q = Object.prototype.Q;
 
     avar = Q.avar;
-
-    global = Q.global;
 
     hOP = function (obj, name) {
      // This function needs documentation.
@@ -1044,6 +1042,15 @@
 
     return;
 
-}());
+}(Function.prototype.call.call(function (outer_scope) {
+    'use strict';
+ // See the bottom of "quanah.js" for documentation.
+    /*jslint indent: 4, maxlen: 80 */
+    /*global global: true */
+    if (this === null) {
+        return (typeof global === 'object') ? global : outer_scope;
+    }
+    return (typeof this.global === 'object') ? this.global : this;
+}, null, this)));
 
 //- vim:set syntax=javascript:
