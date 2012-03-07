@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 02 Mar 2012
+//                                                      ~~ (c) SRW, 03 Mar 2012
 
 (function (global) {
     'use strict';

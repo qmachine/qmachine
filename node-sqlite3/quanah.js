@@ -438,23 +438,27 @@
              // This function needs documentation.
                 return evt.fail(message);
             };
-            y.onready = dply(function (key, val) {
+            y.onready = function (evt) {
              // This function needs documentation.
-                y.val[key] = {f: f, x: val};
-                return;
-            });
+                ply(y.val).by(function (key, val) {
+                 // This function needs documentation.
+                    y.val[key] = {f: f, x: val};
+                    return;
+                });
+                return evt.exit();
+            };
             y.onready = dply(function (key, val) {
              // This function needs documentation.
                 val.y = val.f(val.x);
                 return;
             });
-            y.onready = dply(function (key, val) {
-             // This function needs documentation.
-                x.val[key] = val.y;
-                return;
-            });
             y.onready = function (y_evt) {
              // This function needs documentation.
+                ply(y.val).by(function (key, val) {
+                 // This function needs documentation.
+                    x.val[key] = val.y;
+                    return;
+                });
                 y_evt.exit();
                 return evt.exit();
             };
@@ -479,23 +483,28 @@
                     this.val.f(this.val.key, this.val.val);
                     return evt.exit();
                 };
+                temp.onready = function (evt) {
+                 // This function needs documentation.
+                    x.val[key] = this.val.val;
+                    return evt.exit();
+                };
                 return temp;
             };
             elements = [];
-            x = (this.hasOwnProperty('isready')) ? this.val[0].val : this.val;
-            if (isArrayLike(x)) {
-                n = x.length;
+            x = (this.hasOwnProperty('isready')) ? this.val[0] : this;
+            if (isArrayLike(x.val)) {
+                n = x.val.length;
                 for (key = 0; key < n; key += 1) {
-                    elements.push(g(f, key, x[key]));
+                    elements.push(g(f, key, x.val[key]));
                 }
-            } else if (x instanceof Object) {
-                for (key in x) {
-                    if (x.hasOwnProperty(key)) {
-                        elements.push(g(f, key, x[key]));
+            } else if (x.val instanceof Object) {
+                for (key in x.val) {
+                    if (x.val.hasOwnProperty(key)) {
+                        elements.push(g(f, key, x.val[key]));
                     }
                 }
             } else {
-                return evt.fail('Cannot "ply" this value (' + x + ')');
+                return evt.fail('Cannot "ply" this value (' + x.val + ')');
             }
             when.apply(this, elements).onready = function (when_evt) {
              // This function needs documentation.
