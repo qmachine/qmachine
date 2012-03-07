@@ -17,7 +17,6 @@
 //
 //  To-do list:
 //
-//  -   enable 'when(x).isready = f' for avars f
 //  -   remove type-checks in user-unreachable functions where appropriate
 //  -   replace 'throw' statements with 'fail' statements for robustness
 //  -   rewrite 'onready' assignments as 'comm' invocations (optional)
@@ -31,7 +30,7 @@
 //  -   Is Quanah a kernel?
 //      -   If so, is it "re-entrant"? See http://goo.gl/985r.
 //
-//                                                      ~~ (c) SRW, 05 Mar 2012
+//                                                      ~~ (c) SRW, 07 Mar 2012
 
 (function (global) {
     'use strict';
@@ -1292,6 +1291,17 @@
             set: function (f) {
              // This setter "absorbs" 'f', which is expected to be a function,
              // and it stores it in the queue for 'y' to execute later.
+                if (f instanceof AVar) {
+                    when(f, y).areready = function (evt) {
+                     // If 'f' was an avar, then we have to wait on it, too!
+                        var f, y;
+                        f = this.val[0];
+                        y = this.val[1];
+                        f.val.call(y, evt);
+                        return;
+                    };
+                    return;
+                }
                 var count, egress, g, n, ready;
                 count = function () {
                  // This function is a simple counting semaphore that closes
