@@ -14,7 +14,7 @@ ALLJS   :=  $(call available, $(sort $(JS)))
 USEJS   :=  $(strip $(call contingent, $(JS)))
 JSLIBS  :=  libs.js
 QUANAH  :=  quanah.js
-SRCJS   :=  $(JSLIBS) $(QUANAH) qmachine.js demo.js
+SRCJS   :=  $(JSLIBS) $(QUANAH) qmachine.js
 EXEJS   :=  main.js
 HTML    :=  index.html
 
