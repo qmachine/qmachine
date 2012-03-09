@@ -35,6 +35,14 @@
         }
     },
     {
+        "from":     "/_view/:foo",
+        "to":       "/_view/:foo",
+        "method":   "GET",
+        "query":    {
+            "limit": "0"
+        }
+    },
+    {
         "from":     "*",
         "to":       "/*",
         "method":   "GET",
