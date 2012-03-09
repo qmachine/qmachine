@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 03 Mar 2012
+//                                                      ~~ (c) SRW, 09 Mar 2012
 
 (function (global) {
     'use strict';
@@ -618,10 +618,7 @@
             y.onready = function (evt) {
              // This function needs documentation.
                 var href, req;
-                href = mothership + '/_view/queue?' + [
-                    'key=["' + token() + '","waiting"]',
-                    'limit=1'
-                ].join('&');
+                href = mothership + '/queue/' + token();
                 req = request();
                 req.onreadystatechange = function () {
                  // This function needs documentation.
@@ -653,10 +650,7 @@
             y.onready = function (evt) {
              // This function sends an HTTP GET request.
                 var href, req;
-                href = mothership + [
-                    '/db/_all_docs?key="' + key + '"',
-                    'include_docs=true'
-                ].join('&');
+                href = mothership + '/db/' + key + '?include_docs=true';
                 req = request();
                 req.onreadystatechange = function () {
                  // This function needs documentation.
@@ -702,10 +696,7 @@
                  // efficiency isn't the goal here.
                     var req, url;
                     req = request();
-                    url = href + [
-                        '_all_docs?key="' + key + '"',
-                        'include_docs=false'
-                    ].join('&');
+                    url = href + key + '?include_docs=false';
                     req.onreadystatechange = function () {
                      // This function needs documentation.
                         var temp;
@@ -786,10 +777,7 @@
         cache.remote_queue = function () {
          // This function gets the queue from http://qmachine.org with Node.js.
             var href, y;
-            href = mothership + '/_view/queue?' + [
-                'key=["' + token() + '","waiting"]',
-                'limit=1'
-            ].join('&');
+            href = mothership + '/queue/' + token();
             y = avar({val: []});
             y.onready = function (evt) {
              // This function needs documentation.
@@ -802,7 +790,7 @@
                         return;
                     }).on('end', function () {
                      // This function needs documentation.
-                        var data = JSON.parse(txt.join('')).results;
+                        var data = JSON.parse(txt.join('')).rows;
                         ply(data).by(function (key, val) {
                          // This function needs documentation.
                             y.val.push(val.id);
@@ -824,7 +812,7 @@
             var y = avar();
             y.onready = function (evt) {
              // This function needs documentation.
-                var href = mothership + '/db/' + key;
+                var href = mothership + '/db/' + key + '?include_docs=true';
                 http.get(url.parse(href), function (response) {
                  // This function needs documentation.
                     var txt = [];
@@ -834,7 +822,11 @@
                         return;
                     }).on('end', function () {
                      // This function needs documentation.
-                        y.val = JSON.parse(txt.join('')).$avar;
+                        var temp = JSON.parse(txt.join('')).rows[0];
+                        if (temp === undefined) {
+                            return evt.fail('Remote missing: ' + href);
+                        }
+                        y.val = temp.doc.$avar;
                         return evt.exit();
                     });
                     return;
@@ -853,23 +845,26 @@
              // This function needs documentation.
                 var href, rev;
                 href = mothership + '/db/' + key;
-                rev = avar();
+                rev = avar({val: undefined});
                 rev.onerror = function (message) {
                  // This function needs documentation.
                     return evt.fail(message);
                 };
                 rev.onready = function (evt) {
                  // This function needs documentation.
-                    var options = url.parse(href);
-                    options.method = 'HEAD';
-                    http.request(options, function (response) {
+                    var options = url.parse(href + '?include_docs=false');
+                    http.get(options, function (response) {
                      // This function needs documentation.
-                        response.on('end', function () {
+                        var txt = [];
+                        response.on('data', function (chunk) {
                          // This function needs documentation.
-                            if (response.statusCode === 404) {
-                                rev.val = undefined;
-                            } else {
-                                rev.val = JSON.parse(response.headers.etag);
+                            txt.push(chunk.toString());
+                            return;
+                        }).on('end', function () {
+                         // This function needs documentation.
+                            var temp = JSON.parse(txt.join('')).rows[0];
+                            if (temp !== undefined) {
+                                rev.val = temp.value.rev;
                             }
                             return evt.exit();
                         });
@@ -877,7 +872,7 @@
                     }).on('error', function (err) {
                      // This function needs documentation.
                         return evt.fail(err);
-                    }).end();
+                    });
                     return;
                 };
                 rev.onready = function (evt) {
@@ -1011,6 +1006,12 @@
             }());
         } else {
             puts('Thanks for testing -- I really appreciate your input!');
+            (function f(x) {
+             // This function needs documentation.
+                x.comm();
+                setTimeout(f, 1000, x);
+                return;
+            }(avar()));
         }
         return evt.exit();
     };
@@ -1029,12 +1030,6 @@
             true,
             true
         ]);
-        (function f(x) {
-         // This function needs documentation.
-            x.comm();
-            setTimeout(f, 1000, x);
-            return;
-        }(avar()));
         return evt.exit();
     };
 

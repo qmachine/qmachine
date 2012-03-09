@@ -1,21 +1,38 @@
 [
     {
-        "from":     "/",
-        "to":       "/index.html",
+        "from":     "",
+        "to":       "index.html",
         "method":   "GET",
         "query":    {}
     },
     {
-        "from":     "/db/*",
-        "to":       "/../../*",
+        "from":     "/db/:key",
+        "to":       "/../../_all_docs",
         "method":   "GET",
+        "query": {
+            "key":  ":key"
+        }
+    },
+    {
+        "from":     "/db/:key",
+        "to":       "/../../:key",
+        "method":   "HEAD",
         "query":    {}
     },
     {
-        "from":     "/db/*",
-        "to":       "/../../*",
+        "from":     "/db/:key",
+        "to":       "/../../:key",
         "method":   "PUT",
         "query":    {}
+    },
+    {
+        "from":     "/queue/:token",
+        "to":       "/_view/queue",
+        "method":   "GET",
+        "query": {
+            "key":  [":token", "waiting"],
+            "limit": "1"
+        }
     },
     {
         "from":     "*",
