@@ -650,7 +650,7 @@
             y.onready = function (evt) {
              // This function sends an HTTP GET request.
                 var href, req;
-                href = mothership + '/db/' + key + '?include_docs=true';
+                href = mothership + '/db/' + key;
                 req = request();
                 req.onreadystatechange = function () {
                  // This function needs documentation.
@@ -696,7 +696,7 @@
                  // efficiency isn't the goal here.
                     var req, url;
                     req = request();
-                    url = href + key + '?include_docs=false';
+                    url = mothership + '/meta/' + key;
                     req.onreadystatechange = function () {
                      // This function needs documentation.
                         var temp;
@@ -812,7 +812,7 @@
             var y = avar();
             y.onready = function (evt) {
              // This function needs documentation.
-                var href = mothership + '/db/' + key + '?include_docs=true';
+                var href = mothership + '/db/' + key;
                 http.get(url.parse(href), function (response) {
                  // This function needs documentation.
                     var txt = [];
@@ -852,7 +852,7 @@
                 };
                 rev.onready = function (evt) {
                  // This function needs documentation.
-                    var options = url.parse(href + '?include_docs=false');
+                    var options = url.parse(mothership + '/meta/' + key);
                     http.get(options, function (response) {
                      // This function needs documentation.
                         var txt = [];

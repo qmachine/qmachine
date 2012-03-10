@@ -10,7 +10,8 @@
         "to":       "/../../_all_docs",
         "method":   "GET",
         "query": {
-            "key":  ":key"
+            "key":          ":key",
+            "include_docs": "true"
         }
     },
     {
@@ -24,6 +25,14 @@
         "to":       "/../../:key",
         "method":   "PUT",
         "query":    {}
+    },
+    {
+        "from":     "/meta/:id",
+        "to":       "/_view/meta",
+        "method":   "GET",
+        "query": {
+            "key":  ":id"
+        }
     },
     {
         "from":     "/queue/:token",
