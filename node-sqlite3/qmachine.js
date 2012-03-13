@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 09 Mar 2012
+//                                                      ~~ (c) SRW, 12 Mar 2012
 
 (function (global) {
     'use strict';
@@ -18,8 +18,8 @@
 
  // Declarations
 
-    var Q, avar, hOP, isBrowser, isFunction, isNodejs, parseArgs, ply, puts,
-        relaunch, setup, token, when;
+    var Q, avar, hOP, isBrowser, isFunction, isNodejs, mothership,
+        parseArgs, ply, puts, relaunch, setup, token, when;
 
  // Definitions
 
@@ -51,6 +51,8 @@
      // This function needs documentation.
         return global.hasOwnProperty('process');
     };
+
+    mothership = 'http://qmachine.org';
 
     parseArgs = function () {
      // This function needs documentation.
@@ -594,9 +596,8 @@
         if (isBrowser() === false) {
             return evt.exit();
         }
-        var cache, mothership, request;
+        var cache, request;
         cache = this.val;
-        mothership = 'http://qmachine.org';
         request = function () {
          // This function generates a new AJAX request object. I have not yet
          // experimented with Web Sockets, but unless CouchDB supports them,
@@ -630,7 +631,7 @@
                         temp = JSON.parse(req.responseText).rows;
                         ply(temp).by(function (key, val) {
                          // This function needs documentation.
-                            y.val.push(val.id);
+                            y.val.push(val.value);
                             return;
                         });
                         return evt.exit();
@@ -680,14 +681,14 @@
             var y = avar({key: key});
             y.onready = function (evt) {
              // This function needs documentation.
-                var href, rev;
+                var href, meta;
                 href = mothership + '/db/';
-                rev = avar({val: undefined});
-                rev.onerror = function (message) {
+                meta = avar({val: {id: undefined, rev: undefined}});
+                meta.onerror = function (message) {
                  // This function needs documentation.
                     return evt.fail(message);
                 };
-                rev.onready = function (evt) {
+                meta.onready = function (evt) {
                  // This function reads the revision number from CouchDB in
                  // such a way as to avoid 404 errors entirely because I can't
                  // figure out how to keep the error output from cluttering
@@ -704,7 +705,8 @@
                             if (req.status === 200) {
                                 temp = JSON.parse(req.responseText).rows[0];
                                 if (temp !== undefined) {
-                                    rev.val = temp.value.rev;
+                                    meta.val.id = temp.id;
+                                    meta.val.rev = temp.value.rev;
                                 }
                                 evt.exit();
                             } else {
@@ -717,13 +719,14 @@
                     req.send(null);
                     return;
                 };
-                rev.onready = function (evt) {
+                meta.onready = function (evt) {
                  // This function sends an HTTP PUT request.
                     /*jslint nomen: true */
                     var doc, req, temp;
                     doc = {
-                        '_id':  key,
-                        '_rev': rev.val,
+                        '_id':  meta.val.id,
+                        '_rev': meta.val.rev,
+                        key:    key,
                         $avar:  $val,
                         token:  token()
                     };
@@ -735,7 +738,14 @@
                         doc.status = temp.status;
                     }
                     req.onreadystatechange = function () {
-                     // This function needs documentation.
+                     // NOTE: I switched it back to non-batch-mode for now.
+                     //
+                     // Normally, we would listen for a 201 "Created" status,
+                     // but this function checks for a 202 "Accepted" status
+                     // because we're using batch mode in CouchDB to speed up
+                     // writes, which lets CouchDB save documents in memory
+                     // and flush to disk in batches rather than requiring an
+                     // 'fsync' for every single write operation.
                         if (req.readyState === 4) {
                             if (req.status !== 201) {
                                 return evt.fail(req.responseText);
@@ -745,14 +755,15 @@
                         }
                         return;
                     };
-                    req.open('PUT', href + key, true);
+                    //req.open('PUT', href + key, true);
+                    req.open('POST', href, true);
                     req.setRequestHeader('Content-type', 'application/json');
                     req.send(JSON.stringify(doc));
                     return;
                 };
-                rev.onready = function (rev_evt) {
+                meta.onready = function (meta_evt) {
                  // This function needs documentation.
-                    rev_evt.exit();
+                    meta_evt.exit();
                     return evt.exit();
                 };
                 return;
@@ -769,10 +780,9 @@
         if (isNodejs() === false) {
             return evt.exit();
         }
-        var cache, http, mothership, url;
+        var cache, http, url;
         cache = this.val;
         http = require('http');
-        mothership = 'http://qmachine.org';
         url = require('url');
         cache.remote_queue = function () {
          // This function gets the queue from http://qmachine.org with Node.js.
@@ -793,7 +803,7 @@
                         var data = JSON.parse(txt.join('')).rows;
                         ply(data).by(function (key, val) {
                          // This function needs documentation.
-                            y.val.push(val.id);
+                            y.val.push(val.value);
                             return;
                         });
                         return evt.exit();
@@ -843,14 +853,14 @@
             var y = avar({key: key});
             y.onready = function (evt) {
              // This function needs documentation.
-                var href, rev;
-                href = mothership + '/db/' + key;
-                rev = avar({val: undefined});
-                rev.onerror = function (message) {
+                var href, meta;
+                href = mothership + '/db/';
+                meta = avar({val: {id: undefined, rev: undefined}});
+                meta.onerror = function (message) {
                  // This function needs documentation.
                     return evt.fail(message);
                 };
-                rev.onready = function (evt) {
+                meta.onready = function (evt) {
                  // This function needs documentation.
                     var options = url.parse(mothership + '/meta/' + key);
                     http.get(options, function (response) {
@@ -864,7 +874,8 @@
                          // This function needs documentation.
                             var temp = JSON.parse(txt.join('')).rows[0];
                             if (temp !== undefined) {
-                                rev.val = temp.value.rev;
+                                meta.val.id = temp.id;
+                                meta.val.rev = temp.value.rev;
                             }
                             return evt.exit();
                         });
@@ -875,18 +886,19 @@
                     });
                     return;
                 };
-                rev.onready = function (evt) {
+                meta.onready = function (evt) {
                  // This function needs documentation.
                     /*jslint nomen: true */
                     var doc, options, req, temp;
                     doc = {
-                        '_id':  key,
-                        '_rev': rev.val,
+                        '_id':  meta.val.id,
+                        '_rev': meta.val.rev,
+                        key:    key,
                         $avar:  $val,
                         token:  token()
                     };
                     options = url.parse(href);
-                    options.method = 'PUT';
+                    options.method = 'POST';
                     temp = JSON.parse($val).val;
                     if (hOP(temp, 'status')) {
                         doc.status = temp.status;
@@ -912,13 +924,14 @@
                     if (hOP(temp, 'status')) {
                         doc.status = temp.status;
                     }
+                    req.setHeader('Content-Type', 'application/json');
                     req.write(JSON.stringify(doc));
                     req.end();
                     return;
                 };
-                rev.onready = function (temp_evt) {
+                meta.onready = function (meta_evt) {
                  // This function needs documentation.
-                    temp_evt.exit();
+                    meta_evt.exit();
                     return evt.exit();
                 };
                 return;
@@ -968,7 +981,14 @@
 
     setup.onready = function (evt) {
      // This function needs documentation.
-        var count = 1;
+        var count, ms;
+        count = 1;
+        ms = function () {
+         // This function throttles the polling frequency dynamically as a
+         // function of response time. It's still experimental, though, so
+         // I hard-coded it to the original constant for now ;-)
+            return 1000;
+        };
         if (parseArgs().volunteer === true) {
             puts('Thanks for volunteering!');
             (function f() {
@@ -981,7 +1001,7 @@
                     if (first) {
                         first = false;
                         count += 1;
-                        setTimeout(f, 1000);
+                        setTimeout(f, ms());
                         if (message instanceof Error) {
                             puts('Error:', message.message);
                         } else if (message !== 'Nothing to do ...') {
@@ -997,7 +1017,7 @@
                     if (first) {
                         first = false;
                         count += 1;
-                        setTimeout(f, 1000);
+                        setTimeout(f, ms());
                         puts(task.val.status + ':', task.key);
                     }
                     return evt.exit();
@@ -1008,8 +1028,10 @@
             puts('Thanks for testing -- I really appreciate your input!');
             (function f(x) {
              // This function needs documentation.
+                //puts('(pulse: ' + count + ')');
+                count += 1;
                 x.comm();
-                setTimeout(f, 1000, x);
+                setTimeout(f, ms(), x);
                 return;
             }(avar()));
         }
