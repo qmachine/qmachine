@@ -25,9 +25,7 @@
         "from":     "/db/:key",
         "to":       "/../../:key",
         "method":   "PUT",
-        "query":    {
-            "batch":        "ok"
-        }
+        "query":    {}
     },
     {
         "from":     "/meta/:id",

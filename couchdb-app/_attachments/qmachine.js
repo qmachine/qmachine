@@ -736,6 +736,8 @@
                         doc.status = temp.status;
                     }
                     req.onreadystatechange = function () {
+                     // NOTE: I switched it back to non-batch-mode for now.
+                     //
                      // Normally, we would listen for a 201 "Created" status,
                      // but this function checks for a 202 "Accepted" status
                      // because we're using batch mode in CouchDB to speed up
@@ -743,7 +745,7 @@
                      // and flush to disk in batches rather than requiring an
                      // 'fsync' for every single write operation.
                         if (req.readyState === 4) {
-                            if (req.status !== 202) {
+                            if (req.status !== 201) {
                                 return evt.fail(req.responseText);
                             }
                             y.val = JSON.parse(req.responseText);
