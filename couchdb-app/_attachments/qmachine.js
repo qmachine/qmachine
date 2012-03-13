@@ -631,7 +631,7 @@
                         temp = JSON.parse(req.responseText).rows;
                         ply(temp).by(function (key, val) {
                          // This function needs documentation.
-                            y.val.push(val.id);
+                            y.val.push(val.value);
                             return;
                         });
                         return evt.exit();
@@ -681,14 +681,14 @@
             var y = avar({key: key});
             y.onready = function (evt) {
              // This function needs documentation.
-                var href, rev;
+                var href, meta;
                 href = mothership + '/db/';
-                rev = avar({val: undefined});
-                rev.onerror = function (message) {
+                meta = avar({val: {id: undefined, rev: undefined}});
+                meta.onerror = function (message) {
                  // This function needs documentation.
                     return evt.fail(message);
                 };
-                rev.onready = function (evt) {
+                meta.onready = function (evt) {
                  // This function reads the revision number from CouchDB in
                  // such a way as to avoid 404 errors entirely because I can't
                  // figure out how to keep the error output from cluttering
@@ -705,7 +705,8 @@
                             if (req.status === 200) {
                                 temp = JSON.parse(req.responseText).rows[0];
                                 if (temp !== undefined) {
-                                    rev.val = temp.value.rev;
+                                    meta.val.id = temp.id;
+                                    meta.val.rev = temp.value.rev;
                                 }
                                 evt.exit();
                             } else {
@@ -718,13 +719,14 @@
                     req.send(null);
                     return;
                 };
-                rev.onready = function (evt) {
+                meta.onready = function (evt) {
                  // This function sends an HTTP PUT request.
                     /*jslint nomen: true */
                     var doc, req, temp;
                     doc = {
-                        '_id':  key,
-                        '_rev': rev.val,
+                        '_id':  meta.val.id,
+                        '_rev': meta.val.rev,
+                        key:    key,
                         $avar:  $val,
                         token:  token()
                     };
@@ -753,14 +755,15 @@
                         }
                         return;
                     };
-                    req.open('PUT', href + key, true);
+                    //req.open('PUT', href + key, true);
+                    req.open('POST', href, true);
                     req.setRequestHeader('Content-type', 'application/json');
                     req.send(JSON.stringify(doc));
                     return;
                 };
-                rev.onready = function (rev_evt) {
+                meta.onready = function (meta_evt) {
                  // This function needs documentation.
-                    rev_evt.exit();
+                    meta_evt.exit();
                     return evt.exit();
                 };
                 return;
@@ -800,7 +803,7 @@
                         var data = JSON.parse(txt.join('')).rows;
                         ply(data).by(function (key, val) {
                          // This function needs documentation.
-                            y.val.push(val.id);
+                            y.val.push(val.value);
                             return;
                         });
                         return evt.exit();
@@ -850,14 +853,14 @@
             var y = avar({key: key});
             y.onready = function (evt) {
              // This function needs documentation.
-                var href, rev;
-                href = mothership + '/db/' + key;
-                rev = avar({val: undefined});
-                rev.onerror = function (message) {
+                var href, meta;
+                href = mothership + '/db/';
+                meta = avar({val: {id: undefined, rev: undefined}});
+                meta.onerror = function (message) {
                  // This function needs documentation.
                     return evt.fail(message);
                 };
-                rev.onready = function (evt) {
+                meta.onready = function (evt) {
                  // This function needs documentation.
                     var options = url.parse(mothership + '/meta/' + key);
                     http.get(options, function (response) {
@@ -871,7 +874,8 @@
                          // This function needs documentation.
                             var temp = JSON.parse(txt.join('')).rows[0];
                             if (temp !== undefined) {
-                                rev.val = temp.value.rev;
+                                meta.val.id = temp.id;
+                                meta.val.rev = temp.value.rev;
                             }
                             return evt.exit();
                         });
@@ -882,18 +886,19 @@
                     });
                     return;
                 };
-                rev.onready = function (evt) {
+                meta.onready = function (evt) {
                  // This function needs documentation.
                     /*jslint nomen: true */
                     var doc, options, req, temp;
                     doc = {
-                        '_id':  key,
-                        '_rev': rev.val,
+                        '_id':  meta.val.id,
+                        '_rev': meta.val.rev,
+                        key:    key,
                         $avar:  $val,
                         token:  token()
                     };
                     options = url.parse(href);
-                    options.method = 'PUT';
+                    options.method = 'POST';
                     temp = JSON.parse($val).val;
                     if (hOP(temp, 'status')) {
                         doc.status = temp.status;
@@ -919,13 +924,14 @@
                     if (hOP(temp, 'status')) {
                         doc.status = temp.status;
                     }
+                    req.setHeader('Content-Type', 'application/json');
                     req.write(JSON.stringify(doc));
                     req.end();
                     return;
                 };
-                rev.onready = function (temp_evt) {
+                meta.onready = function (meta_evt) {
                  // This function needs documentation.
-                    temp_evt.exit();
+                    meta_evt.exit();
                     return evt.exit();
                 };
                 return;

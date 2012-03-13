@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- map.js ~~
-//                                                      ~~ (c) SRW, 02 Mar 2012
+//                                                      ~~ (c) SRW, 13 Mar 2012
 
 function (doc) {
     'use strict';
@@ -15,12 +15,18 @@ function (doc) {
 
  // Declarations
 
+    var flag;
+
  // Definitions
+
+    flag = ((doc.hasOwnProperty('key'))     &&
+            (doc.hasOwnProperty('status'))  &&
+            (doc.hasOwnProperty('token')));
 
  // Invocations
 
-    if (doc.hasOwnProperty('status') && doc.hasOwnProperty('token')) {
-        emit([doc.token, doc.status], doc._rev);
+    if (flag === true) {
+        emit([doc.token, doc.status], doc.key);
     }
 
  // That's all, folks!

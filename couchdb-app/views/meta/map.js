@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- map.js ~~
-//                                                      ~~ (c) SRW, 09 Mar 2012
+//                                                      ~~ (c) SRW, 13 Mar 2012
 
 function (doc) {
     'use strict';
@@ -47,7 +47,7 @@ function (doc) {
         y.revs_info = doc._revs_info;
     }
 
-    emit(doc._id, y);
+    emit(doc.key, y);
 
  // That's all, folks!
 

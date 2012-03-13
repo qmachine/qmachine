@@ -7,7 +7,7 @@
     },
     {
         "from":     "/db/:key",
-        "to":       "/../../_all_docs",
+        "to":       "/_view/meta",
         "method":   "GET",
         "query": {
             "include_docs": "true",
@@ -16,24 +16,18 @@
         }
     },
     {
-        "from":     "/db/:key",
-        "to":       "/../../:key",
-        "method":   "HEAD",
+        "from":     "/db/",
+        "to":       "/../../",
+        "method":   "POST",
         "query":    {}
     },
     {
-        "from":     "/db/:key",
-        "to":       "/../../:key",
-        "method":   "PUT",
-        "query":    {}
-    },
-    {
-        "from":     "/meta/:id",
+        "from":     "/meta/:key",
         "to":       "/_view/meta",
         "method":   "GET",
         "query": {
             "include_docs": "false",
-            "key":          ":id",
+            "key":          ":key",
             "limit":        "1"
         }
     },
