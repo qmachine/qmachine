@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 09 Mar 2012
+//                                                      ~~ (c) SRW, 12 Mar 2012
 
 (function (global) {
     'use strict';
@@ -18,8 +18,8 @@
 
  // Declarations
 
-    var Q, avar, hOP, isBrowser, isFunction, isNodejs, parseArgs, ply, puts,
-        relaunch, setup, token, when;
+    var Q, avar, hOP, isBrowser, isFunction, isNodejs, mothership,
+        parseArgs, ply, puts, relaunch, setup, token, when;
 
  // Definitions
 
@@ -51,6 +51,8 @@
      // This function needs documentation.
         return global.hasOwnProperty('process');
     };
+
+    mothership = 'http://qmachine.org';
 
     parseArgs = function () {
      // This function needs documentation.
@@ -594,9 +596,8 @@
         if (isBrowser() === false) {
             return evt.exit();
         }
-        var cache, mothership, request;
+        var cache, request;
         cache = this.val;
-        mothership = 'http://qmachine.org';
         request = function () {
          // This function generates a new AJAX request object. I have not yet
          // experimented with Web Sockets, but unless CouchDB supports them,
@@ -735,9 +736,14 @@
                         doc.status = temp.status;
                     }
                     req.onreadystatechange = function () {
-                     // This function needs documentation.
+                     // Normally, we would listen for a 201 "Created" status,
+                     // but this function checks for a 202 "Accepted" status
+                     // because we're using batch mode in CouchDB to speed up
+                     // writes, which lets CouchDB save documents in memory
+                     // and flush to disk in batches rather than requiring an
+                     // 'fsync' for every single write operation.
                         if (req.readyState === 4) {
-                            if (req.status !== 201) {
+                            if (req.status !== 202) {
                                 return evt.fail(req.responseText);
                             }
                             y.val = JSON.parse(req.responseText);
@@ -769,10 +775,9 @@
         if (isNodejs() === false) {
             return evt.exit();
         }
-        var cache, http, mothership, url;
+        var cache, http, url;
         cache = this.val;
         http = require('http');
-        mothership = 'http://qmachine.org';
         url = require('url');
         cache.remote_queue = function () {
          // This function gets the queue from http://qmachine.org with Node.js.
@@ -968,7 +973,14 @@
 
     setup.onready = function (evt) {
      // This function needs documentation.
-        var count = 1;
+        var count, ms;
+        count = 1;
+        ms = function () {
+         // This function throttles the polling frequency dynamically as a
+         // function of response time. It's still experimental, though, so
+         // I hard-coded it to the original constant for now ;-)
+            return 1000;
+        };
         if (parseArgs().volunteer === true) {
             puts('Thanks for volunteering!');
             (function f() {
@@ -981,7 +993,7 @@
                     if (first) {
                         first = false;
                         count += 1;
-                        setTimeout(f, 1000);
+                        setTimeout(f, ms());
                         if (message instanceof Error) {
                             puts('Error:', message.message);
                         } else if (message !== 'Nothing to do ...') {
@@ -997,7 +1009,7 @@
                     if (first) {
                         first = false;
                         count += 1;
-                        setTimeout(f, 1000);
+                        setTimeout(f, ms());
                         puts(task.val.status + ':', task.key);
                     }
                     return evt.exit();
@@ -1008,8 +1020,10 @@
             puts('Thanks for testing -- I really appreciate your input!');
             (function f(x) {
              // This function needs documentation.
+                //puts('(pulse: ' + count + ')');
+                count += 1;
                 x.comm();
-                setTimeout(f, 1000, x);
+                setTimeout(f, ms(), x);
                 return;
             }(avar()));
         }

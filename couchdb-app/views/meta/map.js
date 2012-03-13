@@ -1,9 +1,6 @@
 //- JavaScript source code
 
 //- map.js ~~
-//
-//  The idea here is to provide a single  all the CouchDB rubbish
-//
 //                                                      ~~ (c) SRW, 09 Mar 2012
 
 function (doc) {

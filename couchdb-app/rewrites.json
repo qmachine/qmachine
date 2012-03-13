@@ -10,8 +10,9 @@
         "to":       "/../../_all_docs",
         "method":   "GET",
         "query": {
+            "include_docs": "true",
             "key":          ":key",
-            "include_docs": "true"
+            "limit":        "1"
         }
     },
     {
@@ -24,14 +25,18 @@
         "from":     "/db/:key",
         "to":       "/../../:key",
         "method":   "PUT",
-        "query":    {}
+        "query":    {
+            "batch":        "ok"
+        }
     },
     {
         "from":     "/meta/:id",
         "to":       "/_view/meta",
         "method":   "GET",
         "query": {
-            "key":  ":id"
+            "include_docs": "false",
+            "key":          ":id",
+            "limit":        "1"
         }
     },
     {
@@ -39,8 +44,9 @@
         "to":       "/_view/queue",
         "method":   "GET",
         "query": {
-            "key":  [":token", "waiting"],
-            "limit": "1"
+            "include_docs": "false",
+            "key":          [":token", "waiting"],
+            "limit":        "1"
         }
     },
     {
@@ -48,7 +54,7 @@
         "to":       "/_view/:foo",
         "method":   "GET",
         "query":    {
-            "limit": "0"
+            "limit":        "0"
         }
     },
     {
