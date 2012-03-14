@@ -1,7 +1,7 @@
 {
     "name": "Q Machine",
     "description": "The World's Most Relaxed Supercomputer",
-    "version": "0.1.6",
+    "version": "0.2.0",
     "app": {
         "launch": {
             "local_path": "index.html"
