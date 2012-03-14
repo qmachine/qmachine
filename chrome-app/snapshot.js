@@ -2,52 +2,79 @@
 
 //- snapshot.js ~~
 //
-//  This program uses PhantomJS to load Quanah's homepage and render it to a
+//  This program uses PhantomJS to load Q Machine's homepage and render it to a
 //  particular file with a particular resolution. PhantomJS has changed its API
 //  pretty drastically over the last few months, and that worries me a little
 //  about the long-term usefulness of this particular program, but it was easy
 //  to write, it's not needed that often, and it can be replaced if necessary
 //  but similar tools like Selenium and Watir (to name a few).
 //
-//                                                      ~~ (c) SRW, 02 Sep 2011
+//                                                      ~~ (c) SRW, 14 Mar 2012
 
-(function (argv) {
-    "use strict";
+(function (global) {
+    'use strict';
 
-    if (argv.length !== 2) {
-        console.log("Usage: phantomjs snapshot.js WIDTHxHEIGHT outfile");
-        phantom.exit(1);
+ // Pragmas
+
+    /*jslint indent: 4, maxlen: 80 */
+    /*global phantom: false */
+
+ // Prerequisites
+
+    if (phantom.args.length !== 2) {
+        global.console.log('Usage: phantomjs snapshot.js WxH outfile');
+        return phantom.exit(1);
     }
+
+ // Declarations
 
     var address, output, page, size;
 
-    address = "http://quanah.couchone.com";
+ // Definitions
 
-    output = argv[1];
+    address = 'http://qmachine.org/?token=phantomjs';
 
-    page = new WebPage();
+    output = phantom.args[1];
 
-    size = argv[0].split("x");
+    page = new global.WebPage();
+
+    size = phantom.args[0].split('x');
 
     page.viewportSize = {
         width:  size[0],
         height: size[1]
     };
 
+ // Invocations
+
     page.open(address, function (status) {
+     // This function needs documentation.
         if (status !== 'success') {
-            console.log('Unable to load "' + address + '".');
-            phantom.exit(1);
-        } else {
-            window.setTimeout(function () {
-                console.log('Rasterizing to "' + output + '" ...');
-                page.render(output);
-                console.log("Done.");
-                phantom.exit();
-            }, 200);
+            global.console.log('Unable to load "' + address + '".');
+            return phantom.exit(1);
         }
+        global.window.setTimeout(function () {
+         // This function needs documentation.
+            global.console.log('Rasterizing to "' + output + '" ...');
+            page.render(output);
+            global.console.log('Done.');
+            return phantom.exit();
+        }, 200);
+        return;
     });
 
-}(phantom.args));
+ // That's all, folks!
+
+    return;
+
+}(Function.prototype.call.call(function (outer_scope) {
+    'use strict';
+    /*jslint indent: 4, maxlen: 80 */
+    /*global global: true */
+    if (this === null) {
+        return (typeof global === 'object') ? global : outer_scope;
+    }
+    return (typeof this.global === 'object') ? this.global : this;
+}, null, this)));
 
 //- vim:set syntax=javascript:

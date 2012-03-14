@@ -102,6 +102,19 @@ test: $(IPHONE4)
 
 ###
 
+.PHONY: bitbucket google ios
+
+bitbucket:
+	@   $(call alert, 'Nothing yet.')
+
+google:
+	@   $(call alert, 'Nothing yet.')
+
+ios:
+	@   $(call alert, 'Nothing yet.')
+
+###
+
 $(BITBUCKET): $(REF_PNG)
 	@   $(CONVERT) \
                 -density 600 -gravity center -quality 100 -resize '35x35'   \

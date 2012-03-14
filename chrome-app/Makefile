@@ -14,11 +14,12 @@ include ../tools/macros.make
 PHANTOM :=  $(call contingent, phantomjs)
 SRC     :=  $(wildcard *.js)
 
-SC_SHOT :=  1280x800.jpg
+SC_SHOT :=  1280x800.png
 SM_TILE :=  440x280.png
 
 ZIPFILE :=  qmachine.zip
 
+CONVERT :=  $(call contingent, convert)
 OPEN    :=  $(call contingent, gnome-open open)
 RM      :=  $(call contingent, rm) -rf
 ZIP     :=  $(call contingent, zip)
@@ -28,7 +29,7 @@ ZIP     :=  $(call contingent, zip)
 all: run
 
 clean: reset
-	@   $(RM) $(SC_SHOT) $(SM_TILE)
+	@   $(RM) $(SC_SHOT) $(SM_TILE) *.png
 
 clobber: clean
 	@   $(RM) $(ZIPFILE)
@@ -43,10 +44,12 @@ run: $(SC_SHOT) $(SM_TILE) $(ZIPFILE)
 ###
 
 $(SC_SHOT):
-	@   $(PHANTOM) $(SRC) $(@:%.jpg=%) $@
+	@   $(PHANTOM) $(SRC) $(@:%.png=%) $@                           ;   \
+            $(CONVERT) +repage -crop $(@:%.png=%) $@ $@
 
 $(SM_TILE):
-	@   $(PHANTOM) $(SRC) $(@:%.png=%) $@
+	@   $(PHANTOM) $(SRC) $(@:%.png=%) $@                           ;   \
+            $(CONVERT) +repage -crop $(@:%.png=%) $@ $@
 
 ###
 
