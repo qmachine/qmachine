@@ -5,17 +5,18 @@
 
 include $(PWD)/tools/macros.make
 
-CAT     :=  $(call contingent, gcat cat)
-CD      :=  $(call contingent, cd)
-CP      :=  $(call contingent, gcp cp) -rf
-CURL    :=  $(call contingent, curl)
-GIT     :=  $(call contingent, git)
-LS      :=  $(call contingent, gls ls) 2>/dev/null
-MKDIR   :=  $(call contingent, gmkdir mkdir)
-RM      :=  $(call contingent, grm rm) -rf
-SED     :=  $(call contingent, gsed sed)
-SORT    :=  $(call contingent, gsort sort)
-XARGS   :=  $(call contingent, xargs)
+CAT         :=  $(call contingent, gcat cat)
+CD          :=  $(call contingent, cd)
+CP          :=  $(call contingent, gcp cp) -rf
+CURL        :=  $(call contingent, curl)
+GIT         :=  $(call contingent, git)
+LS          :=  $(call contingent, gls ls) 2>/dev/null
+MKDIR       :=  $(call contingent, gmkdir mkdir)
+QRENCODE    :=  $(call contingent, qrencode) --8bit --level=H
+RM          :=  $(call contingent, grm rm) -rf
+SED         :=  $(call contingent, gsed sed)
+SORT        :=  $(call contingent, gsort sort)
+XARGS       :=  $(call contingent, xargs)
 
 APPS    :=  $(shell $(LS) templates)
 
@@ -29,7 +30,7 @@ all: $(APPS)
 clean: reset
 
 clobber: clean
-	@   $(RM) apps share/main.js
+	@   $(RM) apps share/main.js share/qr.png
 
 distclean: clobber
 	@   $(RM) deps
@@ -85,6 +86,9 @@ deps/quanah.js: deps
             $(CURL) -o $@ $${SEANHUB}/quanah/master/src/quanah.js
 
 nodejs-client: deps/node-sqlite3 share/main.js
+
+share/qr.png:
+	@   $(QRENCODE) --margin=1 --size=10 --output=$@ http://qmachine.org
 
 ###
 
