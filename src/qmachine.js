@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 12 Mar 2012
+//                                                      ~~ (c) SRW, 15 Mar 2012
 
 (function (global) {
     'use strict';
@@ -66,7 +66,7 @@
              // are either "true" or "false" (without quotes). The function
              // accepts an object whose own properties will be used to override
              // flags that are already present.
-                /*jslint regexp: true */
+                /*jslint regexp: true, unparam: true */
                 var argv, i, m, o, uri;
                 argv = {};
                 o = {
@@ -92,6 +92,7 @@
                 }
                 uri[o.q.name] = {};
                 uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+                 // This function needs documentation.
                     if ($1) {
                      // These are "explicit coercions" ;-)
                         switch ($2) {
@@ -127,7 +128,7 @@
                     var doc, options;
                     doc = global.document;
                     options = {
-                        volunteer:  doc.getElementById('volunteer'),
+                        volunteer:  doc.getElementById('volunteer')
                     };
                     ply(argv).by(function (key, val) {
                      // This function needs documentation.
@@ -623,6 +624,7 @@
                 req = request();
                 req.onreadystatechange = function () {
                  // This function needs documentation.
+                    /*jslint unparam: true */
                     var temp;
                     if (req.readyState === 4) {
                         if (req.status !== 200) {
@@ -800,6 +802,7 @@
                         return;
                     }).on('end', function () {
                      // This function needs documentation.
+                        /*jslint unparam: true */
                         var data = JSON.parse(txt.join('')).rows;
                         ply(data).by(function (key, val) {
                          // This function needs documentation.
