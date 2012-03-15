@@ -1055,6 +1055,18 @@
         return evt.exit();
     };
 
+    setup.onready = function (evt) {
+     // This function needs docmentation.
+        if (isNodejs() === false) {
+            return evt.exit();
+        }
+        var args = parseArgs();
+        if ((args.repl !== true) && (args.volunteer !== true)) {
+            return global.process.exit();
+        }
+        return evt.exit();
+    };
+
  // That's all, folks!
 
     return;

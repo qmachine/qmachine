@@ -6,6 +6,8 @@
 #   by rendering PDFs with TeX Live and rasterizing with ImageMagick. I have
 #   most recently tested these directions on Mac OS X 10.7.3.
 #
+#   NOTE: THESE DIRECTIONS ARE CURRENTLY BROKEN!!!
+#
 #                                                       ~~ (c) SRW, 07 Feb 2012
 
 include ../tools/macros.make

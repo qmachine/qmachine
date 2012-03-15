@@ -1,14 +1,13 @@
 CACHE MANIFEST
 
 #-  cache.manifest ~~
-#                                                       ~~ (c) SRW, 07 Mar 2012
+#                                                       ~~ (c) SRW, 15 Mar 2012
 
 CACHE:
 favicon.ico
 index.html
+main.js
 print.css
-qmachine.js
-quanah.js
 screen.css
 
 NETWORK:

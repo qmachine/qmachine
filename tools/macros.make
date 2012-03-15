@@ -49,7 +49,7 @@ define white-printf
 endef
 
 define alert
-    $(call red-printf, '--> ERROR: %s\n', $(strip $(1))) >&2
+    $(call red-printf, '--> Error: %s\n', $(strip $(1))) >&2
 endef
 
 define aside

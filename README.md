@@ -14,3 +14,6 @@ There are several "mirrors" available on
 [GitHub](https://github.com/wilkinson/qmachine), and
 [Google Code](https://qmachine.googlecode.com).
 
+I would also like to "port" QMachine, as an app, to other social platforms like
+Android, Facebook, IOS, Twitter, and even DropBox :-)
+
