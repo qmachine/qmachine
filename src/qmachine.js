@@ -722,7 +722,7 @@
                     return;
                 };
                 meta.onready = function (evt) {
-                 // This function sends an HTTP PUT request.
+                 // This function sends an HTTP POST request.
                     /*jslint nomen: true */
                     var doc, req, temp;
                     doc = {
@@ -757,7 +757,6 @@
                         }
                         return;
                     };
-                    //req.open('PUT', href + key, true);
                     req.open('POST', href, true);
                     req.setRequestHeader('Content-type', 'application/json');
                     req.send(JSON.stringify(doc));
