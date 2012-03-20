@@ -84,7 +84,11 @@ deps/quanah.js: deps
 
 nodejs-client: deps/node-sqlite3 share/main.js
 
-share/main.js: deps/jslint.js deps/json2.js deps/quanah.js src/qmachine.js
+share/main.js:      \
+    deps/jslint.js  \
+    deps/json2.js   \
+    deps/quanah.js  \
+    src/qmachine.js
 	@   $(CAT) $^ > $@
 
 share/qr.png:
