@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 15 Mar 2012
+//                                                      ~~ (c) SRW, 20 Mar 2012
 
 (function (global) {
     'use strict';
@@ -1066,6 +1066,29 @@
         if ((args.repl !== true) && (args.volunteer !== true)) {
             return global.process.exit();
         }
+        return evt.exit();
+    };
+
+    setup.onready = function (evt) {
+     // This function adds user interface elements to the webpage that prompt
+     // the user to install the Chrome app if appropriate.
+        if ((isBrowser() === false) ||
+                (global.hasOwnProperty('chrome') === false) ||
+                (global.hasOwnProperty('document') === false) ||
+                (global.chrome.app.isInstalled === true)) {
+         // These are obviously cases for which a button is inappropriate ;-)
+            return evt.exit();
+        }
+     // NOTE: I'm having trouble skipping the following code if the app has
+     // already been installed. Perhaps it's an issue of hosted vs. packaged?
+        var button = global.document.createElement('button');
+        button.innerHTML = 'Add to Chrome';
+        button.onclick = function () {
+         // This function needs documentation.
+            global.chrome.webstore.install();
+            return;
+        };
+        global.document.body.appendChild(button);
         return evt.exit();
     };
 

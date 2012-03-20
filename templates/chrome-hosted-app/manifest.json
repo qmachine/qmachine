@@ -1,0 +1,21 @@
+{
+    "name": "Q Machine",
+    "description": "The World's Most Relaxed Supercomputer",
+    "version": "0.2.6",
+    "app": {
+        "launch": {
+            "web_url": "http://qmachine.org"
+        },
+        "urls": [
+            "http://qmachine.org/"
+        ]
+    },
+    "icons": {
+        "16": "favicon.ico",
+        "128": "icon-128.png"
+    },
+    "offline_enabled": true,
+    "permissions": [
+        "unlimitedStorage"
+    ]
+}

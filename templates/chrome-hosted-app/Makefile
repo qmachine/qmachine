@@ -3,7 +3,7 @@
 #-  Makefile ~~
 #
 #   This contains live instructions for creating the zip file needed to upload
-#   Qmachine to the Chrome Web Store as a packaged web app. Most of the process
+#   Qmachine to the Chrome Web Store as a hosted web app. Most of the process
 #   is done manually inside the browser, but automated directions still reduce
 #   as much of the command-line tedium as possible.
 #
@@ -68,7 +68,6 @@ $(APP): $(MANIFEST)
             fi                                                          ;   \
             $(CP) $(PWD)/../../share/favicon.ico $@                     ;   \
             $(CP) $(PWD)/../../share/icon-128.png $@                    ;   \
-            $(CP) $(PWD)/../../src/index.html $@                        ;   \
             $(CP) $(MANIFEST) $@
 
 $(SRC): $(PWD)/../../tools/snapshot.js

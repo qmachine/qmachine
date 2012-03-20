@@ -54,9 +54,6 @@ $(APPS): apps
             $(CD) apps/$@                                               ;   \
             $(MAKE)
 
-share/main.js: deps/jslint.js deps/json2.js deps/quanah.js src/qmachine.js
-	@   $(CAT) $^ > $@
-
 ###
 
 apps deps:
@@ -86,6 +83,9 @@ deps/quanah.js: deps
             $(CURL) -o $@ $${SEANHUB}/quanah/master/src/quanah.js
 
 nodejs-client: deps/node-sqlite3 share/main.js
+
+share/main.js: deps/jslint.js deps/json2.js deps/quanah.js src/qmachine.js
+	@   $(CAT) $^ > $@
 
 share/qr.png:
 	@   $(QRENCODE) --margin=1 --size=10 --output=$@ http://qmachine.org
