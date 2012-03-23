@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 20 Mar 2012
+//                                                      ~~ (c) SRW, 23 Mar 2012
 
 (function (global) {
     'use strict';
@@ -18,14 +18,23 @@
 
  // Declarations
 
-    var Q, avar, hOP, isBrowser, isFunction, isNodejs, mothership,
-        parseArgs, ply, puts, relaunch, setup, token, when;
+    var Q, avar, browser_only, hOP, isBrowser, isFunction, isNodejs,
+        mothership, nodejs_only, parseArgs, ply, puts, relaunch, setup,
+        token, when;
 
  // Definitions
 
     Q = Object.prototype.Q;
 
     avar = Q.avar;
+
+    browser_only = function (f) {
+     // This function needs documentation.
+        return (isBrowser() === true) ? f : function (evt) {
+         // This function needs documentation.
+            return evt.exit();
+        };
+    };
 
     hOP = function (obj, name) {
      // This function needs documentation.
@@ -53,6 +62,14 @@
     };
 
     mothership = 'http://qmachine.org';
+
+    nodejs_only = function (f) {
+     // This function needs documentation.
+        return (isNodejs() === true) ? f : function (evt) {
+         // This function needs documentation.
+            return evt.exit();
+        };
+    };
 
     parseArgs = function () {
      // This function needs documentation.
@@ -300,7 +317,17 @@
         return;
     };
 
-    setup = avar();
+    setup = avar({
+     // This object needs documentation.
+        val: {
+            local_queue:    null,
+            local_read:     null,
+            local_write:    null,
+            remote_queue:   null,
+            remote_read:    null,
+            remote_write:   null
+        }
+    });
 
     token = function () {
      // This function is mainly a placeholder for more elaborate security
@@ -356,27 +383,10 @@
         return;
     };
 
-    setup.onready = function (evt) {
-     // This function needs documentation.
-        if ((isBrowser() === false) && (isNodejs() === false)) {
-            return evt.fail('Qmachine does not support this platform.');
-        }
-        this.val = {
-         // This object needs documentation.
-            local_queue:    null,
-            local_read:     null,
-            local_write:    null,
-            remote_queue:   null,
-            remote_read:    null,
-            remote_write:   null
-        };
-        return evt.exit();
-    };
-
-    setup.onready = function (evt) {
+    setup.onready = browser_only(function (evt) {
      // This function defines 'cache' methods for persistent local storage in
      // a web browser clients using HTML 5 'localStorage' if possible.
-        if ((isBrowser() === false) || (parseArgs().cache !== 'local')) {
+        if (parseArgs().cache !== 'local') {
             return evt.exit();
         }
         var cache, db;
@@ -453,12 +463,12 @@
             return y;
         };
         return evt.exit();
-    };
+    });
 
-    setup.onready = function (evt) {
+    setup.onready = nodejs_only(function (evt) {
      // This function defines 'cache' methods for persistent local storage in
      // Node.js clients using SQLite 3.
-        if ((isNodejs() === false) || (parseArgs().cache !== 'local')) {
+        if (parseArgs().cache !== 'local') {
             return evt.exit();
         }
         var cache, db;
@@ -589,14 +599,11 @@
             return evt.exit();
         };
         return;
-    };
+    });
 
-    setup.onready = function (evt) {
+    setup.onready = browser_only(function (evt) {
      // This function defines 'cache' methods for persistent remote storage
      // from a web browser client to http://qmachine.org, which uses CouchDB.
-        if (isBrowser() === false) {
-            return evt.exit();
-        }
         var cache, request;
         cache = this.val;
         request = function () {
@@ -772,15 +779,12 @@
             return y;
         };
         return evt.exit();
-    };
+    });
 
-    setup.onready = function (evt) {
+    setup.onready = nodejs_only(function (evt) {
      // This function defines 'cache' methods for persistent remote storage
      // from a Node.js client to http://qmachine.org, which uses CouchDB.
         /*jslint node: true */
-        if (isNodejs() === false) {
-            return evt.exit();
-        }
         var cache, http, url;
         cache = this.val;
         http = require('http');
@@ -941,13 +945,10 @@
             return y;
         };
         return evt.exit();
-    };
+    });
 
-    setup.onready = function (evt) {
+    setup.onready = browser_only(function (evt) {
      // This function configures the browser's interactive session.
-        if (isBrowser() === false) {
-            return evt.exit();
-        }
         var doc;
         token();
         if (global.hasOwnProperty('document')) {
@@ -962,7 +963,7 @@
             }
         }
         return evt.exit();
-    };
+    });
 
     setup.onready = function (evt) {
      // This function needs documentation.
@@ -983,6 +984,9 @@
 
     setup.onready = function (evt) {
      // This function needs documentation.
+        if (isFunction(global.setTimeout) === false) {
+            return evt.exit();
+        }
         var count, ms;
         count = 1;
         ms = function () {
@@ -1003,7 +1007,7 @@
                     if (first) {
                         first = false;
                         count += 1;
-                        setTimeout(f, ms());
+                        global.setTimeout(f, ms());
                         if (message instanceof Error) {
                             puts('Error:', message.message);
                         } else if (message !== 'Nothing to do ...') {
@@ -1019,7 +1023,7 @@
                     if (first) {
                         first = false;
                         count += 1;
-                        setTimeout(f, ms());
+                        global.setTimeout(f, ms());
                         puts(task.val.status + ':', task.key);
                     }
                     return evt.exit();
@@ -1033,18 +1037,19 @@
                 //puts('(pulse: ' + count + ')');
                 count += 1;
                 x.comm();
-                setTimeout(f, ms(), x);
+                global.setTimeout(f, ms(), x);
                 return;
             }(avar()));
         }
         return evt.exit();
     };
 
-    setup.onready = function (evt) {
+    setup.onready = nodejs_only(function (evt) {
      // This function needs documentation.
         /*jslint node: true */
-        if ((isNodejs() === false) || (parseArgs().repl !== true)) {
-            return evt.exit();
+        var args = parseArgs();
+        if (args.repl !== true) {
+            return ((args.volunteer !== true) ? global.process : evt).exit();
         }
         require('repl').start.apply(this, [
          // See documentation at http://nodejs.org/docs/latest/api/repl.html.
@@ -1055,27 +1060,14 @@
             true
         ]);
         return evt.exit();
-    };
+    });
 
-    setup.onready = function (evt) {
-     // This function needs docmentation.
-        if (isNodejs() === false) {
-            return evt.exit();
-        }
-        var args = parseArgs();
-        if ((args.repl !== true) && (args.volunteer !== true)) {
-            return global.process.exit();
-        }
-        return evt.exit();
-    };
-
-    setup.onready = function (evt) {
+    setup.onready = browser_only(function (evt) {
      // This function adds user interface elements to the webpage that prompt
      // the user to install the Chrome app if appropriate.
-        if ((isBrowser() === false) ||
-                (global.hasOwnProperty('chrome') === false) ||
-                (global.hasOwnProperty('document') === false) ||
-                (global.chrome.app.isInstalled === true)) {
+        if ((global.hasOwnProperty('chrome') === false)     ||
+                (global.chrome.app.isInstalled === true)    ||
+                (global.hasOwnProperty('document') === false)) {
          // These are obviously cases for which a button is inappropriate ;-)
             return evt.exit();
         }
@@ -1090,7 +1082,7 @@
         };
         global.document.body.appendChild(button);
         return evt.exit();
-    };
+    });
 
  // That's all, folks!
 
