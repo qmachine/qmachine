@@ -36,7 +36,7 @@ clobber: clean
 	@   $(RM) apps/ build/ share/
 
 distclean: clobber
-	@   $(RM) deps/
+	@   $(RM) .d8_history deps/ .v8_history
 
 help:
 	@   printf '%s\n' 'Usage: $(MAKE) [options] [target] ...'       ;   \
