@@ -5,9 +5,9 @@
 %   This represents the minimal document necessary to typeset a blue "Q" using
 %   Hermann Zapf's AMS "Euler" font. We also disable page numbering in order to
 %   keep the bounding box small so we can crop the resulting PDF automatically
-%   before converting it into a 'favicon.ico' file for use on our webpage.
+%   before converting it to various bitmap formats and resolutions :-)
 %
-%                                                           ~~ SRW, 22 Mar 2012
+%                                                           ~~ SRW, 23 Mar 2012
 
 \documentclass{article}
 
@@ -15,15 +15,11 @@
 \usepackage{xcolor}                     %-  allow colors to be defined :-)
     \definecolor{WebSafeNavy}{HTML}{000080}
 
-    \setlength{\fboxsep}{2pt}
-    \setlength{\fboxrule}{0pt}
-
 \pagestyle{empty}                       %-  minimize document's bounding box
 
 \begin{document}
 
-    \Huge
-    \color{WebSafeNavy}$Q$%
+    \Huge \color{WebSafeNavy} $ Q $
 
 \end{document}
 
