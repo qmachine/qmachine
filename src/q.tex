@@ -7,14 +7,13 @@
 %   keep the bounding box small so we can crop the resulting PDF automatically
 %   before converting it into a 'favicon.ico' file for use on our webpage.
 %
-%                                                           ~~ SRW, 02 Jul 2010
+%                                                           ~~ SRW, 22 Mar 2012
 
 \documentclass{article}
 
 \usepackage{eulervm}                    %-  use Zapf's "Euler" font
 \usepackage{xcolor}                     %-  allow colors to be defined :-)
     \definecolor{WebSafeNavy}{HTML}{000080}
-    \definecolor{ChromeGray}{HTML}{cccccc}
 
     \setlength{\fboxsep}{2pt}
     \setlength{\fboxrule}{0pt}
@@ -24,7 +23,7 @@
 \begin{document}
 
     \Huge
-    \colorbox{ChromeGray}{\color{WebSafeNavy}$Q$}%
+    \color{WebSafeNavy}$Q$%
 
 \end{document}
 
