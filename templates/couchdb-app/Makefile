@@ -6,7 +6,9 @@
 #
 #                                                       ~~ (c) SRW, 15 Mar 2012
 
-include $(PWD)/../../tools/macros.make
+PROJ_ROOT   :=  $(PWD)/../../
+
+include $(PROJ_ROOT)/tools/macros.make
 
 APP         :=  qmachine
 #PROTOCOL    :=  http
@@ -50,10 +52,12 @@ reset:
 	@   $(call contingent, clear)
 
 run: $(APPRC)
-	@   $(CP) $(PWD)/../../share/favicon.ico $(PWD)/_attachments    ;   \
-            $(CP) $(PWD)/../../share/main.js $(PWD)/_attachments        ;   \
-            $(CP) $(PWD)/../../src/index.html $(PWD)/_attachments       ;   \
-            $(CP) $(PWD)/../../src/*.css $(PWD)/_attachments            ;   \
+	@   $(CP) $(PROJ_ROOT)/share/favicon.ico _attachments/          ;   \
+            $(CP) $(PROJ_ROOT)/share/main.js _attachments/              ;   \
+            $(CP) $(PROJ_ROOT)/share/launch-image-i*.png _attachments/  ;   \
+            $(CP) $(PROJ_ROOT)/share/touch-icon-i*.png _attachments/    ;   \
+            $(CP) $(PROJ_ROOT)/src/index.html $(PWD)/_attachments       ;   \
+            $(CP) $(PROJ_ROOT)/src/*.css $(PWD)/_attachments            ;   \
             echo "# $${RANDOM}" >> $(PWD)/_attachments/cache.manifest   ;   \
             $(COUCHAPP) push --quiet                                    ;   \
             if [ $$? -eq 0 ]; then                                          \
