@@ -1,7 +1,11 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 23 Mar 2012
+#
+#   To-do:
+#   -   When deploying to CouchDB, run cleanup/compaction routines also.
+#
+#                                                       ~~ (c) SRW, 26 Mar 2012
 
 include $(PWD)/tools/macros.make
 
