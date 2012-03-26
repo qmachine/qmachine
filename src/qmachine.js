@@ -1088,13 +1088,13 @@
 
     return;
 
-}(Function.prototype.call.call(function (outer_scope) {
+}(Function.prototype.call.call(function (that) {
     'use strict';
  // See the bottom of "quanah.js" for documentation.
     /*jslint indent: 4, maxlen: 80 */
     /*global global: true */
     if (this === null) {
-        return (typeof global === 'object') ? global : outer_scope;
+        return (typeof global === 'object') ? global : that;
     }
     return (typeof this.global === 'object') ? this.global : this;
 }, null, this)));
