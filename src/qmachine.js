@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 23 Mar 2012
+//                                                      ~~ (c) SRW, 27 Mar 2012
 
 (function (global) {
     'use strict';
@@ -311,7 +311,7 @@
                 y.push(key + '=' + val);
                 return;
             });
-            global.location.search = y.join('&');
+            global.location.search = y.sort().join('&');
             return;
         }
         return;
@@ -320,9 +320,6 @@
     setup = avar({
      // This object needs documentation.
         val: {
-            local_queue:    null,
-            local_read:     null,
-            local_write:    null,
             remote_queue:   null,
             remote_read:    null,
             remote_write:   null
@@ -382,224 +379,6 @@
         }
         return;
     };
-
-    setup.onready = browser_only(function (evt) {
-     // This function defines 'cache' methods for persistent local storage in
-     // a web browser clients using HTML 5 'localStorage' if possible.
-        if (parseArgs().cache !== 'local') {
-            return evt.exit();
-        }
-        var cache, db;
-        cache = this.val;
-        db = global.localStorage;       //- NOTE: test for existence first!
-        cache.local_queue = function () {
-         // This function needs documentation.
-            var y = avar({val: []});
-            y.onready = function (evt) {
-             // This function needs documentation.
-                var flag, i, key, n, val;
-                n = db.length;
-                for (i = 0; i < n; i += 1) {
-                    key = val = null;
-                    try {
-                        key = db.key(i);
-                        val = JSON.parse(db.getItem(key));
-                    } catch (err) {
-                        puts('Caught error:', err);
-                        val = err;
-                    } finally {
-                        flag = ((val !== null)                  &&
-                                (val !== undefined)             &&
-                                (val.hasOwnProperty('key'))     &&
-                                (val.hasOwnProperty('$avar'))   &&
-                                (val.hasOwnProperty('status'))  &&
-                                (val.status === 'waiting')      &&
-                                (val.hasOwnProperty('token'))   &&
-                                (val.token === token()));
-                        if (flag === true) {
-                            y.val.push(key);
-                        }
-                    }
-                }
-                return evt.exit();
-            };
-            return y;
-        };
-        cache.local_read = function (key) {
-         // This function needs documentation.
-            var y = avar();
-            y.onready = function (evt) {
-             // This function needs documentation.
-                var $val = db.getItem(key);
-                if ($val === null) {
-                    return evt.fail('no key "' + key + '" found');
-                }
-                this.val = JSON.parse($val).$avar;
-                return evt.exit();
-            };
-            return y;
-        };
-        cache.local_write = function (key, $val) {
-         // This function needs documentation.
-            var y = avar();
-            y.onready = function (evt) {
-             // This function needs documentation.
-                var doc, temp;
-                doc = {
-                    key:    key,
-                    $avar:  $val,
-                    token:  token()
-                };
-                temp = JSON.parse($val).val;
-                if ((temp !== null) && (temp !== undefined) &&
-                        (temp.hasOwnProperty('status'))) {
-                 // NOTE: The third condition here may be unnecessary.
-                    puts('status:', temp.status);
-                    doc.status = temp.status;
-                }
-                db.setItem(key, JSON.stringify(doc));
-                return evt.exit();
-            };
-            return y;
-        };
-        return evt.exit();
-    });
-
-    setup.onready = nodejs_only(function (evt) {
-     // This function defines 'cache' methods for persistent local storage in
-     // Node.js clients using SQLite 3.
-        if (parseArgs().cache !== 'local') {
-            return evt.exit();
-        }
-        var cache, db;
-        cache = this.val;
-        db = avar();
-        db.onerror = function (message) {
-         // This function needs documentation.
-            return evt.fail(message);
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            /*jslint node: true */
-            db.val = new (require('sqlite3').Database)('Q.db', function () {
-             // This callback function needs documentation.
-                db.val.serialize(function () {
-                 // This callback function needs documentation.
-                    var query;
-                    query = [
-                        'CREATE TABLE IF NOT EXISTS qmachine ' +
-                            '(_id TEXT, val TEXT, status TEXT, token TEXT)',
-                        'CREATE UNIQUE INDEX IF NOT EXISTS ' +
-                            'uuid ON qmachine (_id)'
-                    ];
-                    db.val.run(query[0], function (err) {
-                     // This callback function needs documentation.
-                        return (err) ? evt.fail(err) : undefined;
-                    });
-                    db.val.run(query[1], function (err) {
-                     // This callback function needs documentation.
-                        return (err) ? evt.fail(err) : evt.exit();
-                    });
-                    return;
-                });
-                return;
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            cache.local_queue = function () {
-             // This function gets the queue from a local SQLite 3 database in
-             // a Node.js client. It depends on the 'sqlite3' module.
-                var y = avar({val: []});
-                y.onready = function (evt) {
-                 // This function needs documentation.
-                    var query;
-                    query = [
-                        'SELECT _id',
-                        'FROM qmachine',
-                        'WHERE ' +
-                            'status = "waiting"' +
-                            ' AND ' +
-                            'token = "' + token() + '"'
-                    ];
-                    db.val.all(query.join(' '), function (err, rows) {
-                     // This function needs documentation.
-                        if (err) {
-                            return evt.fail(err);
-                        }
-                        y.val = rows.map(function (each) {
-                         // This function needs documentation.
-                            /*jslint nomen: true */
-                            return each._id;
-                        });
-                        return evt.exit();
-                    });
-                    return;
-                };
-                return y;
-            };
-            cache.local_read = function (key) {
-             // This function reads files from a local SQLite 3 database in
-             // a Node.js client. It depends on the 'sqlite3' module.
-                var y = avar({key: key});
-                y.onready = function (evt) {
-                 // This function needs documentation.
-                    var query;
-                    query = [
-                        'SELECT DISTINCT _id, val',
-                        'FROM qmachine',
-                        'WHERE ' +
-                            '_id = "' + key + '"'
-                    ];
-                    db.val.all(query.join(' '), function (err, rows) {
-                     // This function needs documentation.
-                        if (err) {
-                            return evt.fail(err);
-                        }
-                        y.val = rows[0].val;
-                        return evt.exit();
-                    });
-                    return;
-                };
-                return y;
-            };
-            cache.local_write = function (key, $val) {
-             // This function writes files to a local SQLite 3 database in
-             // a Node.js client. It depends on the 'sqlite3' module.
-                var y = avar({key: key});
-                y.onready = function (evt) {
-                 // This function needs documentation.
-                    var query, stmt, temp;
-                    query = [
-                        'INSERT OR REPLACE INTO qmachine',
-                        'VALUES (?, ?, ?, ?)'
-                    ];
-                    stmt = db.val.prepare(query.join(' '));
-                    temp = JSON.parse($val).val;
-                    if ((temp !== null) && (temp !== undefined) &&
-                            (temp.hasOwnProperty('status'))) {
-                        stmt.run(key, $val, temp.status, token());
-                    } else {
-                        stmt.run(key, $val, null, token());
-                    }
-                    stmt.finalize(function (err) {
-                     // This function needs documentation.
-                        return (err) ? evt.fail(err) : evt.exit();
-                    });
-                    return;
-                };
-                return y;
-            };
-            return evt.exit();
-        };
-        db.onready = function (db_evt) {
-         // This function needs documentation.
-            db_evt.exit();
-            return evt.exit();
-        };
-        return;
-    });
 
     setup.onready = browser_only(function (evt) {
      // This function defines 'cache' methods for persistent remote storage
@@ -673,7 +452,7 @@
                         if (temp === undefined) {
                             return evt.fail('Remote missing: ' + href);
                         }
-                        y.val = temp.doc.$avar;
+                        y.val = avar(temp.doc.$avar).val;
                         return evt.exit();
                     }
                     return;
@@ -684,10 +463,10 @@
             };
             return y;
         };
-        cache.remote_write = function (key, $val) {
+        cache.remote_write = function (key, val) {
          // This function writes files to http://qmachine.org with AJAX in a
          // web browser.
-            var y = avar({key: key});
+            var y = avar({key: key, val: val});
             y.onready = function (evt) {
              // This function needs documentation.
                 var href, meta;
@@ -731,20 +510,19 @@
                 meta.onready = function (evt) {
                  // This function sends an HTTP POST request.
                     /*jslint nomen: true */
-                    var doc, req, temp;
+                    var doc, req;
                     doc = {
                         '_id':  meta.val.id,
                         '_rev': meta.val.rev,
                         key:    key,
-                        $avar:  $val,
+                        $avar:  JSON.stringify(y),
                         token:  token()
                     };
                     req = request();
-                    temp = JSON.parse($val).val;
-                    if ((temp !== null) && (temp !== undefined) &&
-                            (temp.hasOwnProperty('status'))) {
+                    if ((val !== null) && (val !== undefined) &&
+                            (val.hasOwnProperty('status'))) {
                      // This simplifies Qmachine's 'queue' filter in CouchDB.
-                        doc.status = temp.status;
+                        doc.status = val.status;
                     }
                     req.onreadystatechange = function () {
                      // NOTE: I switched it back to non-batch-mode for now.
@@ -765,7 +543,7 @@
                         return;
                     };
                     req.open('POST', href, true);
-                    req.setRequestHeader('Content-type', 'application/json');
+                    req.setRequestHeader('Content-Type', 'application/json');
                     req.send(JSON.stringify(doc));
                     return;
                 };
@@ -842,7 +620,7 @@
                         if (temp === undefined) {
                             return evt.fail('Remote missing: ' + href);
                         }
-                        y.val = temp.doc.$avar;
+                        y.val = avar(temp.doc.$avar).val;
                         return evt.exit();
                     });
                     return;
@@ -854,9 +632,9 @@
             };
             return y;
         };
-        cache.remote_write = function (key, $val) {
+        cache.remote_write = function (key, val) {
          // This function writes files to http://qmachine.org with Node.js.
-            var y = avar({key: key});
+            var y = avar({key: key, val: val});
             y.onready = function (evt) {
              // This function needs documentation.
                 var href, meta;
@@ -895,19 +673,18 @@
                 meta.onready = function (evt) {
                  // This function needs documentation.
                     /*jslint nomen: true */
-                    var doc, options, req, temp;
+                    var doc, options, req;
                     doc = {
                         '_id':  meta.val.id,
                         '_rev': meta.val.rev,
                         key:    key,
-                        $avar:  $val,
+                        $avar:  JSON.stringify(y),
                         token:  token()
                     };
                     options = url.parse(href);
                     options.method = 'POST';
-                    temp = JSON.parse($val).val;
-                    if (hOP(temp, 'status')) {
-                        doc.status = temp.status;
+                    if (hOP(val, 'status')) {
+                        doc.status = val.status;
                     }
                     req = http.request(options, function (response) {
                      // This function needs documentation.
@@ -926,10 +703,6 @@
                      // This function needs documentation.
                         return evt.fail(err);
                     });
-                    temp = JSON.parse($val).val;
-                    if (hOP(temp, 'status')) {
-                        doc.status = temp.status;
-                    }
                     req.setHeader('Content-Type', 'application/json');
                     req.write(JSON.stringify(doc));
                     req.end();
@@ -956,9 +729,8 @@
             doc = global.document;
             if (doc.getElementById('volunteer') !== null) {
                 doc.getElementById('volunteer').onclick = function () {
-                    return relaunch({
-                        volunteer: this.checked
-                    });
+                 // This function needs documentation.
+                    return relaunch({volunteer: this.checked});
                 };
             }
         }
@@ -967,17 +739,14 @@
 
     setup.onready = function (evt) {
      // This function needs documentation.
-        var cache, flag;
-        cache = this.val;
-        flag = (parseArgs().cache === 'local');
-        if (flag && isBrowser()) {
-            puts('NOTE: The local cache methods are not stable yet.');
-        }
+        var cache = this.val;
         Q.init({
-         // This object needs documentation.
-            queue:  ((flag) ? cache.local_queue : cache.remote_queue),
-            read:   ((flag) ? cache.local_read  : cache.remote_read),
-            write:  ((flag) ? cache.local_write : cache.remote_write)
+         // Currently, I have removed the 'local_*' filesystem wrappers to
+         // keep things simple as I prepare some manuscripts for submission
+         // to academic journals.
+            queue:  cache.remote_queue,
+            read:   cache.remote_read,
+            write:  cache.remote_write
         });
         return evt.exit();
     };
@@ -1047,11 +816,12 @@
     setup.onready = nodejs_only(function (evt) {
      // This function needs documentation.
         /*jslint node: true */
-        var args = parseArgs();
+        var args, session;
+        args = parseArgs();
         if (args.repl !== true) {
             return ((args.volunteer !== true) ? global.process : evt).exit();
         }
-        require('repl').start.apply(this, [
+        session = require('repl').start.apply(this, [
          // See documentation at http://nodejs.org/docs/latest/api/repl.html.
             'qmachine> ',
             undefined,
@@ -1059,13 +829,15 @@
             true,
             true
         ]);
+        session.context.quit = global.process.exit;
         return evt.exit();
     });
 
     setup.onready = browser_only(function (evt) {
      // This function adds user interface elements to the webpage that prompt
      // the user to install the Chrome app if appropriate.
-        if ((global.hasOwnProperty('chrome') === false)     ||
+        if ((mothership !== 'http://qmachine.org')          ||
+                (global.hasOwnProperty('chrome') === false) ||
                 (global.chrome.app.isInstalled === true)    ||
                 (global.hasOwnProperty('document') === false)) {
          // These are obviously cases for which a button is inappropriate ;-)

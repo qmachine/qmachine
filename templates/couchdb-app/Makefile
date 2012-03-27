@@ -4,7 +4,7 @@
 #
 #   This contains a live workflow for rapid webapp development with CouchDB.
 #
-#                                                       ~~ (c) SRW, 15 Mar 2012
+#                                                       ~~ (c) SRW, 27 Mar 2012
 
 PROJ_ROOT   :=  $(PWD)/../../
 
@@ -56,9 +56,9 @@ run: $(APPRC)
             $(CP) $(PROJ_ROOT)/share/main.js _attachments/              ;   \
             $(CP) $(PROJ_ROOT)/share/launch-image-i*.png _attachments/  ;   \
             $(CP) $(PROJ_ROOT)/share/touch-icon-i*.png _attachments/    ;   \
-            $(CP) $(PROJ_ROOT)/src/index.html $(PWD)/_attachments       ;   \
-            $(CP) $(PROJ_ROOT)/src/*.css $(PWD)/_attachments            ;   \
-            echo "# $${RANDOM}" >> $(PWD)/_attachments/cache.manifest   ;   \
+            $(CP) $(PROJ_ROOT)/src/index.html _attachments/             ;   \
+            $(CP) $(PROJ_ROOT)/src/*.css _attachments/                  ;   \
+            echo "# $${RANDOM}" >> _attachments/cache.manifest          ;   \
             $(COUCHAPP) push --quiet                                    ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(OPEN) $(URL)                                          ;   \

@@ -39,7 +39,7 @@ distclean: clobber
 reset:
 	@   $(call contingent, clear)
 
-run: main.js node_modules/sqlite3
+run: main.js ;#node_modules/sqlite3
 	@   $(call run-each)
 
 ###
@@ -49,7 +49,7 @@ run: main.js node_modules/sqlite3
 db-dump:
 	@   $(SQLITE) $(SQLDB) .dump
 
-repl volunteer: main.js node_modules/sqlite3
+repl volunteer: main.js ;#node_modules/sqlite3
 	@   $(call run-each) $@
 
 ###
