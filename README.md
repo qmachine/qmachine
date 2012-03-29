@@ -1,5 +1,5 @@
 Q Machine
-========
+=========
 
 [Q Machine](http://qmachine.org) is a web service that uses
 [Quanah](http://wilkinson.github.com/quanah) to act as a "supercomputer" for
@@ -14,12 +14,17 @@ There are several "mirrors" available on
 [GitHub](https://github.com/wilkinson/qmachine), and
 [Google Code](https://qmachine.googlecode.com).
 
+I have done some preliminary investigation into app integration for
+
+-   [Google Chrome](https://chrome.google.com/webstore/detail/meagomakeegjimdibmlodmilfhplkjgp?utm_source=chrome-ntp-icon)
+-   [Facebook](http://apps.facebook.com/qmachine/)
+-   [Twitter](https://dev.twitter.com/apps/1755018/)
+
 In the future, I would like to integrate Q Machine with "app ecosystems" like
 
--   Android
--   DropBox
--   Facebook
--   Kynetx
--   iOS
--   Twitter
+-   [Android](https://play.google.com/store/apps)
+-   [DirecTV](http://tvapps.directv.com/)
+-   [Dropbox](https://www.dropbox.com/developers/apps/)
+-   [Kynetx](http://developer.kynetx.com/)
+-   [iOS](http://itunes.apple.com/us/app/)
 
