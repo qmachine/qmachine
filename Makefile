@@ -143,6 +143,29 @@ share/bitbucket.jpg: build/q.png | share/
                 -quality 100 \
                     $< $@
 
+share/dropbox-16.png: build/q.png | share/
+	@   $(CONVERT) \
+                -background none \
+                -density 96 \
+                -resize 14x14 \
+                -gravity center \
+                -extent 16x16 \
+                -quality 100 \
+                    $< $@
+
+share/dropbox-64.png: build/q.png | share/
+	@   $(CONVERT) \
+                -background none \
+                -density 96 \
+                -resize 56x56 \
+                -gravity center \
+                -extent 64x64 \
+                -quality 100 \
+                    $< $@
+
+share/dropbox-128.png: share/icon-128.png
+	@   $(CP) $< $@
+
 share/facebook-16x16.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background white -alpha remove -alpha off \
