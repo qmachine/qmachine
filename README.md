@@ -14,3 +14,12 @@ There are several "mirrors" available on
 [GitHub](https://github.com/wilkinson/qmachine), and
 [Google Code](https://qmachine.googlecode.com).
 
+In the future, I would like to integrate Q Machine with "app ecosystems" like
+
+-   Android
+-   DropBox
+-   Facebook
+-   Kynetx
+-   iOS
+-   Twitter
+
