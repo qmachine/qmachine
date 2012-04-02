@@ -4,7 +4,7 @@
  *
  *  NOTE: I need to figure out some fallbacks for IE ...
  *
- *                                                      ~~ (c) SRW, 01 Apr 2012
+ *                                                      ~~ (c) SRW, 02 Apr 2012
  */
 
 body {
@@ -150,7 +150,8 @@ textarea {
 #tape {
 
     background-color: white;
-    border: 1px black solid;
+    border: 1px #6C6C6C solid;
+    border-top: 0px;
     font-family: Courier, monospace;
     margin: auto;
     max-height: 10em;
@@ -159,6 +160,11 @@ textarea {
     padding-top: 0em;
     overflow: scroll;
     text-align: left;
+
+    -moz-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+    -o-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+    box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
 
 }
 
