@@ -21,6 +21,7 @@ APPRC       :=  $(PWD)/.couchapprc
 
 COUCHAPP    :=  $(call contingent, couchapp)
 CP          :=  $(call contingent, gcp cp) -rf
+DATE        :=  $(call contingent, date)
 OPEN        :=  $(call contingent, gnome-open open)
 RM          :=  $(call contingent, grm rm) -rf
 STTY        :=  $(call contingent, stty)
@@ -35,6 +36,10 @@ define read-secure
     $(call read-prompt, $(1))                                           ;   \
     $(STTY) echo                                                        ;   \
     printf '\n' ''
+endef
+
+define stamp-with-epoch-time
+    $(DATE) -j -f '%a %b %d %T %Z %Y' "`date`" '+# %s' >> $(1)
 endef
 
 .PHONY: all clean clobber distclean reset run
@@ -59,7 +64,7 @@ run: $(APPRC)
             $(CP) $(PROJ_ROOT)/src/ie.js _attachments/                  ;   \
             $(CP) $(PROJ_ROOT)/src/index.html _attachments/             ;   \
             $(CP) $(PROJ_ROOT)/src/*.css _attachments/                  ;   \
-            echo "# $${RANDOM}" >> _attachments/cache.manifest          ;   \
+            $(call stamp-with-epoch-time, _attachments/cache.manifest)  ;   \
             $(COUCHAPP) push --quiet                                    ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(OPEN) $(URL)                                          ;   \
