@@ -4,7 +4,7 @@
  *
  *  NOTE: I need to figure out some fallbacks for IE ...
  *
- *                                                      ~~ (c) SRW, 07 Feb 2012
+ *                                                      ~~ (c) SRW, 01 Apr 2012
  */
 
 body {
@@ -144,6 +144,27 @@ textarea {
     -webkit-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
     -o-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
     box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+
+}
+
+#tape {
+
+    background-color: white;
+    border: 1px black solid;
+    font-family: Courier, monospace;
+    margin: auto;
+    max-height: 10em;
+    max-width: 50em;
+    padding: 1em;
+    padding-top: 0em;
+    overflow: scroll;
+    text-align: left;
+
+}
+
+.do_not_print {
+
+ /* See "print.css" for more information. */
 
 }
 

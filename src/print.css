@@ -1,7 +1,7 @@
 /*  CSS style sheet  */
 
 /*  print.css ~~
- *                                                      ~~ (c) SRW, 06 Feb 2012
+ *                                                      ~~ (c) SRW, 01 Apr 2012
  */
 
 body {
@@ -12,6 +12,39 @@ body {
     font-size: 12pt;
     margin: 1in;
     text-align: center;
+
+}
+
+a {
+
+    border-bottom: 1px dotted;
+    color: inherit;
+    text-decoration: none;
+
+}
+
+a:after {
+
+    content: "[" attr(href) "]";
+
+}
+
+
+#tape {
+
+    border: 1px black solid;
+    font-family: Courier, monospace;
+    margin: auto;
+    padding: 1em;
+    padding-top: 0em;
+    overflow: auto;
+    text-align: left;
+
+}
+
+.do_not_print {
+
+    visibility: hidden;
 
 }
 

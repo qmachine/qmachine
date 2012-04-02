@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 27 Mar 2012
+//                                                      ~~ (c) SRW, 01 Apr 2012
 
 (function (global) {
     'use strict';
@@ -247,8 +247,19 @@
     };
 
     puts = function () {
-     // This function is my own self-contained output logging utility.
-        if (hOP(global, 'system') && isFunction(global.system.print)) {
+     // This function redefines itself during its first invocation.
+        var tape;
+        if (isBrowser()) {
+         // This is a special definition that writes to #tape :-)
+            tape = global.document.getElementById('tape');
+            puts = function () {
+             // This function writes to an HTML5 <div> called 'tape' :-)
+                var post = global.document.createElement('div');
+                post.innerHTML += Array.prototype.join.call(arguments, ' ');
+                tape.insertBefore(post, tape.firstChild);
+                return;
+            };
+        } else if (hOP(global, 'system') && isFunction(global.system.print)) {
          // Narwhal-JSC, Narwhal (w/ Rhino engine), and RingoJS
             puts = function () {
              // This function needs documentation.
@@ -847,12 +858,30 @@
      // already been installed. Perhaps it's an issue of hosted vs. packaged?
         var button = global.document.createElement('button');
         button.innerHTML = 'Add to Chrome';
+        button.className = 'do_not_print';
         button.onclick = function () {
          // This function needs documentation.
             global.chrome.webstore.install();
             return;
         };
         global.document.body.appendChild(button);
+        return evt.exit();
+    });
+
+    setup.onready = browser_only(function (evt) {
+     // This function needs documentation.
+        if (global.hasOwnProperty('console')) {
+            puts('Open the console to begin an interactive session :-)');
+        }
+        return evt.exit();
+    });
+
+    setup.onready = browser_only(function (evt) {
+     // This function needs documentation.
+        var ok = global.document.createElement('span');
+        ok.innerHTML = ' OK.';
+        //ok.style.color = 'green';
+        global.document.getElementById('tape').appendChild(ok);
         return evt.exit();
     });
 
