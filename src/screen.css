@@ -162,6 +162,19 @@ textarea {
 
 }
 
+#tape div {
+
+    margin-top: 0em;
+    margin-bottom: 0em;
+
+}
+
+#tape :first-child {
+
+    margin-top: 1em;
+
+}
+
 .do_not_print {
 
  /* See "print.css" for more information. */
