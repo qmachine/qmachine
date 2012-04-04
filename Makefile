@@ -5,7 +5,7 @@
 #   To-do:
 #   -   When deploying to CouchDB, run cleanup/compaction routines also.
 #
-#                                                       ~~ (c) SRW, 26 Mar 2012
+#                                                       ~~ (c) SRW, 03 Apr 2012
 
 include $(PWD)/tools/macros.make
 
@@ -113,24 +113,14 @@ deps/node-sqlite3: | deps/
                 $(GIT) pull                                             ;   \
             fi
 
-deps/jslint.js: | deps/
-	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
-            $(CURL) -o $@ $${CROCKHUB}/JSLint/master/jslint.js
-
-deps/json2.js: | deps/
-	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
-            $(CURL) -o $@ $${CROCKHUB}/JSON-js/master/json2.js
-
-deps/quanah.js: | deps/
-	@   SEANHUB="https://raw.github.com/wilkinson"                 ;   \
-            $(CURL) -o $@ $${SEANHUB}/quanah/master/src/quanah.js
+deps/jslint.js deps/json2.js deps/quanah.js: | deps/
+	@   $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@
 
 facebook-app: \
     share/facebook-16x16.png \
     share/facebook-75x75.png
 
 nodejs-client: \
-    deps/node-sqlite3 \
     share/main.js
 
 share/bitbucket.jpg: build/q.png | share/

@@ -61,7 +61,7 @@
         return global.hasOwnProperty('process');
     };
 
-    mothership = 'http://qmachine.org';
+    mothership = 'http://localhost';
 
     nodejs_only = function (f) {
      // This function needs documentation.
