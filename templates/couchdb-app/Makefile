@@ -4,19 +4,20 @@
 #
 #   This contains a live workflow for rapid webapp development with CouchDB.
 #
-#                                                       ~~ (c) SRW, 02 Apr 2012
+#                                                       ~~ (c) SRW, 03 Apr 2012
 
 PROJ_ROOT   :=  $(PWD)/../../
 
 include $(PROJ_ROOT)/tools/macros.make
 
 APP         :=  qmachine
-PROTOCOL    :=  http
-URL         :=  http://localhost/
-DB          :=  127.0.0.1:5984/sandbox
-#PROTOCOL    :=  https
-#URL         :=  http://qmachine.org
-#DB          :=  qmachine.couchone.com:6984/app
+#PROTOCOL    :=  http
+#URL         :=  http://localhost/
+#DB          :=  127.0.0.1:5984/sandbox
+PROTOCOL    :=  https
+URL         :=  http://qmachine.org
+DB          :=  quanah.iriscouch.com:6984/app
+#DB          :=  qmachine.iriscouch.com:6984/app
 APPRC       :=  $(PWD)/.couchapprc
 
 COUCHAPP    :=  $(call contingent, couchapp)
