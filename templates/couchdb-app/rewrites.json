@@ -6,7 +6,7 @@
         "query":    {}
     },
     {
-        "from":     "/db/:key",
+        "from":     "db/:key",
         "to":       "/_list/db/data",
         "method":   "GET",
         "query": {
@@ -16,13 +16,13 @@
         }
     },
     {
-        "from":     "/db/",
+        "from":     "db/",
         "to":       "/../../",
         "method":   "POST",
         "query":    {}
     },
     {
-        "from":     "/meta/:key",
+        "from":     "meta/:key",
         "to":       "/_list/meta/metadata",
         "method":   "GET",
         "query": {
@@ -32,7 +32,7 @@
         }
     },
     {
-        "from":     "/jobs/:token",
+        "from":     "jobs/:token",
         "to":       "/_list/jobs/tasks",
         "method":   "GET",
         "query": {
@@ -41,17 +41,16 @@
         }
     },
     {
-        "from":     "/_view/:foo",
-        "to":       "/_view/:foo",
-        "method":   "GET",
-        "query":    {
-            "limit":        "0"
-        }
+        "from":     ":foo",
+        "to":       "/:foo",
+        "query":    {}
     },
     {
-        "from":     "*",
-        "to":       "/*",
-        "method":   "GET",
-        "query":    {}
+        "from":     ":foo/*",
+        "to":       "/_list/db/:foo",
+        "query":    {
+            "include_docs": "false",
+            "limit":        "0"
+        }
     }
 ]
