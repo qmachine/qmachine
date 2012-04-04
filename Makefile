@@ -5,7 +5,7 @@
 #   To-do:
 #   -   When deploying to CouchDB, run cleanup/compaction routines also.
 #
-#                                                       ~~ (c) SRW, 26 Mar 2012
+#                                                       ~~ (c) SRW, 03 Apr 2012
 
 include $(PWD)/tools/macros.make
 
@@ -130,7 +130,6 @@ facebook-app: \
     share/facebook-75x75.png
 
 nodejs-client: \
-    deps/node-sqlite3 \
     share/main.js
 
 share/bitbucket.jpg: build/q.png | share/
