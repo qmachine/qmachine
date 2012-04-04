@@ -7,10 +7,10 @@
     },
     {
         "from":     "/db/:key",
-        "to":       "/_view/meta",
+        "to":       "/_list/db/data",
         "method":   "GET",
         "query": {
-            "include_docs": "true",
+            "include_docs": "false",
             "key":          ":key",
             "limit":        "1"
         }
@@ -23,7 +23,7 @@
     },
     {
         "from":     "/meta/:key",
-        "to":       "/_view/meta",
+        "to":       "/_list/meta/metadata",
         "method":   "GET",
         "query": {
             "include_docs": "false",
@@ -32,13 +32,12 @@
         }
     },
     {
-        "from":     "/queue/:token",
-        "to":       "/_view/queue",
+        "from":     "/jobs/:token",
+        "to":       "/_list/jobs/tasks",
         "method":   "GET",
         "query": {
             "include_docs": "false",
-            "key":          [":token", "waiting"],
-            "limit":        "1"
+            "token":        ":token"
         }
     },
     {

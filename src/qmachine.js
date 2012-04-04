@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 01 Apr 2012
+//                                                      ~~ (c) SRW, 03 Apr 2012
 
 (function (global) {
     'use strict';
@@ -417,7 +417,7 @@
             y.onready = function (evt) {
              // This function needs documentation.
                 var href, req;
-                href = mothership + '/queue/' + token();
+                href = mothership + '/jobs/' + token() + '?status=waiting';
                 req = request();
                 req.onreadystatechange = function () {
                  // This function needs documentation.
@@ -427,12 +427,7 @@
                         if (req.status !== 200) {
                             return evt.fail(req.responseText);
                         }
-                        temp = JSON.parse(req.responseText).rows;
-                        ply(temp).by(function (key, val) {
-                         // This function needs documentation.
-                            y.val.push(val.value);
-                            return;
-                        });
+                        y.val = JSON.parse(req.responseText);
                         return evt.exit();
                     }
                     return;
@@ -450,20 +445,18 @@
             y.onready = function (evt) {
              // This function sends an HTTP GET request.
                 var href, req;
-                href = mothership + '/db/' + key;
+                href = mothership + '/db/' + key + '?token=' + token();
                 req = request();
                 req.onreadystatechange = function () {
                  // This function needs documentation.
-                    var temp;
                     if (req.readyState === 4) {
                         if (req.status !== 200) {
                             return evt.fail(req.responseText);
                         }
-                        temp = JSON.parse(req.responseText).rows[0];
-                        if (temp === undefined) {
+                        if (req.responseText === 'null') {
                             return evt.fail('Remote missing: ' + href);
                         }
-                        y.val = avar(temp.doc.$avar).val;
+                        y.val = avar(req.responseText).val;
                         return evt.exit();
                     }
                     return;
@@ -496,21 +489,16 @@
                  // efficiency isn't the goal here.
                     var req, url;
                     req = request();
-                    url = mothership + '/meta/' + key;
+                    url = mothership + '/meta/' + key + '?token=' + token();
                     req.onreadystatechange = function () {
                      // This function needs documentation.
                         var temp;
                         if (req.readyState === 4) {
                             if (req.status === 200) {
-                                temp = JSON.parse(req.responseText).rows[0];
-                                if (temp !== undefined) {
-                                    meta.val.id = temp.id;
-                                    meta.val.rev = temp.value.rev;
-                                }
-                                evt.exit();
-                            } else {
-                                evt.fail(req.responseText);
+                                meta.val = JSON.parse(req.responseText);
+                                return evt.exit();
                             }
+                            return evt.fail(req.responseText);
                         }
                         return;
                     };
@@ -581,7 +569,7 @@
         cache.remote_queue = function () {
          // This function gets the queue from http://qmachine.org with Node.js.
             var href, y;
-            href = mothership + '/queue/' + token();
+            href = mothership + '/jobs/' + token() + '?status=waiting';
             y = avar({val: []});
             y.onready = function (evt) {
              // This function needs documentation.
@@ -595,12 +583,7 @@
                     }).on('end', function () {
                      // This function needs documentation.
                         /*jslint unparam: true */
-                        var data = JSON.parse(txt.join('')).rows;
-                        ply(data).by(function (key, val) {
-                         // This function needs documentation.
-                            y.val.push(val.value);
-                            return;
-                        });
+                        y.val = JSON.parse(txt.join(''));
                         return evt.exit();
                     });
                     return;
@@ -617,7 +600,7 @@
             var y = avar();
             y.onready = function (evt) {
              // This function needs documentation.
-                var href = mothership + '/db/' + key;
+                var href = mothership + '/db/' + key + '?token=' + token();
                 http.get(url.parse(href), function (response) {
                  // This function needs documentation.
                     var txt = [];
@@ -627,11 +610,11 @@
                         return;
                     }).on('end', function () {
                      // This function needs documentation.
-                        var temp = JSON.parse(txt.join('')).rows[0];
-                        if (temp === undefined) {
+                        var temp = txt.join('');
+                        if (temp === 'null') {
                             return evt.fail('Remote missing: ' + href);
                         }
-                        y.val = avar(temp.doc.$avar).val;
+                        y.val = avar(temp).val;
                         return evt.exit();
                     });
                     return;
@@ -657,7 +640,9 @@
                 };
                 meta.onready = function (evt) {
                  // This function needs documentation.
-                    var options = url.parse(mothership + '/meta/' + key);
+                    var href, options;
+                    href = mothership + '/meta/' + key + '?token=' + token();
+                    options = url.parse(href);
                     http.get(options, function (response) {
                      // This function needs documentation.
                         var txt = [];
@@ -667,11 +652,7 @@
                             return;
                         }).on('end', function () {
                          // This function needs documentation.
-                            var temp = JSON.parse(txt.join('')).rows[0];
-                            if (temp !== undefined) {
-                                meta.val.id = temp.id;
-                                meta.val.rev = temp.value.rev;
-                            }
+                            meta.val = JSON.parse(txt.join(''));
                             return evt.exit();
                         });
                         return;

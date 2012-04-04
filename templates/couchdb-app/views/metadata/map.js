@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- map.js ~~
-//                                                      ~~ (c) SRW, 13 Mar 2012
+//                                                      ~~ (c) SRW, 03 Apr 2012
 
 function (doc) {
     'use strict';
@@ -13,13 +13,24 @@ function (doc) {
 
  // Prerequisites
 
+    if (doc.hasOwnProperty('key') === false) {
+        return;
+    }
+
+    if (doc.hasOwnProperty('token') === false) {
+        return;
+    }
+
  // Declarations
 
     var y;
 
  // Definitions
 
-    y = {rev: doc._rev};
+    y = {
+        id: doc._id,
+        rev: doc._rev
+    };
 
  // Invocations
 
@@ -47,7 +58,7 @@ function (doc) {
         y.revs_info = doc._revs_info;
     }
 
-    emit(doc.key, y);
+    emit(doc.key, {token: doc.token, val: JSON.stringify(y)});
 
  // That's all, folks!
 

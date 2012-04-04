@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- map.js ~~
-//                                                      ~~ (c) SRW, 13 Mar 2012
+//                                                      ~~ (c) SRW, 03 Apr 2012
 
 function (doc) {
     'use strict';
@@ -26,7 +26,7 @@ function (doc) {
  // Invocations
 
     if (flag === true) {
-        emit([doc.token, doc.status], doc.key);
+        emit(doc.token, {key: doc.key, status: doc.status});
     }
 
  // That's all, folks!
