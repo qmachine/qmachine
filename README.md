@@ -25,6 +25,7 @@ In the future, I would like to integrate Q Machine with "app ecosystems" like
 -   [Android](https://play.google.com/store/apps)
 -   [DirecTV](http://tvapps.directv.com/)
 -   [Dropbox](https://www.dropbox.com/developers/apps/)
+-   [ePrintCenter](https://h30495.www3.hp.com/apps/)
 -   [Kynetx](http://developer.kynetx.com/)
 -   [iOS](http://itunes.apple.com/us/app/)
 
