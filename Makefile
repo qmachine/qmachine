@@ -113,8 +113,26 @@ deps/node-sqlite3: | deps/
                 $(GIT) pull                                             ;   \
             fi
 
-deps/jslint.js deps/json2.js deps/quanah.js: | deps/
-	@   $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@
+deps/jslint.js: | deps/
+	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
+            $(CURL) -s -o $@ $${CROCKHUB}/JSLint/master/jslint.js       ;   \
+            if [ $$? -ne 0 ]; then                                          \
+                $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
+            fi
+
+deps/json2.js: | deps/
+	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
+            $(CURL) -s -o $@ $${CROCKHUB}/JSON-js/master/json2.js       ;   \
+            if [ $$? -ne 0 ]; then                                          \
+                $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
+            fi
+
+deps/quanah.js: | deps/
+	@   SEANHUB="https://raw.github.com/wilkinson"                  ;   \
+            $(CURL) -s -o $@ $${SEANHUB}/quanah/master/src/quanah.js    ;   \
+            if [ $$? -ne 0 ]; then                                          \
+                $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
+            fi
 
 facebook-app: \
     share/facebook-16x16.png \
