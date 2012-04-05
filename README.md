@@ -31,5 +31,6 @@ In the future, I would like to integrate Q Machine with "app ecosystems" like
 -   [iOS](http://itunes.apple.com/us/app/)
 -   [Podio](https://podio.com/store)
 -   [Samsung](http://www.samsungapps.com/)
+-   [SMART Platform](http://www.smartplatforms.org/)
 -   [Windows Phone](http://www.windowsphone.com/en-US/marketplace)
 
