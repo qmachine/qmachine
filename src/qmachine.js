@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 03 Apr 2012
+//                                                      ~~ (c) SRW, 05 Apr 2012
 
 (function (global) {
     'use strict';
@@ -828,11 +828,16 @@
     setup.onready = browser_only(function (evt) {
      // This function adds user interface elements to the webpage that prompt
      // the user to install the Chrome app if appropriate.
-        if ((mothership !== 'http://qmachine.org')          ||
-                (global.hasOwnProperty('chrome') === false) ||
-                (global.chrome.app.isInstalled === true)    ||
-                (global.hasOwnProperty('document') === false)) {
-         // These are obviously cases for which a button is inappropriate ;-)
+        if ((mothership !== 'http://qmachine.org')              ||
+                (global.hasOwnProperty('chrome') === false)     ||
+                (global.chrome.app.isInstalled === true)        ||
+                (global.hasOwnProperty('document') === false)   ||
+                (global.location.protocol !== 'http:')          ||
+                (global.location.hostname !== 'qmachine.org')) {
+         // These are obviously cases for which a button is inappropriate.
+         // Additionally, I need to find out if Google's Chrome Frame will
+         // cause this button to appear in Internet Explorer and whether it
+         // actually allows you to install the hosted app somehow into IE ...
             return evt.exit();
         }
      // NOTE: I'm having trouble skipping the following code if the app has

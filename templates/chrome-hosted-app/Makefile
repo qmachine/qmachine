@@ -9,7 +9,7 @@
 #
 #   NOTE: These directions do _not_ bump the version counter automatically!
 #
-#                                                       ~~ (c) SRW, 20 Mar 2012
+#                                                       ~~ (c) SRW, 05 Apr 2012
 
 include $(PWD)/../../tools/macros.make
 
@@ -21,6 +21,7 @@ SM_TILE     :=  440x280.png
 
 APP         :=  qmachine
 MANIFEST    :=  manifest.json
+PHANTOMCONF :=  phantomjs-config.json
 ZIPFILE     :=  $(APP).zip
 
 CONVERT     :=  $(call contingent, convert)
@@ -50,12 +51,12 @@ run: $(SC_SHOT) $(SM_TILE) $(ZIPFILE)
 
 ###
 
-$(SC_SHOT): $(SRC)
-	@   $(PHANTOM) $(SRC) $(@:%.png=%) $@                           ;   \
+$(SC_SHOT): $(SRC) $(PHANTOMCONF)
+	@   $(PHANTOM) --config=$(PHANTOMCONF) $(SRC) $(@:%.png=%) $@   ;   \
             $(CONVERT) +repage -crop $(@:%.png=%) $@ $@
 
-$(SM_TILE): $(SRC)
-	@   $(PHANTOM) $(SRC) $(@:%.png=%) $@                           ;   \
+$(SM_TILE): $(SRC) $(PHANTOMCONF)
+	@   $(PHANTOM) --config=$(PHANTOMCONF) $(SRC) $(@:%.png=%) $@   ;   \
             $(CONVERT) +repage -crop $(@:%.png=%) $@ $@                 ;   \
             $(CP) $(@:%.png=%-0.png) $@                                 ;   \
             $(RM) $(@:%.png=%)-*.png

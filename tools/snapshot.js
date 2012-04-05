@@ -9,7 +9,13 @@
 //  to write, it's not needed that often, and it can be replaced if necessary
 //  but similar tools like Selenium and Watir (to name a few).
 //
-//                                                      ~~ (c) SRW, 14 Mar 2012
+//  NOTE: Q Machine uses the HTML5 Application Cache, and PhantomJS seems to
+//  have trouble understanding it correctly. The "phantomjs-config.json" file
+//  helps keep things from being cached, but if you find yourself needing to
+//  clear the cache, you can find it in Mac OS X under
+//      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
+//
+//                                                      ~~ (c) SRW, 05 Apr 2012
 
 (function (global) {
     'use strict';
