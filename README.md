@@ -23,9 +23,13 @@ I have done some preliminary investigation into app integration for
 In the future, I would like to integrate Q Machine with "app ecosystems" like
 
 -   [Android](https://play.google.com/store/apps)
+-   [BlackBerry](http://us.blackberry.com/apps-software/appworld/)
 -   [DirecTV](http://tvapps.directv.com/)
 -   [Dropbox](https://www.dropbox.com/developers/apps/)
 -   [ePrintCenter](https://h30495.www3.hp.com/apps/)
 -   [Kynetx](http://developer.kynetx.com/)
 -   [iOS](http://itunes.apple.com/us/app/)
+-   [Podio](https://podio.com/store)
+-   [Samsung](http://www.samsungapps.com/)
+-   [Windows Phone](http://www.windowsphone.com/en-US/marketplace)
 
