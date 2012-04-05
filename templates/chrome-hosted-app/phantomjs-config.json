@@ -1,0 +1,12 @@
+{
+    "cookiesFile":                      "/dev/null",
+    "diskCache":                        false,
+    "ignoreSslErrors":                  false,
+    "localToRemoveUrlAccessEnabled":    false,
+    "loadImages":                       true,
+    "maxDiskCacheSize":                 0,
+    "outputEncoding":                   "utf8",
+    "remoteDebuggerAutorun":            "no",
+    "scriptEncoding":                   "utf8",
+    "webSecurity":                      true
+}
