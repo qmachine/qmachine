@@ -5,7 +5,7 @@
 #   To-do:
 #   -   When deploying to CouchDB, run cleanup/compaction routines also.
 #
-#                                                       ~~ (c) SRW, 03 Apr 2012
+#                                                       ~~ (c) SRW, 05 Apr 2012
 
 include $(PWD)/tools/macros.make
 
@@ -96,13 +96,13 @@ couchdb-app: \
     deps/json2.js \
     deps/quanah.js \
     share/favicon.ico \
-    share/launch-image-iphone.png \
-    share/launch-image-iphone4.png \
     share/main.js \
     share/touch-icon-ipad.png \
     share/touch-icon-ipad3.png \
     share/touch-icon-iphone.png \
-    share/touch-icon-iphone4.png
+    share/touch-icon-iphone4.png \
+    share/web-launch-image-iphone.png \
+    share/web-launch-image-iphone4.png
 
 deps/node-sqlite3: | deps/
 	@   REPO="https://github.com/developmentseed/node-sqlite3.git"  ;   \
@@ -137,6 +137,20 @@ deps/quanah.js: | deps/
 facebook-app: \
     share/facebook-16x16.png \
     share/facebook-75x75.png
+
+ios-native-app: \
+    share/favicon.ico \
+    share/main.js \
+    share/native-launch-image-ipad-landscape.png \
+    share/native-launch-image-ipad-portrait.png \
+    share/native-launch-image-ipad3-landscape.png \
+    share/native-launch-image-ipad3-portrait.png \
+    share/native-launch-image-iphone.png \
+    share/native-launch-image-iphone4.png \
+    share/touch-icon-ipad.png \
+    share/touch-icon-ipad3.png \
+    share/touch-icon-iphone.png \
+    share/touch-icon-iphone4.png
 
 nodejs-client: \
     share/main.js
@@ -217,25 +231,57 @@ share/icon-128.png: build/q.png | share/
                 -quality 100 \
                     $< $@
 
-share/launch-image-iphone.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 320x460 \
-                    $< $@
-share/launch-image-iphone4.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 640x920 \
-                    $< $@
-
 share/main.js: \
     deps/jslint.js  \
     deps/json2.js   \
     deps/quanah.js  \
     src/qmachine.js | share/
 	@   $(CAT) $^ > $@
+
+share/native-launch-image-ipad-landscape.png: build/q.png | share/
+	@   $(CONVERT) \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent 1024x748 \
+                    $< $@
+
+share/native-launch-image-ipad-portrait.png: build/q.png | share/
+	@   $(CONVERT) \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent 768x1004 \
+                    $< $@
+
+share/native-launch-image-ipad3-landscape.png: build/q.png | share/
+	@   $(CONVERT) \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent 2048x1496 \
+                -background '#CCCCCC' -alpha remove -alpha off \
+                    $< $@
+
+share/native-launch-image-ipad3-portrait.png: build/q.png | share/
+	@   $(CONVERT) \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent 1536x2008 \
+                -background '#CCCCCC' -alpha remove -alpha off \
+                    $< $@
+
+share/native-launch-image-iphone.png: build/q.png | share/
+	@   $(CONVERT) \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent 320x480 \
+                    $< $@
+
+share/native-launch-image-iphone4.png: build/q.png | share/
+	@   $(CONVERT) \
+                -background '#CCCCCC' -alpha remove -alpha off \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent 640x960 \
+                    $< $@
 
 share/qr.png: | share/
 	@   $(QRENCODE) --margin=1 --size=10 --output=$@ http://qmachine.org
@@ -303,6 +349,21 @@ share/touch-icon-iphone4.png: build/q.png | share/
                 -composite \
                 -background '#929292' -alpha remove -alpha off \
                     $@
+
+
+share/web-launch-image-iphone.png: build/q.png | share/
+	@   $(CONVERT) \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent 320x460 \
+                    $< $@
+
+share/web-launch-image-iphone4.png: build/q.png | share/
+	@   $(CONVERT) \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent 640x920 \
+                    $< $@
 
 ###
 
