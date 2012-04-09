@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 05 Apr 2012
+//                                                      ~~ (c) SRW, 09 Apr 2012
 
 (function (global) {
     'use strict';
@@ -61,7 +61,7 @@
         return global.hasOwnProperty('process');
     };
 
-    mothership = 'http://localhost';
+    mothership = 'http://qmachine.org';
 
     nodejs_only = function (f) {
      // This function needs documentation.
@@ -797,7 +797,7 @@
              // This function needs documentation.
                 //puts('(pulse: ' + count + ')');
                 count += 1;
-                x.comm();
+                x.revive();
                 global.setTimeout(f, ms(), x);
                 return;
             }(avar()));
