@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 09 Apr 2012
+//                                                      ~~ (c) SRW, 10 Apr 2012
 
 (function (global) {
     'use strict';
@@ -249,7 +249,7 @@
     puts = function () {
      // This function redefines itself during its first invocation.
         var tape;
-        if (isBrowser()) {
+        if (isBrowser() && (global.document.getElementById('tape') !== null)) {
          // This is a special definition that writes to #tape :-)
             tape = global.document.getElementById('tape');
             puts = function () {
@@ -315,15 +315,18 @@
     relaunch = function (obj) {
      // This function reloads the current webpage with new query parameters
      // by stringifying its input object, 'obj'.
+        var base, y;
         if (isBrowser()) {
-            var y = [];
-            ply(obj).by(function (key, val) {
-             // This function needs documentation.
-                y.push(key + '=' + val);
-                return;
-            });
-            global.location.search = y.sort().join('&');
-            return;
+            base = global.location.protocol + '//' + global.location.hostname;
+            y = [];
+            if (base === mothership) {
+                ply(obj).by(function (key, val) {
+                 // This function needs documentation.
+                    y.push(key + '=' + val);
+                    return;
+                });
+                global.location.search = y.sort().join('&');
+            }
         }
         return;
     };
@@ -864,10 +867,15 @@
 
     setup.onready = browser_only(function (evt) {
      // This function needs documentation.
-        var ok = global.document.createElement('span');
-        ok.innerHTML = ' OK.';
-        //ok.style.color = 'green';
-        global.document.getElementById('tape').appendChild(ok);
+        var ok;
+        if (global.document.getElementById('tape') !== null) {
+            ok = global.document.createElement('span');
+            ok.innerHTML = ' OK.';
+            //ok.style.color = 'green';
+            global.document.getElementById('tape').appendChild(ok);
+        } else {
+            puts('Loading ... OK.');
+        }
         return evt.exit();
     });
 
