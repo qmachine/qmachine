@@ -20,7 +20,7 @@
 
     var Q, avar, browser_only, hOP, isBrowser, isFunction, isNodejs,
         mothership, nodejs_only, parseArgs, ply, puts, relaunch, setup,
-        token, when;
+        token;
 
  // Definitions
 
@@ -378,8 +378,6 @@
         return;
     };
 
-    when = Q.when;
-
  // Invocations
 
     setup.onerror = function (message) {
@@ -425,7 +423,6 @@
                 req.onreadystatechange = function () {
                  // This function needs documentation.
                     /*jslint unparam: true */
-                    var temp;
                     if (req.readyState === 4) {
                         if (req.status !== 200) {
                             return evt.fail(req.responseText);
@@ -495,7 +492,6 @@
                     url = mothership + '/meta/' + key + '?token=' + token();
                     req.onreadystatechange = function () {
                      // This function needs documentation.
-                        var temp;
                         if (req.readyState === 4) {
                             if (req.status === 200) {
                                 meta.val = JSON.parse(req.responseText);
