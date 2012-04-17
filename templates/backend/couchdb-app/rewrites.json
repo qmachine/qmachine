@@ -1,0 +1,41 @@
+[
+    {
+        "from":     "box/:box/key/:key",
+        "to":       "/_list/box/by_key",
+        "method":   "GET",
+        "query":    {
+            "key":  [":box", ":key", false]
+        }
+    },
+    {
+        "from":     "box/:box/status/:status",
+        "to":       "/_list/box/by_status",
+        "method":   "GET",
+        "query":    {
+            "key":  [":box", ":status"]
+        }
+    },
+    {
+        "from":     "change-key/:docid",
+        "to":       "/_update/change-key/:docid",
+        "method":   "PUT",
+        "query":    {}
+    },
+    {
+        "from":     "box/:box/key/:key",
+        "to":       "/_update/timestamp",
+        "method":   "POST",
+        "query":    {
+            "box":  ":box",
+            "key":  ":key"
+        }
+    },
+    {
+        "from":     "meta/:box/key/:key",
+        "to":       "/_list/box/by_key",
+        "method":   "GET",
+        "query":    {
+            "key": [":box", ":key", true]
+        }
+    }
+]

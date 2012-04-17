@@ -1,0 +1,14 @@
+CACHE MANIFEST
+
+#-  cache.manifest ~~
+#                                                       ~~ (c) SRW, 17 Apr 2012
+
+CACHE:
+index.html
+
+NETWORK:
+*
+
+#FALLBACK:
+
+# EOF

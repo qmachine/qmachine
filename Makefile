@@ -5,7 +5,7 @@
 #   To-do:
 #   -   When deploying to CouchDB, run cleanup/compaction routines also.
 #
-#                                                       ~~ (c) SRW, 05 Apr 2012
+#                                                       ~~ (c) SRW, 17 Apr 2012
 
 include $(PWD)/tools/macros.make
 
@@ -66,6 +66,19 @@ $(APPS): | apps/ share/
 apps build deps share:
 	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
 
+backend couchdb-app: \
+    deps/jslint.js \
+    deps/json2.js \
+    deps/quanah.js \
+    share/favicon.ico \
+    share/main.js \
+    share/touch-icon-ipad.png \
+    share/touch-icon-ipad3.png \
+    share/touch-icon-iphone.png \
+    share/touch-icon-iphone4.png \
+    share/web-launch-image-iphone.png \
+    share/web-launch-image-iphone4.png
+
 build/q.png: build/q.tex | build/
 	@   $(CD) build                                                 ;   \
             $(PDFLATEX) q.tex                                           ;   \
@@ -90,19 +103,6 @@ chrome-hosted-app: \
 chrome-packaged-app: \
     share/favicon.ico \
     share/icon-128.png
-
-couchdb-app: \
-    deps/jslint.js \
-    deps/json2.js \
-    deps/quanah.js \
-    share/favicon.ico \
-    share/main.js \
-    share/touch-icon-ipad.png \
-    share/touch-icon-ipad3.png \
-    share/touch-icon-iphone.png \
-    share/touch-icon-iphone4.png \
-    share/web-launch-image-iphone.png \
-    share/web-launch-image-iphone4.png
 
 deps/node-sqlite3: | deps/
 	@   REPO="https://github.com/developmentseed/node-sqlite3.git"  ;   \
