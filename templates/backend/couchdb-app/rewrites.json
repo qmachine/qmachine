@@ -9,17 +9,11 @@
     },
     {
         "from":     "box/:box/status/:status",
-        "to":       "/_list/box/by_status",
+        "to":       "/_list/as-array/by_status",
         "method":   "GET",
         "query":    {
             "key":  [":box", ":status"]
         }
-    },
-    {
-        "from":     "change-key/:docid",
-        "to":       "/_update/change-key/:docid",
-        "method":   "PUT",
-        "query":    {}
     },
     {
         "from":     "box/:box/key/:key",
@@ -32,7 +26,7 @@
     },
     {
         "from":     "meta/:box/key/:key",
-        "to":       "/_list/box/by_key",
+        "to":       "/_list/as-array/by_key",
         "method":   "GET",
         "query":    {
             "key": [":box", ":key", true]

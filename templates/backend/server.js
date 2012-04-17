@@ -105,8 +105,7 @@
          // "_view" by either deleting the documents or by deleting the 'key'
          // properties on the documents.
             var href, options;
-            href = db + '/_design/qmachine/_view/by_key?key=["' +
-                params.box + '","' + params.key + '",true]';
+            href = rewrite + '/meta/' + params.box + '/key/' + params.key;
             options = url.parse(encodeURI(href));
             http.request(options, function (res) {
              // This function needs documentation.
@@ -119,16 +118,17 @@
                 });
                 res.on('end', function () {
                  // This function needs documentation.
-                    var docs, href, i, n, options, req, results;
-                    docs = [];
-                    results = JSON.parse(txt.join('')).rows;
-                    n = results.length;
+                    var docs, href, i, n, options, req, special;
+                    docs = JSON.parse(txt.join(''));
+                    n = docs.length;
                     for (i = 0; i < n; i += 1) {
-                        if (results[i].value._id !== doc_id) {
-                            results[i].value._deleted = true;
-                            docs.push(results[i].value);
+                        if (docs[i]._id === doc_id) {
+                            special = i;
+                        } else {
+                            docs[i]._deleted = true;
                         }
                     }
+                    docs.splice(special, 1);
                     if (docs.length === 0) {
                         outer_res.end();
                     } else {
