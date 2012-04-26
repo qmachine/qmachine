@@ -4,11 +4,16 @@ CACHE MANIFEST
 #                                                       ~~ (c) SRW, 17 Apr 2012
 
 CACHE:
+favicon.ico
 index.html
+main.js
+q.js
+print.css
+screen.css
 
 NETWORK:
 *
 
 #FALLBACK:
 
-# EOF
+#-  EOF

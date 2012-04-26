@@ -4,11 +4,22 @@
 //
 //  CORS-enabled HTTP JSON API (for '.' := 'http://qmachine.org'):
 //
-//  - GET   http://qmachine.org/box/sean?key=asdf
+//  - GET   http://qmachine.org/box/sean?key=hello
+//  - POST  http://qmachine.org/box/sean?key=hello
 //  - GET   http://qmachine.org/box/sean?status=waiting
-//  - POST  http://qmachine.org/box/sean
 //
-//                                                      ~~ (c) SRW, 17 Apr 2012
+//  Some parts of this program would be terrifically easier to understand if
+//  I had used Quanah instead of "native" Node.js idioms (continuation passing
+//  style, in particular), but I don't expect to have to edit this program
+//  much anyway after a successful, stable deployment :-)
+//
+//  TESTED CORRECTLY USING FOLLOWING IN CHROME CONSOLE:
+//  > req = new XMLHttpRequest();
+//  > req.open('POST', location.href, true);
+//  > req.setRequestHeader('Content-Type', 'application/json');
+//  > req.send(JSON.stringify({key: 'poster', val: 'score!', box: 'sean'}));
+//
+//                                                      ~~ (c) SRW, 25 Apr 2012
 
 (function () {
     'use strict';
@@ -21,54 +32,61 @@
 
  // Declarations
 
-    var db, handle_GET, handle_OPTIONS, handle_POST, handle_static, host,
-        http, port, server, rewrite, url;
+    var cluster, config, handle_GET, handle_OPTIONS, handle_POST, http,
+        reject, search, spawn_worker, url;
 
  // Definitions
 
-    db = 'http://127.0.0.1:5984/db';
+    cluster = require('cluster');
 
-    handle_GET = function (outer_req, outer_res, params) {
+    config = {
+        app:    'http://127.0.0.1:5984/db/_design/qmachine/',
+        cpus:   require('os').cpus().length,
+        db:     'http://127.0.0.1:5984/db/',
+        host:   '127.0.0.1',
+        log:    null,                   //- coming soon ;-)
+        port:   8124,
+        www:    'http://127.0.0.1:5984/www/_design/public_html/_rewrite/'
+    };
+
+    handle_GET = function (outer_req, outer_res) {
      // This function needs documentation.
-     //
-     // NOTE: I'm working too hard here. I need to forward CouchDB's status
-     // codes when possible so I can send '304' and avoid extra transfers.
-     //
-        var href, options;
-        if (params.hasOwnProperty('key')) {
-            href = rewrite + '/box/' + params.box + '/key/' + params.key;
-        } else if (params.hasOwnProperty('status')) {
-            href = rewrite + '/box/' + params.box + '/status/' + params.status;
-        } else {
-         // Prepare to return a static file ...
-            href = outer_req.url;
+        var box_api, href, inner_req, options, params, parsed;
+        box_api = /^\/box\/([^\/]*)$/;
+        params = {};
+        parsed = url.parse(outer_req.url, true);
+        if (box_api.test(parsed.pathname)) {
+            params.box = parsed.pathname.replace(box_api, '$1');
+            if (parsed.query.hasOwnProperty('key')) {
+             // Retrieve a single avar's JSON representation from CouchDB.
+                params.key = parsed.query.key;
+                href = config.app + '_list/box/by_key' +
+                        search({key: [params.box, params.key, false]});
+            } else if (parsed.query.hasOwnProperty('status')) {
+             // Retrieve a JSON array of keys from CouchDB.
+                params.status = parsed.query.status;
+                href = config.app + '_list/as-array/by_status' +
+                        search({key: [params.box, params.status]});
+            }
+        } else if ((/^\/[^\/]*/).test(parsed.pathname.slice(1)) === false) {
+         // Retrieve static resources from a different database on CouchDB.
+         // This immediately solves security issues concerning '_all_docs' :-)
+            href = url.resolve(config.www, '.' + parsed.pathname);
         }
-        options = url.parse(href);
-        options.headers = outer_req.headers;
-        http.request(options, function (inner_res) {
-         // This function needs documentation.
-            inner_res.setEncoding('utf8');
-            outer_res.writeHead(inner_res.statusCode, {
-                'Content-Type': 'application/json'
-            });
-            inner_res.on('data', function (chunk) {
+        if (href === undefined) {
+            reject(outer_req, outer_res);
+        } else {
+            options = url.parse(encodeURI(href));
+            options.headers = outer_req.headers;
+            options.method = outer_req.method;
+            inner_req = http.request(options, function (inner_res) {
              // This function needs documentation.
-                outer_res.write(chunk.toString());
+                outer_res.writeHead(inner_res.statusCode, inner_res.headers);
+                inner_res.pipe(outer_res);
                 return;
             });
-            inner_res.on('end', function () {
-             // This function needs documentation.
-                outer_res.end();
-                return;
-            });
-            return;
-        }).on('error', function (err) {
-         // This function needs documentation.
-            console.error(err);
-            outer_res.write(err.toString() + '\n');
-            outer_res.end();
-            return;
-        }).end();
+            outer_req.pipe(inner_req);
+        }
         return;
     };
 
@@ -76,7 +94,7 @@
      // This function needs documentation.
         outer_res.writeHead('204', 'No Content', {
             'Access-Control-Allow-Origin':  '*',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS, POST',
             'Access-Control-Allow-Headers': 'Content-Type, Accept',
             'Access-Control-Max-Age':       10, //- seconds
             'Content-Length':               0
@@ -85,267 +103,193 @@
         return;
     };
 
-    handle_POST = function (outer_req, outer_res, params) {
+    handle_POST = function (outer_req, outer_res) {
      // This function needs documentation.
-        var ensure_unique, href, inner_req, options;
-        if ((params.hasOwnProperty('box') === false) ||
-                (params.hasOwnProperty('key') === false)) {
-         // Fail by returning useless data?
+        var box_api, href, inner_req, options, params, parsed;
+        box_api = /^\/box\/([^\/]*)$/;
+        params = {};
+        parsed = url.parse(outer_req.url, true);
+        if (box_api.test(parsed.pathname)) {
+            params.box = parsed.pathname.replace(box_api, '$1');
+            if (parsed.query.hasOwnProperty('key')) {
+             // Retrieve a single avar's JSON representation from CouchDB.
+                params.key = parsed.query.key;
+                href = config.app + '_update/timestamp' +
+                        search({box: params.box, key: params.key});
+            }
         }
-        ensure_unique = function (doc_id) {
-         // This function queries the database for other documents with the
-         // same value for their 'key' property as a "grooming" mechanism for
-         // CouchDB. Inside CouchDB, I append timestamps so that only the most
-         // recently updated document with a given 'key' is ever used for the
-         // "_list" output. This strategy allows me to stream uploaded data
-         // directly into CouchDB without using much memory in Node.js because
-         // I don't have to use a temporary cache to store the upload while I
-         // wait for an existence check to finish; instead, I just stream data
-         // directly into CouchDB and then remove the outdated duplicates from
-         // "_view" by either deleting the documents or by deleting the 'key'
-         // properties on the documents.
-            var href, options;
-            href = rewrite + '/meta/' + params.box + '/key/' + params.key;
-            options = url.parse(encodeURI(href));
-            http.request(options, function (res) {
-             // This function needs documentation.
-                var txt = [];
-                res.setEncoding('utf8');
-                res.on('data', function (chunk) {
-                 // This function needs documentation.
-                    txt.push(chunk.toString());
-                    return;
-                });
-                res.on('end', function () {
-                 // This function needs documentation.
-                    var docs, href, i, n, options, req, special;
-                    docs = JSON.parse(txt.join(''));
-                    n = docs.length;
-                    for (i = 0; i < n; i += 1) {
-                        if (docs[i]._id === doc_id) {
-                            special = i;
-                        } else {
-                            docs[i]._deleted = true;
-                        }
-                    }
-                    docs.splice(special, 1);
-                    if (docs.length === 0) {
-                        outer_res.end();
-                    } else {
-                        href = db + '/_bulk_docs';
-                        options = url.parse(href);
-                        options.method = 'POST';
-                        options.headers = {'Content-Type': 'application/json'};
-                        req = http.request(options, function (res) {
-                         // This function needs documentation.
-                            res.on('end', function () {
-                             // This function needs documentation.
-                                outer_res.end();
-                                return;
-                            });
-                            return;
-                        });
-                        req.on('error', function (err) {
-                         // This function needs documentation.
-                            console.error(err);
-                            return;
-                        });
-                        req.write(JSON.stringify({docs: docs}));
-                        req.end();
-                        return;
-                    }
-                    return;
-                });
-                return;
-            }).on('error', function (err) {
-             // This function needs documentation.
-                console.error(err);
-                return;
-            }).end();
+        if (href === undefined) {
+            reject(outer_req, outer_res);
             return;
-        };
-        href = rewrite + '/box/' + params.box + '/key/' + params.key;
-        options = url.parse(href);
+        }
+        options = url.parse(encodeURI(href));
         options.headers = outer_req.headers;
+     // NOTE: Is this next line necessary? (or even advisable?)
         options.headers['Content-Type'] = 'application/json';
         options.method = 'POST';
         inner_req = http.request(options, function (inner_res) {
          // This function needs documentation.
+         //
+         // NOTES:
+         // -   It's ok to "cache" the inner response because it will be the
+         //     newly created document's '_id', which is a short string.
+         //
             var txt = [];
-            outer_res.writeHead(inner_res.statusCode, {
-                'Content-Type': 'application/json'
-            });
+            outer_res.writeHead(inner_res.statusCode, inner_res.headers);
             inner_res.setEncoding('utf8');
             inner_res.on('data', function (chunk) {
              // This function needs documentation.
                 txt.push(chunk.toString());
-                outer_res.write(chunk.toString());
                 return;
             });
             inner_res.on('end', function () {
-             // This function needs documentation.
-                ensure_unique(JSON.parse(txt.join('')));
+             // This function was previously known as 'ensure_unique' ...
+                var doc_id, href, options;
+                doc_id = txt.join('');
+                href = config.app + '_list/as-array/by_key' +
+                        search({key: [params.box, params.key, true]});
+                options = url.parse(encodeURI(href));
+                options.method = 'GET';
+                http.request(options, function (res) {
+                 // This function needs documentation.
+                    var txt = [];
+                    res.setEncoding('utf8');
+                    res.on('data', function (chunk) {
+                     // This function needs documentation.
+                        txt.push(chunk.toString());
+                        return;
+                    });
+                    res.on('end', function () {
+                     // This function needs documentation.
+                        var docs, i, n, options, special;
+                        docs = JSON.parse(txt.join(''));
+                        n = docs.length;
+                        for (i = 0; i < n; i += 1) {
+                            if (docs[i]._id === doc_id) {
+                                special = i;
+                            } else {
+                                docs[i]._deleted = true;
+                            }
+                        }
+                        docs.splice(special, 1);
+                        if (docs.length === 0) {
+                            outer_res.end();
+                        } else {
+                            options = url.parse(config.db + '_bulk_docs');
+                            options.method = 'POST';
+                            options.headers = {
+                                'Content-Type': 'application/json'
+                            };
+                            http.request(options, function (res) {
+                             // This function needs documentation.
+                                res.on('end', function () {
+                                 // This function needs documentation.
+                                    outer_res.end();
+                                    return;
+                                });
+                                return;
+                            }).end(JSON.stringify({docs: docs}));
+                        }
+                        return;
+                    });
+                    return;
+                }).end();
                 return;
             });
             return;
-        }).on('error', function (err) {
-         // This function needs documentation.
-            console.error(error);
-            outer_res.write(err.toString());
-            outer_res.end();
-            return;
         });
-        outer_req.on('data', function (chunk) {
-         // This function needs documentation.
-            inner_req.write(chunk.toString());
-            return;
-        });
-        outer_req.on('end', function () {
-         // This function needs documentation.
-            inner_req.end();
-            return;
-        });
+        outer_req.pipe(inner_req);
         return;
     };
-
-    handle_static = function (outer_req, outer_res, params) {
-     // This function needs documentation.
-        var cache_file, fs, headers, static_content;
-        cache_file = function (path, callback) {
-         // This function needs documentation.
-            fs.readFile(path, function (err, data) {
-             // This function needs documentation.
-                if (err) {
-                    callback(err, data);
-                    return;
-                }
-                console.log('Caching ' + path + ' ...');
-                static_content[path] = data;
-                callback(err, data);
-                return;
-            });
-            return;
-        };
-        fs = require('fs');
-        headers = {
-            appcache: {
-                'Content-Type': 'text/cache-manifest'
-            },
-            css: {
-                'Content-Type': 'text/css'
-            },
-            html: {
-                'Content-Type': 'text/html'
-            },
-            ico: {
-                'Content-Type': 'image/png'
-            },
-            js: {
-                'Content-Type': 'application/javascript'
-            },
-            png: {
-                'Content-Type': 'image/png'
-            }
-        };
-        static_content = {};
-        handle_static = function (outer_req, outer_res, params) {
-         // This function needs documentation.
-            var extension, file, path;
-            path = './public_html' + params.pathname;
-            extension = path.split('.').pop();
-            if (extension === '/public_html/') {
-                path = './public_html/index.html';
-                extension = 'html';
-            }
-            if (static_content.hasOwnProperty(path)) {
-                outer_res.writeHead(200, headers[extension]);
-                outer_res.write(static_content[path]);
-                outer_res.end();
-                return;
-            }
-            cache_file(path, function (err, data) {
-             // This function needs documentation.
-                if (err) {
-                    outer_res.writeHead(200, {
-                        'Content-Type': 'application/json'
-                    });
-                    outer_res.write('{}');
-                    outer_res.end();
-                    return;
-                }
-                outer_res.writeHead(200, headers[extension]);
-                outer_res.write(data);
-                outer_res.end();
-                fs.watchFile(path, function (curr, prev) {
-                 // This function needs documentation.
-                    if (curr.mtime !== prev.mtime) {
-                        cache_file(path, function (err, data) {
-                         // This function needs documentation.
-                            if (err) {
-                                fs.unwatchFile(path);
-                                delete static_content[path];
-                                return;
-                            }
-                            console.log('(file changed: ' + path + ')');
-                            return;
-                        });
-                        delete static_content[path];
-                    }
-                    return;
-                });
-                return;
-            });
-            return;
-        };
-        return handle_static(outer_req, outer_res, params);
-    };
-
-    host = '127.0.0.1';
 
     http = require('http');
 
-    port = 8124;
-
-    rewrite = db + '/_design/qmachine/_rewrite';
-
-    server = http.createServer(function (request, response) {
+    reject = function (request, response) {
      // This function needs documentation.
-        var method, params, parsed;
-        response.setHeader('Access-Control-Allow-Origin', '*');
-        method = request.method.toUpperCase();
-        if ((method === 'GET') || (method === 'POST')) {
-            params = {};
-            parsed = url.parse(request.url, true);
-            if (parsed.pathname.slice(0, 5) === '/box/') {
-                params.box = parsed.pathname.split('/')[2];
-                if (parsed.query.hasOwnProperty('key')) {
-                    params.key = parsed.query.key;
-                }
-                if (parsed.query.hasOwnProperty('status')) {
-                    params.status = parsed.query.status;
-                }
-                if (method === 'GET') {
-                    handle_GET(request, response, params);
-                } else {
-                    handle_POST(request, response, params);
-                }
-                return;
-            }
-            if (method === 'GET') {
-                params.pathname = parsed.pathname;
-                handle_static(request, response, params);
-                return;
+        response.writeHead(444);
+        response.end();
+        return;
+    };
+
+    search = function (x) {
+     // This function needs documentation.
+        var key, y;
+        y = [];
+        for (key in x) {
+            if (x.hasOwnProperty(key)) {
+                y.push(key + '=' + JSON.stringify(x[key]));
             }
         }
-        handle_OPTIONS(request, response);
+        return '?' + y.join('&');
+    };
+
+    spawn_worker = function () {
+     // This function needs documentation.
+        var worker = cluster.fork();
+        worker.on('error', function (err) {
+         // This function needs documentation.
+            console.error(err);
+            return;
+        });
+        worker.on('message', function (message) {
+         // This function needs documentation.
+            console.log(worker.pid + ':', message.cmd);
+            return;
+        });
         return;
-    });
+    };
 
     url = require('url');
 
- // Launch
+ // Invocations
 
-    server.listen(port, host);
+    if (cluster.isMaster) {
+
+        (function () {
+         // This function needs documentation.
+            var i, n;
+            n = config.cpus;
+            for (i = 0; i < n; i += 1) {
+                spawn_worker();
+            }
+            return;
+        }());
+
+        cluster.on('death', function (worker) {
+         // This function needs documentation.
+            console.log('Process ' + worker.pid + ' exited.');
+            spawn_worker();
+            return;
+        });
+
+    } else {
+
+     // NOTE: I'm still not sure if this should be 'http.Server', as the
+     // documentation shows, or 'http.createServer', which is the "usual"
+     // answer. I need to find out what subtleties are at play here ...
+
+        http.Server(function (request, response) {
+         // This function needs documentation.
+            switch (request.method.toUpperCase()) {
+            case 'GET':
+                response.setHeader('Access-Control-Allow-Origin', '*');
+                handle_GET(request, response);
+                break;
+            case 'OPTIONS':
+                response.setHeader('Access-Control-Allow-Origin', '*');
+                handle_OPTIONS(request, response);
+                break;
+            case 'POST':
+                response.setHeader('Access-Control-Allow-Origin', '*');
+                handle_POST(request, response);
+                break;
+            default:
+                reject(request, response);
+            }
+            return;
+        }).listen(config.port, config.host);
+
+    }
 
  // That's all, folks!
 

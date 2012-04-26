@@ -205,7 +205,7 @@
         return ((global.hasOwnProperty('process') === true));
     };
 
-    mothership = 'http://127.0.0.1:8124';
+    mothership = 'http://localhost';
 
  // Out-of-scope definitions
 

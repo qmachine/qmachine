@@ -22,15 +22,7 @@ function (doc, req) {
 
     newDoc._id = req.uuid;
 
-    response = JSON.stringify(newDoc._id);
-
-    if (newDoc.key !== req.query.key) {
-        newDoc.key = req.query.key;
-    }
-
-    if (newDoc.hasOwnProperty('box') === false) {
-        newDoc.box = req.query.box;
-    }
+    response = newDoc._id;
 
     newDoc.last_updated = (new Date()).valueOf();
 

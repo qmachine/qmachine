@@ -7,22 +7,23 @@ PROJ_ROOT   :=  $(PWD)/../..#
 
 include $(PROJ_ROOT)/tools/macros.make
 
+WWWDIR  :=  $(PWD)/www/_attachments
+
 DISPOSABLE  := \
-    public_html/cache.appcache \
-    public_html/cache.manifest \
-    public_html/favicon.ico \
-    public_html/ie.js \
-    public_html/index.html \
-    public_html/print.css \
-    public_html/q.js \
-    public_html/robots.txt \
-    public_html/screen.css \
-    public_html/touch-icon-ipad.png \
-    public_html/touch-icon-ipad3.png \
-    public_html/touch-icon-iphone.png \
-    public_html/touch-icon-iphone4.png \
-    public_html/web-launch-image-iphone.png \
-    public_html/web-launch-image-iphone4.png
+    $(WWWDIR)/cache.manifest \
+    $(WWWDIR)/favicon.ico \
+    $(WWWDIR)/ie.js \
+    $(WWWDIR)/index.html \
+    $(WWWDIR)/print.css \
+    $(WWWDIR)/q.js \
+    $(WWWDIR)/robots.txt \
+    $(WWWDIR)/screen.css \
+    $(WWWDIR)/touch-icon-ipad.png \
+    $(WWWDIR)/touch-icon-ipad3.png \
+    $(WWWDIR)/touch-icon-iphone.png \
+    $(WWWDIR)/touch-icon-iphone4.png \
+    $(WWWDIR)/web-launch-image-iphone.png \
+    $(WWWDIR)/web-launch-image-iphone4.png
 
 CP          :=  $(call contingent, gcp cp) -rf
 DATE        :=  $(call contingent, date)
@@ -53,20 +54,22 @@ run: $(DISPOSABLE)
 
 ###
 
-public_html/:
+$(DISPOSABLE): | $(WWWDIR)
+
+$(WWWDIR):
 	@   if [ ! -f $@ ]; then $(MKDIR) $@; fi
 
-public_html/cache.appcache: $(PROJ_ROOT)/src/cache.appcache | public_html/
+$(WWWDIR)/cache.manifest: $(PROJ_ROOT)/src/cache.manifest
 	@   $(CP) $< $@                                                 ;   \
             $(call stamp-with-epoch-time, $@)
 
-public_html/q.js: $(PROJ_ROOT)/share/main.js | public_html/
+$(WWWDIR)/q.js: $(PROJ_ROOT)/share/main.js
 	@   $(CP) $< $@
 
-public_html/%: $(PROJ_ROOT)/share/% | public_html/
+$(WWWDIR)/%: $(PROJ_ROOT)/share/%
 	@   $(CP) $< $@
 
-public_html/%: $(PROJ_ROOT)/src/% | public_html/
+$(WWWDIR)/%: $(PROJ_ROOT)/src/%
 	@   $(CP) $< $@
 
 ###

@@ -12,14 +12,13 @@ include $(PROJ_ROOT)/tools/macros.make
 
 APP         :=  qmachine
 PROTOCOL    :=  http
-URL         :=  http://127.0.0.1:5984/db/_design/$(APP)/
-DB          :=  127.0.0.1:5984/db
+URL         :=  http://localhost:5984/db/_design/$(APP)/
+DB          := 	localhost:5984/db
 APPRC       :=  $(PWD)/.couchapprc
 
 COUCHAPP    :=  $(call contingent, couchapp)
 CP          :=  $(call contingent, gcp cp) -rf
 DATE        :=  $(call contingent, date)
-OPEN        :=  $(call contingent, gnome-open open)
 RM          :=  $(call contingent, grm rm) -rf
 STTY        :=  $(call contingent, stty)
 
@@ -52,7 +51,6 @@ reset:
 run: $(APPRC)
 	@   $(COUCHAPP) push --quiet                                    ;   \
             if [ $$? -eq 0 ]; then                                          \
-                $(OPEN) $(URL)                                          ;   \
                 $(call hilite, "Deployment succeeded.")                 ;   \
             else                                                            \
                 $(call alert, "$$?")                                    ;   \
