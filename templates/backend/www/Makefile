@@ -68,7 +68,6 @@ endef
 
 COUCHAPP    :=  $(call contingent, couchapp)
 CP          :=  $(call contingent, rsync) --archive
-OPEN        :=  $(call contingent, gnome-open open)
 RM          :=  $(call contingent, rm) -rf
 STTY        :=  $(call contingent, stty)
 
@@ -107,7 +106,6 @@ run: $(APPRC) $(APP)
             $(CP) ./validate_doc_update.js $(APP)/                      ;   \
             cd $(APP) && $(COUCHAPP) push -q                            ;   \
             if [ $$? -eq 0 ]; then                                          \
-                $(OPEN) $(URL)                                          ;   \
                 $(call hilite, "Deployment succeeded.")                 ;   \
             else                                                            \
                 $(call alert, "$$?")                                    ;   \

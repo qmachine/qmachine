@@ -22,6 +22,7 @@
 
     main = function () {
      // This function needs documentation.
+     /*
         var Q, x;
         Q = Object.prototype.Q;
         Q.box = 'sean';
@@ -51,10 +52,11 @@
             console.log(x.val);
             return evt.exit();
         };
+     */
         return;
     };
 
-    mothership = 'http://127.0.0.1:8124';
+    mothership = 'http://qmachine.org';
 
  // Descriptions
 

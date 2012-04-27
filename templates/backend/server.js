@@ -43,9 +43,9 @@
         app:    'http://127.0.0.1:5984/db/_design/qmachine/',
         cpus:   require('os').cpus().length,
         db:     'http://127.0.0.1:5984/db/',
-        host:   '127.0.0.1',
+        host:   'qmachine.org',
         log:    null,                   //- coming soon ;-)
-        port:   8124,
+        port:   80,
         www:    'http://127.0.0.1:5984/www/_design/public_html/_rewrite/'
     };
 
@@ -135,7 +135,7 @@
          //     newly created document's '_id', which is a short string.
          //
             var txt = [];
-            outer_res.writeHead(inner_res.statusCode, inner_res.headers);
+            outer_res.writeHead(inner_res.statusCode);//, inner_res.headers);
             inner_res.setEncoding('utf8');
             inner_res.on('data', function (chunk) {
              // This function needs documentation.
@@ -242,6 +242,8 @@
     url = require('url');
 
  // Invocations
+
+    http.globalAgent.maxSockets = 100;  //- experimental ...
 
     if (cluster.isMaster) {
 
