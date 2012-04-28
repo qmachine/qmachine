@@ -13,13 +13,7 @@
 //  style, in particular), but I don't expect to have to edit this program
 //  much anyway after a successful, stable deployment :-)
 //
-//  TESTED CORRECTLY USING FOLLOWING IN CHROME CONSOLE:
-//  > req = new XMLHttpRequest();
-//  > req.open('POST', location.href, true);
-//  > req.setRequestHeader('Content-Type', 'application/json');
-//  > req.send(JSON.stringify({key: 'poster', val: 'score!', box: 'sean'}));
-//
-//                                                      ~~ (c) SRW, 25 Apr 2012
+//                                                      ~~ (c) SRW, 28 Apr 2012
 
 (function () {
     'use strict';
@@ -243,7 +237,7 @@
 
  // Invocations
 
-    http.globalAgent.maxSockets = 100;  //- experimental ...
+    http.globalAgent.maxSockets = 100;  //- still experimental ...
 
     if (cluster.isMaster) {
 
