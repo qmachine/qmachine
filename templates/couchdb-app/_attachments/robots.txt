@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /db/
-Disallow: /meta/
-Disallow: /queue/

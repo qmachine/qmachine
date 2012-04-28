@@ -63,9 +63,6 @@ $(WWWDIR)/cache.manifest: $(PROJ_ROOT)/src/cache.manifest
 	@   $(CP) $< $@                                                 ;   \
             $(call stamp-with-epoch-time, $@)
 
-$(WWWDIR)/q.js: $(PROJ_ROOT)/share/main.js
-	@   $(CP) $< $@
-
 $(WWWDIR)/%: $(PROJ_ROOT)/share/%
 	@   $(CP) $< $@
 

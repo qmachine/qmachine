@@ -20,7 +20,7 @@ RM      :=  $(call contingent, grm rm) -rf
 SQLITE  :=  $(call contingent, sqlite3)
 
 define run-each
-    $(NODE) main.js cache=remote token=sean $(QARGS)
+    $(NODE) q.js cache=remote token=sean $(QARGS)
 endef
 
 .PHONY: all clean clobber distclean reset run
@@ -39,7 +39,7 @@ distclean: clobber
 reset:
 	@   $(call contingent, clear)
 
-run: main.js ;#node_modules/sqlite3
+run: q.js ;#node_modules/sqlite3
 	@   $(call run-each)
 
 ###
@@ -49,12 +49,12 @@ run: main.js ;#node_modules/sqlite3
 db-dump:
 	@   $(SQLITE) $(SQLDB) .dump
 
-repl volunteer: main.js ;#node_modules/sqlite3
+repl volunteer: q.js ;#node_modules/sqlite3
 	@   $(call run-each) $@
 
 ###
 
-main.js: $(PWD)/../../share/main.js
+q.js: $(PWD)/../../share/q.js
 	@   $(CP) $< $@
 
 node_modules:

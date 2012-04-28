@@ -20,6 +20,7 @@ RESOURCES :=  \
     index.html \
     main.js \
     print.css \
+    q.js \
     screen.css \
     touch-icon-ipad.png \
     touch-icon-ipad3.png \

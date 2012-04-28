@@ -71,7 +71,7 @@ backend couchdb-app: \
     deps/json2.js \
     deps/quanah.js \
     share/favicon.ico \
-    share/main.js \
+    share/q.js \
     share/touch-icon-ipad.png \
     share/touch-icon-ipad3.png \
     share/touch-icon-iphone.png \
@@ -140,20 +140,20 @@ facebook-app: \
 
 ios-native-app: \
     share/favicon.ico \
-    share/main.js \
     share/native-launch-image-ipad-landscape.png \
     share/native-launch-image-ipad-portrait.png \
     share/native-launch-image-ipad3-landscape.png \
     share/native-launch-image-ipad3-portrait.png \
     share/native-launch-image-iphone.png \
     share/native-launch-image-iphone4.png \
+    share/q.js \
     share/touch-icon-ipad.png \
     share/touch-icon-ipad3.png \
     share/touch-icon-iphone.png \
     share/touch-icon-iphone4.png
 
 nodejs-client: \
-    share/main.js
+    share/q.js
 
 share/bitbucket.jpg: build/q.png | share/
 	@   $(CONVERT) \
@@ -231,7 +231,7 @@ share/icon-128.png: build/q.png | share/
                 -quality 100 \
                     $< $@
 
-share/main.js: \
+share/q.js: \
     deps/jslint.js  \
     deps/json2.js   \
     deps/quanah.js  \
