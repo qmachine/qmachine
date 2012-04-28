@@ -54,6 +54,7 @@
     http_GET = function (x) {
      // This function needs documentation.
         var y = avar(x);
+        y.box = x.box;
         y.onready = function (evt) {
          // This function needs documentation.
             if (isBrowser() === false) {
@@ -129,6 +130,7 @@
     http_POST = function (x) {
      // This function needs documentation.
         var y = avar(x);
+        y.box = x.box;
         y.onready = function (evt) {
          // This function needs documentation.
             if (isBrowser() === false) {
@@ -205,7 +207,7 @@
         return ((global.hasOwnProperty('process') === true));
     };
 
-    mothership = 'http://localhost';
+    mothership = 'http://qmachine.org';
 
  // Out-of-scope definitions
 
