@@ -14,6 +14,7 @@ DISPOSABLE  := \
     $(WWWDIR)/favicon.ico \
     $(WWWDIR)/ie.js \
     $(WWWDIR)/index.html \
+    $(WWWDIR)/main.js \
     $(WWWDIR)/print.css \
     $(WWWDIR)/q.js \
     $(WWWDIR)/robots.txt \

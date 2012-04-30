@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 16 Apr 2012
+//                                                      ~~ (c) SRW, 29 Apr 2012
 
 (function (global) {
     'use strict';
@@ -19,7 +19,7 @@
  // Declarations
 
     var Q, ajax_request, avar, box, http_GET, http_POST, isBrowser, isNodejs,
-        mothership;
+        mothership, pool;
 
  // Definitions
 
@@ -27,8 +27,7 @@
 
     ajax_request = function () {
      // This function generates a new AJAX request object. I have not yet
-     // experimented with Web Sockets, but unless CouchDB supports them,
-     // that is an exciting technology that must wait for another day ;-)
+     // experimented with Web Sockets, but those might prove very useful.
         var req;
         if (global.hasOwnProperty('XMLHttpRequest')) {
             req = new global.XMLHttpRequest();
@@ -42,25 +41,15 @@
 
     avar = Q.avar;
 
-    box = (function () {
-     // This function generates a random hexadecimal string of length 32.
-        var y = '';
-        while (y.length < 32) {
-            y += Math.random().toString(16).slice(2, 34 - y.length);
-        }
-        return y;
-    }());
+    box = avar().key;
 
     http_GET = function (x) {
      // This function needs documentation.
         var y = avar(x);
-        y.box = x.box;
+        y.box = x.box;                  //- NOTE: Is this line necessary?
         y.onready = function (evt) {
          // This function needs documentation.
-            if (isBrowser() === false) {
-                return evt.exit();
-            }
-            var href, req;
+            var href, pool_req;
             if (x.hasOwnProperty('key')) {
                 href = mothership + '/box/' + x.box + '?key=' + x.key;
             } else if (x.hasOwnProperty('status')) {
@@ -68,60 +57,84 @@
             } else {
                 return evt.fail('No flags specified for "http_GET".');
             }
-            req = ajax_request();
-            req.onreadystatechange = function () {
+            pool_req = avar({val: false});
+            pool_req.onerror = function (message) {
              // This function needs documentation.
-                if (req.readyState === 4) {
-                    if (req.status !== 200) {
-                        return evt.fail(req.responseText);
-                    }
-                    y.val = req.responseText;
+                if (pool_req.val === true) {
+                 // Release the resources back into the pool ...
+                    pool.requests_remaining += 1;
+                }
+                return evt.fail(message);
+            };
+            pool_req.onready = function (evt) {
+             // This function needs documentation.
+                if (pool.requests_remaining <= 0) {
+                    return evt.stay('Waiting for previous requests to close.');
+                }
+                pool.requests_remaining -= 1;
+                pool_req.val = true;
+                return evt.exit();
+            };
+            pool_req.onready = function (evt) {
+             // This function needs documentation.
+                if (isBrowser() === false) {
                     return evt.exit();
                 }
+                var req = ajax_request();
+                req.onreadystatechange = function () {
+                 // This function needs documentation.
+                    if (req.readyState === 4) {
+                        if (req.status !== 200) {
+                            return evt.fail(req.responseText);
+                        }
+                        y.val = req.responseText;
+                        return evt.exit();
+                    }
+                    return;
+                };
+                req.open('GET', href, true);
+                req.send(null);
                 return;
             };
-            req.open('GET', href, true);
-            req.send(null);
-            return;
-        };
-        y.onready = function (evt) {
-         // This function needs documentation.
-            /*jslint node: true */
-            if (isNodejs() === false) {
-                return evt.exit();
-            }
-            var href, module_http, module_url, options, req;
-            if (x.hasOwnProperty('key')) {
-                href = mothership + '/box/' + x.box + '?key=' + x.key;
-            } else if (x.hasOwnProperty('status')) {
-                href = mothership + '/box/' + x.box + '?status=' + x.status;
-            } else {
-                return evt.fail('No flags specified for "http_GET".');
-            }
-            module_http = require('http');
-            module_url = require('url');
-            options = module_url.parse(href);
-            req = module_http.request(options, function (res) {
+            pool_req.onready = function (evt) {
              // This function needs documentation.
-                var txt = [];
-                res.setEncoding('utf8');
-                res.on('data', function (chunk) {
+                /*jslint node: true */
+                if (isNodejs() === false) {
+                    return evt.exit();
+                }
+                var module_http, module_url, options, req;
+                module_http = require('http');
+                module_url = require('url');
+                options = module_url.parse(href);
+                req = module_http.request(options, function (res) {
                  // This function needs documentation.
-                    txt.push(chunk.toString());
+                    var txt = [];
+                    res.setEncoding('utf8');
+                    res.on('data', function (chunk) {
+                     // This function needs documentation.
+                        txt.push(chunk.toString());
+                        return;
+                    });
+                    res.on('end', function () {
+                     // This function needs documentation.
+                        y.val = txt.join('');
+                        return evt.exit();
+                    });
                     return;
                 });
-                res.on('end', function () {
+                req.on('error', function (err) {
                  // This function needs documentation.
-                    y.val = txt.join('');
-                    return evt.exit();
+                    return evt.fail(err);
                 });
+                req.end();
                 return;
-            });
-            req.on('error', function (err) {
+            };
+            pool_req.onready = function (pool_evt) {
              // This function needs documentation.
-                return evt.fail(err);
-            });
-            req.end();
+                pool.requests_remaining += 1;
+                pool_evt.exit();
+                return evt.exit();
+            };
             return;
         };
         return y;
@@ -133,62 +146,89 @@
         y.box = x.box;
         y.onready = function (evt) {
          // This function needs documentation.
-            if (isBrowser() === false) {
-                return evt.exit();
-            }
-            var href, req;
+            var href, pool_req;
             href = mothership + '/box/' + y.box + '?key=' + y.key;
-            req = ajax_request();
-            req.onreadystatechange = function () {
+            pool_req = avar({val: false});
+            pool_req.onerror = function (message) {
              // This function needs documentation.
-                if (req.readyState === 4) {
-                    if (req.status !== 201) {
-                        return evt.fail(req.responseText);
-                    }
-                    y.val = req.responseText;
+                if (pool_req.val === true) {
+                 // Release the resources back into the pool ...
+                    pool.requests_remaining += 1;
+                }
+                return evt.fail(message);
+            };
+            pool_req.onready = function (evt) {
+             // This function needs documentation.
+                if (pool.requests_remaining <= 0) {
+                    return evt.stay('Waiting for previous requests to close.');
+                }
+                pool.requests_remaining -= 1;
+                pool_req.val = true;
+                return evt.exit();
+            };
+            pool_req.onready = function (evt) {
+             // This function needs documentation.
+                if (isBrowser() === false) {
                     return evt.exit();
                 }
+                var req = ajax_request();
+                req.onreadystatechange = function () {
+                 // This function needs documentation.
+                    if (req.readyState === 4) {
+                        if (req.status !== 201) {
+                            return evt.fail(req.responseText);
+                        }
+                        y.val = req.responseText;
+                        return evt.exit();
+                    }
+                    return;
+                };
+                req.open('POST', href, true);
+                req.setRequestHeader('Content-Type', 'application/json');
+                req.send(JSON.stringify(y));
                 return;
             };
-            req.open('POST', href, true);
-            req.setRequestHeader('Content-Type', 'application/json');
-            req.send(JSON.stringify(y));
-            return;
-        };
-        y.onready = function (evt) {
-         // This function needs documentation.
-            /*jslint node: true */
-            if (isNodejs() === false) {
-                return evt.exit();
-            }
-            var href, module_http, module_url, options, req;
-            href = mothership + '/box/' + y.box + '?key=' + y.key;
-            module_http = require('http');
-            module_url = require('url');
-            options = module_url.parse(href);
-            options.method = 'POST';
-            req = module_http.request(options, function (res) {
+            pool_req.onready = function (evt) {
              // This function needs documentation.
-                var txt = [];
-                res.on('data', function (chunk) {
+                /*jslint node: true */
+                if (isNodejs() === false) {
+                    return evt.exit();
+                }
+                var module_http, module_url, options, req;
+                module_http = require('http');
+                module_url = require('url');
+                options = module_url.parse(href);
+                options.method = 'POST';
+                req = module_http.request(options, function (res) {
                  // This function needs documentation.
-                    txt.push(chunk.toString());
+                    var txt = [];
+                    res.on('data', function (chunk) {
+                     // This function needs documentation.
+                        txt.push(chunk.toString());
+                        return;
+                    });
+                    res.on('end', function () {
+                     // This function needs documentation.
+                        y.val = txt.join('');
+                        return evt.exit();
+                    });
                     return;
                 });
-                res.on('end', function () {
+                req.on('error', function (err) {
                  // This function needs documentation.
-                    y.val = txt.join('');
-                    return evt.exit();
+                    return evt.fail(err);
                 });
+                req.setHeader('Content-Type', 'application/json');
+                req.write(JSON.stringify(y));
+                req.end();
                 return;
-            });
-            req.on('error', function (err) {
+            };
+            pool_req.onready = function (pool_evt) {
              // This function needs documentation.
-                return evt.fail(err);
-            });
-            req.setHeader('Content-Type', 'application/json');
-            req.write(JSON.stringify(y));
-            req.end();
+                pool.requests_remaining += 1;
+                pool_evt.exit();
+                return evt.exit();
+            };
             return;
         };
         return y;
@@ -208,6 +248,11 @@
     };
 
     mothership = 'http://qmachine.org';
+
+    pool = {
+     // This object needs documentation.
+        requests_remaining: 5
+    };
 
  // Out-of-scope definitions
 
@@ -265,7 +310,9 @@
          // This function needs documentation.
             var y = http_GET(x);
             y.onready = function (evt) {
-             // This function needs documentation.
+             // This function deserializes the string returned as the 'val' of
+             // 'y' into a 'temp' variable and then uses them to update the
+             // property values of 'y'. It returns an avar.
                 var key, temp;
                 temp = avar(y.val);
                 for (key in temp) {
@@ -278,7 +325,10 @@
             return y;
         },
         write: function (x) {
-         // This function needs documentation.
+         // This function sends an HTTP POST to Q Machine. It doesn't worry
+         // about the return data because Q Machine isn't going to return any
+         // data -- the request will either succeed or fail, as indicated by
+         // the HTTP status code returned. It returns an avar.
             return http_POST(x);
         }
     });
