@@ -18,8 +18,8 @@
 
  // Declarations
 
-    var Q, ajax_request, avar, box, http_GET, http_POST, isBrowser, isNodejs,
-        mothership, pool;
+    var Q, ajax_request, avar, http_GET, http_POST, isBrowser, isNodejs,
+        mothership, state;
 
  // Definitions
 
@@ -41,8 +41,6 @@
 
     avar = Q.avar;
 
-    box = avar().key;
-
     http_GET = function (x) {
      // This function needs documentation.
         var y = avar(x);
@@ -62,16 +60,16 @@
              // This function needs documentation.
                 if (pool_req.val === true) {
                  // Release the resources back into the pool ...
-                    pool.requests_remaining += 1;
+                    state.requests_remaining += 1;
                 }
                 return evt.fail(message);
             };
             pool_req.onready = function (evt) {
              // This function needs documentation.
-                if (pool.requests_remaining <= 0) {
+                if (state.requests_remaining <= 0) {
                     return evt.stay('Waiting for previous requests to close.');
                 }
-                pool.requests_remaining -= 1;
+                state.requests_remaining -= 1;
                 pool_req.val = true;
                 return evt.exit();
             };
@@ -131,7 +129,7 @@
             };
             pool_req.onready = function (pool_evt) {
              // This function needs documentation.
-                pool.requests_remaining += 1;
+                state.requests_remaining += 1;
                 pool_evt.exit();
                 return evt.exit();
             };
@@ -153,16 +151,16 @@
              // This function needs documentation.
                 if (pool_req.val === true) {
                  // Release the resources back into the pool ...
-                    pool.requests_remaining += 1;
+                    state.requests_remaining += 1;
                 }
                 return evt.fail(message);
             };
             pool_req.onready = function (evt) {
              // This function needs documentation.
-                if (pool.requests_remaining <= 0) {
+                if (state.requests_remaining <= 0) {
                     return evt.stay('Waiting for previous requests to close.');
                 }
-                pool.requests_remaining -= 1;
+                state.requests_remaining -= 1;
                 pool_req.val = true;
                 return evt.exit();
             };
@@ -225,7 +223,7 @@
             };
             pool_req.onready = function (pool_evt) {
              // This function needs documentation.
-                pool.requests_remaining += 1;
+                state.requests_remaining += 1;
                 pool_evt.exit();
                 return evt.exit();
             };
@@ -249,8 +247,9 @@
 
     mothership = 'http://qmachine.org';
 
-    pool = {
+    state = {
      // This object needs documentation.
+        box: avar().key,
         requests_remaining: 5
     };
 
@@ -262,7 +261,7 @@
             enumerable: false,
             get: function () {
              // This function needs documentation.
-                return box;
+                return state.box;
             },
             set: function (x) {
              // This function needs documentation.
@@ -283,11 +282,11 @@
             enumerable: true,
             get: function () {
              // This function needs documentation.
-                return box;
+                return state.box;
             },
             set: function (x) {
              // This function needs documentation.
-                box = x.toString();
+                state.box = x.toString();
                 return;
             }
         });
@@ -300,7 +299,11 @@
             x = {box: (box || Q.box), status: 'waiting', val: []};
             y = http_GET(x);
             y.onready = function (evt) {
-             // This function needs documentation.
+             // This function deserializes the string returned by Q Machine
+             // into the array of keys that it represents. This is one of the
+             // rare instances in which I knowingly change the data type by
+             // assignment -- this is not typically advisable because it may
+             // confuse the JIT compilers and thereby hurt performance.
                 y.val = JSON.parse(y.val);
                 return evt.exit();
             };

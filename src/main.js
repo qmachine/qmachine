@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- main.js ~~
-//                                                      ~~ (c) SRW, 16 Apr 2012
+//                                                      ~~ (c) SRW, 29 Apr 2012
 
 (function () {
     'use strict';
@@ -14,59 +14,23 @@
 
  // Declarations
 
-    var lib, main, mothership;
+    var q;
 
  // Definitions
 
-    lib = document.createElement('script');
+    q = document.createElement('script');
 
-    main = function () {
+    q.onload = function () {
      // This function needs documentation.
-     /*
-        var Q, x;
-        Q = Object.prototype.Q;
-        Q.box = 'sean';
-        x = Q.avar();
-        x.onerror = function (message) {
-         // This function needs documentation.
-            console.error(message);
-            return;
-        };
-        x.onready = function (evt) {
-         // This function needs documentation.
-            x.val = Math.random();
-            return evt.exit();
-        };
-        x.onready = function (evt) {
-         // This function needs documentation.
-            console.log(x.val);
-            return evt.exit();
-        };
-        x.onready = function (evt) {
-         // This function needs documentation.
-            this.val *= 2;
-            return evt.exit();
-        };
-        x.onready = function (evt) {
-         // This function needs documentation.
-            console.log(x.val);
-            return evt.exit();
-        };
-     */
+        // ...
         return;
     };
 
-    mothership = 'http://qmachine.org';
-
- // Descriptions
-
-    lib.onload = main;
-
-    lib.src = mothership + '/q.js';
+    q.src = 'http://qmachine.org/q.js';
 
  // Invocations
 
-    document.body.appendChild(lib);
+    document.body.appendChild(q);
 
  // That's all, folks!
 
