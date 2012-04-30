@@ -1,16 +1,13 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#
-#   To-do:
-#   -   When deploying to CouchDB, run cleanup/compaction routines also.
-#
-#                                                       ~~ (c) SRW, 17 Apr 2012
+#                                                       ~~ (c) SRW, 29 Apr 2012
 
 include $(PWD)/tools/macros.make
 
 CAT         :=  $(call contingent, gcat cat)
 CD          :=  $(call contingent, cd)
+CLOSURE     :=  $(call contingent, closure)                     #-  Google
 CONVERT     :=  $(call contingent, convert)                     #-  ImageMagick
 CP          :=  $(call contingent, gcp cp) -rf
 CURL        :=  $(call contingent, curl)
@@ -24,8 +21,24 @@ RM          :=  $(call contingent, grm rm) -rf
 SED         :=  $(call contingent, gsed sed)
 SORT        :=  $(call contingent, gsort sort)
 XARGS       :=  $(call contingent, xargs)
+YUICOMP     :=  $(call contingent, yuicompressor)
 
 APPS    :=  $(shell $(LS) templates)
+
+define compile-with-google-closure
+    $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS \
+        $(1:%=--js %) --js_output_file $(2)
+endef
+
+define compile-with-yuicompressor
+    $(CAT) $(1) > $(2)                                                  ;   \
+    $(YUICOMP) --type js $(2) -o $(2)
+endef
+
+define compile-js
+    $(call aside, "Optimizing scripts: $(1) --> $(2)")                  ;   \
+    $(call compile-with-google-closure, $(1), $(2))
+endef
 
 .PHONY: all clean clobber distclean help reset
 .SILENT: ;
@@ -231,13 +244,6 @@ share/icon-128.png: build/q.png | share/
                 -quality 100 \
                     $< $@
 
-share/q.js: \
-    deps/jslint.js  \
-    deps/json2.js   \
-    deps/quanah.js  \
-    src/qmachine.js | share/
-	@   $(CAT) $^ > $@
-
 share/native-launch-image-ipad-landscape.png: build/q.png | share/
 	@   $(CONVERT) \
                 -fill '#CCCCCC' \
@@ -282,6 +288,13 @@ share/native-launch-image-iphone4.png: build/q.png | share/
                 -draw 'color 0,0 reset' \
                 -extent 640x960 \
                     $< $@
+
+share/q.js: \
+    deps/jslint.js  \
+    deps/json2.js   \
+    deps/quanah.js  \
+    src/qmachine.js | share/
+	@   $(call compile-js, $^, $@)
 
 share/qr.png: | share/
 	@   $(QRENCODE) --margin=1 --size=10 --output=$@ http://qmachine.org
