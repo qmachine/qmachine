@@ -1,7 +1,7 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 29 Apr 2012
+#                                                       ~~ (c) SRW, 30 Apr 2012
 
 include $(PWD)/tools/macros.make
 
@@ -79,7 +79,7 @@ $(APPS): | apps/ share/
 apps build deps share:
 	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
 
-backend couchdb-app: \
+backend: \
     deps/jslint.js \
     deps/json2.js \
     deps/quanah.js \
