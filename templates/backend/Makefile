@@ -1,7 +1,7 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 17 Apr 2012
+#                                                       ~~ (c) SRW, 09 May 2012
 
 PROJ_ROOT   :=  $(PWD)/../..#
 
@@ -17,6 +17,7 @@ DISPOSABLE  := \
     $(WWWDIR)/main.js \
     $(WWWDIR)/print.css \
     $(WWWDIR)/q.js \
+    $(WWWDIR)/q-min.js \
     $(WWWDIR)/robots.txt \
     $(WWWDIR)/screen.css \
     $(WWWDIR)/touch-icon-ipad.png \
@@ -51,7 +52,6 @@ reset:
 	@   $(call contingent, clear)
 
 run: $(DISPOSABLE)
-	@   $(call aside, '(backend-node.js-couchdb placeholder)')
 
 ###
 

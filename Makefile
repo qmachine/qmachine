@@ -1,7 +1,7 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 30 Apr 2012
+#                                                       ~~ (c) SRW, 09 May 2012
 
 include $(PWD)/tools/macros.make
 
@@ -36,12 +36,12 @@ define compile-with-yuicompressor
 endef
 
 define compile-js
-    $(call aside, "Optimizing scripts: $(1) --> $(2)")                  ;   \
-    $(call do-not-compile-js, $(1), $(2))
-endef
-
-define do-not-compile-js
-    $(CAT) $(1) > $(2)
+    if [ $(words $(1)) -eq 1 ]; then                                        \
+        $(call aside, "Optimizing script: $(1) -> $(2)")                ;   \
+    else                                                                    \
+        $(call aside, "Optimizing scripts: $(1) -> $(2)")               ;   \
+    fi                                                                  ;   \
+    $(call compile-with-google-closure, $(1), $(2))
 endef
 
 .PHONY: all clean clobber distclean help reset
@@ -89,6 +89,7 @@ backend: \
     deps/quanah.js \
     share/favicon.ico \
     share/q.js \
+    share/q-min.js \
     share/touch-icon-ipad.png \
     share/touch-icon-ipad3.png \
     share/touch-icon-iphone.png \
@@ -301,7 +302,10 @@ share/q.js: \
     deps/json2.js   \
     deps/quanah.js  \
     src/qmachine.js | share/
-	@   $(call compile-js, $^, $@)
+	@   $(CAT) $^ > $@
+
+share/q-min.js: share/q.js | share/
+	@   $(call compile-js, $<, $@)
 
 share/qr.png: | share/
 	@   $(QRENCODE) --margin=1 --size=10 --output=$@ http://qmachine.org

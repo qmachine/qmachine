@@ -16,7 +16,14 @@
 //  running as part of the presentation layer for Q Machine's website, rather
 //  than as part of the infrastructure providing Q Machine's web service.
 //
-//                                                      ~~ (c) SRW, 08 May 2012
+//  NOTE: For maximum performance in your own app, embed "q-min.js", which is
+//  a minified, optimized version of "q.js". Typically, I use either Google's
+//  Closure compiler or else the YUI Compressor to produce this version. I
+//  make it available out of the goodness of my heart (what little there is),
+//  but I will not respond to bug reports that cannot be reproduced in "q.js"
+//  because I am not an active developer for either of the optimizers.
+//
+//                                                      ~~ (c) SRW, 09 May 2012
 
 (function () {
     'use strict';
