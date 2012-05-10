@@ -37,7 +37,11 @@ endef
 
 define compile-js
     $(call aside, "Optimizing scripts: $(1) --> $(2)")                  ;   \
-    $(call compile-with-google-closure, $(1), $(2))
+    $(call do-not-compile-js, $(1), $(2))
+endef
+
+define do-not-compile-js
+    $(CAT) $(1) > $(2)
 endef
 
 .PHONY: all clean clobber distclean help reset
@@ -128,6 +132,7 @@ deps/node-sqlite3: | deps/
 
 deps/jslint.js: | deps/
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
+            $(call aside, 'Retrieving $(notdir $@) ...')                ;   \
             $(CURL) -s -o $@ $${CROCKHUB}/JSLint/master/jslint.js       ;   \
             if [ $$? -ne 0 ]; then                                          \
                 $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
@@ -135,6 +140,7 @@ deps/jslint.js: | deps/
 
 deps/json2.js: | deps/
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
+            $(call aside, 'Retrieving $(notdir $@) ...')                ;   \
             $(CURL) -s -o $@ $${CROCKHUB}/JSON-js/master/json2.js       ;   \
             if [ $$? -ne 0 ]; then                                          \
                 $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
@@ -142,6 +148,7 @@ deps/json2.js: | deps/
 
 deps/quanah.js: | deps/
 	@   SEANHUB="https://raw.github.com/wilkinson"                  ;   \
+            $(call aside, 'Retrieving $(notdir $@) ...')                ;   \
             $(CURL) -s -o $@ $${SEANHUB}/quanah/master/src/quanah.js    ;   \
             if [ $$? -ne 0 ]; then                                          \
                 $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
