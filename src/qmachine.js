@@ -248,7 +248,9 @@
     mothership = 'http://qmachine.org';
 
     state = {
-     // This object needs documentation.
+     // This object needs documentation. It may also need a mechanism to keep
+     // the requests from polling too quickly. Eventually I'd like to move to
+     // HTML5 Server Sent Events, but for now, GET and POST will have to do.
         box: avar().key,
         requests_remaining: 5
     };
