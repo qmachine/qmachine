@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 29 Apr 2012
+//                                                      ~~ (c) SRW, 16 May 2012
 
 (function (global) {
     'use strict';
@@ -18,8 +18,8 @@
 
  // Declarations
 
-    var Q, ajax_request, avar, http_GET, http_POST, isBrowser, isNodejs,
-        mothership, state;
+    var Q, ajax_request, avar, capture, http_GET, http_POST, isBrowser,
+        isNodejs, isWebWorker, lib, mothership, retrieve, state;
 
  // Definitions
 
@@ -40,6 +40,12 @@
     };
 
     avar = Q.avar;
+
+    capture = function (data) {
+     // This function needs documentation.
+        state.shelf.push(data);
+        return avar().revive();
+    };
 
     http_GET = function (x) {
      // This function needs documentation.
@@ -82,7 +88,14 @@
                 req.onreadystatechange = function () {
                  // This function needs documentation.
                     if (req.readyState === 4) {
+                        if (req.status === 502) {
+                         // These are really annoying me because I am having
+                         // trouble figuring out what's wrong with my server.
+                         // In the meantime, I'll just repeat ad nauseam :-P
+                            return evt.stay();
+                        }
                         if (req.status !== 200) {
+                         // Something else went wrong, and we can't ignore it.
                             return evt.fail(req.responseText);
                         }
                         y.val = req.responseText;
@@ -173,7 +186,14 @@
                 req.onreadystatechange = function () {
                  // This function needs documentation.
                     if (req.readyState === 4) {
+                        if (req.status === 502) {
+                         // These are really annoying me because I am having
+                         // trouble figuring out what's wrong with my server.
+                         // In the meantime, I'll just repeat ad nauseam :-P
+                            return evt.stay();
+                        }
                         if (req.status !== 201) {
+                         // Something else went wrong, and we can't ignore it.
                             return evt.fail(req.responseText);
                         }
                         y.val = req.responseText;
@@ -232,7 +252,7 @@
         return y;
     };
 
-    isBrowser = function (f) {
+    isBrowser = function () {
      // This function needs documentation.
         return ((global.hasOwnProperty('location'))             &&
                 (global.hasOwnProperty('navigator'))            &&
@@ -240,24 +260,122 @@
                 (global.hasOwnProperty('system') === false));
     };
 
-    isNodejs = function (f) {
+    isNodejs = function () {
      // This function needs documentation.
         return ((global.hasOwnProperty('process') === true));
     };
 
+    isWebWorker = function () {
+     // This function needs documentation.
+        return ((global.hasOwnProperty('importScripts'))        &&
+                (global.hasOwnProperty('location'))             &&
+                (global.hasOwnProperty('navigator'))            &&
+                (global.hasOwnProperty('phantom') === false)    &&
+                (global.hasOwnProperty('system') === false));
+    };
+
+    lib = function (url) {
+     // This function needs documentation.
+        var y = avar();
+        if (isWebWorker()) {
+            y.onready = function (evt) {
+             // This function needs documentation.
+                global.importScripts(url);
+                return evt.exit();
+            };
+        } else if (isBrowser()) {
+            y.onready = function (evt) {
+             // This function needs documentation.
+                /*jslint browser: true */
+                var current, flag, i, n, script;
+                current = global.document.getElementsByTagName('script');
+                flag = false;
+                n = current.length;
+                for (i = 0; (flag === false) && (i < n); i += 1) {
+                    if (url === current[i].src) {
+                        flag = true;
+                    }
+                }
+                if (flag === true) {
+                    return evt.exit();
+                }
+                script = global.document.createElement('script');
+                script.onload = function () {
+                 // This function needs documentation.
+                    return evt.exit();
+                };
+                script.src = url;
+                if ((global.document.body instanceof Object) === false) {
+                    global.document.head.appendChild(script);
+                } else {
+                    global.document.body.appendChild(script);
+                }
+                script = null;
+                return;
+            };
+        } else {
+            y.onready = function (evt) {
+             // This function needs documentation.
+                return evt.fail('Missing "lib" definition');
+            };
+        }
+        return y;
+    };
+
     mothership = 'http://qmachine.org';
+
+    retrieve = function (f) {
+     // This function needs documentation.
+        var y = avar();
+        y.onready = function (evt) {
+         // This function needs documentation.
+            var flag, i;
+            flag = false;
+            i = 0;
+            while ((flag === false) && (i < state.shelf.length)) {
+                if (f(state.shelf[i]) === true) {
+                    y.val = state.shelf.splice(i, 1)[0];
+                    flag = true;
+                } else {
+                    i += 1;
+                }
+            }
+            if (flag === false) {
+                return evt.stay('Nothing matched yet ...');
+            }
+            return evt.exit();
+        };
+        return y;
+    };
 
     state = {
      // This object needs documentation. It may also need a mechanism to keep
      // the requests from polling too quickly. Eventually I'd like to move to
      // HTML5 Server Sent Events, but for now, GET and POST will have to do.
         box: avar().key,
-        requests_remaining: 5
+        requests_remaining: 5,
+        shelf: []
     };
 
  // Out-of-scope definitions
 
-    if (avar().constructor.prototype.hasOwnProperty('box') === false) {
+    if (Q.hasOwnProperty('box') === false) {
+     // Here, we enable users to send jobs to different "boxes" by labeling
+     // the avars on a per-case basis, rather than on a session-level basis.
+     // More explanation will be included in the upcoming paper :-)
+        Object.defineProperty(Q, 'box', {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+             // This function needs documentation.
+                return state.box;
+            },
+            set: function (x) {
+             // This function needs documentation.
+                state.box = x.toString();
+                return;
+            }
+        });
         Object.defineProperty(avar().constructor.prototype, 'box', {
             configurable: true,
             enumerable: false,
@@ -278,21 +396,29 @@
         });
     }
 
-    if (Q.hasOwnProperty('box') === false) {
-        Object.defineProperty(Q, 'box', {
-            configurable: false,
-            enumerable: true,
-            get: function () {
-             // This function needs documentation.
-                return state.box;
-            },
-            set: function (x) {
-             // This function needs documentation.
-                state.box = x.toString();
-                return;
+    (function () {
+     // Here, we add some static methods to Q that make Q Machine a little
+     // more convenient to use ...
+        var key, template;
+        template = {
+            capture:    capture,
+            lib:        lib,
+            retrieve:   retrieve
+        };
+        for (key in template) {
+            if (template.hasOwnProperty(key)) {
+                if (Q.hasOwnProperty(key) === false) {
+                    Object.defineProperty(Q, key, {
+                        configurable: false,
+                        enumerable: true,
+                        writable: false,
+                        value: template[key]
+                    });
+                }
             }
-        });
-    }
+        }
+        return;
+    }());
 
     Q.init({
         jobs: function (box) {
@@ -337,6 +463,12 @@
             return http_POST(x);
         }
     });
+
+ // Configure a background "daemon" to revive execution if appropriate ...
+
+    if (typeof global.setInterval === 'function') {
+        global.setInterval(Q.avar().revive, 1000);
+    }
 
  // That's all, folks!
 

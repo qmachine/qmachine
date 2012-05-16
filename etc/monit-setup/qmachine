@@ -1,0 +1,14 @@
+#-  Monit service configuration file
+
+#-  qmachine ~~
+#                                                       ~~ (c) SRW, 16 May 2012
+
+#-  Original version (Node.js + CouchDB stack):
+#
+check host qmachine with address qmachine.org
+    start program = "/usr/bin/nodejs /var/www/qmachine/server.js"
+    stop program = "/usr/bin/pkill -f 'nodejs /var/www/qmachine/server.js'"
+    if failed port 80 protocol HTTP then restart
+    #if uptime > 24 hours then restart
+
+#-  vim:set syntax=conf:
