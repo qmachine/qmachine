@@ -115,13 +115,13 @@
         {
             continuous: true,
             doc_ids:    ['_design/qmachine'],
-            source:     'http://qmachine.iriscouch.com/db',
+            source:     'https://qmachine.iriscouch.com/db',
             target:     'http://localhost:5984/db'
         },
         {
             continuous: true,
             doc_ids:    ['_design/qmachine'],
-            source:     'http://qmachine.iriscouch.com/www',
+            source:     'https://qmachine.iriscouch.com/www',
             target:     'http://localhost:5984/www'
         }
     ]);

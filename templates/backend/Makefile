@@ -101,7 +101,7 @@ $(APP_DIRS) $(WWW_DIR)/_attachments/:
             done
 
 $(DB_DIR)/.couchapprc: | $(DB_DIR)/
-	@   $(call get-login, qmachine.iriscouch.com:5984/db, http, $@)
+	@   $(call get-login, qmachine.iriscouch.com:6984/db, https, $@)
 
 $(RO_DIR)/.couchapprc: $(DB_DIR)/.couchapprc | $(RO_DIR)/
 	@   $(CP) $< $@
@@ -109,7 +109,7 @@ $(RO_DIR)/.couchapprc: $(DB_DIR)/.couchapprc | $(RO_DIR)/
 $(STATIC_CONTENT): | $(WWW_DIR)/_attachments/
 
 $(WWW_DIR)/.couchapprc: | $(WWW_DIR)/
-	@   $(call get-login, qmachine.iriscouch.com:5984/www, http, $@)
+	@   $(call get-login, qmachine.iriscouch.com:6984/www, https, $@)
 
 $(WWW_DIR)/_attachments/cache.manifest: $(PROJ_ROOT)/src/cache.manifest
 	@   $(CP) $< $@                                                 ;   \
