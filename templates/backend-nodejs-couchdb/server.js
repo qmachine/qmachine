@@ -34,13 +34,13 @@
     cluster = require('cluster');
 
     config = {
-        app:    'http://127.0.0.1:5984/db/_design/qmachine/',
+        app:    'http://127.0.0.1:5984/db/_design/app/',
         cpus:   require('os').cpus().length,
         db:     'http://127.0.0.1:5984/db/',
         host:   'qmachine.org',
         log:    null,                   //- coming soon ;-)
         port:   80,
-        www:    'http://127.0.0.1:5984/www/_design/qmachine/_rewrite/'
+        www:    'http://127.0.0.1:5984/www/_design/app/_rewrite/'
     };
 
     handle_GET = function (outer_req, outer_res) {

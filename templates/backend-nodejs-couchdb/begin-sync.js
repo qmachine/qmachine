@@ -114,13 +114,13 @@
     begin_sync([
         {
             continuous: true,
-            doc_ids:    ['_design/qmachine'],
+            doc_ids:    ['_design/app'],
             source:     'https://qmachine.iriscouch.com/db',
             target:     'http://localhost:5984/db'
         },
         {
             continuous: true,
-            doc_ids:    ['_design/qmachine'],
+            doc_ids:    ['_design/app'],
             source:     'https://qmachine.iriscouch.com/www',
             target:     'http://localhost:5984/www'
         }
