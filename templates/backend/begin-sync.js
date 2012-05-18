@@ -9,7 +9,7 @@
 //
 //  The cloud source is running CouchDB 1.1.1 on an unknown operating system.
 //
-//                                                      ~~ (c) SRW, 17 May 2012
+//                                                      ~~ (c) SRW, 18 May 2012
 
 (function () {
     'use strict';
@@ -54,7 +54,7 @@
                     process.stdout.write('(canceled)\n');
                     process.exit();
                 } else {
-                    process.stdout.write((echo === true) ? c : '*');
+                    process.stdout.write((echo === true) ? c : '');
                     y += c;
                 }
                 return;
