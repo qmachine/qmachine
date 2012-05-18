@@ -1,19 +1,22 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
+#
+#   This contains a live workflow for rapid webapp development with CouchDB.
+#
 #                                                       ~~ (c) SRW, 17 May 2012
 
 PROJ_ROOT   :=  $(PWD)/../../../
 
 include $(PROJ_ROOT)/tools/macros.make
 
-APP         :=  qmachine
-DB          :=  qmachine.iriscouch.com:5984/www
+APP         :=  read-only
+DB          := 	qmachine.iriscouch.com:5984/db
 PROTOCOL    :=  http
 
 COUCHAPP    :=  $(call contingent, couchapp) --quiet
-CP          :=  $(call contingent, rsync) --archive
-RM          :=  $(call contingent, rm) -rf
+CP          :=  $(call contingent, gcp cp) -rf
+RM          :=  $(call contingent, grm rm) -rf
 
 .PHONY: all clean clobber distclean reset run
 

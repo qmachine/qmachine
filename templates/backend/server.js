@@ -13,7 +13,7 @@
 //  style, in particular), but I don't expect to have to edit this program
 //  much anyway after a successful, stable deployment :-)
 //
-//                                                      ~~ (c) SRW, 28 Apr 2012
+//                                                      ~~ (c) SRW, 18 May 2012
 
 (function () {
     'use strict';
@@ -40,7 +40,7 @@
         host:   'qmachine.org',
         log:    null,                   //- coming soon ;-)
         port:   80,
-        www:    'http://127.0.0.1:5984/www/_design/public_html/_rewrite/'
+        www:    'http://127.0.0.1:5984/www/_design/qmachine/_rewrite/'
     };
 
     handle_GET = function (outer_req, outer_res) {

@@ -1,6 +1,6 @@
 //- JavaScript source code
 
-//- replicate-from-cloud.js ~~
+//- begin-sync.js ~~
 //
 //  This has been tested successfully on the following platforms:
 //

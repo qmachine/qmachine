@@ -1,36 +1,54 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 09 May 2012
+#                                                       ~~ (c) SRW, 18 May 2012
 
 PROJ_ROOT   :=  $(PWD)/../..#
 
 include $(PROJ_ROOT)/tools/macros.make
 
-WWWDIR  :=  $(PWD)/www/_attachments
+DB_DIR      :=  $(PWD)/db
+RO_DIR      :=  $(PWD)/read-only
+WWW_DIR     :=  $(PWD)/www
+APP_DIRS    :=  $(DB_DIR) $(RO_DIR) $(WWW_DIR)
 
-DISPOSABLE  := \
-    $(WWWDIR)/cache.manifest \
-    $(WWWDIR)/favicon.ico \
-    $(WWWDIR)/ie.js \
-    $(WWWDIR)/index.html \
-    $(WWWDIR)/main.js \
-    $(WWWDIR)/print.css \
-    $(WWWDIR)/q.js \
-    $(WWWDIR)/q-min.js \
-    $(WWWDIR)/robots.txt \
-    $(WWWDIR)/screen.css \
-    $(WWWDIR)/touch-icon-ipad.png \
-    $(WWWDIR)/touch-icon-ipad3.png \
-    $(WWWDIR)/touch-icon-iphone.png \
-    $(WWWDIR)/touch-icon-iphone4.png \
-    $(WWWDIR)/web-launch-image-iphone.png \
-    $(WWWDIR)/web-launch-image-iphone4.png
-
+BEGIN_SYNC  :=  $(call contingent, node nodejs) $(PWD)/begin-sync.js
+COUCHAPP    :=  $(call contingent, couchapp) --quiet
 CP          :=  $(call contingent, gcp cp) -rf
 DATE        :=  $(call contingent, date)
 MKDIR       :=  $(call contingent, gmkdir mkdir)
 RM          :=  $(call contingent, grm rm) -rf
+
+STATIC_CONTENT := \
+    $(addprefix $(WWW_DIR)/_attachments/,   \
+        cache.manifest                      \
+        favicon.ico                         \
+        ie.js                               \
+        index.html                          \
+        main.js                             \
+        print.css                           \
+        q.js                                \
+        q-min.js                            \
+        robots.txt                          \
+        screen.css                          \
+        touch-icon-ipad.png                 \
+        touch-icon-ipad3.png                \
+        touch-icon-iphone.png               \
+        touch-icon-iphone4.png              \
+        web-launch-image-iphone.png         \
+        web-launch-image-iphone4.png        \
+    )
+
+define get-login
+    $(strip \
+        $(call hilite, "Authenticating for $(1) ...")                   ;   \
+        printf '%s' '{"env": {"default": {"db": "$(strip $(2))' > $(3)  ;   \
+        $(call read-prompt, "Username: ") && USERNAME="$${REPLY}"       ;   \
+        $(call read-secure, "Password: ") && PASSWORD="$${REPLY}"       ;   \
+        printf '%s' "://$${USERNAME}:$${PASSWORD}@$(strip $(1))" \
+                                                        '"}}}' >> $(3)  ;   \
+    )
+endef
 
 define stamp-with-epoch-time
     $(DATE) -j -f '%a %b %d %T %Z %Y' "`date`" '+# %s' >> $(1)
@@ -46,28 +64,68 @@ clean: reset
 clobber: clean
 
 distclean: clobber
-	@   $(RM) $(DISPOSABLE)
+	@   $(RM) $(STATIC_CONTENT)
 
 reset:
 	@   $(call contingent, clear)
 
-run: $(DISPOSABLE)
+run: $(STATIC_CONTENT)
 
 ###
 
-$(DISPOSABLE): | $(WWWDIR)
+.PHONY: deploy sync
 
-$(WWWDIR):
-	@   if [ ! -f $@ ]; then $(MKDIR) $@; fi
+deploy: \
+    $(APP_DIRS:%=%/.couchappignore) \
+    $(APP_DIRS:%=%/.couchapprc)     \
+    $(STATIC_CONTENT)
+	@   for each in $(APP_DIRS); do                                     \
+                $(call aside, "Pushing $${each} ...")                   ;   \
+                cd $${each}                                             ;   \
+                $(COUCHAPP) push                                        ;   \
+            done                                                        ;   \
+            $(call hilite, 'Done.')
 
-$(WWWDIR)/cache.manifest: $(PROJ_ROOT)/src/cache.manifest
+sync:
+	@   $(BEGIN_SYNC)
+
+###
+
+.NOTPARALLEL: $(APP_DIRS:%=%/.couchapprc)
+
+$(APP_DIRS) $(WWW_DIR)/_attachments/:
+	@   for each in $@; do                                              \
+                if [ ! -f $${each} ]; then                                  \
+                    $(MKDIR) $${each}                                   ;   \
+                fi                                                      ;   \
+            done
+
+$(DB_DIR)/.couchapprc: | $(DB_DIR)/
+	@   $(call get-login, qmachine.iriscouch.com:5984/db, http, $@)
+
+$(RO_DIR)/.couchapprc: $(DB_DIR)/.couchapprc | $(RO_DIR)/
+	@   $(CP) $< $@
+
+$(STATIC_CONTENT): | $(WWW_DIR)/_attachments/
+
+$(WWW_DIR)/.couchapprc: | $(WWW_DIR)/
+	@   $(call get-login, qmachine.iriscouch.com:5984/www, http, $@)
+
+$(WWW_DIR)/_attachments/cache.manifest: $(PROJ_ROOT)/src/cache.manifest
 	@   $(CP) $< $@                                                 ;   \
             $(call stamp-with-epoch-time, $@)
 
-$(WWWDIR)/%: $(PROJ_ROOT)/share/%
+$(WWW_DIR)/_attachments/: | $(WWW_DIR)/
+
+$(WWW_DIR)/_attachments/%: $(PROJ_ROOT)/share/%
 	@   $(CP) $< $@
 
-$(WWWDIR)/%: $(PROJ_ROOT)/src/%
+$(WWW_DIR)/_attachments/%: $(PROJ_ROOT)/src/%
+	@   $(CP) $< $@
+
+###
+
+$(PWD)/%/.couchappignore: $(PWD)/.couchappignore | $(PWD)/%/
 	@   $(CP) $< $@
 
 ###

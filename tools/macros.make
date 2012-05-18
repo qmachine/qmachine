@@ -88,4 +88,16 @@ define contingent
     )
 endef
 
+define read-prompt
+    printf '%s' $(1)                                                    ;   \
+    read REPLY
+endef
+
+define read-secure
+    $(call contingent, stty) -echo                                      ;   \
+    $(call read-prompt, $(1))                                           ;   \
+    $(call contingent, stty) echo                                       ;   \
+    printf '\n' ''
+endef
+
 #-  vim:set syntax=make:
