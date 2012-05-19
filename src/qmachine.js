@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 16 May 2012
+//                                                      ~~ (c) SRW, 18 May 2012
 
 (function (global) {
     'use strict';
@@ -31,6 +31,15 @@
         var req;
         if (global.hasOwnProperty('XMLHttpRequest')) {
             req = new global.XMLHttpRequest();
+            if (global.location.host !== mothership) {
+                if (req.hasOwnProperty('withCredentials')) {
+                    return req;
+                }
+                if (global.hasOwnProperty('XDomainRequest')) {
+                    return new global.XDomainRequest();
+                }
+                throw new Error('This browser does not support CORS.');
+            }
         } else if (global.hasOwnProperty('ActiveXObject')) {
             req = new global.ActiveXObject('Microsoft.XMLHTTP');
         } else {

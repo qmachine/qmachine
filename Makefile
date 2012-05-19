@@ -83,7 +83,7 @@ $(APPS): | apps/ share/
 apps build deps share:
 	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
 
-backend-nginx-couchdb backend-nodejs-couchdb: \
+backend-couchdb: \
     deps/jslint.js \
     deps/json2.js \
     deps/quanah.js \
