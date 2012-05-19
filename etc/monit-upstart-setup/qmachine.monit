@@ -1,0 +1,17 @@
+#-  Monit service configuration file
+
+#-  qmachine.monit (-> /etc/monit.d/qmachine) ~~
+#
+#   Note that, because the Upstart script downloads the latest version of the
+#   the server code prior to launch, it would be pretty easy to configure an
+#   autoupdate system. I left an example in the comments :-)
+#
+#                                                       ~~ (c) SRW, 19 May 2012
+
+check host qmachine with address qmachine.org
+    start program = "/sbin/start qmachine"
+    stop program  = "/sbin/stop qmachine"
+    if failed port 80 protocol HTTP then restart
+  # if uptime > 24 hours then restart
+
+#-  vim:set syntax=conf:
