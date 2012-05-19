@@ -85,11 +85,12 @@
          // Case 1
             outer_res.writeHead('204', '(no content)', {
                 'Access-Control-Allow-Origin':  '*',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS, POST',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, Accept',
                 'Access-Control-Max-Age':       10, //- seconds
                 'Content-Length':               0
             });
+            outer_res.end();
             return;
         }
         if ((outer_req.method !== 'GET') && (outer_req.method !== 'POST')) {
@@ -98,10 +99,11 @@
             outer_res.end();
             return;
         }
+        outer_res.setHeader('Access-Control-Allow-Origin', '*');
         pat = /^\/box\/([^\&\/]+)[?](key|status)[=]([^\&]+)$/;
         target = outer_req.url.replace(pat, function (all, box, pkey, pval) {
          // This function needs documentation.
-            var y = config.app;
+            var y = config.app + '/_';
             if (pkey === 'key') {
                 if (outer_req.method === 'GET') {
                     return y + 'show/data/' + box + '&' + pval;
@@ -113,9 +115,10 @@
         if (target === outer_req.url) {
             options = url.parse(config.www + outer_req.url);
         } else {
-            options = url.parse(target);
+            options = url.parse(encodeURI(target));
         }
         options.headers = outer_req.headers;
+        options.headers['Content-Type'] = 'application/json';
         options.method = outer_req.method;
         inner_req = http.request(options, function (inner_res) {
          // This function needs documentation.
