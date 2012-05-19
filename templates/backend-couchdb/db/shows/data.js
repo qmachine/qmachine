@@ -39,6 +39,8 @@ function (doc, req) {
         }
     }
 
+    //delete y['last_updated'];
+
  // That's all, folks!
 
     return {

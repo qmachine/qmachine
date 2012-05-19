@@ -47,7 +47,7 @@ function (doc, req) {
         }
     }
 
-    doc.last_updated = (new Date()).valueOf();
+    //doc.last_updated = (new Date()).valueOf();
 
     response = {
         headers: {
