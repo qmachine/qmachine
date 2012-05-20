@@ -1,7 +1,7 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 09 May 2012
+#                                                       ~~ (c) SRW, 19 May 2012
 
 include $(PWD)/tools/macros.make
 
@@ -88,6 +88,7 @@ backend-couchdb: \
     deps/json2.js \
     deps/quanah.js \
     share/favicon.ico \
+    share/giant-favicon.ico \
     share/q.js \
     share/q-min.js \
     share/touch-icon-ipad.png \
@@ -231,6 +232,32 @@ share/facebook-75x75.png: build/q.png | share/
 
 share/favicon.ico: build/q.png | share/
 	@   $(CONVERT) -compress Zip -resize 16x16 $< $@
+
+share/touch-icon-iphone.png: build/q.png | share/
+        @   $(CONVERT) \
+                $< \( +clone \
+                    -channel A -morphology EdgeOut Diamond:10 +channel \
+                    +level-colors white \
+                \) -compose DstOver \
+                -background none \
+                -density 96 \
+                -resize 50x50 \
+                -gravity center \
+                -extent 57x57 \
+                -quality 100 \
+                -composite \
+                -background '#929292' -alpha remove -alpha off \
+                    $@
+
+share/giant-favicon.ico: build/q.png | share/
+	@   $(CONVERT) $< \
+                \( -clone 0 -resize 16x16 \) \
+                \( -clone 0 -resize 24x24 \) \
+                \( -clone 0 -resize 32x32 \) \
+                \( -clone 0 -resize 48x48 \) \
+                \( -clone 0 -resize 64x64 \) \
+                -delete 0 \
+                    $@
 
 share/googlecode.png: build/q.png | share/
 	@   $(CONVERT) \

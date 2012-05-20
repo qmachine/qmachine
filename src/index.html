@@ -11,7 +11,14 @@
     <base href="http://qmachine.org/" target="_blank">
     <link rel="stylesheet" href="./print.css" media="print"/>
     <link rel="stylesheet" href="./screen.css" media="screen"/>
+
+  <!--[if IE]>
+    <link rel="shortcut icon" href="./giant-favicon.ico"/>
+  <![endif]-->
+
+  <!--[if !IE]>-->
     <link rel="shortcut icon" href="./favicon.ico"/>
+  <!--<![endif]-->
 
   <!--
     Android / iOS stuff
@@ -55,7 +62,7 @@
     Google Chrome Frame
   -->
 
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="chrome=IE8">
 
   <!--
     Google webmaster tools
@@ -63,6 +70,20 @@
 
     <meta name="google-site-verification"
         content="gLHRdPXh_OwoWzs7VV-N1AroMwLbMD5SKqy0-GcMP9g" />
+
+  <!--
+    Internet Explorer experiments ...
+  -->
+
+    <meta name="application-name" content="Q Machine" />
+    <meta name="msapplication-navbutton-color" content="navy" />
+    <meta name="msapplication-starturl" content="http://qmachine.org/" />
+    <meta name="msapplication-task"
+        content="name=Fork me on Github!;action-uri=https://github.com/wilkinson/qmachine;icon-uri=https://github.com/favicon.ico" />
+
+    <meta name="msapplication-tooltip"
+        content="The World's Most Relaxed Supercomputer" />
+    <meta name="msapplication-window" content="width=800;height=600" />
 
   <!--
     (Open Graph Protocol omitted for now)
@@ -90,10 +111,11 @@
 
     <div id="tape">Welcome :-)</div>
 
-  <!--[if IE]>
-
+  <!--[if lt IE 9]>
     <script type="text/javascript" src="./ie.js"></script>
-
+  <![endif]-->
+  <!--[if gte IE 9]>
+    <script src="./main.js"></script>
   <![endif]-->
 
   <!--[if !IE]>-->

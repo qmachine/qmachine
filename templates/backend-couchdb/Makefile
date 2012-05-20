@@ -22,6 +22,7 @@ STATIC_CONTENT := \
     $(addprefix $(WWW_DIR)/_attachments/,   \
         cache.manifest                      \
         favicon.ico                         \
+        giant-favicon.ico                   \
         ie.js                               \
         index.html                          \
         main.js                             \
