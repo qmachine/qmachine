@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 18 May 2012
+//                                                      ~~ (c) SRW, 20 May 2012
 
 (function (global) {
     'use strict';
@@ -362,7 +362,7 @@
      // the requests from polling too quickly. Eventually I'd like to move to
      // HTML5 Server Sent Events, but for now, GET and POST will have to do.
         box: avar().key,
-        requests_remaining: 5,
+        requests_remaining: 10,
         shelf: []
     };
 
