@@ -36,3 +36,4 @@ In the future, I would like to integrate Q Machine with "app ecosystems" like
 -   [SMART Platform](http://www.smartplatforms.org/)
 -   [Windows Phone](http://www.windowsphone.com/en-US/marketplace)
 
+
