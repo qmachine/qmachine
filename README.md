@@ -27,6 +27,7 @@ In the future, I would like to integrate Q Machine with "app ecosystems" like
 -   [DirecTV](http://tvapps.directv.com/)
 -   [Dropbox](https://www.dropbox.com/developers/apps/)
 -   [ePrintCenter](https://h30495.www3.hp.com/apps/)
+-   [Internet Explorer Gallery](http://www.iegallery.com/)
 -   [Kynetx](http://developer.kynetx.com/)
 -   [Mozilla Marketplace](https://www.mozilla.org/en-US/apps/partners/)
 -   [iOS](http://itunes.apple.com/us/app/)
