@@ -1,7 +1,10 @@
 //- JavaScript source code
 
-//- tcga-manifest.js ~~
-//                                                      ~~ (c) SRW, 09 May 2012
+//- manifest.js ~~
+//                                                      ~~ (c) SRW, 21 May 2012
+
+/*jslint indent: 4, maxlen: 80 */
+/*global manifest: false */
 
 manifest([
     {
