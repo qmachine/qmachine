@@ -1,0 +1,26 @@
+{
+    "name": "qmachine",
+    "version": "0.0.1",
+    "description": "Client for Q Machine (http://qmachine.org)",
+    "author": {
+        "name": "Sean Wilkinson",
+        "url":  "http://wilkinson.github.com"
+    },
+    "keywords": [
+        "computation",
+        "computing",
+        "distributed",
+        "informatics",
+        "machine",
+        "parallel"
+    ],
+    "bin": {
+        "qmachine": "main.js"
+    },
+    "deps": {},
+    "engines": {
+        "node": ">= 0.6.0",
+        "npm": ">= 1.0.0"
+    },
+    "preferGlobal": true
+}

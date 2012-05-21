@@ -106,7 +106,7 @@ build/q.png: build/q.tex | build/
                 -density 8192 \
                 -resize 1024x1024 \
                 -gravity center \
-                -extent 1024x1024 \
+                -extent 1170x1170 \
                 -transparent white \
                 -transparent-color '#929292' \
                 -quality 100 \
@@ -122,15 +122,6 @@ chrome-hosted-app: \
 chrome-packaged-app: \
     share/favicon.ico \
     share/icon-128.png
-
-deps/node-sqlite3: | deps/
-	@   REPO="https://github.com/developmentseed/node-sqlite3.git"  ;   \
-            if [ ! -d $@ ]; then                                            \
-                $(GIT) clone $${REPO} $@                                ;   \
-            else                                                            \
-                $(CD) $@                                                ;   \
-                $(GIT) pull                                             ;   \
-            fi
 
 deps/jslint.js: | deps/
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
@@ -174,16 +165,11 @@ ios-native-app: \
     share/touch-icon-iphone.png \
     share/touch-icon-iphone4.png
 
-nodejs-client: \
-    share/q.js
-
 share/bitbucket.jpg: build/q.png | share/
 	@   $(CONVERT) \
                 -background white -alpha remove -alpha off \
                 -density 96 \
-                -resize 31x31 \
-                -gravity center \
-                -extent 35x35 \
+                -resize 35x35 \
                 -quality 100 \
                     $< $@
 
@@ -191,9 +177,7 @@ share/dropbox-16.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background none \
                 -density 96 \
-                -resize 14x14 \
-                -gravity center \
-                -extent 16x16 \
+                -resize 16x16 \
                 -quality 100 \
                     $< $@
 
@@ -201,9 +185,7 @@ share/dropbox-64.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background none \
                 -density 96 \
-                -resize 56x56 \
-                -gravity center \
-                -extent 64x64 \
+                -resize 64x64 \
                 -quality 100 \
                     $< $@
 
@@ -214,9 +196,7 @@ share/facebook-16x16.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background white -alpha remove -alpha off \
                 -density 96 \
-                -resize 14x14 \
-                -gravity center \
-                -extent 16x16 \
+                -resize 16x16 \
                 -quality 100 \
                     $< $@
 
@@ -224,9 +204,7 @@ share/facebook-75x75.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background white -alpha remove -alpha off \
                 -density 96 \
-                -resize 66x66 \
-                -gravity center \
-                -extent 75x75 \
+                -resize 75x75 \
                 -quality 100 \
                     $< $@
 
@@ -241,9 +219,7 @@ share/touch-icon-iphone.png: build/q.png | share/
                 \) -compose DstOver \
                 -background none \
                 -density 96 \
-                -resize 50x50 \
-                -gravity center \
-                -extent 57x57 \
+                -resize 57x57 \
                 -quality 100 \
                 -composite \
                 -background '#929292' -alpha remove -alpha off \
@@ -263,9 +239,7 @@ share/googlecode.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background none \
                 -density 96 \
-                -resize 48x48 \
-                -gravity center \
-                -extent 55x55 \
+                -resize 55x55 \
                 -quality 100 \
                     $< $@
 
@@ -273,9 +247,7 @@ share/icon-128.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background none \
                 -density 96 \
-                -resize 112x112 \
-                -gravity center \
-                -extent 128x128 \
+                -resize 128x128 \
                 -quality 100 \
                     $< $@
 
@@ -345,9 +317,7 @@ share/touch-icon-ipad.png: build/q.png | share/
                 \) -compose DstOver \
                 -background none \
                 -density 96 \
-                -resize 63x63 \
-                -gravity center \
-                -extent 72x72 \
+                -resize 72x72 \
                 -quality 100 \
                 -composite \
                 -background '#929292' -alpha remove -alpha off \
@@ -361,9 +331,7 @@ share/touch-icon-ipad3.png: build/q.png | share/
                 \) -compose DstOver \
                 -background none \
                 -density 96 \
-                -resize 126x126 \
-                -gravity center \
-                -extent 144x144 \
+                -resize 144x144 \
                 -quality 100 \
                 -composite \
                 -background '#929292' -alpha remove -alpha off \
@@ -377,9 +345,7 @@ share/touch-icon-iphone.png: build/q.png | share/
                 \) -compose DstOver \
                 -background none \
                 -density 96 \
-                -resize 50x50 \
-                -gravity center \
-                -extent 57x57 \
+                -resize 57x57 \
                 -quality 100 \
                 -composite \
                 -background '#929292' -alpha remove -alpha off \
@@ -393,9 +359,7 @@ share/touch-icon-iphone4.png: build/q.png | share/
                 \) -compose DstOver \
                 -background none \
                 -density 96 \
-                -resize 100x100 \
-                -gravity center \
-                -extent 114x114 \
+                -resize 114x114 \
                 -quality 100 \
                 -composite \
                 -background '#929292' -alpha remove -alpha off \

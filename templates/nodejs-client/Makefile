@@ -2,73 +2,48 @@
 
 #-  Makefile ~~
 #
-#   This contains live instructions for working with SQLite from Node.js.
+#   This contains live instructions for using the Node.js client to Q Machine.
+#   Please note that it is still a work in progress, which is why I haven't
+#   submitted it to the NPM registry yet ...
 #
-#                                                       ~~ (c) SRW, 15 Mar 2012
+#                                                       ~~ (c) SRW, 21 May 2012
 
 include $(PWD)/../../tools/macros.make
 
-REPO    :=  https://github.com/developmentseed/node-sqlite3.git
-SQLDB   :=  Q.db
-
-CD      :=  $(call contingent, cd)
-CP      :=  $(call contingent, rsync) --archive
-GIT     :=  $(call contingent, git)
-MKDIR   :=  $(call contingent, gmkdir mkdir)
 NODE    :=  $(call contingent, node nodejs)
+NPM     :=  $(call contingent, npm)
 RM      :=  $(call contingent, grm rm) -rf
-SQLITE  :=  $(call contingent, sqlite3)
-
-define run-each
-    $(NODE) q.js cache=remote token=sean $(QARGS)
-endef
 
 .PHONY: all clean clobber distclean reset run
 .SILENT: ;
 
-all: run
+all: build
 
 clean: reset
 
 clobber: clean
-	@   $(RM) $(SQLDB)
 
 distclean: clobber
-	@   $(RM) node_modules
+	@   $(RM) node_modules/
 
 reset:
 	@   $(call contingent, clear)
 
-run: q.js ;#node_modules/sqlite3
-	@   $(call run-each)
+run:
+	@   $(NODE) main.js $(QARGS)
 
 ###
 
-.PHONY: db-dump repl volunteer
+.PHONY: build install uninstall
 
-db-dump:
-	@   $(SQLITE) $(SQLDB) .dump
+build:
+	@   $(call hilite, 'Done.')
 
-repl volunteer: q.js ;#node_modules/sqlite3
-	@   $(call run-each) $@
+install:
+	@   $(NPM) install -g ./
 
-###
-
-q.js: $(PWD)/../../share/q.js
-	@   $(CP) $< $@
-
-node_modules:
-	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
-
-node_modules/sqlite3: node_modules
-	@   if [ -d $(PWD)/../../deps/node-sqlite3 ]; then                  \
-                $(CP) $(PWD)/../../deps/node-sqlite3/ $@                ;   \
-            else                                                            \
-                $(GIT) clone $(REPO) $@                                 ;   \
-            fi                                                          ;   \
-            $(CD) $@                                                    ;   \
-            ./configure                                                 ;   \
-            $(MAKE)
+uninstall:
+	@   $(NPM) uninstall -g qmachine
 
 ###
 
