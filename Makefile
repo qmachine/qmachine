@@ -243,11 +243,11 @@ share/googlecode.png: build/q.png | share/
                 -quality 100 \
                     $< $@
 
-share/icon-128.png: build/q.png | share/
+share/icon-%.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background none \
                 -density 96 \
-                -resize 128x128 \
+                -resize $*x$* \
                 -quality 100 \
                     $< $@
 
