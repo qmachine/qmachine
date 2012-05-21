@@ -14,7 +14,7 @@ body {
     font-family: Georgia, serif;
     font-size: 12pt;
     margin: 1in;
-    text-align: center;
+/*    text-align: center; */
 
 }
 
@@ -35,14 +35,6 @@ a:hover {
 canvas {
 
     border: 1px solid black;
-
-}
-
-div {
-
-    margin-bottom: 1em;
-    margin-top: 1em;
-    text-align: justify;
 
 }
 
@@ -72,6 +64,10 @@ figure img[src$=".svg"] {
 
 footer {}
 
+h1 {
+    text-align: center;
+}
+
 header {}
 
 iframe {
@@ -86,6 +82,14 @@ noscript {
     color: red;
     font-size: 200%;
     text-align: center;
+
+}
+
+p {
+
+    margin-bottom: 1em;
+    margin-top: 1em;
+    text-align: justify;
 
 }
 
