@@ -2,11 +2,11 @@
 
 #-  Makefile ~~
 #
-#   This contains live instructions for using the Node.js client to Q Machine.
+#   This contains live instructions for using the Node.js client to QMachine.
 #   Please note that it is still a work in progress, which is why I haven't
 #   submitted it to the NPM registry yet ...
 #
-#                                                       ~~ (c) SRW, 21 May 2012
+#                                                       ~~ (c) SRW, 23 May 2012
 
 include $(PWD)/../../tools/macros.make
 

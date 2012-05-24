@@ -2,20 +2,20 @@
 
 //- snapshot.js ~~
 //
-//  This program uses PhantomJS to load Q Machine's homepage and render it to a
+//  This program uses PhantomJS to load QMachine's homepage and render it to a
 //  particular file with a particular resolution. PhantomJS has changed its API
 //  pretty drastically over the last few months, and that worries me a little
 //  about the long-term usefulness of this particular program, but it was easy
 //  to write, it's not needed that often, and it can be replaced if necessary
 //  but similar tools like Selenium and Watir (to name a few).
 //
-//  NOTE: Q Machine uses the HTML5 Application Cache, and PhantomJS seems to
+//  NOTE: QMachine uses the HTML5 Application Cache, and PhantomJS seems to
 //  have trouble understanding it correctly. The "phantomjs-config.json" file
 //  helps keep things from being cached, but if you find yourself needing to
 //  clear the cache, you can find it in Mac OS X under
 //      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
 //
-//                                                      ~~ (c) SRW, 05 Apr 2012
+//                                                      ~~ (c) SRW, 23 May 2012
 
 (function (global) {
     'use strict';

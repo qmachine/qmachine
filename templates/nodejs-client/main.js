@@ -1,7 +1,7 @@
-/** Q Machine client ********* BEGIN SHELL SCRIPT ********* >/dev/null 2>&1; #*\
+/** QMachine client ********** BEGIN SHELL SCRIPT ********* >/dev/null 2>&1; #*\
 
 #-  qmachine.js ~~
-#                                                       ~~ (c) SRW, 21 May 2012
+#                                                       ~~ (c) SRW, 23 May 2012
 
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
     emulate sh;

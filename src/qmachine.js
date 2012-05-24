@@ -351,38 +351,7 @@
      // This function needs documentation.
         return function (evt) {
          // This function needs documentation.
-            var x, y;
-            x = (this.hasOwnProperty('isready')) ? this.val[0] : this;
-            y = avar(x);
-            y.onerror = function (message) {
-             // This function needs documentation.
-                return evt.fail(message);
-            };
-            y.onready = function (evt) {
-             // This function needs documentation.
-                ply(y.val).by(function (key, val) {
-                 // This function needs documentation.
-                    y.val[key] = {f: f, x: val};
-                    return;
-                });
-                return evt.exit();
-            };
-            y.onready = ply(function (key, val) {
-             // This function needs documentation.
-                val.y = val.f(val.x);
-                return;
-            });
-            y.onready = function (y_evt) {
-             // This function needs documentation.
-                ply(y.val).by(function (key, val) {
-                 // This function needs documentation.
-                    x.val[key] = val.y;
-                    return;
-                });
-                y_evt.exit();
-                return evt.exit();
-            };
-            return;
+            return evt.fail('`map` is under construction.');
         };
     };
 
@@ -392,48 +361,7 @@
      // This function needs documentation.
         return function (evt) {
          // This function needs documentation.
-            var elements, g, key, n, x;
-            elements = [];
-            g = function (f, key, val) {
-             // This function needs documentation.
-                var temp = avar({val: {f: f, key: key, val: val}});
-                temp.onerror = function (message) {
-                 // This function needs documentation.
-                    return evt.fail(message);
-                };
-                temp.onready = function (evt) {
-                 // This function needs documentation.
-                    this.val.f(this.val.key, this.val.val);
-                    return evt.exit();
-                };
-                temp.onready = function (evt) {
-                 // This function needs documentation.
-                    x.val[key] = this.val.val;
-                    return evt.exit();
-                };
-                return temp;
-            };
-            x = (this.hasOwnProperty('isready')) ? this.val[0] : this;
-            if (isArrayLike(x.val)) {
-                n = x.val.length;
-                for (key = 0; key < n; key += 1) {
-                    elements.push(g(f, key, x.val[key]));
-                }
-            } else if (x.val instanceof Object) {
-                for (key in x.val) {
-                    if (x.val.hasOwnProperty(key)) {
-                        elements.push(g(f, key, x.val[key]));
-                    }
-                }
-            } else {
-                return evt.fail('Cannot "ply" this value (' + x.val + ')');
-            }
-            when.apply(this, elements).onready = function (when_evt) {
-             // This function needs documentation.
-                when_evt.exit();
-                return evt.exit();
-            };
-            return;
+            return evt.fail('`ply` is under construction.');
         };
     };
 
@@ -441,73 +369,7 @@
      // This function needs documentation.
         return function (evt) {
          // This function needs documentation.
-            var x, y;
-            x = (this.hasOwnProperty('isready')) ? this.val[0] : this;
-            y = avar({val: x.val});
-            y.onerror = function (message) {
-             // This function needs documentation.
-                return evt.fail(message);
-            };
-            y.onready = function (evt) {
-             // This function needs documentation.
-                var flag, key, n, pairs, x;
-                flag = true;
-                pairs = [];
-                x = y.val;
-                if (isArrayLike(x)) {
-                    n = x.length;
-                    if ((n % 2) === 1) {
-                        pairs.push(x[0]);
-                        for (key = 1; key < n; key += 2) {
-                            pairs.push([x[key], x[key + 1]]);
-                        }
-                    } else {
-                        for (key = 0; key < n; key += 2) {
-                            pairs.push([x[key], x[key + 1]]);
-                        }
-                    }
-                } else if (x instanceof Object) {
-                    for (key in x) {
-                        if (x.hasOwnProperty(key)) {
-                            if (flag) {
-                                pairs.push([x[key]]);
-                            } else {
-                                (pairs[pairs.length - 1]).push(x[key]);
-                            }
-                            flag = (!flag);
-                        }
-                    }
-                } else {
-                    pairs.push([x]);
-                }
-                y.val = pairs;
-                return evt.exit();
-            };
-            y.onready = map(function (each) {
-             // This function needs documentation.
-                return (each instanceof Array) ? {f: f, x: each} : each;
-            });
-            y.onready = map(function (each) {
-             // This function needs documentation.
-                var flag;
-                flag = ((each !== null) &&
-                        (each !== undefined) &&
-                        (each.hasOwnProperty('f')) &&
-                        (each.hasOwnProperty('x')));
-                return (flag) ? each.f(each.x[0], each.x[1]) : each;
-            });
-            y.onready = function (y_evt) {
-             // This function needs documentation.
-                if (y.val.length > 1) {
-                    x.val = y.val;
-                    y_evt.exit();
-                    return evt.stay('Re-reducing ...');
-                }
-                x.val = y.val[0];
-                y_evt.exit();
-                return evt.exit();
-            };
-            return;
+            return evt.fail('`reduce` is under construction.');
         };
     };
 
@@ -586,7 +448,7 @@
     }
 
     (function () {
-     // Here, we add some static methods to Q that make Q Machine a little
+     // Here, we add some static methods to Q that make QMachine a little
      // more convenient to use ...
         var key, template;
         template = {
@@ -619,7 +481,7 @@
             x = {box: (box || Q.box), status: 'waiting', val: []};
             y = http_GET(x);
             y.onready = function (evt) {
-             // This function deserializes the string returned by Q Machine
+             // This function deserializes the string returned by QMachine
              // into the array of keys that it represents. This is one of the
              // rare instances in which I knowingly change the data type by
              // assignment -- this is not typically advisable because it may
@@ -648,8 +510,8 @@
             return y;
         },
         write: function (x) {
-         // This function sends an HTTP POST to Q Machine. It doesn't worry
-         // about the return data because Q Machine isn't going to return any
+         // This function sends an HTTP POST to QMachine. It doesn't worry
+         // about the return data because QMachine isn't going to return any
          // data -- the request will either succeed or fail, as indicated by
          // the HTTP status code returned. It returns an avar.
             return http_POST(x);

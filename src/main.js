@@ -4,7 +4,7 @@
 //
 //  Currently, this program's only purpose is to load "q.js", but future work
 //  will extend it to create a more immersive experience both for volunteers
-//  and for computational scientists. The recommended way to embed Q Machine
+//  and for computational scientists. The recommended way to embed QMachine
 //  into your own webapps is to insert the following script tag into the body
 //  of your HTML page:
 //
@@ -13,8 +13,8 @@
 //  NOTE: Inserting a script tag that points to "main.js" is "deprecated" --
 //  it works correctly for now, but load times are slower than loading "q.js"
 //  directly. Moreover, future versions of "main.js" will assume they are
-//  running as part of the presentation layer for Q Machine's website, rather
-//  than as part of the infrastructure providing Q Machine's web service.
+//  running as part of the presentation layer for QMachine's website, rather
+//  than as part of the infrastructure providing QMachine's web service.
 //
 //  NOTE: For maximum performance in your own app, embed "q-min.js", which is
 //  a minified, optimized version of "q.js". Typically, I use either Google's
@@ -23,7 +23,7 @@
 //  but I will not respond to bug reports that cannot be reproduced in "q.js"
 //  because I am not an active developer for either of the optimizers.
 //
-//                                                      ~~ (c) SRW, 09 May 2012
+//                                                      ~~ (c) SRW, 23 May 2012
 
 (function () {
     'use strict';
