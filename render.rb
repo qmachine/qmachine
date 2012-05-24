@@ -28,7 +28,7 @@ File::open(filename, "w") do |f|
   <head>
     <meta charset="utf-8"/>
     <meta name="author" content="Sean Wilkinson"/>
-    <title>Project Description: Q Machine</title>
+    <title>Project Description: QMachine</title>
     <link rel="stylesheet" href="./print.css" media="print"/>
     <link rel="stylesheet" href="./screen.css" media="screen"/>
     <link rel="shortcut icon" href="./favicon.ico"/>
