@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- server.js ~~
-//                                                      ~~ (c) SRW, 18 May 2012
+//                                                      ~~ (c) SRW, 24 May 2012
 
 (function () {
     'use strict';
@@ -86,7 +86,7 @@
             outer_res.writeHead('204', '(no content)', {
                 'Access-Control-Allow-Origin':  '*',
                 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Accept',
+                'Access-Control-Allow-Headers': '*',
                 'Access-Control-Max-Age':       10, //- seconds
                 'Content-Length':               0
             });
