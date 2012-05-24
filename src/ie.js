@@ -5,14 +5,14 @@
 //  Wow. I've never spent much time trying to support IE, and now I remember
 //  _why_. The <script> tags don't even support the 'onload' attribute! Argh.
 //
-//                                                      ~~ (c) SRW, 02 Apr 2012
+//                                                      ~~ (c) SRW, 23 May 2012
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80, browser: true */
+    /*jslint browser: true, indent: 4, maxlen: 80 */
 
  // Prerequisites
 
@@ -46,8 +46,6 @@
     }, 1000);
 
  // Invocations
-
-    //alert('Loading "ie.js" ...');
 
     document.body.appendChild(script);
 
