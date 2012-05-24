@@ -1,11 +1,16 @@
 /*  CSS style sheet  */
 
 /*  screen.css ~~
- *
- *  NOTE: I need to figure out some fallbacks for IE ...
- *
- *                                                      ~~ (c) SRW, 05 Apr 2012
+ *                                                      ~~ (c) SRW, 23 May 2012
  */
+
+a {
+
+    border-bottom: 1px dotted;
+    color: black;
+    text-decoration: none;
+
+}
 
 body {
 
@@ -15,14 +20,6 @@ body {
     font-size: 12pt;
     margin: 1in;
     text-align: center;
-
-}
-
-a {
-
-    border-bottom: 1px dotted;
-    color: black;
-    text-decoration: none;
 
 }
 
@@ -71,6 +68,10 @@ figure img[src$=".svg"] {
 }
 
 footer {}
+
+h1 {
+    /* font-variant: small-caps; */
+}
 
 header {}
 

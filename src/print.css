@@ -1,19 +1,8 @@
 /*  CSS style sheet  */
 
 /*  print.css ~~
- *                                                      ~~ (c) SRW, 01 Apr 2012
+ *                                                      ~~ (c) SRW, 23 May 2012
  */
-
-body {
-
-    background-color: white;
-    color: black;
-    font-family: Georgia, serif;
-    font-size: 12pt;
-    margin: 1in;
-    text-align: center;
-
-}
 
 a {
 
@@ -29,6 +18,16 @@ a:after {
 
 }
 
+body {
+
+    background-color: white;
+    color: black;
+    font-family: Georgia, serif;
+    font-size: 12pt;
+    margin: 1in;
+    text-align: center;
+
+}
 
 #tape {
 
