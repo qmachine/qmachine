@@ -5,7 +5,15 @@
 //  NOTE: Do I need to omit an "X-Couch-Update-NewRev" header using Nginx?
 //      --> http://wiki.apache.org/couchdb/Document_Update_Handlers ...
 //
-//                                                      ~~ (c) SRW, 16 May 2012
+//  NOTE: Do not out-clever yourself here! You _can_ add the CORS headers in
+//  this function, but if you're already doing it inside the Node.js proxy,
+//  it will cause CORS _not_ to work.
+//
+//  NOTE: The following works even though the keys don't match, but it seems
+//  undesirable and should probably be fixed:
+//      POST /box/foo?key=bar {"box":"foo","key":"baz","val":"quux"}
+//
+//                                                      ~~ (c) SRW, 25 May 2012
 
 function (doc, req) {
     'use strict';
@@ -34,7 +42,7 @@ function (doc, req) {
         }
         return [newDoc, {
             headers: {
-                'Access-Control-Allow-Origin': '*',
+//                'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'text/plain'
             },
             body: newDoc._id

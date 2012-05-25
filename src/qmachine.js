@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 21 May 2012
+//                                                      ~~ (c) SRW, 23 May 2012
 
 (function (global) {
     'use strict';
@@ -454,9 +454,11 @@
         template = {
             capture:    capture,
             lib:        lib,
+/*
             map:        map,
             ply:        ply,
             reduce:     reduce,
+*/
             retrieve:   retrieve
         };
         for (key in template) {
