@@ -80,32 +80,46 @@
 
     http.Server(function (outer_req, outer_res) {
      // This function needs documentation.
-        var inner_req, options, pat, target;
-        if (outer_req.method === 'OPTIONS') {
+        var cors_headers, inner_req, method, options, pat, target;
+        cors_headers = {
+            'Access-Control-Allow-Origin': (outer_req.headers.origin || '*'),
+            'Access-Control-Allow-Headers': [
+                'Accept',
+                'Authorization',
+                'Content-Type',
+                'Origin',
+                'Referer',
+                'User-Agent',
+                'X-HTTP-Method-Override',
+                'X-Requested-With'
+            ].join(', '),
+            'Access-Control-Allow-Methods': [
+                'GET',
+                'OPTIONS',
+                'POST'
+            ].join(', '),
+            'Access-Control-Max-Age': 10
+        };
+        method = outer_req.method.toUpperCase();
+        if (method === 'OPTIONS') {
          // Case 1
-            outer_res.writeHead('204', '(no content)', {
-                'Access-Control-Allow-Origin':  '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Accept',
-                'Access-Control-Max-Age':       10, //- seconds
-                'Content-Length':               0
-            });
+            cors_headers['Content-Length'] = 0;
+            outer_res.writeHead('204', '(no content)', cors_headers);
             outer_res.end();
             return;
         }
-        if ((outer_req.method !== 'GET') && (outer_req.method !== 'POST')) {
+        if ((method !== 'GET') && (method !== 'POST')) {
          // Terminate with extreme prejudice.
             outer_res.writeHead(444);
             outer_res.end();
             return;
         }
-        outer_res.setHeader('Access-Control-Allow-Origin', '*');
         pat = /^\/box\/([^\&\/]+)[?](key|status)[=]([^\&]+)$/;
         target = outer_req.url.replace(pat, function (all, box, pkey, pval) {
          // This function needs documentation.
             var y = config.app + '/_';
             if (pkey === 'key') {
-                if (outer_req.method === 'GET') {
+                if (method === 'GET') {
                     return y + 'show/data/' + box + '&' + pval;
                 }
                 return y + 'update/timestamp/' + box + '&' + pval;
@@ -119,7 +133,8 @@
         }
         options.headers = outer_req.headers;
         options.headers['Content-Type'] = 'application/json';
-        options.method = outer_req.method;
+        options.method = method;
+        outer_res.setHeader('Access-Control-Allow-Origin', '*');
         inner_req = http.request(options, function (inner_res) {
          // This function needs documentation.
             outer_res.writeHead(inner_res.statusCode, inner_res.headers);
