@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 23 May 2012
+//                                                      ~~ (c) SRW, 27 May 2012
 
 (function (global) {
     'use strict';
@@ -18,9 +18,9 @@
 
  // Declarations
 
-    var Q, ajax_request, avar, capture, http_GET, http_POST, isArrayLike,
-        isBrowser, isNodejs, isWebWorker, lib, map, mothership, ply, reduce,
-        retrieve, state, when;
+    var Q, ajax_request, avar, capture, generic, http_GET, http_POST,
+        isArrayLike, isBrowser, isNodejs, isWebWorker, lib, map, mothership,
+        ply, reduce, retrieve, state, when;
 
  // Definitions
 
@@ -55,6 +55,14 @@
      // This function needs documentation.
         state.shelf.push(data);
         return avar().revive();
+    };
+
+    generic = function (f) {
+     // This function needs documentation.
+        return function () {
+         // This function needs documentation.
+            throw new Error('"generic" is under construction.');
+        };
     };
 
     http_GET = function (x) {
@@ -453,12 +461,11 @@
         var key, template;
         template = {
             capture:    capture,
+            //generic:    generic,
             lib:        lib,
-/*
-            map:        map,
-            ply:        ply,
-            reduce:     reduce,
-*/
+            //map:        map,
+            //ply:        ply,
+            //reduce:     reduce,
             retrieve:   retrieve
         };
         for (key in template) {
@@ -520,7 +527,8 @@
         }
     });
 
- // Configure a background "daemon" to revive execution if appropriate ...
+ // Configure a background "daemon" to revive execution if appropriate, but
+ // only when nothing else is happening ...
 
     if (typeof global.setInterval === 'function') {
         global.setInterval(Q.avar().revive, 1000);
