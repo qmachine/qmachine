@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 27 May 2012
+//                                                      ~~ (c) SRW, 02 Jun 2012
 
 (function (global) {
     'use strict';
@@ -19,8 +19,8 @@
  // Declarations
 
     var Q, ajax_request, avar, capture, generic, http_GET, http_POST,
-        isArrayLike, isBrowser, isNodejs, isWebWorker, lib, map, mothership,
-        ply, reduce, retrieve, state, when;
+        isBrowser, isNodejs, isWebWorker, lib, map, mothership, ply, reduce,
+        retrieve, state, when;
 
  // Definitions
 
@@ -270,21 +270,6 @@
         return y;
     };
 
-    isArrayLike = function (x) {
-     // This function is useful for identifying an "Array-Like Object", which
-     // is an object whose 'length' property represents its maximum numerical
-     // property key. Such objects may use Array methods generically, and for
-     // iteration this can be especially useful. The two surprises here are
-     // functions and strings. A function has a 'length' property representing
-     // its arity (number of input arguments), unfortunately, so it cannot be
-     // considered an Array-Like Object. A string is actually a primitive, not
-     // an object, but it can still be used as an Array-Like Object :-)
-        return ((x !== null) &&
-                (x !== undefined) &&
-                (typeof x !== 'function') &&
-                (x.hasOwnProperty('length')));
-    };
-
     isBrowser = function () {
      // This function needs documentation.
         return ((global.hasOwnProperty('location'))             &&
@@ -365,13 +350,7 @@
 
     mothership = 'http://qmachine.org';
 
-    ply = function (f) {
-     // This function needs documentation.
-        return function (evt) {
-         // This function needs documentation.
-            return evt.fail('`ply` is under construction.');
-        };
-    };
+    ply = Q.ply;
 
     reduce = function (f) {
      // This function needs documentation.
@@ -464,7 +443,6 @@
             //generic:    generic,
             lib:        lib,
             //map:        map,
-            //ply:        ply,
             //reduce:     reduce,
             retrieve:   retrieve
         };
