@@ -1,7 +1,7 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 19 May 2012
+#                                                       ~~ (c) SRW, 08 Jun 2012
 
 include $(PWD)/tools/macros.make
 
@@ -98,19 +98,21 @@ backend-couchdb: \
     share/web-launch-image-iphone.png \
     share/web-launch-image-iphone4.png
 
-build/q.png: build/q.tex | build/
+build/q.pdf: build/q.tex | build/
 	@   $(CD) build                                                 ;   \
             $(PDFLATEX) q.tex                                           ;   \
-            $(PDFCROP) q.pdf q.pdf                                      ;   \
-            $(CONVERT) \
-                -density 8192 \
+            $(PDFCROP) q.pdf q.pdf
+
+build/q.png: build/q.pdf | build/
+	@   $(CONVERT) \
+                -density 600 \
                 -resize 1024x1024 \
                 -gravity center \
                 -extent 1170x1170 \
                 -transparent white \
                 -transparent-color '#929292' \
                 -quality 100 \
-                    q.pdf q.png
+                    $< $@
 
 build/q.tex: src/q.tex | build/
 	@   $(CP) $< $@
