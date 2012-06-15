@@ -1,6 +1,6 @@
 //- JavaScript source code
 
-//- begin-sync.js ~~
+//- replicate.js ~~
 //
 //  This has been tested successfully on the following platforms:
 //
@@ -9,7 +9,7 @@
 //
 //  The cloud source is running CouchDB 1.1.1 on an unknown operating system.
 //
-//                                                      ~~ (c) SRW, 18 May 2012
+//                                                      ~~ (c) SRW, 14 Jun 2012
 
 (function () {
     'use strict';
@@ -113,15 +113,15 @@
 
     begin_sync([
         {
-            continuous: true,
+            //continuous: true,
             doc_ids:    ['_design/app'],
-            source:     'https://qmachine.iriscouch.com/db',
+            source:     'https://qmachine.iriscouch.com:6984/db',
             target:     'http://localhost:5984/db'
         },
         {
-            continuous: true,
+            //continuous: true,
             doc_ids:    ['_design/app'],
-            source:     'https://qmachine.iriscouch.com/www',
+            source:     'https://qmachine.iriscouch.com:6984/www',
             target:     'http://localhost:5984/www'
         }
     ]);
