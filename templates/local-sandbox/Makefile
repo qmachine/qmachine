@@ -79,10 +79,6 @@ define replace-hostname
     done
 endef
 
-define replace-TEMPLATE_ROOT
-    $(SED) 's/\$$\(TEMPLATE_ROOT\)/$(strip $(TEMPLATE_ROOT))/g'
-endef
-
 define timestamp
     for each in $(1); do                                                    \
         $(DATE) -j -f '%a %b %d %T %Z %Y' "`date`" '+# %s' >> $${each}  ;   \
@@ -192,23 +188,16 @@ $(WWWDIR)/%: $(PROJECT_ROOT)/src/% | $(WWWDIR)/
 nodejs-inflight: ;
 
 nodejs-preflight: \
-    $(VARDIR)/nodejs/node_modules/  \
+    $(VARDIR)/nodejs/node_modules  \
     $(VARDIR)/nodejs/package.json   \
     $(VARDIR)/nodejs/server.js
 
-$(VARDIR)/nodejs/server.js: \
-    $(TEMPLATE_ROOT)/server/server.js | $(VARDIR)/nodejs/
-	@   $(CP) $< $@
-
-$(VARDIR)/nodejs/package.json: \
-    $(TEMPLATE_ROOT)/server/package.json | $(VARDIR)/nodejs/
-	@   $(CP) $< $@
-
-###
-
-%/node_modules/: %/package.json | %
-	@   $(CD) $*                                                    ;   \
+$(TEMPLATE_ROOT)/server/node_modules/: $(TEMPLATE_ROOT)/server/package.json
+	@   $(CD) $(TEMPLATE_ROOT)/server                               ;   \
             $(NPM) install
+
+$(VARDIR)/nodejs/%: $(TEMPLATE_ROOT)/server/% | $(VARDIR)/nodejs/
+	@   $(CP) $< $@
 
 ###
 
