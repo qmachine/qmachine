@@ -1,7 +1,7 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 08 Jun 2012
+#                                                       ~~ (c) SRW, 27 Jun 2012
 
 include $(PWD)/tools/macros.make
 
@@ -23,7 +23,7 @@ SORT        :=  $(call contingent, gsort sort)
 XARGS       :=  $(call contingent, xargs)
 YUICOMP     :=  $(call contingent, yuicompressor)
 
-APPS    :=  $(shell $(LS) templates)
+APPS        :=  $(shell $(LS) templates)
 
 define compile-with-google-closure
     $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS \
@@ -54,10 +54,17 @@ all: $(APPS)
 clean: reset
 
 clobber: clean
-	@   $(RM) apps/ build/ share/
+	@   $(RM) build/ share/
 
 distclean: clobber
-	@   $(RM) .d8_history deps/ .v8_history
+	@   $(RM) .d8_history deps/ .v8_history                         ;   \
+            for each in $(abspath apps/*); do                               \
+                if [ -d $${each} ]; then                                    \
+                    $(CD) $${each}                                      ;   \
+                    $(MAKE) $@                                          ;   \
+                fi                                                      ;   \
+            done                                                        ;   \
+            $(RM) $(abspath apps)
 
 help:
 	@   printf '%s\n' 'Usage: $(MAKE) [options] [target] ...'       ;   \
@@ -83,7 +90,7 @@ $(APPS): | apps/ share/
 apps build deps share:
 	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
 
-backend-couchdb: \
+backend-couchdb local-sandbox: \
     deps/jslint.js \
     deps/json2.js \
     deps/quanah.js \

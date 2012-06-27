@@ -11,6 +11,7 @@
 #   control -- always execute your commits manually!
 #
 #                                                       ~~ (c) SRW, 31 Oct 2011
+#                                                   ~~ last updated 26 Jun 2012
 
 #-  CouchApp configuration files -- these may contain passwords!
 .couchapprc
@@ -21,6 +22,9 @@
 
 #-  Mercurial repository itself (if present)
 .hg/
+
+#-  Node.js modules
+node_modules/
 
 #-  Vim swap files
 *.swp

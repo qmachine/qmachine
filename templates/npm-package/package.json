@@ -1,0 +1,20 @@
+{
+    "author": "Sean Wilkinson",
+    "name": "qm",
+    "description": "(coming soon)",
+    "version": "0.0.2",
+    "homepage": "http://wilkinson.github.com/qmachine/",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wilkinson/qmachine.git"
+    },
+    "dependencies": {
+        "corser": ">= 1.0.2"
+    },
+    "main": "./lib/qm.js",
+    "devDependencies": {},
+    "optionalDependencies": {},
+    "engines": {
+        "node": "*"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "name": "(local-sandbox)",
+    "version": "0.0.0",
+    "description": "(no description)",
+    "author": {
+        "name": "Sean Wilkinson",
+        "email": "sean@mathbiol.org"
+    },
+    "dependencies": {
+        "qm": ">= 0.0.1"
+    },
+    "engines": {
+        "node": ">= 0.6.17",
+        "npm": ">= 1.1.21"
+    }
+}
