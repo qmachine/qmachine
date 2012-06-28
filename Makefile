@@ -1,13 +1,31 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 27 Jun 2012
+#
+#   This contains live instructions for developing QMachine. I wrote them for
+#   use on my laptop (Mac OS X 10.7.4 + Homebrew + MacTeX 2011). Occasionally
+#   I test it with various Linux distributions, but some targets make use of
+#   programs like `launchd` for which I have yet to find suitable replacements.
+#   If you're using a Mac, make sure you have installed XCode from the App
+#   Store; then, install Homebrew, MacTeX 2011, and NPM from their respective
+#   websites. At that point, you're mostly done, save for `couchapp`, which is
+#   a Python module; the rest can be installed by Homebrew via
+#
+#       $ brew install closure-compiler couchdb gnu-sed imagemagick node    \
+#           phantomjs qrencode yuicompressor
+#
+#   NOTE: This is a lot of dependencies, to be sure, but not all dependencies
+#   are required by each target!
+#
+#                                                       ~~ (c) SRW, 28 Jun 2012
 
-include $(PWD)/tools/macros.make
+PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
+
+include $(PROJECT_ROOT)/tools/macros.make
 
 CAT         :=  $(call contingent, gcat cat)
 CD          :=  $(call contingent, cd)
-CLOSURE     :=  $(call contingent, closure)                     #-  Google
+CLOSURE     :=  $(call contingent, closure-compiler)            #-  by Google
 CONVERT     :=  $(call contingent, convert)                     #-  ImageMagick
 CP          :=  $(call contingent, gcp cp) -rf
 CURL        :=  $(call contingent, curl)
