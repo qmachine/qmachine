@@ -59,7 +59,7 @@ clobber: clean
 distclean: clobber
 	@   $(RM) .d8_history deps/ .v8_history                         ;   \
             for each in $(abspath apps/*); do                               \
-                if [ -d $${each} ]; then                                    \
+                if [ -d $${each} ] && [ -f $${each}/Makefile ]; then        \
                     $(CD) $${each}                                      ;   \
                     $(MAKE) $@                                          ;   \
                 fi                                                      ;   \
@@ -83,7 +83,7 @@ reset:
 $(APPS): | apps/ share/
 	@   $(CP) templates/$@ apps/$@                                  ;   \
             $(CD) apps/$@                                               ;   \
-            $(MAKE)
+            if [ -f Makefile ]; then $(MAKE); fi
 
 ###
 

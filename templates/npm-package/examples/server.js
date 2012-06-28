@@ -1,7 +1,7 @@
 //- JavaScript source code
 
-//- debugging.js ~~
-//                                                      ~~ (c) SRW, 14 Jun 2012
+//- server.js ~~
+//                                                      ~~ (c) SRW, 27 Jun 2012
 
 (function () {
     'use strict';

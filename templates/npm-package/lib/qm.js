@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qm.js ~~
-//                                                      ~~ (c) SRW, 26 Jun 2012
+//                                                      ~~ (c) SRW, 27 Jun 2012
 
 (function () {
     'use strict';
@@ -195,6 +195,19 @@
                 inner_res.pipe(outer_res);
                 return;
             });
+            inner_req.on('error', function (err) {
+             // This function needs documentation.
+                outer_res.writeHead(444);
+                outer_res.end();
+                err.request = {
+                    ip:     outer_req.connection.remoteAddress,
+                    time:   new Date(),
+                    method: outer_req.method,
+                    url:    outer_req.url
+                };
+                console.error(JSON.stringify(err, undefined, 4));
+                return;
+            });
             outer_req.pipe(inner_req);
             return;
         }).listen(config.port, config.hostname);
@@ -202,8 +215,7 @@
     };
 
     launch_workers = function (n) {
-     // This function uses recursion to create workers instead of a loop only
-     // because JSLint freaks out otherwise. I'll fix this later.
+     // This function needs documentation.
         var i, x;
         x = [];
         for (i = 0; i < n; i += 1) {
