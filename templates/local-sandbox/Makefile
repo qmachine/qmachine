@@ -29,6 +29,7 @@ CP              :=  $(call contingent, gcp cp) -rf
 DATE            :=  $(call contingent, date)
 LAUNCHCTL       :=  $(call contingent, launchctl)
 MKDIR           :=  $(call contingent, gmkdir mkdir)
+NODEJS          :=  $(call contingent, nodejs node)
 NPM             :=  $(call contingent, npm)
 OPEN            :=  $(call contingent, gnome-open open curl)
 RM              :=  $(call contingent, grm rm) -rf
@@ -100,12 +101,14 @@ distclean: clobber
 reset:
 	@   $(call contingent, clear)
 
-run: deploy start
-	@   $(OPEN) $(HOMEPAGE)
+run: browser-client
 
 ###
 
-.PHONY: deploy preflight start stop
+.PHONY: browser-client deploy preflight start stop
+
+browser-client: | deploy start
+	@   $(OPEN) $(HOMEPAGE)
 
 deploy: $(SERVICES:%=%-inflight) | start
 
@@ -183,18 +186,35 @@ $(WWWDIR)/%: $(PROJECT_ROOT)/src/% | $(WWWDIR)/
 
 ###
 
-.PHONY: nodejs-inflight nodejs-preflight
+.PHONY: nodejs-client nodejs-inflight nodejs-preflight
+
+nodejs-client: $(VARDIR)/nodejs/client.js | start deploy
+	@   $(NODEJS) $<
 
 nodejs-inflight: ;
 
 nodejs-preflight: \
     $(VARDIR)/nodejs/node_modules  \
-    $(VARDIR)/nodejs/package.json   \
     $(VARDIR)/nodejs/server.js
 
-$(TEMPLATE_ROOT)/server/node_modules/: $(TEMPLATE_ROOT)/server/package.json
-	@   $(CD) $(TEMPLATE_ROOT)/server                               ;   \
+$(TEMPLATE_ROOT)/%/node_modules/: $(TEMPLATE_ROOT)/%/package.json
+	@   $(CD) $(TEMPLATE_ROOT)/$*                                   ;   \
             $(NPM) install
+
+$(VARDIR)/nodejs/node_modules/: \
+    $(TEMPLATE_ROOT)/nodejs-client/node_modules \
+    $(TEMPLATE_ROOT)/server/node_modules
+
+$(VARDIR)/nodejs/node_modules/: | $(VARDIR)/nodejs/
+	@   if [ ! -d $@ ]; then                                            \
+                $(MKDIR) $@                                             ;   \
+            fi                                                          ;   \
+            for each in $^; do                                              \
+                $(CP) $${each}/* $@                                     ;   \
+            done
+
+$(VARDIR)/nodejs/%: $(TEMPLATE_ROOT)/nodejs-client/% | $(VARDIR)/nodejs/
+	@   $(CP) $< $@
 
 $(VARDIR)/nodejs/%: $(TEMPLATE_ROOT)/server/% | $(VARDIR)/nodejs/
 	@   $(CP) $< $@

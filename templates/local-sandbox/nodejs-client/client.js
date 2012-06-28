@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- client.js ~~
-//                                                      ~~ (c) SRW, 14 Jun 2012
+//                                                      ~~ (c) SRW, 27 Jun 2012
 
 (function () {
     'use strict';
@@ -18,7 +18,7 @@
 
  // Definitions
 
-    qm = require('lib/qm');
+    qm = require('qm');
 
  // Invocations
 
