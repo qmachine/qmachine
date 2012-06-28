@@ -185,9 +185,12 @@
                 return (y === x) ? (config.www_url + x) : encodeURI(y);
             };
             options = url.parse(rewrite(outer_req.url));
+            console.log(options.headers, outer_req.headers);
             options.headers = outer_req.headers;
-         // NOTE: Should I eliminate the following line?
+         // The next two lines are experimental ... ?
+            delete options.headers['host'];
             options.headers['Content-Type'] = 'application/json';
+         // ----
             options.method = method;
             inner_req = http.request(options, function (inner_res) {
              // This function needs documentation.

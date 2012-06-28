@@ -36,8 +36,9 @@ RM              :=  $(call contingent, grm rm) -rf
 RUBY            :=  $(call contingent, ruby)
 SED             :=  $(call contingent, gsed sed)
 
-HOSTNAME        :=  localhost:8124
-HOMEPAGE        :=  http://$(strip $(HOSTNAME))
+COUCH_HOST      :=  localhost:5984
+NODE_HOST       :=  localhost:8124
+HOMEPAGE        :=  http://$(strip $(NODE_HOST))
 SERVICES        :=  couchdb nodejs
 PLISTS          :=  $(SERVICES:%=$(VARDIR)/com.srw.%.plist)
 SERVDIRS        :=  $(SERVICES:%=$(VARDIR)/%/)
@@ -76,7 +77,7 @@ endef
 
 define replace-hostname
     for each in $(1); do                                                    \
-        $(SED) 's/qmachine.org/$(strip $(HOSTNAME))/g' $${each} -i      ;   \
+        $(SED) 's/qmachine.org/$(strip $(NODE_HOST))/g' $${each} -i      ;   \
     done
 endef
 
@@ -162,7 +163,7 @@ $(BCLIENT): $(TEMPLATE_ROOT)/browser-client | $(STATIC_CONTENT) $(VARDIR)/
 	@   if [ ! -d $@ ]; then $(CP) $< $@; fi
 
 $(BCLIENT)/.couchapprc: | $(BCLIENT) start
-	@   $(call get-login, localhost:5984/www, http, $@)
+	@   $(call get-login, $(strip $(COUCH_HOST))/www, http, $@)
 
 $(STATIC_CONTENT): | $(WWWDIR)/
 
@@ -170,7 +171,7 @@ $(STORAGE): $(TEMPLATE_ROOT)/storage | $(VARDIR)/
 	@   if [ ! -d $@ ]; then $(CP) $< $@; fi
 
 $(STORAGE)/.couchapprc: | $(STORAGE) start
-	@   $(call get-login, localhost:5984/db, http, $@)
+	@   $(call get-login, $(strip $(COUCH_HOST))/db, http, $@)
 
 $(VARDIR)/couchdb.ini: $(TEMPLATE_ROOT)/generate-config.rb | $(VARDIR)/
 	@   $(RUBY) $< $@

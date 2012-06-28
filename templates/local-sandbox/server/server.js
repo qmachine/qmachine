@@ -22,6 +22,15 @@
 
  // Invocations
 
+ /*
+    qm.launch_server({
+        db_url:     'http://quanah.iriscouch.com:5984/db/_design/app',
+        hostname:   '127.0.0.1',
+        port:       8124,
+        www_url:    'http://quanah.iriscouch.com:5984/www/_design/app/_rewrite'
+    });
+ */
+
     qm.launch_server({
         hostname:   '127.0.0.1',
         port:       8124
