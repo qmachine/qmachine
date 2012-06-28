@@ -11,7 +11,11 @@
 #       -   Node.js 0.8 (+ NPM 1.1.32),
 #       -   Mac OS X 10.7.4.
 #
-#                                                       ~~ (c) SRW, 27 Jun 2012
+#   By default, the web service runs on port 8177. If you're into trivia like
+#   me, you may wonder why certain numbers are chosen. In this case, I chose
+#   8177 because [81, 77] is the ASCII encoding for "QM" ;-)
+#
+#                                                       ~~ (c) SRW, 28 Jun 2012
 
 TEMPLATE_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT_ROOT    :=  $(realpath $(TEMPLATE_ROOT)/../../)
@@ -37,7 +41,7 @@ RUBY            :=  $(call contingent, ruby)
 SED             :=  $(call contingent, gsed sed)
 
 COUCH_HOST      :=  localhost:5984
-NODE_HOST       :=  localhost:8124
+NODE_HOST       :=  localhost:8177
 HOMEPAGE        :=  http://$(strip $(NODE_HOST))
 SERVICES        :=  couchdb nodejs
 PLISTS          :=  $(SERVICES:%=$(VARDIR)/com.srw.%.plist)

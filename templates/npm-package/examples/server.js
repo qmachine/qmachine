@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- server.js ~~
-//                                                      ~~ (c) SRW, 27 Jun 2012
+//                                                      ~~ (c) SRW, 28 Jun 2012
 
 (function () {
     'use strict';
@@ -24,7 +24,7 @@
 
     qm.launch_server({
         hostname:   '127.0.0.1',
-        port:       8124
+        port:       8177
     });
 
  // That's all, folks!
