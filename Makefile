@@ -220,20 +220,6 @@ share/facebook-75x75.png: build/q.png | share/
 share/favicon.ico: build/q.png | share/
 	@   $(CONVERT) -compress Zip -resize 16x16 $< $@
 
-share/touch-icon-iphone.png: build/q.png | share/
-        @   $(CONVERT) \
-                $< \( +clone \
-                    -channel A -morphology EdgeOut Diamond:10 +channel \
-                    +level-colors white \
-                \) -compose DstOver \
-                -background none \
-                -density 96 \
-                -resize 57x57 \
-                -quality 100 \
-                -composite \
-                -background '#929292' -alpha remove -alpha off \
-                    $@
-
 share/giant-favicon.ico: build/q.png | share/
 	@   $(CONVERT) $< \
                 \( -clone 0 -resize 16x16 \) \
