@@ -15,7 +15,7 @@
 #   me, you may wonder why certain numbers are chosen. In this case, I chose
 #   8177 because [81, 77] is the ASCII encoding for "QM" ;-)
 #
-#                                                       ~~ (c) SRW, 28 Jun 2012
+#                                                       ~~ (c) SRW, 29 Jun 2012
 
 TEMPLATE_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT_ROOT    :=  $(realpath $(TEMPLATE_ROOT)/../../)
@@ -23,12 +23,14 @@ VARDIR          :=  $(abspath $(TEMPLATE_ROOT)/var)
 
 BCLIENT         :=  $(VARDIR)/couchapp-browser-client
 STORAGE         :=  $(VARDIR)/couchapp-storage
+USERNAME        :=  $(shell whoami)
 WWWDIR          :=  $(abspath $(TEMPLATE_ROOT)/browser-client/_attachments)
 
 include $(PROJECT_ROOT)/tools/macros.make
 
 CD              :=  $(call contingent, cd)
 COUCHAPP        :=  $(call contingent, couchapp) --quiet
+COUCHDB         :=  $(call contingent, couchdb)
 CP              :=  $(call contingent, gcp cp) -rf
 DATE            :=  $(call contingent, date)
 LAUNCHCTL       :=  $(call contingent, launchctl)
@@ -37,14 +39,13 @@ NODEJS          :=  $(call contingent, nodejs node)
 NPM             :=  $(call contingent, npm)
 OPEN            :=  $(call contingent, gnome-open open curl)
 RM              :=  $(call contingent, grm rm) -rf
-RUBY            :=  $(call contingent, ruby)
 SED             :=  $(call contingent, gsed sed)
 
 COUCH_HOST      :=  localhost:5984
 NODE_HOST       :=  localhost:8177
 HOMEPAGE        :=  http://$(strip $(NODE_HOST))
 SERVICES        :=  couchdb nodejs
-PLISTS          :=  $(SERVICES:%=$(VARDIR)/com.srw.%.plist)
+PLISTS          :=  $(SERVICES:%=$(VARDIR)/com.QM.%.plist)
 SERVDIRS        :=  $(SERVICES:%=$(VARDIR)/%/)
 
 STATIC_CONTENT := \
@@ -133,8 +134,19 @@ stop: $(PLISTS)
 
 $(PLISTS) $(SERVDIRS): | $(VARDIR)/
 
-$(PLISTS): $(TEMPLATE_ROOT)/generate-config.rb
-	@   $(RUBY) $< $@
+$(VARDIR)/com.QM.couchdb.plist: $(TEMPLATE_ROOT)/config.sh | $(VARDIR)/
+	@   COUCHDB="$(strip $(call contingent, couchdb))"  \
+            COUCHDB_PLIST="$(strip $@)"                     \
+            TEMPLATE_ROOT="$(strip $(TEMPLATE_ROOT))"       \
+            USERNAME="$(strip $(USERNAME))"                 \
+                $(SHELL) $<
+
+$(VARDIR)/com.QM.nodejs.plist: $(TEMPLATE_ROOT)/config.sh | $(VARDIR)/
+	@   NODEJS="$(strip $(NODEJS))"                     \
+            NODEJS_PLIST="$(strip $@)"                      \
+            TEMPLATE_ROOT="$(strip $(TEMPLATE_ROOT))"       \
+            USERNAME="$(strip $(USERNAME))"                 \
+                $(SHELL) $<
 
 $(SERVDIRS) $(VARDIR)/ $(WWWDIR)/:
 	@   for each in $@; do                                              \
@@ -177,8 +189,10 @@ $(STORAGE): $(TEMPLATE_ROOT)/storage | $(VARDIR)/
 $(STORAGE)/.couchapprc: | $(STORAGE) start
 	@   $(call get-login, $(strip $(COUCH_HOST))/db, http, $@)
 
-$(VARDIR)/couchdb.ini: $(TEMPLATE_ROOT)/generate-config.rb | $(VARDIR)/
-	@   $(RUBY) $< $@
+$(VARDIR)/couchdb.ini: $(TEMPLATE_ROOT)/config.sh | $(VARDIR)/
+	@   COUCHDB_INI="$(strip $@)"                   \
+            TEMPLATE_ROOT="$(strip $(TEMPLATE_ROOT))"   \
+                $(SHELL) $<
 
 $(VARDIR)/%/.couchappignore: $(TEMPLATE_ROOT)/.couchappignore | $(VARDIR)/%/
 	@   $(CP) $< $@
