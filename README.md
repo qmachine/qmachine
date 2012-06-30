@@ -14,6 +14,8 @@ There are several "mirrors" available on
 [GitHub](https://github.com/wilkinson/qmachine), and
 [Google Code](https://qmachine.googlecode.com).
 
+A Node.js module can be installed via [NPM](http://search.npmjs.org/#/qm).
+
 I have done some preliminary investigation into app integration for
 
 -   [Google Chrome](https://chrome.google.com/webstore/detail/meagomakeegjimdibmlodmilfhplkjgp?utm_source=chrome-ntp-icon)
