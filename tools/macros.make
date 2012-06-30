@@ -4,13 +4,22 @@
 #
 #   This contains GNU Make macros written with POSIX-compatible shell scripts.
 #   These definitions are included in every Makefile in this project directory;
-#   in general, I recommend that you not edit these unless you absolutely must!
+#   in general, I recommend that you not edit these unless you actually know
+#   what you are doing. That said, if you know what you're doing and you are
+#   better at it than I am, then _please_ send me a pull request :-)
 #
-#                                                       ~~ (c) SRW, 03 Sep 2011
+#                                                       ~~ (c) SRW, 29 Jun 2012
 
 SHELL   :=  sh
 
+#-  According to GNU Make's manual, different 'make' programs have incompatible
+#   suffix lists and implicit rules, and that fact can sometimes create
+#   confusion and/or misbehavior. Thus, we'll clear implicit rules by default
+#   and require that the suffix list be defined explicitly in each makefile.
+
 .SUFFIXES: ;
+
+#-  These macros colorize text output without disturbing the background color.
 
 define gray-printf
     printf '\033[1;30m'$(strip $(1))'\033[1;0m' $(strip $(2))
@@ -48,6 +57,8 @@ define white-printf
     printf '\033[1;37m'$(strip $(1))'\033[1;0m' $(strip $(2))
 endef
 
+#-  Now, define some human-readable output commands for shell scripting.
+
 define alert
     $(call red-printf, '--> Error: %s\n', $(strip $(1))) >&2
 endef
@@ -59,6 +70,8 @@ endef
 define hilite
     $(call cyan-printf, '--> %s\n', $(strip $(1)))
 endef
+
+#-  Finally, define some of my favorite convenience macros :-)
 
 define available
     $(shell \

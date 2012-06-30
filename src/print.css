@@ -1,7 +1,7 @@
-/*  CSS style sheet  */
+/*- CSS style sheet */
 
-/*  print.css ~~
- *                                                      ~~ (c) SRW, 23 May 2012
+/*- print.css ~~
+ *                                                      ~~ (c) SRW, 30 Jun 2012
  */
 
 a {
@@ -29,22 +29,10 @@ body {
 
 }
 
-#tape {
-
-    border: 1px black solid;
-    font-family: Courier, monospace;
-    margin: auto;
-    padding: 1em;
-    padding-top: 0em;
-    overflow: auto;
-    text-align: left;
-
-}
-
 .do_not_print {
 
     visibility: hidden;
 
 }
 
-/*  vim:set syntax=css:  */
+/*- vim:set syntax=css: */
