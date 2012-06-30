@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qm.js ~~
-//                                                      ~~ (c) SRW, 27 Jun 2012
+//                                                      ~~ (c) SRW, 30 Jun 2012
 
 (function () {
     'use strict';
