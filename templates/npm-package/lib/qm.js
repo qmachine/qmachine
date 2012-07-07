@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qm.js ~~
-//                                                      ~~ (c) SRW, 30 Jun 2012
+//                                                      ~~ (c) SRW, 07 Jul 2012
 
 (function () {
     'use strict';
@@ -248,7 +248,7 @@
             rewrite = function (x) {
              // This function needs documentation.
                 var pattern, y;
-                pattern = /^\/box\/([\w]+)[?](key|status)[=]([\w]+)$/;
+                pattern = /^\/box\/([\w-]+)[?](key|status)[=]([\w]+)$/;
                 y = x.replace(pattern, function (all, box, pkey, pval) {
                  // This function only runs if `pattern` returns a match.
                     var temp;
@@ -269,7 +269,6 @@
                 return (y === x) ? (config.www_url + x) : encodeURI(y);
             };
             options = url.parse(rewrite(outer_req.url));
-            console.log(options.headers, outer_req.headers);
             options.headers = outer_req.headers;
          // The next two lines are experimental ... ?
             //delete options.headers['host'];

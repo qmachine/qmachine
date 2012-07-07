@@ -7,7 +7,7 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": ">= 0.0.6"
+        "qm": ">= 0.0.8"
     },
     "engines": {
         "node": ">= 0.6.17",
