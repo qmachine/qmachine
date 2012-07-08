@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 02 Jun 2012
+//                                                      ~~ (c) SRW, 08 Jul 2012
 
 (function (global) {
     'use strict';
@@ -19,8 +19,9 @@
  // Declarations
 
     var Q, ajax_request, avar, capture, generic, http_GET, http_POST,
-        isBrowser, isNodejs, isWebWorker, lib, map, mothership, ply, reduce,
-        retrieve, state, when;
+        isBrowser, isNodejs, isWebWorker, lib, map, mothership, origin,
+        ply, reduce, retrieve, state, when;
+
 
  // Definitions
 
@@ -32,7 +33,7 @@
         var req;
         if (global.hasOwnProperty('XMLHttpRequest')) {
             req = new global.XMLHttpRequest();
-            if (global.location.host !== mothership) {
+            if (origin() !== mothership) {
                 if (req.hasOwnProperty('withCredentials')) {
                     return req;
                 }
@@ -349,6 +350,11 @@
     };
 
     mothership = 'http://qmachine.org';
+
+    origin = function () {
+     // This function needs documentation.
+        return global.location.protocol + '//' + global.location.host;
+    };
 
     ply = Q.ply;
 
