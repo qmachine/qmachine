@@ -17,7 +17,7 @@
 #   NOTE: This is a lot of dependencies, to be sure, but not all dependencies
 #   are required by each target!
 #
-#                                                       ~~ (c) SRW, 28 Jun 2012
+#                                                       ~~ (c) SRW, 09 Jul 2012
 
 PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -60,6 +60,19 @@ define compile-js
         $(call aside, "Optimizing scripts: $(1) -> $(2)")               ;   \
     fi                                                                  ;   \
     $(call compile-with-google-closure, $(1), $(2))
+endef
+
+define download-url
+    $(call aside, 'Retrieving $(notdir $@) ...')                        ;   \
+    $(CURL) -s -o $@ $(1)                                               ;   \
+    if [ $$? -ne 0 ]; then                                                  \
+        if [ -d $(CODEBANK)/lib/JavaScript ]; then                          \
+            $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@            ;   \
+        else                                                                \
+            $(call alert, 'Unable to retrieve $(notdir $@).')           ;   \
+            exit 1                                                      ;   \
+        fi                                                              ;   \
+    fi
 endef
 
 .PHONY: all clean clobber distclean help reset
@@ -152,27 +165,15 @@ chrome-packaged-app: \
 
 deps/jslint.js: | deps/
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
-            $(call aside, 'Retrieving $(notdir $@) ...')                ;   \
-            $(CURL) -s -o $@ $${CROCKHUB}/JSLint/master/jslint.js       ;   \
-            if [ $$? -ne 0 ]; then                                          \
-                $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
-            fi
+            $(call download-url, "$${CROCKHUB}/JSLint/master/jslint.js")
 
 deps/json2.js: | deps/
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
-            $(call aside, 'Retrieving $(notdir $@) ...')                ;   \
-            $(CURL) -s -o $@ $${CROCKHUB}/JSON-js/master/json2.js       ;   \
-            if [ $$? -ne 0 ]; then                                          \
-                $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
-            fi
+            $(call download-url, "$${CROCKHUB}/JSON-js/master/json2.js")
 
 deps/quanah.js: | deps/
 	@   SEANHUB="https://raw.github.com/wilkinson"                  ;   \
-            $(call aside, 'Retrieving $(notdir $@) ...')                ;   \
-            $(CURL) -s -o $@ $${SEANHUB}/quanah/master/src/quanah.js    ;   \
-            if [ $$? -ne 0 ]; then                                          \
-                $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@        ;   \
-            fi
+            $(call download-url, "$${SEANHUB}/quanah/master/src/quanah.js")
 
 facebook-app: \
     share/facebook-16x16.png \
