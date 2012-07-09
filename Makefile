@@ -3,11 +3,12 @@
 #-  Makefile ~~
 #
 #   This contains live instructions for developing QMachine. I wrote them for
-#   use on my laptop (Mac OS X 10.7.4 + Homebrew + MacTeX 2011). Occasionally
+#   use on my laptop (Mac OS X 10.7.4 + Homebrew + MacTeX 2011). MacTeX 2012
+#   was released recently, and everything still seems to work. Occasionally,
 #   I test it with various Linux distributions, but some targets make use of
 #   programs like `launchd` for which I have yet to find suitable replacements.
 #   If you're using a Mac, make sure you have installed XCode from the App
-#   Store; then, install Homebrew, MacTeX 2011, and NPM from their respective
+#   Store before installing Homebrew, MacTeX, and NPM from their respective
 #   websites. At that point, you're mostly done, save for `couchapp`, which is
 #   a Python module; the rest can be installed by Homebrew via
 #
