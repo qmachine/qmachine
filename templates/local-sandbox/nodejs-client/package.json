@@ -12,5 +12,7 @@
     "engines": {
         "node": ">= 0.6.17",
         "npm": ">= 1.1.21"
-    }
+    },
+    "private": true,
+    "readme": "(no documentation)"
 }

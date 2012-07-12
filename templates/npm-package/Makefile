@@ -1,7 +1,7 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 27 Jun 2012
+#                                                       ~~ (c) SRW, 11 Jul 2012
 
 TEMPLATE_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT_ROOT    :=  $(realpath $(TEMPLATE_ROOT)/../../)
@@ -22,26 +22,32 @@ all: run
 clean: reset
 
 clobber: clean
+	@   $(RM) $(PACKAGE_ROOT)
 
 distclean: clobber
-	@   $(RM) $(TEMPLATE_ROOT)/node_modules
+	@   $(RM) $(TEMPLATE_ROOT)/node_modules *.tgz
 
 reset:
 	@   $(call contingent, clear)
 
-run: check
+run: pack
 
 ###
 
-.PHONY: check
+.PHONY: pack
 
-check: $(TEMPLATE_ROOT)/node_modules
-	@   $(call alert, 'No tests to run yet.')
+pack: $(PACKAGE_ROOT)
+	@   $(CP) $(TEMPLATE_ROOT)/README.md $(PACKAGE_ROOT)            ;   \
+            $(CP) $(TEMPLATE_ROOT)/examples $(PACKAGE_ROOT)/examples    ;   \
+            $(CP) $(TEMPLATE_ROOT)/lib $(PACKAGE_ROOT)/lib              ;   \
+            $(CP) $(TEMPLATE_ROOT)/package.json $(PACKAGE_ROOT)         ;   \
+            $(NPM) pack $(PACKAGE_ROOT)                                 ;   \
+            $(RM) $(PACKAGE_ROOT)
 
 ###
 
-$(TEMPLATE_ROOT)/node_modules: $(TEMPLATE_ROOT)/package.json
-	@   $(NPM) install
+$(PACKAGE_ROOT):
+	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
 
 ###
 
