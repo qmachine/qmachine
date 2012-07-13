@@ -18,7 +18,7 @@
 #   NOTE: This is a lot of dependencies, to be sure, but not all dependencies
 #   are required by each target!
 #
-#                                                       ~~ (c) SRW, 09 Jul 2012
+#                                                       ~~ (c) SRW, 12 Jul 2012
 
 PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -182,6 +182,7 @@ facebook-app: \
 
 ios-native-app: \
     share/favicon.ico \
+    share/large-app-icon.png \
     share/native-launch-image-ipad-landscape.png \
     share/native-launch-image-ipad-portrait.png \
     share/native-launch-image-ipad3-landscape.png \
@@ -265,6 +266,9 @@ share/icon-%.png: build/q.png | share/
                 -resize $*x$* \
                 -quality 100 \
                     $< $@
+
+share/large-app-icon.png: share/icon-1024.png | share/
+	@   $(CP) $< $@
 
 share/native-launch-image-ipad-landscape.png: build/q.png | share/
 	@   $(CONVERT) \

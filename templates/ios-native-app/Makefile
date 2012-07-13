@@ -1,7 +1,7 @@
 #-  GNU Makefile
 
 #-  Makefile ~~
-#                                                       ~~ (c) SRW, 05 Apr 2012
+#                                                       ~~ (c) SRW, 12 Jul 2012
 
 PROJ_ROOT   :=  $(PWD)/../../
 
@@ -18,6 +18,7 @@ RESOURCES :=  \
     Default-Portrait@2x-ipad.png \
     favicon.ico \
     index.html \
+    large-app-icon.png \
     main.js \
     print.css \
     q.js \
