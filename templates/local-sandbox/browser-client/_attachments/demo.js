@@ -1,14 +1,14 @@
 //- JavaScript source code
 
 //- demo.js ~~
-//                                                      ~~ (c) SRW, 27 Jun 2012
+//                                                      ~~ (c) SRW, 16 Jul 2012
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80 */
+    /*jslint devel: true, indent: 4, maxlen: 80 */
 
  // Prerequisites
 

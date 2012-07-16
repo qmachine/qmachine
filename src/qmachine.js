@@ -1,14 +1,28 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                              ~~ (c) SRW, 11 Jul 2012
+//                                                      ~~ (c) SRW, 16 Jul 2012
 
 (function (global) {
     'use strict';
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80 */
+    /*jslint indent: 4, maxlen: 80, unparam: true */
+
+    /*properties
+        ActiveXObject, Q, XDomainRequest, XMLHttpRequest, appendChild, avar,
+        body, box, call, capture, configurable, constructor, createElement,
+        defineProperty, document, end, enumerable, exit, fail, get,
+        getElementsByTagName, global, hasOwnProperty, head, host,
+        importScripts, init, jobs, join, key, length, lib, location, method,
+        on, onerror, onload, onready, onreadystatechange, open, parse, ply,
+        protocol, prototype, push, read, readyState, request,
+        requests_remaining, responseText, retrieve, revive, send, set,
+        setEncoding, setHeader, setInterval, setRequestHeader, shelf, splice,
+        src, status, stay, stringify, toString, val, value, when, writable,
+        write
+     */
 
  // Prerequisites
 

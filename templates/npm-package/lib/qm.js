@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qm.js ~~
-//                                                      ~~ (c) SRW, 07 Jul 2012
+//                                                      ~~ (c) SRW, 16 Jul 2012
 
 (function () {
     'use strict';
@@ -162,6 +162,7 @@
             });
             response.on('end', function () {
              // This function needs documentation.
+                /*jslint unparam: true */
                 var code, myeval, q_url, repl, shell;
                 code = txt.join('').replace('http://qmachine.org', mothership);
                 myeval = function (code, context, file, callback) {
@@ -233,7 +234,7 @@
      // This code only runs in a worker process.
         createServer(config.corser_options, function (outer_req, outer_res) {
          // This function needs documentation.
-            var inner_req, method, options, rewrite, target;
+            var inner_req, method, options, rewrite;
             method = outer_req.method.toUpperCase();
             if (method === 'OPTIONS') {
                 outer_res.writeHead(204);
@@ -247,8 +248,9 @@
             }
             rewrite = function (x) {
              // This function needs documentation.
+                /*jslint unparam: true */
                 var pattern, y;
-                pattern = /^\/box\/([\w-]+)[?](key|status)[=]([\w]+)$/;
+                pattern = /^\/box\/([\w\-]+)[?](key|status)[=]([\w]+)$/;
                 y = x.replace(pattern, function (all, box, pkey, pval) {
                  // This function only runs if `pattern` returns a match.
                     var temp;
