@@ -1,27 +1,27 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 16 Jul 2012
+//                                                      ~~ (c) SRW, 17 Jul 2012
 
 (function (global) {
     'use strict';
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80, unparam: true */
+    /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        ActiveXObject, Q, XDomainRequest, XMLHttpRequest, appendChild, avar,
-        body, box, call, capture, configurable, constructor, createElement,
-        defineProperty, document, end, enumerable, exit, fail, get,
-        getElementsByTagName, global, hasOwnProperty, head, host,
-        importScripts, init, jobs, join, key, length, lib, location, method,
-        on, onerror, onload, onready, onreadystatechange, open, parse, ply,
-        protocol, prototype, push, read, readyState, request,
+        ActiveXObject, Q, XDomainRequest, XMLHttpRequest, appendChild, apply,
+        avar, body, box, call, capture, concat, configurable, constructor,
+        createElement, defineProperty, document, end, enumerable, exit, f,
+        fail, get, getElementsByTagName, global, hasOwnProperty, head, host,
+        importScripts, init, jobs, join, key, length, lib, location, map,
+        method, on, onerror, onload, onready, onreadystatechange, open, parse,
+        ply, protocol, prototype, push, read, readyState, request,
         requests_remaining, responseText, retrieve, revive, send, set,
         setEncoding, setHeader, setInterval, setRequestHeader, shelf, splice,
-        src, status, stay, stringify, toString, val, value, when, writable,
-        write
+        src, status, stay, stringify, toString, using, val, value, when,
+        writable, write, x
      */
 
  // Prerequisites
@@ -357,10 +357,45 @@
 
     map = function (f) {
      // This function needs documentation.
-        return function (evt) {
+        var afunc, x;
+        x = f;
+        afunc = function (evt) {
          // This function needs documentation.
-            return evt.fail('`map` is under construction.');
+            var y;
+            if ((this.hasOwnProperty('isready')) ||
+                    (this.hasOwnProperty('areready'))) {
+             // This arm needs documentation.
+                y = map.apply(this, this.val).using(f);
+            } else {
+                y = map(this.val).using(f);
+            }
+            y.onready = function (y_evt) {
+             // This function needs documentation.
+                y_evt.exit();
+                return evt.exit();
+            };
+            return;
         };
+        afunc.using = function (f) {
+         // This function needs documentation.
+            var y = avar({val: x});
+            y.onready = ply(function (key, val) {
+             // This function needs documentation.
+                y.val[key] = avar({val: {f: f, x: val}}).
+                    Q(function (evt) {
+                     // This function needs documentation.
+                        this.val = this.val.f(this.val.x);
+                        return evt.exit();
+                    });
+                return;
+            });
+            when.apply(null, [y].concat(y.val)).onready = function (evt) {
+             // This function needs documentation.
+                return evt.exit();
+            };
+            return y;
+        };
+        return afunc;
     };
 
     mothership = 'http://qmachine.org';
@@ -462,7 +497,7 @@
             capture:    capture,
             //generic:    generic,
             lib:        lib,
-            //map:        map,
+            map:        map,
             //reduce:     reduce,
             retrieve:   retrieve
         };

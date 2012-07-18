@@ -4,7 +4,7 @@
 #
 #   See also: http://goo.gl/ZZo9d.
 #
-#                                                       ~~ (c) SRW, 05 Apr 2012
+#                                                       ~~ (c) SRW, 16 Jul 2012
 
 include $(PWD)/../../tools/macros.make
 
@@ -42,6 +42,8 @@ docs/ examples/ images/ src/: WebIcon.zip
 
 WebIcon.zip:
 	@   $(CURL) -o $@ $(ZIPURL)
+
+###
 
 %:
 	@   $(call alert, 'No target "$@" found.')
