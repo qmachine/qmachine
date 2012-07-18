@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 17 Jul 2012
+//                                                      ~~ (c) SRW, 18 Jul 2012
 
 (function (global) {
     'use strict';
@@ -12,16 +12,16 @@
 
     /*properties
         ActiveXObject, Q, XDomainRequest, XMLHttpRequest, appendChild, apply,
-        avar, body, box, call, capture, concat, configurable, constructor,
+        avar, body, box, by, call, capture, concat, configurable, constructor,
         createElement, defineProperty, document, end, enumerable, exit, f,
         fail, get, getElementsByTagName, global, hasOwnProperty, head, host,
         importScripts, init, jobs, join, key, length, lib, location, map,
         method, on, onerror, onload, onready, onreadystatechange, open, parse,
-        ply, protocol, prototype, push, read, readyState, request,
+        ply, protocol, prototype, push, read, readyState, reduce, request,
         requests_remaining, responseText, retrieve, revive, send, set,
-        setEncoding, setHeader, setInterval, setRequestHeader, shelf, splice,
-        src, status, stay, stringify, toString, using, val, value, when,
-        writable, write, x
+        setEncoding, setHeader, setInterval, setRequestHeader, shelf, shift,
+        splice, src, status, stay, stringify, toString, using, val, value,
+        when, writable, write, x, y
      */
 
  // Prerequisites
@@ -32,10 +32,9 @@
 
  // Declarations
 
-    var Q, ajax_request, avar, capture, generic, http_GET, http_POST,
-        isBrowser, isNodejs, isWebWorker, lib, map, mothership, origin,
-        ply, reduce, retrieve, state, when;
-
+    var Q, ajax_request, avar, capture, http_GET, http_POST, isBrowser,
+        isNodejs, isWebWorker, lib, map, mothership, origin, ply, reduce,
+        retrieve, state, when;
 
  // Definitions
 
@@ -70,14 +69,6 @@
      // This function needs documentation.
         state.shelf.push(data);
         return avar().revive();
-    };
-
-    generic = function (f) {
-     // This function needs documentation.
-        return function () {
-         // This function needs documentation.
-            throw new Error('"generic" is under construction.');
-        };
     };
 
     http_GET = function (x) {
@@ -369,6 +360,10 @@
             } else {
                 y = map(this.val).using(f);
             }
+            y.onerror = function (message) {
+             // This function needs documentation.
+                return evt.fail(message);
+            };
             y.onready = function (y_evt) {
              // This function needs documentation.
                 y_evt.exit();
@@ -391,6 +386,11 @@
             });
             when.apply(null, [y].concat(y.val)).onready = function (evt) {
              // This function needs documentation.
+                ply(y.val).by(function (key, val) {
+                 // This function needs documentation.
+                    y.val[key] = val.val;
+                    return;
+                });
                 return evt.exit();
             };
             return y;
@@ -408,11 +408,64 @@
     ply = Q.ply;
 
     reduce = function (f) {
-     // This function needs documentation.
-        return function (evt) {
+     // This function needs to be recursive, but ... how best to do it?
+        var afunc, x;
+        x = f;
+        afunc = function (evt) {
          // This function needs documentation.
-            return evt.fail('`reduce` is under construction.');
+            var x, y;
+            x = this;
+            if ((this.hasOwnProperty('isready')) ||
+                    (this.hasOwnProperty('areready'))) {
+             // This arm needs documentation.
+                y = reduce.apply(this, this.val).using(f);
+            } else {
+                y = reduce(this.val).using(f);
+            }
+            y.onerror = function (message) {
+             // This function needs documentation.
+                return evt.fail(message);
+            };
+            y.onready = function (y_evt) {
+             // This function needs documentation.
+                if (y.val.length <= 1) {
+                    x.val = y.val[0];
+                    y_evt.exit();
+                    return evt.exit();
+                }
+                x.val = y.val;
+                y_evt.exit();
+                return evt.stay('Re-reducing ...');
+            };
+            return;
         };
+        afunc.using = function (f) {
+         // This function needs documentation.
+            var y = avar({val: x});
+            y.onready = function (evt) {
+             // This function runs locally because it closes over `x`.
+                var i, n, pairs;
+                n = x.length;
+                pairs = [];
+                if ((n % 2) === 1) {
+                    pairs.push({y: x[0]});
+                }
+                for (i = (n % 2); i < n; i += 2) {
+                    pairs.push({f: f, x: [x[i], x[i + 1]]});
+                }
+                y.val = pairs;
+                return evt.exit();
+            };
+            y.onready = map(function (each) {
+             // This function needs documentation.
+                if (each.hasOwnProperty('y')) {
+                    return each.y;
+                }
+                return each.f(each.x[0], each.x[1]);
+            });
+            return y;
+        };
+        return afunc;
     };
 
     retrieve = function (f) {
@@ -495,10 +548,9 @@
         var key, template;
         template = {
             capture:    capture,
-            //generic:    generic,
             lib:        lib,
             map:        map,
-            //reduce:     reduce,
+            reduce:     reduce,
             retrieve:   retrieve
         };
         for (key in template) {
