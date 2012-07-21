@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 18 Jul 2012
+//                                                      ~~ (c) SRW, 20 Jul 2012
 
 (function (global) {
     'use strict';
@@ -66,7 +66,8 @@
     avar = Q.avar;
 
     capture = function (data) {
-     // This function needs documentation.
+     // This function "captures" incoming data by saving a reference to it
+     // in `state.shelf`. It is quite useful when combined with JSONP :-)
         state.shelf.push(data);
         return avar().revive();
     };
