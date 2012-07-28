@@ -10,6 +10,7 @@
 #   NOTE: These directions do _not_ bump the version counter automatically!
 #
 #                                                       ~~ (c) SRW, 20 Mar 2012
+#                                                   ~~ last updated 28 Jul 2012
 
 include $(PWD)/../../tools/macros.make
 
@@ -26,7 +27,6 @@ ZIPFILE     :=  $(APP).zip
 CONVERT     :=  $(call contingent, convert)
 CP          :=  $(call contingent, gcp cp) -rf
 MKDIR       :=  $(call contingent, gmkdir mkdir)
-OPEN        :=  $(call contingent, gnome-open open)
 RM          :=  $(call contingent, rm) -rf
 ZIP         :=  $(call contingent, zip)
 

@@ -37,7 +37,7 @@ LAUNCHCTL       :=  $(call contingent, launchctl)
 MKDIR           :=  $(call contingent, gmkdir mkdir)
 NODEJS          :=  $(call contingent, nodejs node)
 NPM             :=  $(call contingent, npm)
-OPEN            :=  $(call contingent, gnome-open open curl)
+OPEN            :=  $(call contingent, x-www-browser gnome-open open curl)
 RM              :=  $(call contingent, grm rm) -rf
 SED             :=  $(call contingent, gsed sed)
 
