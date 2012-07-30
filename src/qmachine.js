@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 20 Jul 2012
+//                                                      ~~ (c) SRW, 30 Jul 2012
 
 (function (global) {
     'use strict';
@@ -16,13 +16,13 @@
         createElement, defineProperty, document, end, enumerable, exit, f,
         fail, get, getElementsByTagName, global, hasOwnProperty, head, host,
         importScripts, init, jobs, join, key, length, lib, location, map,
-        method, on, onerror, onload, onready, onreadystatechange, open, parse,
-        ply, protocol, prototype, push, read, readyState, reduce, request,
-        requests_remaining, responseText, retrieve, revive, send, set,
-        setEncoding, setHeader, setInterval, setRequestHeader, shelf, shift,
-        splice, src, status, stay, stringify, toString, using, val, value,
-        when, writable, write, x, y
-     */
+        method, on, onerror, onload, onready, onreadystatechange, open,
+        parentNode, parse, ply, protocol, prototype, push, read, readyState,
+        reduce, removeChild, request, requests_remaining, responseText,
+        retrieve, revive, send, set, setEncoding, setHeader, setInterval,
+        setRequestHeader, shelf, splice, src, status, stay, stringify,
+        toString, using, val, value, when, writable, write, x, y
+    */
 
  // Prerequisites
 
@@ -310,32 +310,39 @@
             };
         } else if (isBrowser()) {
             y.onready = function (evt) {
-             // This function needs documentation.
+             // This function use the conventional "script-tag loading"
+             // technique to import external libraries. To minimize the chances
+             // for memory leaks, it _unloads_ libraries if they are already
+             // loaded by removing the existing script tag. Although it might
+             // seem less efficient than simply loading the library once and
+             // ignoring subsequent loads, this technique allows JSONP to load
+             // data more than once and thus allows volunteer machines to run
+             // tasks that use JSONP to load external data to run the same task
+             // reproducibly. Unfortunately, there are many cases in which a
+             // browser can unload a library but not undo its "side effects";
+             // idempotency can be added with simple conditional statements in
+             // JS, however, and I will demonstrate in the documentation soon.
                 /*jslint browser: true */
-                var current, flag, i, n, script;
+                var current, i, n, script;
                 current = global.document.getElementsByTagName('script');
-                flag = false;
                 n = current.length;
-                for (i = 0; (flag === false) && (i < n); i += 1) {
-                    if (url === current[i].src) {
-                        flag = true;
-                    }
-                }
-                if (flag === true) {
-                    return evt.exit();
-                }
                 script = global.document.createElement('script');
                 script.onload = function () {
                  // This function needs documentation.
                     return evt.exit();
                 };
                 script.src = url;
+                for (i = 0; i < n; i += 1) {
+                    if (script.src === current[i].src) {
+                        current[i].parentNode.removeChild(current[i]);
+                    }
+                }
                 if ((global.document.body instanceof Object) === false) {
                     global.document.head.appendChild(script);
                 } else {
                     global.document.body.appendChild(script);
                 }
-                script = null;
+                current = script = null;
                 return;
             };
         } else {
