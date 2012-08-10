@@ -1,4 +1,0 @@
-QMachine
-========
-
-(placeholder)

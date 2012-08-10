@@ -1,0 +1,10 @@
+#-  NPM configuration file
+
+#-  .npmignore ~~
+#                                                       ~~ (c) SRW, 10 Aug 2012
+
+Makefile
+
+.hgignore
+
+#-  vim:set syntax=gitconfig:

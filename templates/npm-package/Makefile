@@ -2,16 +2,16 @@
 
 #-  Makefile ~~
 #                                                       ~~ (c) SRW, 11 Jul 2012
+#                                                   ~~ last updated 10 Aug 2012
 
 TEMPLATE_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT_ROOT    :=  $(realpath $(TEMPLATE_ROOT)/../../)
-PACKAGE_ROOT    :=  $(TEMPLATE_ROOT)/qm
 
 include $(PROJECT_ROOT)/tools/macros.make
 
-CD              :=  $(call contingent, gcd cd)
-CP              :=  $(call contingent, gcp cp) -rf
-MKDIR           :=  $(call contingent, gmkdir mkdir)
+README          :=  $(TEMPLATE_ROOT)/README.md
+
+CP              :=  $(call contingent, gcp cp) -f
 NPM             :=  $(call contingent, npm)
 RM              :=  $(call contingent, grm rm) -rf
 
@@ -22,10 +22,10 @@ all: run
 clean: reset
 
 clobber: clean
-	@   $(RM) $(PACKAGE_ROOT)
+	@   $(RM) npm-debug.log
 
 distclean: clobber
-	@   $(RM) $(TEMPLATE_ROOT)/node_modules *.tgz
+	@   $(RM) $(README) $(TEMPLATE_ROOT)/node_modules *.tgz
 
 reset:
 	@   $(call contingent, clear)
@@ -36,18 +36,13 @@ run: pack
 
 .PHONY: pack
 
-pack: $(PACKAGE_ROOT)
-	@   $(CP) $(TEMPLATE_ROOT)/README.md $(PACKAGE_ROOT)            ;   \
-            $(CP) $(TEMPLATE_ROOT)/examples $(PACKAGE_ROOT)/examples    ;   \
-            $(CP) $(TEMPLATE_ROOT)/lib $(PACKAGE_ROOT)/lib              ;   \
-            $(CP) $(TEMPLATE_ROOT)/package.json $(PACKAGE_ROOT)         ;   \
-            $(NPM) pack $(PACKAGE_ROOT)                                 ;   \
-            $(RM) $(PACKAGE_ROOT)
+pack: $(README)
+	@   $(NPM) pack
 
 ###
 
-$(PACKAGE_ROOT):
-	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
+$(TEMPLATE_ROOT)/%: $(PROJECT_ROOT)/%
+	@   $(CP) $< $@
 
 ###
 
