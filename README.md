@@ -14,7 +14,7 @@ There are several "mirrors" available on
 [GitHub](https://github.com/wilkinson/qmachine), and
 [Google Code](https://qmachine.googlecode.com).
 
-A Node.js module can be installed via [NPM](http://search.npmjs.org/#/qm).
+A Node.js module can be installed via [NPM](https://npmjs.org/package/qm).
 
 I have done some preliminary investigation into app integration for
 

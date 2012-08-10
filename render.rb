@@ -31,7 +31,7 @@ File::open(filename, "w") do |f|
     <title>Project Description: QMachine</title>
     <link rel="stylesheet" href="./print.css" media="print"/>
     <link rel="stylesheet" href="./screen.css" media="screen"/>
-    <link rel="shortcut icon" href="./favicon.ico"/>
+    <link rel="shortcut icon" href="http://qmachine.org/favicon.ico"/>
   </head>
   <body>
     <noscript>This page requires JavaScript.</noscript>
