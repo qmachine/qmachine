@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     index.html ~~
-                                                        ~~ (c) SRW, 10 Aug 2012
+                                                        ~~ (c) SRW, 11 Aug 2012
 -->
 <html lang="en" manifest="./cache.manifest">
   <head>
@@ -105,8 +105,11 @@
       <fieldset>
         <legend>Options</legend>
         <p>
-          <input type="checkbox" id="volunteer"/>
-          <label for="volunteer">Volunteer</label>
+          <label for="QM-box-input">Box</label>
+          <input type="text" id="QM-box-input"/>
+          <br/>
+          <label for="QM-volunteer-input">Volunteer</label>
+          <input type="checkbox" id="QM-volunteer-input"/>
         </p>
       </fieldset>
     </form>
@@ -120,7 +123,9 @@
 
   <!--[if !IE]>-->
 
-    <script async defer src="./main.js"></script>
+    <script src="./jquery.js"></script>
+    <script src="./q.js"></script>
+    <script src="./main.js"></script>
 
   <!--<![endif]-->
 

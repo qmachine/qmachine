@@ -19,6 +19,7 @@
 #   are required by each target!
 #
 #                                                       ~~ (c) SRW, 12 Jul 2012
+#                                                   ~~ last updated 11 Aug 2012
 
 PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -123,6 +124,7 @@ apps build deps share:
 	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
 
 backend-couchdb local-sandbox: \
+    deps/jquery.js \
     deps/jslint.js \
     deps/json2.js \
     deps/quanah.js \
@@ -163,6 +165,9 @@ chrome-hosted-app: \
 chrome-packaged-app: \
     share/favicon.ico \
     share/icon-128.png
+
+deps/jquery.js: | deps/
+	@   $(call download-url, "http://code.jquery.com/jquery-latest.js")
 
 deps/jslint.js: | deps/
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \

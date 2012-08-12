@@ -2,11 +2,10 @@
 
 //- main.js ~~
 //
-//  Currently, this program's main purpose is to load "q.js", but future work
-//  will extend it to create a more immersive experience both for volunteers
-//  and for computational scientists. The recommended way to embed QMachine's
-//  web service into your own web apps is to insert the following script tag
-//  into the body of your HTML page:
+//  This program's main purpose is to provide an interactive environment for
+//  using the QMachine web service, but it is by no means feature-complete.
+//  It doesn't load "q.js" dynamically anymore -- that task has been replaced
+//  by a script tag load in the HTML page:
 //
 //      <script src="http://qmachine.org/q.js"></script>
 //
@@ -18,78 +17,112 @@
 //  because I am not an active developer for either of the optimizers.
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 10 Aug 2012
+//                                                  ~~ last updated 11 Aug 2012
 
 (function (global) {
     'use strict';
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80, browser: true */
+    /*jslint indent: 4, maxlen: 80 */
+
+    /*global jQuery: false */
 
     /*properties
-        Q, appendChild, body, call, checked, console, createElement, error,
-        exit, getElementById, global, hasOwnProperty, head, key, log, onclick,
-        onerror, onready, prototype, setAttribute, setTimeout, volunteer
+        Q, blur, box, call, click, console, document, error, exit, global,
+        hasOwnProperty, is, jQuery, join, key, log, onerror, onready,
+        prototype, ready, setTimeout, stay, val, value, volunteer
     */
 
  // Prerequisites
 
+    if (global.hasOwnProperty('jQuery') === false) {
+        throw new Error('jQuery is missing.');
+    }
+
+    if (Object.prototype.hasOwnProperty('Q') === false) {
+        throw new Error('Method Q is missing.');
+    }
+
  // Declarations
 
-    var q, volunteer;
+    var $, Q, isFunction, jserr, jsout, volunteer;
 
  // Definitions
 
-    q = document.createElement('script');
+    $ = global.jQuery;
 
-    q.setAttribute('type', 'text/javascript');
-    q.setAttribute('src', 'http://qmachine.org/q.js');
+    Q = Object.prototype.Q;
+
+    isFunction = function (f) {
+     // This function returns `true` only if and only if `f` is a function.
+     // The second condition is necessary to return `false` for a regular
+     // expression in some of the older browsers.
+        return ((typeof f === 'function') && (f instanceof Function));
+    };
+
+    jserr = function () {
+     // This function needs documentation.
+        if ((global.hasOwnProperty('console')) &&
+                isFunction(global.console.error)) {
+            global.console.error(Array.prototype.join.call(arguments, ' '));
+        }
+        return;
+    };
+
+    jsout = function () {
+     // This function needs documentation.
+        if ((global.hasOwnProperty('console')) &&
+                isFunction(global.console.log)) {
+            global.console.log(Array.prototype.join.call(arguments, ' '));
+        }
+        return;
+    };
 
     volunteer = function () {
      // This function needs documentation.
-        if (Object.prototype.hasOwnProperty('Q') === false) {
-         // If Q hasn't loaded yet for some reason, try again later.
-            setTimeout(volunteer, 1000);
+        if ($('#QM-volunteer-input').is(':checked') === false) {
             return;
         }
-        if (document.getElementById('volunteer').checked === false) {
-            return;
-        }
-        var task = Object.prototype.Q.volunteer();
+        var task = Q.volunteer();
         task.onerror = function (message) {
          // This function needs documentation.
-            if ((global.hasOwnProperty('console')) &&
-                    (message !== 'Nothing to do ...')) {
-                global.console.error('Error:', message);
+            if (message !== 'Nothing to do ...') {
+                jserr('Error:', message);
             }
             global.setTimeout(volunteer, 1000);
             return;
         };
         task.onready = function (evt) {
          // This function needs documentation.
-            if (global.hasOwnProperty('console')) {
-                global.console.log('Done:', this.key);
-            }
-            setTimeout(volunteer, 1000);
+            jsout('Done:', this.key);
+            global.setTimeout(volunteer, 1000);
             return evt.exit();
         };
-        return task;
+        return;
     };
 
  // Invocations
 
-    if ((document.body === null) || (document.body === undefined)) {
-        document.head.appendChild(q);
-    } else {
-        document.body.appendChild(q);
-    }
-
-    document.getElementById('volunteer').onclick = volunteer;
-
- // Clean up after ourselves.
-
-    q = null;
+    $(global.document).ready(function () {
+     // This function needs documentation.
+        $('#QM-box-input').blur(function () {
+         // This function needs documentation.
+            Q.box = this.value;
+            return;
+        }).Q(function (evt) {
+         // This function synchronizes the jQuery object that represents the
+         // input element directly with QM's `box` property using Quanah's own
+         // event loop. Thankfully, this function won't distribute to another
+         // machine because it closes over `Q.box` :-)
+            if (this.val.is(':focus') === false) {
+                this.val.val(Q.box);
+            }
+            return evt.stay('This task repeats indefinitely.');
+        });
+        $('#QM-volunteer-input').click(volunteer);
+        return;
+    });
 
  // That's all, folks!
 

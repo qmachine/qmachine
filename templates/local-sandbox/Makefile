@@ -16,6 +16,7 @@
 #   8177 because [81, 77] is the ASCII encoding for "QM" ;-)
 #
 #                                                       ~~ (c) SRW, 29 Jun 2012
+#                                                   ~~ last updated 11 Aug 2012
 
 TEMPLATE_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT_ROOT    :=  $(realpath $(TEMPLATE_ROOT)/../../)
@@ -55,6 +56,7 @@ STATIC_CONTENT := \
         giant-favicon.ico               \
         ie.js                           \
         index.html                      \
+        jquery.js                       \
         main.js                         \
         print.css                       \
         q.js                            \
@@ -195,6 +197,9 @@ $(VARDIR)/couchdb.ini: $(TEMPLATE_ROOT)/config.sh | $(VARDIR)/
                 $(SHELL) $<
 
 $(VARDIR)/%/.couchappignore: $(TEMPLATE_ROOT)/.couchappignore | $(VARDIR)/%/
+	@   $(CP) $< $@
+
+$(WWWDIR)/%: $(PROJECT_ROOT)/deps/% | $(WWWDIR)/
 	@   $(CP) $< $@
 
 $(WWWDIR)/%: $(PROJECT_ROOT)/share/% | $(WWWDIR)/
