@@ -2,6 +2,7 @@
 
 #-  Makefile ~~
 #                                                       ~~ (c) SRW, 18 May 2012
+#                                                   ~~ last updated 12 Aug 2012
 
 PROJ_ROOT   :=  $(PWD)/../..#
 
@@ -25,6 +26,7 @@ STATIC_CONTENT := \
         giant-favicon.ico                   \
         ie.js                               \
         index.html                          \
+        jquery.js                           \
         main.js                             \
         print.css                           \
         q.js                                \
@@ -113,6 +115,9 @@ $(WWW_DIR)/_attachments/cache.manifest: $(PROJ_ROOT)/src/cache.manifest
             $(call stamp-with-epoch-time, $@)
 
 $(WWW_DIR)/_attachments/: | $(WWW_DIR)/
+
+$(WWW_DIR)/_attachments/%: $(PROJ_ROOT)/deps/%
+	@   $(CP) $< $@
 
 $(WWW_DIR)/_attachments/%: $(PROJ_ROOT)/share/%
 	@   $(CP) $< $@
