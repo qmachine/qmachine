@@ -17,7 +17,7 @@
 //  because I am not an active developer for either of the optimizers.
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 12 Aug 2012
+//                                                  ~~ last updated 13 Aug 2012
 
 (function (global) {
     'use strict';
@@ -30,9 +30,9 @@
 
     /*properties
         Q, blur, box, call, click, console, document, error, exit, getItem,
-        global, hasOwnProperty, is, jQuery, join, key, localStorage, log,
-        onerror, onready, prototype, ready, setItem, setTimeout, stay, val,
-        value, volunteer
+        global, hasOwnProperty, is, jQuery, join, key, keydown, localStorage,
+        log, onerror, onready, preventDefault, prototype, ready, setItem,
+        setTimeout, stay, val, value, volunteer, which
     */
 
  // Prerequisites
@@ -116,6 +116,13 @@
         $('#QM-box-input').blur(function () {
          // This function needs documentation.
             Q.box = this.value;
+            return;
+        }).keydown(function (evt) {
+         // This function needs documentation.
+            if (evt.which === 13) {
+                evt.preventDefault();
+                $(this).blur();
+            }
             return;
         }).Q(function (evt) {
          // This function synchronizes the jQuery object that represents the

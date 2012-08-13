@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 30 Jul 2012
+//                                                      ~~ (c) SRW, 13 Aug 2012
 
 (function (global) {
     'use strict';
@@ -21,7 +21,7 @@
         requests_remaining, responseText, retrieve, revive, send, set,
         setEncoding, setHeader, setInterval, setRequestHeader, shelf, splice,
         src, status, stay, stringify, toString, using, val, value, when,
-        writable, write, x, y
+        withCredentials, writable, write, x, y
     */
 
  // Prerequisites
@@ -47,7 +47,9 @@
         if (global.hasOwnProperty('XMLHttpRequest')) {
             req = new global.XMLHttpRequest();
             if (origin() !== mothership) {
-                if (req.hasOwnProperty('withCredentials')) {
+             // This is a slightly weaker test than using `hasOwnProperty`,
+             // but it may work better with Firefox. I'll test in a minute.
+                if (req.withCredentials !== undefined) {
                     return req;
                 }
                 if (global.hasOwnProperty('XDomainRequest')) {
