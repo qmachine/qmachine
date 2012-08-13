@@ -26,6 +26,7 @@ In the future, I would like to integrate QMachine with "app ecosystems" like
 
 -   [Android](https://play.google.com/store/apps)
 -   [BlackBerry](http://us.blackberry.com/apps-software/appworld/)
+-   [CloudFlare](https://www.cloudflare.com/apps/)
 -   [DirecTV](http://tvapps.directv.com/)
 -   [Dropbox](https://www.dropbox.com/developers/apps/)
 -   [ePrintCenter](https://h30495.www3.hp.com/apps/)
