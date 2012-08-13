@@ -17,7 +17,7 @@
 //  because I am not an active developer for either of the optimizers.
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 11 Aug 2012
+//                                                  ~~ last updated 12 Aug 2012
 
 (function (global) {
     'use strict';
@@ -29,9 +29,10 @@
     /*global jQuery: false */
 
     /*properties
-        Q, blur, box, call, click, console, document, error, exit, global,
-        hasOwnProperty, is, jQuery, join, key, log, onerror, onready,
-        prototype, ready, setTimeout, stay, val, value, volunteer
+        Q, blur, box, call, click, console, document, error, exit, getItem,
+        global, hasOwnProperty, is, jQuery, join, key, localStorage, log,
+        onerror, onready, prototype, ready, setItem, setTimeout, stay, val,
+        value, volunteer
     */
 
  // Prerequisites
@@ -106,6 +107,12 @@
 
     $(global.document).ready(function () {
      // This function needs documentation.
+        if (global.hasOwnProperty('localStorage')) {
+         // Here, we load a user's previous settings if they are available.
+            if (global.localStorage.hasOwnProperty('QM_box')) {
+                Q.box = global.localStorage.getItem('QM_box');
+            }
+        }
         $('#QM-box-input').blur(function () {
          // This function needs documentation.
             Q.box = this.value;
@@ -117,6 +124,12 @@
          // machine because it closes over `Q.box` :-)
             if (this.val.is(':focus') === false) {
                 this.val.val(Q.box);
+            }
+            if (global.hasOwnProperty('localStorage')) {
+             // We assume here that HTML5 localStorage has not been tampered
+             // with. Super-secure code isn't necessary here because the value
+             // of `Q.box` is already publicly available anyway.
+                global.localStorage.setItem('QM_box', Q.box);
             }
             return evt.stay('This task repeats indefinitely.');
         });
