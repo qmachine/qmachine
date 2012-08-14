@@ -19,7 +19,7 @@
 #   are required by each target!
 #
 #                                                       ~~ (c) SRW, 12 Jul 2012
-#                                                   ~~ last updated 11 Aug 2012
+#                                                   ~~ last updated 14 Aug 2012
 
 PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -254,6 +254,18 @@ share/giant-favicon.ico: build/q.png | share/
                 \( -clone 0 -resize 48x48 \) \
                 \( -clone 0 -resize 64x64 \) \
                 -delete 0 \
+                    $@
+
+share/google-apps-header.png: build/q.png | share/
+	@   $(CONVERT) \
+                $< \
+                -density 96 \
+                -background none \
+                -resize 51x51 \
+                -quality 100 \
+                -gravity center \
+                -extent 143x59 \
+                -background white -alpha remove -alpha off \
                     $@
 
 share/googlecode.png: build/q.png | share/
