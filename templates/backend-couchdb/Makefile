@@ -2,7 +2,7 @@
 
 #-  Makefile ~~
 #                                                       ~~ (c) SRW, 18 May 2012
-#                                                   ~~ last updated 12 Aug 2012
+#                                                   ~~ last updated 13 Aug 2012
 
 PROJ_ROOT   :=  $(PWD)/../..#
 
@@ -66,7 +66,7 @@ clean: reset
 clobber: clean
 
 distclean: clobber
-	@   $(RM) $(STATIC_CONTENT)
+	@   $(RM) $(APP_DIRS:%=%/.couchapprc)
 
 reset:
 	@   $(call contingent, clear)
