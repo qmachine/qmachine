@@ -39,5 +39,5 @@ In the future, I would like to integrate QMachine with "app ecosystems" like
 -   [Samsung](http://www.samsungapps.com/)
 -   [SMART Platform](http://www.smartplatforms.org/)
 -   [Windows Phone](http://www.windowsphone.com/en-US/marketplace)
-
+-   [Yahoo! Connected TV](http://connectedtv.yahoo.com/developer/tvstore/)
 
