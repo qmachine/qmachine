@@ -55,6 +55,16 @@ define compile-with-yuicompressor
     $(YUICOMP) --type js $(2) -o $(2)
 endef
 
+define compile-css
+    if [ $(words $(1)) -eq 1 ]; then                                        \
+        $(call aside, "Optimizing stylesheet: $(1) -> $(2)")            ;   \
+    else                                                                    \
+        $(call aside, "Optimizing stylesheets: $(1) -> $(2)")           ;   \
+    fi                                                                  ;   \
+    $(CAT) $(1) > $(2)                                                  ;   \
+    $(YUICOMP) --type css $(2) -o $(2)
+endef
+
 define compile-js
     if [ $(words $(1)) -eq 1 ]; then                                        \
         $(call aside, "Optimizing script: $(1) -> $(2)")                ;   \
@@ -85,19 +95,19 @@ endef
 all: $(APPS)
 
 clean: reset
+	@   for each in $(abspath apps/*); do                               \
+                if [ -d $${each} ] && [ -f $${each}/Makefile ]; then        \
+                    $(CD) $${each}                                      ;   \
+                    $(MAKE) distclean                                   ;   \
+                fi                                                      ;   \
+            done                                                        ;   \
+            $(RM) $(abspath apps)
 
 clobber: clean
 	@   $(RM) build/ share/
 
 distclean: clobber
-	@   $(RM) .d8_history deps/ .v8_history                         ;   \
-            for each in $(abspath apps/*); do                               \
-                if [ -d $${each} ] && [ -f $${each}/Makefile ]; then        \
-                    $(CD) $${each}                                      ;   \
-                    $(MAKE) $@                                          ;   \
-                fi                                                      ;   \
-            done                                                        ;   \
-            $(RM) $(abspath apps)
+	@   $(RM) .d8_history deps/ .v8_history
 
 help:
 	@   printf '%s\n' 'Usage: $(MAKE) [options] [target] ...'       ;   \
@@ -124,25 +134,27 @@ apps build deps share:
 	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
 
 backend-couchdb local-sandbox: \
-    deps/jquery.js \
-    deps/jslint.js \
-    deps/json2.js \
-    deps/quanah.js \
+    share/apple-touch-icon-57x57.png \
+    share/apple-touch-icon-72x72.png \
+    share/apple-touch-icon-114x114.png \
+    share/apple-touch-icon-144x144.png \
     share/favicon.ico \
     share/giant-favicon.ico \
+    share/homepage.js \
     share/q.js \
     share/q-min.js \
-    share/touch-icon-ipad.png \
-    share/touch-icon-ipad3.png \
-    share/touch-icon-iphone.png \
-    share/touch-icon-iphone4.png \
+    share/style-min.css \
     share/web-launch-image-iphone.png \
     share/web-launch-image-iphone4.png
 
 build/q.pdf: build/q.tex | build/
-	@   $(CD) build                                                 ;   \
-            $(PDFLATEX) q.tex                                           ;   \
-            $(PDFCROP) q.pdf q.pdf
+	@   if [ -f ../images/logo.pdf ]; then                              \
+                $(CP) ../images/logo.pdf $@                             ;   \
+            else                                                            \
+                $(CD) build                                             ;   \
+                $(PDFLATEX) q.tex                                       ;   \
+                $(PDFCROP) q.pdf q.pdf                                  ;   \
+            fi
 
 build/q.png: build/q.pdf | build/
 	@   $(CONVERT) \
@@ -195,10 +207,24 @@ ios-native-app: \
     share/native-launch-image-iphone.png \
     share/native-launch-image-iphone4.png \
     share/q.js \
-    share/touch-icon-ipad.png \
-    share/touch-icon-ipad3.png \
-    share/touch-icon-iphone.png \
-    share/touch-icon-iphone4.png
+    share/apple-touch-icon-57x57.png \
+    share/apple-touch-icon-72x72.png \
+    share/apple-touch-icon-114x114.png \
+    share/apple-touch-icon-144x144.png
+
+share/apple-touch-icon-%.png: build/q.png | share/
+	@   $(CONVERT) \
+                $< \( +clone \
+                    -channel A -morphology EdgeOut Diamond:10 +channel \
+                    +level-colors white \
+                \) -compose DstOver \
+                -background none \
+                -density 96 \
+                -resize "$*" \
+                -quality 100 \
+                -composite \
+                -background '#929292' -alpha remove -alpha off \
+                    $@
 
 share/bitbucket.jpg: build/q.png | share/
 	@   $(CONVERT) \
@@ -276,6 +302,9 @@ share/googlecode.png: build/q.png | share/
                 -quality 100 \
                     $< $@
 
+share/homepage.js: deps/jquery.js share/q.js src/main.js | share/
+	@   $(call compile-js, deps/jquery.js share/q.js src/main.js, $@)
+
 share/icon-%.png: build/q.png | share/
 	@   $(CONVERT) \
                 -background none \
@@ -345,62 +374,8 @@ share/q-min.js: share/q.js | share/
 share/qr.png: | share/
 	@   $(QRENCODE) --margin=1 --size=10 --output=$@ http://qmachine.org
 
-share/touch-icon-ipad.png: build/q.png | share/
-	@   $(CONVERT) \
-                $< \( +clone \
-                    -channel A -morphology EdgeOut Diamond:10 +channel \
-                    +level-colors white \
-                \) -compose DstOver \
-                -background none \
-                -density 96 \
-                -resize 72x72 \
-                -quality 100 \
-                -composite \
-                -background '#929292' -alpha remove -alpha off \
-                    $@
-
-share/touch-icon-ipad3.png: build/q.png | share/
-	@   $(CONVERT) \
-                $< \( +clone \
-                    -channel A -morphology EdgeOut Diamond:10 +channel \
-                    +level-colors white \
-                \) -compose DstOver \
-                -background none \
-                -density 96 \
-                -resize 144x144 \
-                -quality 100 \
-                -composite \
-                -background '#929292' -alpha remove -alpha off \
-                    $@
-
-share/touch-icon-iphone.png: build/q.png | share/
-	@   $(CONVERT) \
-                $< \( +clone \
-                    -channel A -morphology EdgeOut Diamond:10 +channel \
-                    +level-colors white \
-                \) -compose DstOver \
-                -background none \
-                -density 96 \
-                -resize 57x57 \
-                -quality 100 \
-                -composite \
-                -background '#929292' -alpha remove -alpha off \
-                    $@
-
-share/touch-icon-iphone4.png: build/q.png | share/
-	@   $(CONVERT) \
-                $< \( +clone \
-                    -channel A -morphology EdgeOut Diamond:10 +channel \
-                    +level-colors white \
-                \) -compose DstOver \
-                -background none \
-                -density 96 \
-                -resize 114x114 \
-                -quality 100 \
-                -composite \
-                -background '#929292' -alpha remove -alpha off \
-                    $@
-
+share/style-min.css: src/style.css | share/
+	@   $(call compile-css, src/style.css, $@)
 
 share/web-launch-image-iphone.png: build/q.png | share/
 	@   $(CONVERT) \

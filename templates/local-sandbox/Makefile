@@ -16,7 +16,7 @@
 #   8177 because [81, 77] is the ASCII encoding for "QM" ;-)
 #
 #                                                       ~~ (c) SRW, 29 Jun 2012
-#                                                   ~~ last updated 11 Aug 2012
+#                                                   ~~ last updated 15 Aug 2012
 
 TEMPLATE_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT_ROOT    :=  $(realpath $(TEMPLATE_ROOT)/../../)
@@ -51,22 +51,20 @@ SERVDIRS        :=  $(SERVICES:%=$(VARDIR)/%/)
 
 STATIC_CONTENT := \
     $(addprefix $(WWWDIR)/, \
+        apple-touch-icon-57x57.png      \
+        apple-touch-icon-72x72.png      \
+        apple-touch-icon-114x114.png    \
+        apple-touch-icon-144x144.png    \
         cache.manifest                  \
         favicon.ico                     \
         giant-favicon.ico               \
         ie.js                           \
         index.html                      \
-        jquery.js                       \
-        main.js                         \
-        print.css                       \
+        homepage.js                     \
         q.js                            \
         q-min.js                        \
         robots.txt                      \
-        screen.css                      \
-        touch-icon-ipad.png             \
-        touch-icon-ipad3.png            \
-        touch-icon-iphone.png           \
-        touch-icon-iphone4.png          \
+        style-min.css                   \
         web-launch-image-iphone.png     \
         web-launch-image-iphone4.png    )
 
@@ -223,7 +221,7 @@ nodejs-preflight: \
 
 $(TEMPLATE_ROOT)/%/node_modules/: $(TEMPLATE_ROOT)/%/package.json
 	@   $(CD) $(TEMPLATE_ROOT)/$*                                   ;   \
-            $(NPM) install
+            $(NPM) install --save
 
 $(VARDIR)/nodejs/node_modules/: \
     $(TEMPLATE_ROOT)/nodejs-client/node_modules \

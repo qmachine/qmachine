@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <!--
     index.html ~~
-                                                        ~~ (c) SRW, 14 Aug 2012
+                                                        ~~ (c) SRW, 15 Aug 2012
 -->
 <html lang="en" manifest="./cache.manifest">
   <head>
     <meta charset="utf-8"/>
     <meta name="author" content="Sean Wilkinson"/>
     <title>QMachine</title>
-    <link rel="stylesheet" href="./print.css" media="print"/>
-    <link rel="stylesheet" href="./screen.css" media="screen"/>
+    <link rel="stylesheet" href="./style-min.css"/>
 
   <!--[if IE]>
     <link rel="shortcut icon" href="./giant-favicon.ico"/>
@@ -24,18 +23,6 @@
   -->
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
-
-    <link rel="apple-touch-icon"
-        href="./touch-icon-iphone.png" />
-
-    <link rel="apple-touch-icon" sizes="72x72"
-        href="./touch-icon-ipad.png" />
-
-    <link rel="apple-touch-icon" sizes="114x114"
-        href="./touch-icon-iphone4.png" />
-
-    <link rel="apple-touch-icon" sizes="144x144"
-        href="./touch-icon-ipad3.png" />
 
     <link rel="apple-touch-startup-image"
         href="./web-launch-image-iphone.png" />
@@ -76,7 +63,7 @@
 
     <h1>QMachine</h1>
 
-    <a id="github_ribbon" href="https://github.com/wilkinson/qmachine">
+    <a class="fork-me" href="https://github.com/wilkinson/qmachine">
       <span>Fork me on GitHub!</span>
     </a>
 
@@ -97,17 +84,11 @@
     <script type="text/javascript" src="./ie.js"></script>
   <![endif]-->
   <!--[if gte IE 9]>
-    <script src="./jquery.js"></script>
-    <script src="./q.js"></script>
-    <script src="./main.js"></script>
+    <script src="./homepage.js"></script>
   <![endif]-->
 
   <!--[if !IE]>-->
-
-    <script src="./jquery.js"></script>
-    <script src="./q.js"></script>
-    <script src="./main.js"></script>
-
+    <script defer src="./homepage.js"></script>
   <!--<![endif]-->
 
   </body>

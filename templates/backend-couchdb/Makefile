@@ -2,7 +2,7 @@
 
 #-  Makefile ~~
 #                                                       ~~ (c) SRW, 18 May 2012
-#                                                   ~~ last updated 13 Aug 2012
+#                                                   ~~ last updated 15 Aug 2012
 
 PROJ_ROOT   :=  $(PWD)/../..#
 
@@ -21,22 +21,20 @@ RM          :=  $(call contingent, grm rm) -rf
 
 STATIC_CONTENT := \
     $(addprefix $(WWW_DIR)/_attachments/,   \
+        apple-touch-icon-57x57.png          \
+        apple-touch-icon-72x72.png          \
+        apple-touch-icon-114x114.png        \
+        apple-touch-icon-144x144.png        \
         cache.manifest                      \
         favicon.ico                         \
         giant-favicon.ico                   \
+        homepage.js                         \
         ie.js                               \
         index.html                          \
-        jquery.js                           \
-        main.js                             \
-        print.css                           \
         q.js                                \
         q-min.js                            \
         robots.txt                          \
-        screen.css                          \
-        touch-icon-ipad.png                 \
-        touch-icon-ipad3.png                \
-        touch-icon-iphone.png               \
-        touch-icon-iphone4.png              \
+        style-min.css                       \
         web-launch-image-iphone.png         \
         web-launch-image-iphone4.png        \
     )

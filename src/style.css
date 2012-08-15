@@ -1,0 +1,81 @@
+/*- CSS style sheet */
+
+/*- style.css ~~
+ *                                                      ~~ (c) SRW, 30 Jun 2012
+ */
+
+@media all {
+    a {
+        border-bottom: 1px dotted;
+        color: black;
+        text-decoration: none;
+    }
+    a:hover {
+        color: blue;
+    }
+    body {
+        background-color: #CCCCCC;
+        color: black;
+        font-family: Georgia, serif;
+        font-size: 12pt;
+        margin: 1in;
+        text-align: center;
+    }
+    div {
+        margin-bottom: 1em;
+        margin-top: 1em;
+        text-align: justify;
+    }
+    noscript {
+        color: red;
+        font-size: 200%;
+        text-align: center;
+    }
+    .fork-me {
+     /* There is a much fancier version available at http://goo.gl/CSWv3. */
+        border-bottom: none;
+        left: -65px;
+        height: 30px;
+        top: 40px;
+        position: absolute;
+        text-decoration: none;
+        width: 250px;
+        -moz-transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+    .fork-me:hover {
+        background: blue;
+    }    
+    .fork-me span {
+        background: black;
+        color: white;
+        font-size: 14px;
+        left: 0;
+        padding: 5px 0;
+        position: absolute;
+        text-align: center;
+        width: 250px;
+        -moz-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+        -webkit-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+        -o-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+        box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+    }
+}
+
+@media print {
+    a:after {
+        content: "[" attr(href) "]";
+    }
+    body {
+        background-color: white;
+    }
+    .fork-me span {
+        background: #CCCCCC;
+        color: black;
+    }
+}
+
+/*- vim:set syntax=css: */

@@ -6,6 +6,7 @@
 //  _why_. The <script> tags don't even support the 'onload' attribute! Argh.
 //
 //                                                      ~~ (c) SRW, 23 May 2012
+//                                                  ~~ last updated 15 Aug 2012
 
 (function () {
     'use strict';
@@ -36,7 +37,6 @@
      // 2.  If Chrome Frame is not already installed,
      //         launch a custom overlay that explains why IE sucks and why
      //         you should install Chrome Frame instead ...
-     // 3.  Load 'main.js'.
         /*global CFInstall: false */
         if (CFInstall instanceof Object) {
             clearInterval(timer);

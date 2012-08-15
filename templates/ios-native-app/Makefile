@@ -2,6 +2,7 @@
 
 #-  Makefile ~~
 #                                                       ~~ (c) SRW, 12 Jul 2012
+#                                                   ~~ last updated 15 Aug 2012
 
 PROJ_ROOT   :=  $(PWD)/../../
 
@@ -10,6 +11,10 @@ include $(PROJ_ROOT)/tools/macros.make
 CP  :=  $(call contingent, gcp cp) -rf
 
 RESOURCES :=  \
+    apple-touch-icon-57x57.png \
+    apple-touch-icon-72x72.png \
+    apple-touch-icon-114x114.png \
+    apple-touch-icon-144x144.png \
     Default.png \
     Default@2x.png \
     Default-Landscape-ipad.png \
@@ -17,16 +22,11 @@ RESOURCES :=  \
     Default-Portrait-ipad.png \
     Default-Portrait@2x-ipad.png \
     favicon.ico \
+    homepage.js \
     index.html \
     large-app-icon.png \
-    main.js \
-    print.css \
     q.js \
-    screen.css \
-    touch-icon-ipad.png \
-    touch-icon-ipad3.png \
-    touch-icon-iphone.png \
-    touch-icon-iphone4.png
+    style-min.css
 
 CP      :=  $(call contingent, gcp cp) -rf
 RM      :=  $(call contingent, grm rm) -rf

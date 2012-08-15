@@ -1,18 +1,18 @@
 {
-    "name": "qm-local-client",
-    "version": "0.0.0",
-    "description": "(no description)",
-    "author": {
-        "name": "Sean Wilkinson",
-        "email": "sean@mathbiol.org"
-    },
-    "dependencies": {
-        "qm": ">= 0.0.10"
-    },
-    "engines": {
-        "node": ">= 0.6.17",
-        "npm": ">= 1.1.21"
-    },
-    "private": true,
-    "readme": "(no documentation)"
+  "name": "qm-local-client",
+  "version": "0.0.0",
+  "description": "(no description)",
+  "author": {
+    "name": "Sean Wilkinson",
+    "email": "sean@mathbiol.org"
+  },
+  "dependencies": {
+    "qm": "0.0.11"
+  },
+  "engines": {
+    "node": ">= 0.6.17",
+    "npm": ">= 1.1.21"
+  },
+  "private": true,
+  "readme": "(no documentation)"
 }
