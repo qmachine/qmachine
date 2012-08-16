@@ -17,7 +17,7 @@
 //  because I am not an active developer for either of the optimizers.
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 13 Aug 2012
+//                                                  ~~ last updated 15 Aug 2012
 
 (function (global) {
     'use strict';
@@ -143,6 +143,27 @@
         $('#QM-volunteer-input').click(volunteer);
         return;
     });
+
+ // NOTE: This snippet successfully adds a <link> element to <head> so that
+ // the splash screens work correctly for iOS. I'm still debating about the
+ // advantages and disadvantages to doing it dynamically with JS vs. static
+ // in the HTML itself. Either way, there's some good information about the
+ // topic available online at
+ //
+ //     https://gist.github.com/472519
+ //     https://gist.github.com/2222823
+ //
+
+ /*
+    (function () {
+        var link = document.createElement('link');
+        link.href = 'apple-touch-startup-image-640x920.png';
+        link.rel = 'apple-touch-startup-image';
+        document.head.appendChild(link);
+        link = null;
+        return;
+    }());
+ */
 
  // That's all, folks!
 

@@ -19,7 +19,7 @@
 #   are required by each target!
 #
 #                                                       ~~ (c) SRW, 12 Jul 2012
-#                                                   ~~ last updated 14 Aug 2012
+#                                                   ~~ last updated 15 Aug 2012
 
 PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -138,14 +138,18 @@ backend-couchdb local-sandbox: \
     share/apple-touch-icon-72x72.png \
     share/apple-touch-icon-114x114.png \
     share/apple-touch-icon-144x144.png \
+    share/apple-touch-startup-image-320x460.png \
+    share/apple-touch-startup-image-640x920.png \
+    share/apple-touch-startup-image-768x1004.png \
+    share/apple-touch-startup-image-748x1024.png \
+    share/apple-touch-startup-image-1536x2008.png \
+    share/apple-touch-startup-image-1496x2048.png \
     share/favicon.ico \
     share/giant-favicon.ico \
     share/homepage.js \
     share/q.js \
     share/q-min.js \
-    share/style-min.css \
-    share/web-launch-image-iphone.png \
-    share/web-launch-image-iphone4.png
+    share/style-min.css
 
 build/q.pdf: build/q.tex | build/
 	@   if [ -f ../images/logo.pdf ]; then                              \
@@ -198,19 +202,19 @@ facebook-app: \
     share/facebook-75x75.png
 
 ios-native-app: \
-    share/favicon.ico \
-    share/large-app-icon.png \
-    share/native-launch-image-ipad-landscape.png \
-    share/native-launch-image-ipad-portrait.png \
-    share/native-launch-image-ipad3-landscape.png \
-    share/native-launch-image-ipad3-portrait.png \
-    share/native-launch-image-iphone.png \
-    share/native-launch-image-iphone4.png \
-    share/q.js \
     share/apple-touch-icon-57x57.png \
     share/apple-touch-icon-72x72.png \
     share/apple-touch-icon-114x114.png \
-    share/apple-touch-icon-144x144.png
+    share/apple-touch-icon-144x144.png \
+    share/apple-touch-startup-image-320x460.png \
+    share/apple-touch-startup-image-640x920.png \
+    share/apple-touch-startup-image-768x1004.png \
+    share/apple-touch-startup-image-748x1024.png \
+    share/apple-touch-startup-image-1536x2008.png \
+    share/apple-touch-startup-image-1496x2048.png \
+    share/favicon.ico \
+    share/large-app-icon.png \
+    share/q.js
 
 share/apple-touch-icon-%.png: build/q.png | share/
 	@   $(CONVERT) \
@@ -225,6 +229,14 @@ share/apple-touch-icon-%.png: build/q.png | share/
                 -composite \
                 -background '#929292' -alpha remove -alpha off \
                     $@
+
+share/apple-touch-startup-image-%.png: build/q.png | share/
+	@   $(CONVERT) \
+                -fill '#CCCCCC' \
+                -draw 'color 0,0 reset' \
+                -extent "$*" \
+                -background '#CCCCCC' -alpha remove -alpha off \
+                    $< $@
 
 share/bitbucket.jpg: build/q.png | share/
 	@   $(CONVERT) \
@@ -316,51 +328,6 @@ share/icon-%.png: build/q.png | share/
 share/large-app-icon.png: share/icon-1024.png | share/
 	@   $(CP) $< $@
 
-share/native-launch-image-ipad-landscape.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 1024x748 \
-                    $< $@
-
-share/native-launch-image-ipad-portrait.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 768x1004 \
-                    $< $@
-
-share/native-launch-image-ipad3-landscape.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 2048x1496 \
-                -background '#CCCCCC' -alpha remove -alpha off \
-                    $< $@
-
-share/native-launch-image-ipad3-portrait.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 1536x2008 \
-                -background '#CCCCCC' -alpha remove -alpha off \
-                    $< $@
-
-share/native-launch-image-iphone.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 320x480 \
-                    $< $@
-
-share/native-launch-image-iphone4.png: build/q.png | share/
-	@   $(CONVERT) \
-                -background '#CCCCCC' -alpha remove -alpha off \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 640x960 \
-                    $< $@
-
 share/q.js: \
     deps/jslint.js  \
     deps/json2.js   \
@@ -376,20 +343,6 @@ share/qr.png: | share/
 
 share/style-min.css: src/style.css | share/
 	@   $(call compile-css, src/style.css, $@)
-
-share/web-launch-image-iphone.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 320x460 \
-                    $< $@
-
-share/web-launch-image-iphone4.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent 640x920 \
-                    $< $@
 
 ###
 

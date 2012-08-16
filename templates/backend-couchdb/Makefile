@@ -20,23 +20,27 @@ MKDIR       :=  $(call contingent, gmkdir mkdir)
 RM          :=  $(call contingent, grm rm) -rf
 
 STATIC_CONTENT := \
-    $(addprefix $(WWW_DIR)/_attachments/,   \
-        apple-touch-icon-57x57.png          \
-        apple-touch-icon-72x72.png          \
-        apple-touch-icon-114x114.png        \
-        apple-touch-icon-144x144.png        \
-        cache.manifest                      \
-        favicon.ico                         \
-        giant-favicon.ico                   \
-        homepage.js                         \
-        ie.js                               \
-        index.html                          \
-        q.js                                \
-        q-min.js                            \
-        robots.txt                          \
-        style-min.css                       \
-        web-launch-image-iphone.png         \
-        web-launch-image-iphone4.png        \
+    $(addprefix $(WWW_DIR)/_attachments/,       \
+        apple-touch-icon-57x57.png              \
+        apple-touch-icon-72x72.png              \
+        apple-touch-icon-114x114.png            \
+        apple-touch-icon-144x144.png            \
+        apple-touch-startup-image-320x460.png   \
+        apple-touch-startup-image-640x920.png   \
+        apple-touch-startup-image-768x1004.png  \
+        apple-touch-startup-image-748x1024.png  \
+        apple-touch-startup-image-1536x2008.png \
+        apple-touch-startup-image-1496x2048.png \
+        cache.manifest                          \
+        favicon.ico                             \
+        giant-favicon.ico                       \
+        homepage.js                             \
+        ie.js                                   \
+        index.html                              \
+        q.js                                    \
+        q-min.js                                \
+        robots.txt                              \
+        style-min.css                           \
     )
 
 define get-login
