@@ -46,9 +46,6 @@
         -ms-transform: rotate(-45deg);
         transform: rotate(-45deg);
     }
-    .fork-me:hover {
-        background: blue;
-    }    
     .fork-me span {
         background: black;
         color: white;
@@ -62,6 +59,9 @@
         -webkit-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
         -o-box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
         box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 10px;
+    }
+    .fork-me span:hover {
+        background: blue;
     }
 }
 

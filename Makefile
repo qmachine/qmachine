@@ -78,8 +78,10 @@ define download-url
     $(call aside, 'Retrieving $(notdir $@) ...')                        ;   \
     $(CURL) -s -o $@ $(1)                                               ;   \
     if [ $$? -ne 0 ]; then                                                  \
-        if [ -d $(CODEBANK)/lib/JavaScript ]; then                          \
+        if [ -f $(CODEBANK)/lib/JavaScript/$(notdir $@) ]; then             \
             $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@            ;   \
+        elif [ -f $(CODEBANK)/lib/CSS/$(notdir $@) ]; then                  \
+            $(CP) $(CODEBANK)/lib/CSS/$(notdir $@) $@                   ;   \
         else                                                                \
             $(call alert, 'Unable to retrieve $(notdir $@).')           ;   \
             exit 1                                                      ;   \
@@ -192,6 +194,10 @@ deps/jslint.js: | deps/
 deps/json2.js: | deps/
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
             $(call download-url, "$${CROCKHUB}/JSON-js/master/json2.js")
+
+deps/meyerweb-reset.css: | deps/
+	@   $(call download-url, \
+                "http://meyerweb.com/eric/tools/css/reset/reset.css")
 
 deps/quanah.js: | deps/
 	@   SEANHUB="https://raw.github.com/wilkinson"                  ;   \
