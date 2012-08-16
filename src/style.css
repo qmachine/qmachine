@@ -1,7 +1,7 @@
 /*- CSS style sheet */
 
 /*- style.css ~~
- *                                                      ~~ (c) SRW, 30 Jun 2012
+ *                                                      ~~ (c) SRW, 16 Aug 2012
  */
 
 @media all {
@@ -25,6 +25,10 @@
         margin-bottom: 1em;
         margin-top: 1em;
         text-align: justify;
+    }
+    html {
+     /* This snippet makes text look nicer (source: http://goo.gl/fr85e). */
+        -webkit-font-smoothing: antialiased;
     }
     noscript {
         color: red;
