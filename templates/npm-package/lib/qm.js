@@ -2,6 +2,7 @@
 
 //- qm.js ~~
 //                                                      ~~ (c) SRW, 16 Jul 2012
+//                                                  ~~ last updated 16 Aug 2012
 
 (function () {
     'use strict';
@@ -273,7 +274,7 @@
             options = url.parse(rewrite(outer_req.url));
             options.headers = outer_req.headers;
          // The next two lines are experimental ... ?
-            //delete options.headers['host'];
+            delete options.headers['host'];
             options.headers['Content-Type'] = 'application/json';
          // ----
             options.method = method;
