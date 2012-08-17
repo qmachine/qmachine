@@ -16,8 +16,11 @@
 //  but I will not respond to bug reports that cannot be reproduced in "q.js"
 //  because I am not an active developer for either of the optimizers.
 //
+//  KNOWN ISSUES:
+//      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
+//
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 15 Aug 2012
+//                                                  ~~ last updated 17 Aug 2012
 
 (function (global) {
     'use strict';
@@ -47,13 +50,31 @@
 
  // Declarations
 
-    var $, Q, isFunction, jserr, jsout, volunteer;
+    var $, Q, detect, isFunction, jserr, jsout, volunteer;
 
  // Definitions
 
     $ = global.jQuery;
 
     Q = Object.prototype.Q;
+
+    detect = function (feature_name) {
+     // This function needs documentation.
+        switch (feature_name) {
+        case 'console.error':
+            return ((global.hasOwnProperty('console')) &&
+                    (isFunction(global.console.error)));
+        case 'console.log':
+            return ((global.hasOwnProperty('console')) &&
+                    (isFunction(global.console.log)));
+        case 'localStorage':
+         // HTML5 localStorage object
+            return (global.localStorage instanceof Object);
+        default:
+         // (placeholder)
+        }
+        return false;
+    };
 
     isFunction = function (f) {
      // This function returns `true` only if and only if `f` is a function.
@@ -64,8 +85,7 @@
 
     jserr = function () {
      // This function needs documentation.
-        if ((global.hasOwnProperty('console')) &&
-                isFunction(global.console.error)) {
+        if (detect('console.error')) {
             global.console.error(Array.prototype.join.call(arguments, ' '));
         }
         return;
@@ -73,8 +93,7 @@
 
     jsout = function () {
      // This function needs documentation.
-        if ((global.hasOwnProperty('console')) &&
-                isFunction(global.console.log)) {
+        if (detect('console.log')) {
             global.console.log(Array.prototype.join.call(arguments, ' '));
         }
         return;
@@ -107,7 +126,7 @@
 
     $(global.document).ready(function () {
      // This function needs documentation.
-        if (global.hasOwnProperty('localStorage')) {
+        if (detect('localStorage')) {
          // Here, we load a user's previous settings if they are available.
             if (global.localStorage.hasOwnProperty('QM_box')) {
                 Q.box = global.localStorage.getItem('QM_box');
@@ -132,7 +151,7 @@
             if (this.val.is(':focus') === false) {
                 this.val.val(Q.box);
             }
-            if (global.hasOwnProperty('localStorage')) {
+            if (detect('localStorage')) {
              // We assume here that HTML5 localStorage has not been tampered
              // with. Super-secure code isn't necessary here because the value
              // of `Q.box` is already publicly available anyway.
