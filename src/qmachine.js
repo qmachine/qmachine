@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 13 Aug 2012
+//                                                      ~~ (c) SRW, 25 Aug 2012
 
 (function (global) {
     'use strict';
@@ -386,12 +386,11 @@
             var y = avar({val: x});
             y.onready = ply(function (key, val) {
              // This function needs documentation.
-                y.val[key] = avar({val: {f: f, x: val}}).
-                    Q(function (evt) {
-                     // This function needs documentation.
-                        this.val = this.val.f(this.val.x);
-                        return evt.exit();
-                    });
+                y.val[key] = avar({val: {f: f, x: val}}).Q(function (evt) {
+                 // This function needs documentation.
+                    this.val = this.val.f(this.val.x);
+                    return evt.exit();
+                });
                 return;
             });
             when.apply(null, [y].concat(y.val)).onready = function (evt) {
