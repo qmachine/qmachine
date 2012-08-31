@@ -2,6 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 18 May 2012
+//                                                  ~~ last updated 25 Aug 2012
 
 (function () {
     'use strict';
@@ -80,6 +81,7 @@
 
     http.Server(function (outer_req, outer_res) {
      // This function needs documentation.
+        /*jslint regexp: true */
         var cors_headers, inner_req, method, options, pat, target;
         cors_headers = {
             'Access-Control-Allow-Origin': (outer_req.headers.origin || '*'),
