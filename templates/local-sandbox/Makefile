@@ -16,7 +16,7 @@
 #   8177 because [81, 77] is the ASCII encoding for "QM" ;-)
 #
 #                                                       ~~ (c) SRW, 29 Jun 2012
-#                                                   ~~ last updated 15 Aug 2012
+#                                                   ~~ last updated 06 Sep 2012
 
 TEMPLATE_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT_ROOT    :=  $(realpath $(TEMPLATE_ROOT)/../../)
@@ -30,7 +30,8 @@ WWWDIR          :=  $(abspath $(TEMPLATE_ROOT)/browser-client/_attachments)
 include $(PROJECT_ROOT)/tools/macros.make
 
 CD              :=  $(call contingent, cd)
-COUCHAPP        :=  $(call contingent, couchapp) --quiet
+COUCHAPP        :=  $(call contingent, couchapp kanso)
+
 COUCHDB         :=  $(call contingent, couchdb)
 CP              :=  $(call contingent, gcp cp) -rf
 DATE            :=  $(call contingent, date)
@@ -73,17 +74,22 @@ STATIC_CONTENT := \
         style-min.css                           \
     )
 
-define get-login
-    $(strip \
-        $(call hilite, "Authenticating for $(1) ...")                   ;   \
-        DATABASE="$(strip $(2))://"                                     ;   \
-        $(call read-prompt, "Username: ") &&                                \
-            DATABASE="$${DATABASE}$${REPLY}:"                           ;   \
-        $(call read-secure, "Password: ") &&                                \
-            DATABASE="$${DATABASE}$${REPLY}@$(strip $(1))"              ;   \
-        curl -X PUT $${DATABASE}                                        ;   \
-        printf '{"env": {"default": {"db": "%s"}}}' $${DATABASE} > $(3)     )
-endef
+ifeq ("$(COUCHAPP)","$(call contingent, couchapp)")
+    COUCHAPP    +=  "--quiet"
+    define get-login
+        $(strip \
+            $(call hilite, "Authenticating for $(1) ...")               ;   \
+            DATABASE="$(strip $(2))://"                                 ;   \
+            $(call read-prompt, "Username: ") &&                            \
+                DATABASE="$${DATABASE}$${REPLY}:"                       ;   \
+            $(call read-secure, "Password: ") &&                            \
+                DATABASE="$${DATABASE}$${REPLY}@$(strip $(1))"          ;   \
+            curl -X PUT $${DATABASE}                                    ;   \
+            printf '{"env": {"default": {"db": "%s"}}}'                     \
+                $${DATABASE} > $(3)                                         \
+        )
+    endef
+endif
 
 define replace-hostname
     for each in $(1); do                                                    \
@@ -170,11 +176,14 @@ couchdb-inflight: \
     $(BCLIENT)/.couchapprc      \
     $(STORAGE)/.couchappignore  \
     $(STORAGE)/.couchapprc
-	@   for each in $(VARDIR)/couchapp-*; do                            \
-                $(CD) $${each}                                          ;   \
-                $(call aside, "Pushing $${each} ...")                   ;   \
-                $(COUCHAPP) push                                        ;   \
-            done
+	@   $(call aside, 'Pushing "db" ...')                           ;   \
+            $(CD) $(STORAGE)                                            ;   \
+            $(COUCHAPP) install                                         ;   \
+            $(COUCHAPP) push db                                         ;   \
+            $(call aside, 'Pushing "www" ...')                          ;   \
+            $(CD) $(BCLIENT)                                            ;   \
+            $(COUCHAPP) install                                         ;   \
+            $(COUCHAPP) push www
 
 couchdb-preflight: $(BCLIENT) $(STORAGE) $(VARDIR)/couchdb.ini
 	@   $(call replace-hostname, $(BCLIENT)/_attachments/*.js)      ;   \
