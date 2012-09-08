@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 30 Aug 2012
+//                                                      ~~ (c) SRW, 08 Sep 2012
 
 (function (global) {
     'use strict';
@@ -566,9 +566,11 @@
             if (template.hasOwnProperty(key)) {
                 if (Q.hasOwnProperty(key) === false) {
                     Object.defineProperty(Q, key, {
-                        configurable: false,
+                     // NOTE: I commented out two of the next three lines
+                     // because their values match the ES5.1 default values.
+                        //configurable: false,
                         enumerable: true,
-                        writable: false,
+                        //writable: false,
                         value: template[key]
                     });
                 }
@@ -584,11 +586,11 @@
             x = {box: (box || Q.box), status: 'waiting', val: []};
             y = http_GET(x);
             y.onready = function (evt) {
-             // This function deserializes the string returned by QMachine
-             // into the array of keys that it represents. This is one of the
-             // rare instances in which I knowingly change the data type by
+             // This function deserializes the string returned by QMachine into
+             // the array of keys that it represents. This is one of the rare
+             // instances in which I deliberately change a variable's "type" by
              // assignment -- this is not typically advisable because it may
-             // confuse the JIT compilers and thereby hurt performance.
+             // impact the performance of JIT compilers.
                 y.val = JSON.parse(y.val);
                 return evt.exit();
             };
@@ -598,9 +600,9 @@
          // This function needs documentation.
             var y = http_GET(x);
             y.onready = function (evt) {
-             // This function deserializes the string returned as the 'val' of
-             // 'y' into a 'temp' variable and then uses them to update the
-             // property values of 'y'. It returns an avar.
+             // This function deserializes the string returned as the `val` of
+             // `y` into a `temp` variable and then uses them to update the
+             // property values of `y`. It returns an avar.
                 var key, temp;
                 temp = avar(y.val);
                 for (key in temp) {
@@ -614,19 +616,34 @@
         },
         write: function (x) {
          // This function sends an HTTP POST to QMachine. It doesn't worry
-         // about the return data because QMachine isn't going to return any
-         // data -- the request will either succeed or fail, as indicated by
-         // the HTTP status code returned. It returns an avar.
+         // about the return data because QMachine isn't going to return
+         // any data -- the request will either succeed or fail, as
+         // indicated by the HTTP status code returned. It returns an avar.
             return http_POST(x);
         }
-    });
-
- // Configure a background "daemon" to revive execution if appropriate, but
- // only when nothing else is happening ...
-
-    if (typeof global.setInterval === 'function') {
-        global.setInterval(Q.avar().revive, 1000);
-    }
+    }).Q(function (evt) {
+     // This function configures a background "daemon" to revive execution if
+     // nothing has triggered it in a while. This strategy allows an otherwise
+     // completely event-driven model to avoid the deadlock that occurs when
+     // the queue for a given box is completely empty, for example. I will be
+     // re-evaluating this strategy soon, though, because it seems unnecessary.
+     //
+     // NOTE: I am reusing the avar that gets returned by the `init` method to
+     // avoid the overhead of creating new avars needlessly every time.
+     //
+        if ((typeof global.clearTimeout === 'function') &&
+                (typeof this.val === 'number')) {
+            global.clearTimeout(this.val);
+        }
+        if (typeof global.setTimeout === 'function') {
+            this.val = global.setTimeout(this.revive, 1000);
+        }
+        return evt.exit();
+    }).onerror = function (message) {
+     // This function needs documentation.
+        console.error('Error:', message);
+        return;
+    };
 
  // That's all, folks!
 
