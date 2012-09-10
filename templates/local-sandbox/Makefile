@@ -91,14 +91,14 @@ ifeq ("$(COUCHAPP)","$(call contingent, couchapp)")
     endef
     define push-to-couch
         $(strip \
-            $(call aside, 'Pushing "$(1)" ...')                         ;   \
+            $(call aside, 'Pushing $(strip $(1)) ...')                  ;   \
             $(COUCHAPP) push                                                \
         )
     endef
 else
     define push-to-couch
         $(strip \
-            $(call aside, 'Pushing "$(1)" ...')                         ;   \
+            $(call aside, 'Pushing $(strip $(1)) ...')                  ;   \
             $(COUCHAPP) install                                         ;   \
             $(COUCHAPP) push $(1)                                           \
         )
