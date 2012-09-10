@@ -8,15 +8,15 @@
 #   via Homebrew. At the moment, I am testing with
 #
 #       -   Apache CouchDB 1.2.0,
-#       -   Node.js 0.8 (+ NPM 1.1.32),
-#       -   Mac OS X 10.7.4.
+#       -   Node.js 0.8.8 (+ NPM 1.1.61),
+#       -   Mac OS X 10.8.1.
 #
 #   By default, the web service runs on port 8177. If you're into trivia like
 #   me, you may wonder why certain numbers are chosen. In this case, I chose
 #   8177 because [81, 77] is the ASCII encoding for "QM" ;-)
 #
 #                                                       ~~ (c) SRW, 29 Jun 2012
-#                                                   ~~ last updated 06 Sep 2012
+#                                                   ~~ last updated 10 Sep 2012
 
 TEMPLATE_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT_ROOT    :=  $(realpath $(TEMPLATE_ROOT)/../../)
@@ -87,6 +87,20 @@ ifeq ("$(COUCHAPP)","$(call contingent, couchapp)")
             curl -X PUT $${DATABASE}                                    ;   \
             printf '{"env": {"default": {"db": "%s"}}}'                     \
                 $${DATABASE} > $(3)                                         \
+        )
+    endef
+    define push-to-couch
+        $(strip \
+            $(call aside, 'Pushing "$(1)" ...')                         ;   \
+            $(COUCHAPP) push                                                \
+        )
+    endef
+else
+    define push-to-couch
+        $(strip \
+            $(call aside, 'Pushing "$(1)" ...')                         ;   \
+            $(COUCHAPP) install                                         ;   \
+            $(COUCHAPP) push $(1)                                           \
         )
     endef
 endif
@@ -176,14 +190,10 @@ couchdb-inflight: \
     $(BCLIENT)/.couchapprc      \
     $(STORAGE)/.couchappignore  \
     $(STORAGE)/.couchapprc
-	@   $(call aside, 'Pushing "db" ...')                           ;   \
-            $(CD) $(STORAGE)                                            ;   \
-            $(COUCHAPP) install                                         ;   \
-            $(COUCHAPP) push db                                         ;   \
-            $(call aside, 'Pushing "www" ...')                          ;   \
+	@   $(CD) $(STORAGE)                                            ;   \
+            $(call push-to-couch, "db")                                 ;   \
             $(CD) $(BCLIENT)                                            ;   \
-            $(COUCHAPP) install                                         ;   \
-            $(COUCHAPP) push www
+            $(call push-to-couch, "www")
 
 couchdb-preflight: $(BCLIENT) $(STORAGE) $(VARDIR)/couchdb.ini
 	@   $(call replace-hostname, $(BCLIENT)/_attachments/*.js)      ;   \
