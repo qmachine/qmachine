@@ -3,23 +3,27 @@
 #-  Makefile ~~
 #
 #   This contains live instructions for developing QMachine. I wrote them for
-#   use on my laptop (Mac OS X 10.7.4 + Homebrew + MacTeX 2011). MacTeX 2012
-#   was released recently, and everything still seems to work. Occasionally,
+#   use on my laptop (Mac OS X 10.8.1 + Homebrew + MacTeX 2012). Occasionally,
 #   I test it with various Linux distributions, but some targets make use of
 #   programs like `launchd` for which I have yet to find suitable replacements.
 #   If you're using a Mac, make sure you have installed XCode from the App
 #   Store before installing Homebrew, MacTeX, and NPM from their respective
-#   websites. At that point, you're mostly done, save for `couchapp`, which is
-#   a Python module; the rest can be installed by Homebrew via
+#   websites. At that point, the following two commands will cover everything:
 #
-#       $ brew install closure-compiler couchdb gnu-sed imagemagick node    \
+#       $ brew install closure-compiler couchdb gnu-sed imagemagick node \
 #           phantomjs qrencode yuicompressor
+#
+#       $ npm install -g kanso
+#
+#   For a possible (but not recommended) alternative to the latter, use
+#
+#       $ sudo easy_install couchapp
 #
 #   NOTE: This is a lot of dependencies, to be sure, but not all dependencies
 #   are required by each target!
 #
 #                                                       ~~ (c) SRW, 12 Jul 2012
-#                                                   ~~ last updated 15 Aug 2012
+#                                                   ~~ last updated 10 Sep 2012
 
 PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
