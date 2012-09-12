@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- server.js ~~
-//                                                      ~~ (c) SRW, 18 Aug 2012
+//                                                      ~~ (c) SRW, 12 Sep 2012
 
 (function () {
     'use strict';
@@ -14,7 +14,7 @@
 
  // Declarations
 
-    var cluster, configure, corser, createServer, http, launch_server,
+    var cluster, configure, corser, createServer, http, https, launch_server,
         launch_workers, os, url;
 
  // Definitions
@@ -58,6 +58,8 @@
 
     http = require('http');
 
+    https = require('https');
+
     launch_server = function (options) {
      // This function needs documentation.
         var config;
@@ -83,7 +85,7 @@
      // This code only runs in a worker process.
         createServer(config.corser_options, function (outer_req, outer_res) {
          // This function needs documentation.
-            var inner_req, method, options, rewrite;
+            var inner_req, method, options, protocol, rewrite;
             method = outer_req.method.toUpperCase();
             if (method === 'OPTIONS') {
                 outer_res.writeHead(204);
@@ -126,7 +128,8 @@
             options.headers['Content-Type'] = 'application/json';
          // ----
             options.method = method;
-            inner_req = http.request(options, function (inner_res) {
+            protocol = (options.protocol === 'http:') ? http : https;
+            inner_req = protocol.request(options, function (inner_res) {
              // This function needs documentation.
                 outer_res.writeHead(inner_res.statusCode, inner_res.headers);
                 inner_res.pipe(outer_res);
