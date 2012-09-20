@@ -7,7 +7,7 @@
 //  It doesn't load "q.js" dynamically anymore -- that task has been replaced
 //  by a script tag load in the HTML page:
 //
-//      <script src="http://qmachine.org/q.js"></script>
+//      <script src="https://qmachine.org/q.js"></script>
 //
 //  NOTE: For maximum performance in your own app, embed "q-min.js", which is
 //  a minified, optimized version of "q.js". Typically, I use either Google's
@@ -20,7 +20,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 17 Aug 2012
+//                                                  ~~ last updated 17 Sep 2012
 
 (function (global) {
     'use strict';

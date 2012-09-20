@@ -1,7 +1,11 @@
 //- JavaScript source code
 
 //- client.js ~~
+//
+//  NOTE: This all needs to be updated to work over HTTPS ...
+//
 //                                                      ~~ (c) SRW, 25 Aug 2012
+//                                                  ~~ last updated 17 Sep 2012
 
 (function () {
     'use strict';
@@ -14,7 +18,7 @@
 
  // Declarations
 
-    var Q, avar, capture, cluster, configure, http, http_GET, http_POST,
+    var Q, avar, capture, cluster, configure, https, https_GET, https_POST,
         launch_client, launch_remote_client, lib, map, mothership, my_eval,
         ply, reduce, repl, retrieve, state, url, vm, when;
 
@@ -52,9 +56,9 @@
         return y;
     };
 
-    http = require('http');
+    https = require('https');
 
-    http_GET = function (x) {
+    https_GET = function (x) {
      // This function needs documentation.
         var y = avar(x);
         y.box = x.box;                  //- NOTE: Is this line necessary?
@@ -66,7 +70,7 @@
             } else if (x.hasOwnProperty('status')) {
                 href = mothership + '/box/' + x.box + '?status=' + x.status;
             } else {
-                return evt.fail('No flags specified for "http_GET".');
+                return evt.fail('No flags specified for `https_GET`.');
             }
             pool_req = avar({val: false});
             pool_req.onerror = function (message) {
@@ -90,7 +94,7 @@
              // This function needs documentation.
                 var options, req;
                 options = url.parse(href);
-                req = http.request(options, function (res) {
+                req = https.request(options, function (res) {
                  // This function needs documentation.
                     var txt = [];
                     res.setEncoding('utf8');
@@ -124,7 +128,7 @@
         return y;
     };
 
-    http_POST = function (x) {
+    https_POST = function (x) {
      // This function needs documentation.
         var y = avar(x);
         y.box = x.box;
@@ -155,7 +159,7 @@
                 var options, req;
                 options = url.parse(href);
                 options.method = 'POST';
-                req = http.request(options, function (res) {
+                req = https.request(options, function (res) {
                  // This function needs documentation.
                     var txt = [];
                     res.on('data', function (chunk) {
@@ -198,7 +202,7 @@
             port:       80,
             q_path:     '/q.js'
         });
-        href = ['http://', config.hostname, ':', config.port, config.q_path];
+        href = ['https://', config.hostname, ':', config.port, config.q_path];
         mothership = href.slice(0, -1).join('');
         repl.start('QM> ', undefined, my_eval, true, true);
         return;
@@ -212,9 +216,9 @@
             port:       80,
             q_path:     '/q.js'
         });
-        href = ['http://', config.hostname, ':', config.port, config.q_path];
+        href = ['https://', config.hostname, ':', config.port, config.q_path];
         mothership = href.slice(0, -1).join('');
-        request = http.request(url.parse(href.join('')), function (response) {
+        request = https.request(url.parse(href.join('')), function (response) {
          // This function needs documentation.
             var txt = [];
             response.on('data', function (chunk) {
@@ -225,7 +229,7 @@
             response.on('end', function () {
              // This function needs documentation.
                 var code;
-                code = txt.join('').replace('http://qmachine.org', mothership);
+                code = txt.join('').replace('https://qmachine.org', mothership);
                 vm.createScript(code, href.join('')).runInThisContext();
                 repl.start('QM> ', undefined, my_eval, true, true);
                 return;
@@ -302,7 +306,7 @@
         return afunc;
     };
 
-    mothership = 'http://qmachine.org';
+    mothership = 'https://qmachine.org';
 
     my_eval = function (code, context, file, callback) {
      // This function needs documentation.

@@ -23,7 +23,7 @@
 #   are required by each target!
 #
 #                                                       ~~ (c) SRW, 12 Jul 2012
-#                                                   ~~ last updated 10 Sep 2012
+#                                                   ~~ last updated 17 Sep 2012
 
 PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -75,8 +75,9 @@ define compile-js
     else                                                                    \
         $(call aside, "Optimizing scripts: $(1) -> $(2)")               ;   \
     fi                                                                  ;   \
-    $(call compile-with-google-closure, $(1), $(2))
+    $(CAT) $(1) > $(2)
 endef
+#    $(call compile-with-google-closure, $(1), $(2))
 
 define download-url
     $(call aside, 'Retrieving $(notdir $@) ...')                        ;   \
@@ -349,7 +350,7 @@ share/q-min.js: share/q.js | share/
 	@   $(call compile-js, $<, $@)
 
 share/qr.png: | share/
-	@   $(QRENCODE) --margin=1 --size=10 --output=$@ http://qmachine.org
+	@   $(QRENCODE) --margin=1 --size=10 --output=$@ https://qmachine.org
 
 share/style-min.css: src/style.css | share/
 	@   $(call compile-css, src/style.css, $@)

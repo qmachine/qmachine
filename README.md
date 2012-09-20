@@ -1,7 +1,7 @@
 QMachine
 =========
 
-[QMachine](http://qmachine.org) is a web service that uses
+[QMachine](https://qmachine.org) is a web service that uses
 [Quanah](http://wilkinson.github.com/quanah) to act as a "supercomputer" for
 running scientific computations using only web browsers and
 [CouchDB](http://couchdb.apache.org/). I have also written a "port" to

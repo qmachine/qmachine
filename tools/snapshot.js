@@ -38,7 +38,7 @@
 
  // Definitions
 
-    address = 'http://qmachine.org/?token=phantomjs';
+    address = 'https://qmachine.org/';
 
     output = phantom.args[1];
 

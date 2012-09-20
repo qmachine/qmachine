@@ -1,21 +1,22 @@
 {
     "author": "Sean Wilkinson",
-    "name": "qm",
-    "description": "The World's Most Relaxed Supercomputer",
-    "version": "0.1.1",
-    "homepage": "http://wilkinson.github.com/qmachine/",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/wilkinson/qmachine.git"
-    },
     "dependencies": {
         "corser": ">= 1.1.1",
         "quanah": ">= 0.0.4"
     },
-    "main": "lib/qm.js",
+    "description": "The World's Most Relaxed Supercomputer",
     "devDependencies": {},
-    "optionalDependencies": {},
     "engines": {
-        "node": "*"
-    }
+        "node": ">= 0.8.x"
+    },
+    "homepage": "http://wilkinson.github.com/qmachine/",
+    "main": "lib/qm.js",
+    "name": "qm",
+    "optionalDependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wilkinson/qmachine.git"
+    },
+    "scripts": {},
+    "version": "0.1.2"
 }

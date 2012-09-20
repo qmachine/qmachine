@@ -1,7 +1,10 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 08 Sep 2012
+//
+//  I am now separating the Node.js client into another file ...
+//
+//                                                      ~~ (c) SRW, 19 Sep 2012
 
 (function (global) {
     'use strict';
@@ -9,20 +12,6 @@
  // Pragmas
 
     /*jslint indent: 4, maxlen: 80 */
-
-    /*properties
-        ActiveXObject, Q, XDomainRequest, XMLHttpRequest, appendChild, apply,
-        avar, body, box, by, call, capture, concat, configurable, constructor,
-        createElement, defineProperty, document, end, enumerable, exit, f,
-        fail, get, getElementsByTagName, global, hasOwnProperty, head, host,
-        importScripts, init, jobs, join, key, length, lib, location, map,
-        method, on, onerror, onload, onready, onreadystatechange, open, parse,
-        ply, protocol, prototype, push, read, readyState, reduce, request,
-        requests_remaining, responseText, retrieve, revive, send, set,
-        setEncoding, setHeader, setInterval, setRequestHeader, shelf, splice,
-        src, status, stay, stringify, toString, using, val, value, when,
-        withCredentials, writable, write, x, y
-    */
 
  // Prerequisites
 
@@ -32,8 +21,8 @@
 
  // Declarations
 
-    var Q, ajax_request, avar, capture, http_GET, http_POST, isBrowser,
-        isNodejs, isWebWorker, lib, map, mothership, origin, ply, reduce,
+    var Q, ajax_request, avar, capture, https_GET, https_POST, isBrowser,
+        isFunction, isWebWorker, lib, map, mothership, origin, ply, reduce,
         retrieve, state, when;
 
  // Definitions
@@ -74,19 +63,23 @@
         return avar().revive();
     };
 
-    http_GET = function (x) {
+    https_GET = function (x) {
      // This function needs documentation.
         var y = avar(x);
-        y.box = x.box;                  //- NOTE: Is this line necessary?
+     // Do NOT remove the following line, because it is actually necessary!
+     // Input argument `x` may or may not have its own `box` property, but `y`
+     // needs to fix the value as a constant ... more explanation is needed ...
+        y.box = x.box;
         y.onready = function (evt) {
          // This function needs documentation.
             var href, pool_req;
+         // NOTE: Do NOT change the following to say `y.key` etc.!
             if (x.hasOwnProperty('key')) {
                 href = mothership + '/box/' + x.box + '?key=' + x.key;
             } else if (x.hasOwnProperty('status')) {
                 href = mothership + '/box/' + x.box + '?status=' + x.status;
             } else {
-                return evt.fail('No flags specified for "http_GET".');
+                return evt.fail('No flags specified for `https_GET`.');
             }
             pool_req = avar({val: false});
             pool_req.onerror = function (message) {
@@ -134,39 +127,6 @@
                 req.send(null);
                 return;
             };
-            pool_req.onready = function (evt) {
-             // This function needs documentation.
-                /*jslint node: true */
-                if (isNodejs() === false) {
-                    return evt.exit();
-                }
-                var module_http, module_url, options, req;
-                module_http = require('http');
-                module_url = require('url');
-                options = module_url.parse(href);
-                req = module_http.request(options, function (res) {
-                 // This function needs documentation.
-                    var txt = [];
-                    res.setEncoding('utf8');
-                    res.on('data', function (chunk) {
-                     // This function needs documentation.
-                        txt.push(chunk.toString());
-                        return;
-                    });
-                    res.on('end', function () {
-                     // This function needs documentation.
-                        y.val = txt.join('');
-                        return evt.exit();
-                    });
-                    return;
-                });
-                req.on('error', function (err) {
-                 // This function needs documentation.
-                    return evt.fail(err);
-                });
-                req.end();
-                return;
-            };
             pool_req.onready = function (pool_evt) {
              // This function needs documentation.
                 state.requests_remaining += 1;
@@ -178,7 +138,7 @@
         return y;
     };
 
-    http_POST = function (x) {
+    https_POST = function (x) {
      // This function needs documentation.
         var y = avar(x);
         y.box = x.box;
@@ -233,41 +193,6 @@
                 req.send(JSON.stringify(y));
                 return;
             };
-            pool_req.onready = function (evt) {
-             // This function needs documentation.
-                /*jslint node: true */
-                if (isNodejs() === false) {
-                    return evt.exit();
-                }
-                var module_http, module_url, options, req;
-                module_http = require('http');
-                module_url = require('url');
-                options = module_url.parse(href);
-                options.method = 'POST';
-                req = module_http.request(options, function (res) {
-                 // This function needs documentation.
-                    var txt = [];
-                    res.on('data', function (chunk) {
-                     // This function needs documentation.
-                        txt.push(chunk.toString());
-                        return;
-                    });
-                    res.on('end', function () {
-                     // This function needs documentation.
-                        y.val = txt.join('');
-                        return evt.exit();
-                    });
-                    return;
-                });
-                req.on('error', function (err) {
-                 // This function needs documentation.
-                    return evt.fail(err);
-                });
-                req.setHeader('Content-Type', 'application/json');
-                req.write(JSON.stringify(y));
-                req.end();
-                return;
-            };
             pool_req.onready = function (pool_evt) {
              // This function needs documentation.
                 state.requests_remaining += 1;
@@ -287,9 +212,9 @@
                 (global.hasOwnProperty('system') === false));
     };
 
-    isNodejs = function () {
+    isFunction = function (f) {
      // This function needs documentation.
-        return ((global.hasOwnProperty('process') === true));
+        return ((typeof f === 'function') && (f instanceof Function));
     };
 
     isWebWorker = function () {
@@ -407,7 +332,7 @@
         return afunc;
     };
 
-    mothership = 'http://qmachine.org';
+    mothership = 'https://qmachine.org';
 
     origin = function () {
      // This function needs documentation.
@@ -527,6 +452,9 @@
             },
             set: function (x) {
              // This function needs documentation.
+                if (typeof x !== 'string') {
+                    throw new TypeError('`Q.box` must be a string.');
+                }
                 state.box = x.toString();
                 return;
             }
@@ -540,6 +468,9 @@
             },
             set: function (x) {
              // This function needs documentation.
+                if (typeof x !== 'string') {
+                    throw new TypeError('`box` property must be a string.');
+                }
                 Object.defineProperty(this, 'box', {
                     configurable: true,
                     enumerable: true,
@@ -582,9 +513,12 @@
     Q.init({
         jobs: function (box) {
          // This function needs documentation.
+            if ((box === undefined) || (box === null)) {
+                box = Q.box;
+            }
             var x, y;
-            x = {box: (box || Q.box), status: 'waiting', val: []};
-            y = http_GET(x);
+            x = {box: box, status: 'waiting', val: []};
+            y = https_GET(x);
             y.onready = function (evt) {
              // This function deserializes the string returned by QMachine into
              // the array of keys that it represents. This is one of the rare
@@ -598,7 +532,7 @@
         },
         read: function (x) {
          // This function needs documentation.
-            var y = http_GET(x);
+            var y = https_GET(x);
             y.onready = function (evt) {
              // This function deserializes the string returned as the `val` of
              // `y` into a `temp` variable and then uses them to update the
@@ -619,7 +553,8 @@
          // about the return data because QMachine isn't going to return
          // any data -- the request will either succeed or fail, as
          // indicated by the HTTP status code returned. It returns an avar.
-            return http_POST(x);
+            x.box = x.box;
+            return https_POST(x);
         }
     }).Q(function (evt) {
      // This function configures a background "daemon" to revive execution if
@@ -641,7 +576,10 @@
         return evt.exit();
     }).onerror = function (message) {
      // This function needs documentation.
-        console.error('Error:', message);
+        if ((global.hasOwnProperty('console')) &&
+                (isFunction(global.console.error))) {
+            global.console.error('Error:', message);
+        }
         return;
     };
 

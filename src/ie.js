@@ -6,7 +6,7 @@
 //  _why_. The <script> tags don't even support the 'onload' attribute! Argh.
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 15 Aug 2012
+//                                                  ~~ last updated 18 Sep 2012
 
 (function () {
     'use strict';
@@ -28,7 +28,7 @@
     script.setAttribute('type', 'text/javascript');
 
     script.setAttribute('src',
-        'http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.js');
+        '//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js');
 
     timer = setInterval(function () {
      // This function needs work. My current strategy follows:
