@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 19 Sep 2012
+#                                                       ~~ (c) SRW, 20 Sep 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -92,7 +92,6 @@ browser-client:                                                             \
         apple-touch-icon-72x72.png                                          \
         apple-touch-icon-114x114.png                                        \
         apple-touch-icon-144x144.png                                        \
-        apple-touch-startup-image-320x460.png                               \
         apple-touch-startup-image-320x460.png                               \
         apple-touch-startup-image-640x920.png                               \
         apple-touch-startup-image-768x1004.png                              \
