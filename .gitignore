@@ -11,13 +11,16 @@
 #   control -- always execute your commits manually!
 #
 #                                                       ~~ (c) SRW, 31 Oct 2011
-#                                                   ~~ last updated 26 Jun 2012
+#                                                   ~~ last updated 19 Sep 2012
 
 #-  Temporary project directories
-apps/
 build/
-deps/
-share/
+cache/
+icons/
+var/
+
+#-  Build scripts
+build.sh
 
 #-  CouchApp configuration files -- these may contain passwords!
 .couchapprc
@@ -25,6 +28,9 @@ share/
 #-  JavaScript interpreter history files
 .d8_history
 .v8_history
+
+#-  Kanso packages
+packages/
 
 #-  Mercurial repository itself (if present)
 .hg/

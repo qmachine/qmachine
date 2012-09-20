@@ -2,363 +2,497 @@
 
 #-  Makefile ~~
 #
-#   This contains live instructions for developing QMachine. I wrote them for
-#   use on my laptop (Mac OS X 10.8.1 + Homebrew + MacTeX 2012). Occasionally,
-#   I test it with various Linux distributions, but some targets make use of
-#   programs like `launchd` for which I have yet to find suitable replacements.
-#   If you're using a Mac, make sure you have installed XCode from the App
-#   Store before installing Homebrew, MacTeX, and NPM from their respective
-#   websites. At that point, the following two commands will cover everything:
+#   This contains a live development workflow for QMachine. To get started on
+#   Mac OS X 10.8 "Mountain Lion", you will need to install ...
 #
-#       $ brew install closure-compiler couchdb gnu-sed imagemagick node \
-#           phantomjs qrencode yuicompressor
+#       ... Homebrew using directions from http://mxcl.github.com/homebrew/.
 #
-#       $ npm install -g kanso
+#       ... a minimal set of native dependencies by typing
+#           $ brew install couchdb imagemagick node phantomjs
 #
-#   For a possible (but not recommended) alternative to the latter, use
+#       ... Node Package Manager (NPM) using directions from https://npmjs.org.
 #
-#       $ sudo easy_install couchapp
+#       ... Kanso by typing
+#           $ npm install -g kanso
 #
-#   NOTE: This is a lot of dependencies, to be sure, but not all dependencies
-#   are required by each target!
+#       ... as many of the optional dependencies as you desire by typing
+#           $ brew install closure-compiler qrencode yuicompressor
 #
-#                                                       ~~ (c) SRW, 12 Jul 2012
-#                                                   ~~ last updated 17 Sep 2012
+#   For a long time, icon generation from LaTeX source code was included as an
+#   extra touch, but folks complained too much about the extra dependency on
+#   MacTeX 2012. Consequently, the workflow now generates a green placeholder
+#   directly from ImageMagick which can be overridden by your own image file
+#   if you provide one. If you want to deploy to your own Heroku instance, you
+#   will need to install their "Heroku Toolbelt".
+#
+#   Thanks for stopping by :-)
+#
+#                                                       ~~ (c) SRW, 19 Sep 2012
 
-PROJECT_ROOT    :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
+PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
-include $(PROJECT_ROOT)/tools/macros.make
+include $(PROJ_ROOT)/share/macros.make
 
-CAT         :=  $(call contingent, gcat cat)
-CD          :=  $(call contingent, cd)
-CLOSURE     :=  $(call contingent, closure-compiler)            #-  by Google
-CONVERT     :=  $(call contingent, convert)                     #-  ImageMagick
-CP          :=  $(call contingent, gcp cp) -rf
-CURL        :=  $(call contingent, curl)
-GIT         :=  $(call contingent, git)
-LS          :=  $(call contingent, gls ls) 2>/dev/null
-MKDIR       :=  $(call contingent, gmkdir mkdir)
-PDFCROP     :=  $(call contingent, pdfcrop)                     #-  TeX Live
-PDFLATEX    :=  $(call contingent, pdflatex) -no-shell-escape   #-  TeX Live
-QRENCODE    :=  $(call contingent, qrencode) --8bit --level=H
-RM          :=  $(call contingent, grm rm) -rf
-SED         :=  $(call contingent, gsed sed)
-SORT        :=  $(call contingent, gsort sort)
-XARGS       :=  $(call contingent, xargs)
-YUICOMP     :=  $(call contingent, yuicompressor)
+BUILD_DIR       :=  $(PROJ_ROOT)/build
+CACHE_DIR       :=  $(PROJ_ROOT)/cache
+ICONS_DIR       :=  $(PROJ_ROOT)/icons
+SHARE_DIR       :=  $(PROJ_ROOT)/share
+SRC_DIR         :=  $(PROJ_ROOT)/src
+VAR_DIR         :=  $(PROJ_ROOT)/var
 
-APPS        :=  $(shell $(LS) templates)
-
-define compile-with-google-closure
-    $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS \
-        $(1:%=--js %) --js_output_file $(2)
-endef
-
-define compile-with-yuicompressor
-    $(CAT) $(1) > $(2)                                                  ;   \
-    $(YUICOMP) --type js $(2) -o $(2)
-endef
-
-define compile-css
-    if [ $(words $(1)) -eq 1 ]; then                                        \
-        $(call aside, "Optimizing stylesheet: $(1) -> $(2)")            ;   \
-    else                                                                    \
-        $(call aside, "Optimizing stylesheets: $(1) -> $(2)")           ;   \
-    fi                                                                  ;   \
-    $(CAT) $(1) > $(2)                                                  ;   \
-    $(YUICOMP) --type css $(2) -o $(2)
-endef
-
-define compile-js
-    if [ $(words $(1)) -eq 1 ]; then                                        \
-        $(call aside, "Optimizing script: $(1) -> $(2)")                ;   \
-    else                                                                    \
-        $(call aside, "Optimizing scripts: $(1) -> $(2)")               ;   \
-    fi                                                                  ;   \
-    $(CAT) $(1) > $(2)
-endef
-#    $(call compile-with-google-closure, $(1), $(2))
-
-define download-url
-    $(call aside, 'Retrieving $(notdir $@) ...')                        ;   \
-    $(CURL) -s -o $@ $(1)                                               ;   \
-    if [ $$? -ne 0 ]; then                                                  \
-        if [ -f $(CODEBANK)/lib/JavaScript/$(notdir $@) ]; then             \
-            $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@            ;   \
-        elif [ -f $(CODEBANK)/lib/CSS/$(notdir $@) ]; then                  \
-            $(CP) $(CODEBANK)/lib/CSS/$(notdir $@) $@                   ;   \
-        else                                                                \
-            $(call alert, 'Unable to retrieve $(notdir $@).')           ;   \
-            exit 1                                                      ;   \
-        fi                                                              ;   \
-    fi
-endef
+HEROKU_APP      :=  qmachine
+LOCAL_COUCH     :=  http://localhost:5984
+LOCAL_NODE      :=  http://localhost:8177
+MOTHERSHIP      :=  https://qmachine.herokuapp.com
+PLISTS          :=  $(addprefix $(VAR_DIR)/com.QM., couchdb.plist nodejs.plist)
 
 .PHONY: all clean clobber distclean help reset
 .SILENT: ;
 
 '': help;
 
-all: $(APPS)
+all: $(shell $(LS) $(SRC_DIR))
 
 clean: reset
-	@   for each in $(abspath apps/*); do                               \
-                if [ -d $${each} ] && [ -f $${each}/Makefile ]; then        \
-                    $(CD) $${each}                                      ;   \
-                    $(MAKE) distclean                                   ;   \
+	@   $(RM) $(BUILD_DIR)                                          ;   \
+            for each in $(PLISTS); do                                       \
+                if [ -f "$${each}" ]; then                                  \
+                    $(LAUNCHCTL) unload -w $${each} >/dev/null 2>&1     ;   \
                 fi                                                      ;   \
-            done                                                        ;   \
-            $(RM) $(abspath apps)
+            done
 
 clobber: clean
-	@   $(RM) build/ share/
+	@   $(RM) $(CACHE_DIR) $(VAR_DIR)
 
 distclean: clobber
-	@   $(RM) .d8_history deps/ .v8_history
+	@   $(RM) $(PROJ_ROOT)/.d8_history $(PROJ_ROOT)/.v8_history     ;   \
+            if [ -f "$(ICONS_DIR)/logo.pdf" ]; then                         \
+                $(CP) $(ICONS_DIR)/logo.pdf $(PROJ_ROOT)/logo.pdf       ;   \
+                $(RM) $(ICONS_DIR)                                      ;   \
+                $(MKDIR) $(ICONS_DIR)                                   ;   \
+                $(CP) $(PROJ_ROOT)/logo.pdf $(ICONS_DIR)                ;   \
+                $(RM) $(PROJ_ROOT)/logo.pdf                             ;   \
+            else                                                            \
+                $(RM) $(ICONS_DIR)                                      ;   \
+            fi
 
 help:
-	@   printf '%s\n' 'Usage: $(MAKE) [options] [target] ...'       ;   \
-            printf '%s\n' '  where "high-level" targets include'        ;   \
-            $(SED) -n 's/^.PHONY:\([^$$]*\)$$/\1/p' $(MAKEFILE_LIST) |      \
-                $(XARGS) printf '    %s\n' $(APPS) | $(SORT)
+	@   $(call show-usage-info)
 
 reset:
 	@   $(call contingent, clear)
 
 ###
 
-.NOTPARALLEL: $(APPS)
-.PHONY: $(APPS)
+.PHONY: browser-client chrome-hosted-app local-sandbox npm-package web-service
 
-$(APPS): | apps/ share/
-	@   $(CP) templates/$@ apps/$@                                  ;   \
-            $(CD) apps/$@                                               ;   \
-            if [ -f Makefile ]; then $(MAKE); fi
+browser-client:                                                             \
+    $(addprefix $(BUILD_DIR)/browser-client/,                               \
+        apple-touch-icon-57x57.png                                          \
+        apple-touch-icon-72x72.png                                          \
+        apple-touch-icon-114x114.png                                        \
+        apple-touch-icon-144x144.png                                        \
+        apple-touch-startup-image-320x460.png                               \
+        apple-touch-startup-image-320x460.png                               \
+        apple-touch-startup-image-640x920.png                               \
+        apple-touch-startup-image-768x1004.png                              \
+        apple-touch-startup-image-748x1024.png                              \
+        apple-touch-startup-image-1536x2008.png                             \
+        apple-touch-startup-image-1496x2048.png                             \
+        cache.manifest                                                      \
+        favicon.ico                                                         \
+        giant-favicon.ico                                                   \
+        homepage.js                                                         \
+        ie.js                                                               \
+        index.html                                                          \
+        q.js                                                                \
+        q-min.js                                                            \
+        robots.txt                                                          \
+        style-min.css                                                       \
+    )
+	@   $(call hilite, 'Created $@.')
+
+chrome-hosted-app:                                                          \
+    $(addprefix $(BUILD_DIR)/chrome-hosted-app/,                            \
+        qmachine.zip                                                        \
+        snapshot-1280x800.png                                               \
+        snapshot-440x280.png                                                \
+    )
+	@   $(call hilite, 'Created $@.')
+
+local-sandbox:
+	@   $(MAKE)                                                         \
+                CLOUDANT_URL="$(strip $(LOCAL_COUCH))"                      \
+                MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
+                    $(PLISTS)                                               \
+                    $(VAR_DIR)/couchdb.ini                                  \
+                    $(VAR_DIR)/nodejs/node_modules                          \
+                    $(VAR_DIR)/nodejs/server.js                             \
+                    web-service                                         ;   \
+            for each in $(PLISTS); do                                       \
+                $(LAUNCHCTL) load -w $${each}                           ;   \
+            done                                                        ;   \
+            $(CD) $(BUILD_DIR)/web-service                              ;   \
+            CLOUDANT_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push db     ;   \
+            CLOUDANT_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push www    ;   \
+            if [ $$? -eq 0 ]; then                                          \
+                $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
+            else                                                            \
+                $(call alert, 'Service is not running.')                ;   \
+            fi
+
+npm-package: $(BUILD_DIR)/npm-package/README.md
+	@   $(CD) $(dir $<)                                             ;   \
+            $(NPM) install                                              ;   \
+            $(call hilite, 'Created $@.')
+
+web-service:                                                                \
+    $(addprefix $(BUILD_DIR)/web-service/,                                  \
+        couchdb-apps/                                                       \
+        deploy.sh                                                           \
+        .gitignore                                                          \
+        .kansorc                                                            \
+        kanso.json                                                          \
+        packages/                                                           \
+        package.json                                                        \
+        Procfile                                                            \
+        public_html/                                                        \
+        server.js                                                           \
+    )
+	@   $(call hilite, 'Created $@.')
 
 ###
 
-apps build deps share:
-	@   if [ ! -d $@ ]; then $(MKDIR) $@; fi
+$(BUILD_DIR):
+	@   $(call make-directory, $@)
 
-backend-couchdb local-sandbox: \
-    share/apple-touch-icon-57x57.png \
-    share/apple-touch-icon-72x72.png \
-    share/apple-touch-icon-114x114.png \
-    share/apple-touch-icon-144x144.png \
-    share/apple-touch-startup-image-320x460.png \
-    share/apple-touch-startup-image-640x920.png \
-    share/apple-touch-startup-image-768x1004.png \
-    share/apple-touch-startup-image-748x1024.png \
-    share/apple-touch-startup-image-1536x2008.png \
-    share/apple-touch-startup-image-1496x2048.png \
-    share/favicon.ico \
-    share/giant-favicon.ico \
-    share/homepage.js \
-    share/q.js \
-    share/q-min.js \
-    share/style-min.css
+$(BUILD_DIR)/browser-client: | $(BUILD_DIR)
+	@   $(call make-directory, $@)
 
-build/q.pdf: build/q.tex | build/
-	@   if [ -f ../images/logo.pdf ]; then                              \
-                $(CP) ../images/logo.pdf $@                             ;   \
-            else                                                            \
-                $(CD) build                                             ;   \
-                $(PDFLATEX) q.tex                                       ;   \
-                $(PDFCROP) q.pdf q.pdf                                  ;   \
-            fi
+$(BUILD_DIR)/browser-client/cache.manifest:                                 \
+    $(SRC_DIR)/browser-client/cache.manifest                                \
+    |   $(BUILD_DIR)/browser-client
+	@   $(call timestamp, $<, $@)
 
-build/q.png: build/q.pdf | build/
-	@   $(CONVERT) \
-                -density 600 \
-                -resize 1024x1024 \
-                -gravity center \
-                -extent 1170x1170 \
-                -transparent white \
-                -transparent-color '#929292' \
-                -quality 100 \
-                    $< $@
-
-build/q.tex: src/q.tex | build/
+$(BUILD_DIR)/browser-client/%: $(CACHE_DIR)/% | $(BUILD_DIR)/browser-client
 	@   $(CP) $< $@
 
-chrome-hosted-app: \
-    share/favicon.ico \
-    share/icon-128.png
+$(BUILD_DIR)/browser-client/%: $(ICONS_DIR)/% | $(BUILD_DIR)/browser-client
+	@   $(CP) $< $@
 
-chrome-packaged-app: \
-    share/favicon.ico \
-    share/icon-128.png
+$(BUILD_DIR)/chrome-hosted-app: | $(BUILD_DIR)
+	@   $(call make-directory, $@)
 
-deps/jquery.js: | deps/
+$(BUILD_DIR)/chrome-hosted-app/qmachine: | $(BUILD_DIR)/chrome-hosted-app
+	@   $(call make-directory, $@)
+
+$(BUILD_DIR)/chrome-hosted-app/qmachine/manifest.json:                      \
+    $(SRC_DIR)/chrome-hosted-app/manifest.json                              \
+    |   $(BUILD_DIR)/chrome-hosted-app/qmachine
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/chrome-hosted-app/qmachine.zip:                                \
+    $(BUILD_DIR)/chrome-hosted-app/qmachine/favicon.ico                     \
+    $(BUILD_DIR)/chrome-hosted-app/qmachine/icon-128.png                    \
+    $(BUILD_DIR)/chrome-hosted-app/qmachine/manifest.json                   \
+    |   $(BUILD_DIR)/chrome-hosted-app/qmachine
+	@   $(CD) $(dir $@)                                             ;   \
+            $(ZIP) -r $@ qmachine
+
+$(BUILD_DIR)/chrome-hosted-app/qmachine/%:                                  \
+    $(ICONS_DIR)/%                                                          \
+    |   $(BUILD_DIR)/chrome-hosted-app/qmachine
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/chrome-hosted-app/snapshot-%.png:                              \
+    $(SHARE_DIR)/snapshot.js                                                \
+    $(SRC_DIR)/chrome-hosted-app/phantomjs-config.json                      \
+    |   $(BUILD_DIR)/chrome-hosted-app
+	@   $(PHANTOMJS)                                                    \
+                --config=$(SRC_DIR)/chrome-hosted-app/phantomjs-config.json \
+                $(SHARE_DIR)/snapshot.js $(MOTHERSHIP) $* $@
+
+$(BUILD_DIR)/npm-package: $(SRC_DIR)/npm-package | $(BUILD_DIR)
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/npm-package/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-package
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/web-service: | $(BUILD_DIR)
+	@   $(call make-directory, $@)
+
+$(BUILD_DIR)/web-service/.gitignore:                                        \
+    $(PROJ_ROOT)/.gitignore                                                 \
+    | $(BUILD_DIR)/web-service
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/web-service/packages:                                          \
+    $(BUILD_DIR)/web-service/kanso.json                                     \
+    |   $(BUILD_DIR)/web-service
+	@   TMPURL="$(strip $(CLOUDANT_URL))"                           ;   \
+            if [ "$${TMPURL}" = "" ]; then                                  \
+                TMPURL="$(strip $(shell $(HEROKU) config:get                \
+                    CLOUDANT_URL --app $(HEROKU_APP)))"                 ;   \
+            fi                                                          ;   \
+            CLOUDANT_URL="$${TMPURL}" $(KANSO) install $(BUILD_DIR)/web-service
+
+$(BUILD_DIR)/web-service/public_html: browser-client | $(BUILD_DIR)/web-service
+	@   $(CP) $(BUILD_DIR)/browser-client/ $@
+
+$(BUILD_DIR)/web-service/%: $(SHARE_DIR)/% | $(BUILD_DIR)/web-service
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/web-service/%: $(SRC_DIR)/web-service/% | $(BUILD_DIR)/web-service
+	@   $(CP) $< $@
+
+$(CACHE_DIR):
+	@   $(call make-directory, $@)
+
+$(CACHE_DIR)/homepage.js:                                                   \
+    $(CACHE_DIR)/jquery.js                                                  \
+    $(CACHE_DIR)/q.js                                                       \
+    $(CACHE_DIR)/main.js                                                    \
+    |   $(CACHE_DIR)
+	@   $(call replace-mothership, $^, $@)
+
+$(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
+	@   $(call replace-mothership, $<, $@)
+
+$(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
+	@   $(call replace-mothership, $<, $@)
+
+$(CACHE_DIR)/jquery.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://code.jquery.com/jquery-latest.js")
 
-deps/jslint.js: | deps/
+$(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
             $(call download-url, "$${CROCKHUB}/JSLint/master/jslint.js")
 
-deps/json2.js: | deps/
+$(CACHE_DIR)/json2.js: | $(CACHE_DIR)
 	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
             $(call download-url, "$${CROCKHUB}/JSON-js/master/json2.js")
 
-deps/meyerweb-reset.css: | deps/
+$(CACHE_DIR)/main.js: $(SRC_DIR)/browser-client/main.js | $(CACHE_DIR)
+	@   $(call replace-mothership, $<, $@)
+
+$(CACHE_DIR)/meyerweb-reset.css: | $(CACHE_DIR)
 	@   $(call download-url, \
                 "http://meyerweb.com/eric/tools/css/reset/reset.css")
 
-deps/quanah.js: | deps/
+$(CACHE_DIR)/q.js:                                                          \
+    $(CACHE_DIR)/jslint.js                                                  \
+    $(CACHE_DIR)/json2.js                                                   \
+    $(CACHE_DIR)/quanah.js                                                  \
+    $(CACHE_DIR)/qmachine.js                                                \
+    |   $(CACHE_DIR)
+	@   $(call replace-mothership, $^, $@)
+
+$(CACHE_DIR)/q-min.js: $(CACHE_DIR)/q.js | $(CACHE_DIR)
+	@   $(call compile-js, $<, $@)
+
+$(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
+	@   $(call replace-mothership, $<, $@)
+
+$(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
 	@   SEANHUB="https://raw.github.com/wilkinson"                  ;   \
             $(call download-url, "$${SEANHUB}/quanah/master/src/quanah.js")
 
-facebook-app: \
-    share/facebook-16x16.png \
-    share/facebook-75x75.png
-
-ios-native-app: \
-    share/apple-touch-icon-57x57.png \
-    share/apple-touch-icon-72x72.png \
-    share/apple-touch-icon-114x114.png \
-    share/apple-touch-icon-144x144.png \
-    share/apple-touch-startup-image-320x460.png \
-    share/apple-touch-startup-image-640x920.png \
-    share/apple-touch-startup-image-768x1004.png \
-    share/apple-touch-startup-image-748x1024.png \
-    share/apple-touch-startup-image-1536x2008.png \
-    share/apple-touch-startup-image-1496x2048.png \
-    share/favicon.ico \
-    share/large-app-icon.png \
-    share/q.js
-
-share/apple-touch-icon-%.png: build/q.png | share/
-	@   $(CONVERT) \
-                $< \( +clone \
-                    -channel A -morphology EdgeOut Diamond:10 +channel \
-                    +level-colors white \
-                \) -compose DstOver \
-                -background none \
-                -density 96 \
-                -resize "$*" \
-                -quality 100 \
-                -composite \
-                -background '#929292' -alpha remove -alpha off \
-                    $@
-
-share/apple-touch-startup-image-%.png: build/q.png | share/
-	@   $(CONVERT) \
-                -fill '#CCCCCC' \
-                -draw 'color 0,0 reset' \
-                -extent "$*" \
-                -background '#CCCCCC' -alpha remove -alpha off \
-                    $< $@
-
-share/bitbucket.jpg: build/q.png | share/
-	@   $(CONVERT) \
-                -background white -alpha remove -alpha off \
-                -density 96 \
-                -resize 35x35 \
-                -quality 100 \
-                    $< $@
-
-share/dropbox-16.png: build/q.png | share/
-	@   $(CONVERT) \
-                -background none \
-                -density 96 \
-                -resize 16x16 \
-                -quality 100 \
-                    $< $@
-
-share/dropbox-64.png: build/q.png | share/
-	@   $(CONVERT) \
-                -background none \
-                -density 96 \
-                -resize 64x64 \
-                -quality 100 \
-                    $< $@
-
-share/dropbox-128.png: share/icon-128.png
+$(CACHE_DIR)/robots.txt: $(SRC_DIR)/browser-client/robots.txt | $(CACHE_DIR)
 	@   $(CP) $< $@
 
-share/facebook-16x16.png: build/q.png | share/
-	@   $(CONVERT) \
-                -background white -alpha remove -alpha off \
-                -density 96 \
-                -resize 16x16 \
-                -quality 100 \
-                    $< $@
-
-share/facebook-75x75.png: build/q.png | share/
-	@   $(CONVERT) \
-                -background white -alpha remove -alpha off \
-                -density 96 \
-                -resize 75x75 \
-                -quality 100 \
-                    $< $@
-
-share/favicon.ico: build/q.png | share/
-	@   $(CONVERT) -compress Zip -resize 16x16 $< $@
-
-share/giant-favicon.ico: build/q.png | share/
-	@   $(CONVERT) $< \
-                \( -clone 0 -resize 16x16 \) \
-                \( -clone 0 -resize 24x24 \) \
-                \( -clone 0 -resize 32x32 \) \
-                \( -clone 0 -resize 48x48 \) \
-                \( -clone 0 -resize 64x64 \) \
-                -delete 0 \
-                    $@
-
-share/google-apps-header.png: build/q.png | share/
-	@   $(CONVERT) \
-                $< \
-                -density 96 \
-                -background none \
-                -resize 51x51 \
-                -quality 100 \
-                -gravity center \
-                -extent 143x59 \
-                -background white -alpha remove -alpha off \
-                    $@
-
-share/googlecode.png: build/q.png | share/
-	@   $(CONVERT) \
-                -background none \
-                -density 96 \
-                -resize 55x55 \
-                -quality 100 \
-                    $< $@
-
-share/homepage.js: deps/jquery.js share/q.js src/main.js | share/
-	@   $(call compile-js, deps/jquery.js share/q.js src/main.js, $@)
-
-share/icon-%.png: build/q.png | share/
-	@   $(CONVERT) \
-                -background none \
-                -density 96 \
-                -resize $*x$* \
-                -quality 100 \
-                    $< $@
-
-share/large-app-icon.png: share/icon-1024.png | share/
+$(CACHE_DIR)/style.css: $(SRC_DIR)/browser-client/style.css | $(CACHE_DIR)
 	@   $(CP) $< $@
 
-share/q.js: \
-    deps/jslint.js  \
-    deps/json2.js   \
-    deps/quanah.js  \
-    src/qmachine.js | share/
-	@   $(CAT) $^ > $@
+$(CACHE_DIR)/style-min.css: $(CACHE_DIR)/style.css | $(CACHE_DIR)
+	@   $(call compile-css, $<, $@)
 
-share/q-min.js: share/q.js | share/
-	@   $(call compile-js, $<, $@)
+$(ICONS_DIR):
+	@   $(call make-directory, $@)
 
-share/qr.png: | share/
-	@   $(QRENCODE) --margin=1 --size=10 --output=$@ https://qmachine.org
+.SECONDARY:                                                                 \
+    $(addprefix $(ICONS_DIR)/,                                              \
+        apple-touch-icon-57x57.png                                          \
+        apple-touch-icon-72x72.png                                          \
+        apple-touch-icon-114x114.png                                        \
+        apple-touch-icon-144x144.png                                        \
+        apple-touch-startup-image-320x460.png                               \
+        apple-touch-startup-image-320x460.png                               \
+        apple-touch-startup-image-640x920.png                               \
+        apple-touch-startup-image-768x1004.png                              \
+        apple-touch-startup-image-748x1024.png                              \
+        apple-touch-startup-image-1536x2008.png                             \
+        apple-touch-startup-image-1496x2048.png                             \
+        bitbucket.jpg                                                       \
+        dropbox-16.png                                                      \
+        dropbox-64.png                                                      \
+        dropbox-128.png                                                     \
+        facebook-16x16.png                                                  \
+        facebook-75x75.png                                                  \
+        favicon.ico                                                         \
+        icon-128.png                                                        \
+        giant-favicon.ico                                                   \
+        google-apps-header.png                                              \
+        googlecode.png                                                      \
+        large-app-icon.png                                                  \
+        qr.png                                                              \
+    )
 
-share/style-min.css: src/style.css | share/
-	@   $(call compile-css, src/style.css, $@)
+$(ICONS_DIR)/apple-touch-icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, , $<,                               \
+                \( +clone                                                   \
+                    -channel A -morphology EdgeOut Diamond:10 +channel      \
+                    +level-colors white                                     \
+                \) -compose DstOver                                         \
+                -background none                                            \
+                -density 96                                                 \
+                -resize "$*"                                                \
+                -quality 100                                                \
+                -composite                                                  \
+                -background '#929292'                                       \
+                -alpha remove                                               \
+                -alpha off                                                  \
+            )
+
+$(ICONS_DIR)/apple-touch-startup-image-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, $<,                                 \
+                    -fill '#CCCCCC'                                         \
+                    -draw 'color 0,0 reset'                                 \
+                    -extent "$*"                                            \
+                    -background '#CCCCCC'                                   \
+                    -alpha remove                                           \
+                    -alpha off                                              \
+            )
+
+$(ICONS_DIR)/bitbucket.jpg: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, $<,                                 \
+                -background white                                           \
+                -alpha remove                                               \
+                -alpha off                                                  \
+                -density 96                                                 \
+                -resize 35x35                                               \
+                -quality 100                                                \
+            )
+
+$(ICONS_DIR)/dropbox-%.png: $(ICONS_DIR)/icon-%.png | $(ICONS_DIR)
+	@   $(CP) $< $@
+
+$(ICONS_DIR)/facebook-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, $<,                                 \
+                -background white                                           \
+                -alpha remove                                               \
+                -alpha off                                                  \
+                -density 96                                                 \
+                -resize "$*"                                                \
+                -quality 100                                                \
+            )
+
+$(ICONS_DIR)/favicon.ico: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, $<, -compress Zip -resize 16x16)
+
+$(ICONS_DIR)/giant-favicon.ico: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, , $<,                               \
+                \( -clone 0 -resize 16x16 \)                                \
+                \( -clone 0 -resize 24x24 \)                                \
+                \( -clone 0 -resize 32x32 \)                                \
+                \( -clone 0 -resize 48x48 \)                                \
+                \( -clone 0 -resize 64x64 \)                                \
+                -delete 0                                                   \
+            )
+
+$(ICONS_DIR)/google-apps-header.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, , $<,                               \
+                -density 96                                                 \
+                -background none                                            \
+                -resize 51x51                                               \
+                -quality 100                                                \
+                -gravity center                                             \
+                -extent 143x59                                              \
+                -background white                                           \
+                -alpha remove                                               \
+                -alpha off                                                  \
+            )
+
+$(ICONS_DIR)/googlecode.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, $<,                                 \
+                -background none                                            \
+                -density 96                                                 \
+                -resize 55x55                                               \
+                -quality 100                                                \
+            )
+
+$(ICONS_DIR)/icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, $<,                                 \
+                -background none                                            \
+                -density 96                                                 \
+                -resize "$*x$*"                                             \
+                -quality 100                                                \
+            )
+
+$(ICONS_DIR)/large-app-icon.png: $(ICONS_DIR)/icon-1024.png | $(ICONS_DIR)
+	@   $(CP) $< $@
+
+$(ICONS_DIR)/logo.png: | $(ICONS_DIR)
+	@   if [ -f "$(ICONS_DIR)/logo.pdf" ]; then                         \
+                SOURCE_FILE="$(ICONS_DIR)/logo.pdf"                     ;   \
+            else                                                            \
+                SOURCE_FILE='xc:#00704A'                                ;   \
+            fi                                                          ;   \
+            $(call generate-image-from, $${SOURCE_FILE},                    \
+                -density 600                                                \
+                -resize 1024x1024                                           \
+                -gravity center                                             \
+                -extent 1170x1170                                           \
+                -transparent white                                          \
+                -transparent-color '#929292'                                \
+                -quality 100                                                \
+            )
+
+$(ICONS_DIR)/qr.png: | $(ICONS_DIR)
+	@   $(QRENCODE) --margin=1 --size=10 --output=$@ $(MOTHERSHIP)
+
+$(VAR_DIR):
+	@   $(call make-directory, $@)
+
+$(VAR_DIR)/couchdb: | $(VAR_DIR)
+	@   $(call make-directory, $@)
+
+$(VAR_DIR)/couchdb.ini: $(SHARE_DIR)/config.sh | $(VAR_DIR)
+	@   COUCHDB_INI="$(strip $@)"                                       \
+            PROJ_ROOT="$(strip $(PROJ_ROOT))"                               \
+                $(SHELL) $<
+
+$(VAR_DIR)/com.QM.couchdb.plist: $(SHARE_DIR)/config.sh | $(VAR_DIR)
+	@   COUCHDB="$(strip $(COUCHDB))"                                   \
+            COUCHDB_PLIST="$(strip $@)"                                     \
+            PROJ_ROOT="$(strip $(PROJ_ROOT))"                               \
+            USERNAME="$(strip $(USERNAME))"                                 \
+                $(SHELL) $<
+
+$(VAR_DIR)/com.QM.nodejs.plist: $(SHARE_DIR)/config.sh | $(VAR_DIR)/
+	@   NODEJS="$(strip $(NODEJS))"                                     \
+            NODEJS_PLIST="$(strip $@)"                                      \
+            PROJ_ROOT="$(strip $(PROJ_ROOT))"                               \
+            USERNAME="$(strip $(USERNAME))"                                 \
+                $(SHELL) $<
+
+$(VAR_DIR)/nodejs: | $(VAR_DIR)
+	@   $(call make-directory, $@)
+
+$(VAR_DIR)/nodejs/node_modules:                                             \
+    npm-package                                                             \
+    $(VAR_DIR)/nodejs/package.json                                          \
+    | $(VAR_DIR)/nodejs
+	@   $(call make-directory, $@)                                  ;   \
+            $(LN) $(BUILD_DIR)/npm-package $@/qm                        ;   \
+            $(CD) $(VAR_DIR)/nodejs                                     ;   \
+            $(NPM) install
+
+$(VAR_DIR)/nodejs/%: $(BUILD_DIR)/web-service/% | $(VAR_DIR)/nodejs
+	@   $(CP) $< $@
 
 ###
 
 %:
-	@   $(call alert, 'No target "$@" found.')                      ;   \
-            $(MAKE) help
+	@   $(call alert, 'No target "$@" found.')
 
 #-  vim:set syntax=make:

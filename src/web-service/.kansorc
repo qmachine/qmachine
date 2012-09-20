@@ -1,0 +1,41 @@
+//- JavaScript source code
+
+//- .kansorc ~~
+//                                                      ~~ (c) SRW, 12 Sep 2012
+
+(function () {
+    'use strict';
+
+ // Pragmas
+
+    /*jslint indent: 4, maxlen: 80, node: true */
+
+ // Out-of-scope definitions
+
+    console.log('CLOUDANT_URL:', process.env.CLOUDANT_URL);
+
+    exports.env = {
+        db: {
+            db: (process.env.CLOUDANT_URL || 'http://localhost:5984') + '/db',
+            minify: true,
+            overrides: {
+                load: 'couchdb-apps/db'
+            }
+        },
+        www: {
+            db: (process.env.CLOUDANT_URL || 'http://localhost:5984') + '/www',
+            minify: true,
+            overrides: {
+                attachments: ['public_html'],
+                load: 'couchdb-apps/www'
+            }
+        }
+    };
+
+ // That's all, folks!
+
+    return;
+
+}());
+
+//- vim:set syntax=javascript:

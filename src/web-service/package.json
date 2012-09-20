@@ -1,0 +1,19 @@
+{
+    "author": {
+        "name": "Sean Wilkinson",
+        "email": "sean@mathbiol.org"
+    },
+    "dependencies": {
+        "qm": ">= 0.1.3"
+    },
+    "devDependencies": {},
+    "engines": {
+        "node": "0.8.x",
+        "npm":  "1.1.x"
+    },
+    "name": "mothership",
+    "private": true,
+    "readme": "(no documentation)",
+    "scripts": {},
+    "version": "0.0.1"
+}
