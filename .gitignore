@@ -19,9 +19,6 @@ cache/
 icons/
 var/
 
-#-  Build scripts
-build.sh
-
 #-  CouchApp configuration files -- these may contain passwords!
 .couchapprc
 
