@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- db.js ~~
-//                                                      ~~ (c) SRW, 22 Aug 2012
+//                                                      ~~ (c) SRW, 20 Sep 2012
 
 (function () {
     'use strict';
@@ -75,7 +75,7 @@
          //
          // NOTE: Do not out-clever yourself here! You _can_ add the CORS
          // headers in this function, but if you're already doing it inside an
-         // external webserver like nginx or Node.js, it will cause CORS _not_
+         // external webserver like Nginx or Node.js, it will cause CORS _not_
          // to work.
          //
          // NOTE: The following works even though the keys don't match, but it
