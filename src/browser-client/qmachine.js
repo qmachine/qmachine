@@ -1,10 +1,7 @@
 //- JavaScript source code
 
-//- qmachine.js ~~
-//
-//  I am now separating the Node.js client into another file ...
-//
-//                                                      ~~ (c) SRW, 19 Sep 2012
+//- remote.js ~~
+//                                                      ~~ (c) SRW, 21 Sep 2012
 
 (function (global) {
     'use strict';
@@ -12,20 +9,6 @@
  // Pragmas
 
     /*jslint indent: 4, maxlen: 80 */
-
-    /*properties
-        ActiveXObject, Q, XDomainRequest, XMLHttpRequest, appendChild, apply,
-        avar, body, box, by, call, capture, clearTimeout, concat, configurable,
-        console, constructor, createElement, defineProperty, document,
-        enumerable, error, exit, f, fail, get, getElementsByTagName, global,
-        hasOwnProperty, head, host, importScripts, init, jobs, key, length,
-        lib, location, map, onerror, onload, onready, onreadystatechange, open,
-        parse, ply, protocol, prototype, push, read, readyState, reduce,
-        requests_remaining, responseText, retrieve, revive, send, set,
-        setRequestHeader, setTimeout, shelf, splice, src, status, stay,
-        stringify, toString, using, val, value, when, withCredentials,
-        writable, write, x, y
-    */
 
  // Prerequisites
 
@@ -35,37 +18,66 @@
 
  // Declarations
 
-    var Q, ajax_request, avar, capture, https_GET, https_POST, isBrowser,
-        isFunction, isWebWorker, lib, map, mothership, origin, ply, reduce,
-        retrieve, state, when;
+    var Q, ajax, avar, capture, isBrowser, isWebWorker, jobs, lib, map,
+        mothership, origin, ply, read, reduce, remote_call, retrieve,
+        shallow_copy, state, update_local, update_remote, volunteer, when,
+        write;
 
  // Definitions
 
     Q = Object.prototype.Q;
 
-    ajax_request = function () {
-     // This function generates a new AJAX request object. I have not yet
-     // experimented with Web Sockets, but those might prove very useful.
-        var req;
-        if (global.hasOwnProperty('XMLHttpRequest')) {
-            req = new global.XMLHttpRequest();
-            if (origin() !== mothership) {
-             // This is a slightly weaker test than using `hasOwnProperty`,
-             // but it may work better with Firefox. I'll test in a minute.
-                if (req.withCredentials !== undefined) {
-                    return req;
+    ajax = function (method, url, body) {
+     // This function needs documentation.
+        var y = avar();
+        y.onready = function (evt) {
+         // This function needs documentation.
+            var request;
+            if (global.hasOwnProperty('XMLHttpRequest')) {
+                request = new global.XMLHttpRequest();
+                if (origin() !== mothership) {
+                 // This is a slightly weaker test than using `hasOwnProperty`,
+                 // but it may work better with Firefox. I'll test in a minute.
+                    if (request.withCredentials === undefined) {
+                        if (global.hasOwnProperty('XDomainRequest')) {
+                            request = new global.XDomainRequest();
+                        } else {
+                            return evt.fail('Browser does not support CORS.');
+                        }
+                    }
                 }
-                if (global.hasOwnProperty('XDomainRequest')) {
-                    return new global.XDomainRequest();
-                }
-                throw new Error('This browser does not support CORS.');
+            } else if (global.hasOwnProperty('ActiveXObject')) {
+                request = new global.ActiveXObject('Microsoft.XMLHTTP');
+            } else {
+                return evt.fail('Browser does not support AJAX.');
             }
-        } else if (global.hasOwnProperty('ActiveXObject')) {
-            req = new global.ActiveXObject('Microsoft.XMLHTTP');
-        } else {
-            throw new Error('This browser does not support AJAX.');
-        }
-        return req;
+            request.onreadystatechange = function () {
+             // This function needs documentation.
+                if (request.readyState === 4) {
+                    if (request.status === 502) {
+                     // These are internal server errors that were occurring
+                     // in early "full-stack" versions of QMachine due to a
+                     // small error in a Monit script. I've left this arm in
+                     // here just in case something silly like that happens
+                     // again so that the client keeps trying to connect if
+                     // the error is due to a temporary snag on the server.
+                        return evt.stay('Internal server error?');
+                    }
+                    y.val = request.responseText;
+                    if (((method === 'GET') && (request.status !== 200)) ||
+                            ((method === 'POST') && (request.status !== 201))) {
+                     // Something else went wrong, and we can't ignore it.
+                        return evt.fail(request.status);
+                    }
+                    return evt.exit();
+                }
+                return;
+            };
+            request.open(method, url, true);
+            request.send(body);
+            return;
+        };
+        return y;
     };
 
     avar = Q.avar;
@@ -77,158 +89,12 @@
         return avar().revive();
     };
 
-    https_GET = function (x) {
-     // This function needs documentation.
-        var y = avar(x);
-     // Do NOT remove the following line, because it is actually necessary!
-     // Input argument `x` may or may not have its own `box` property, but `y`
-     // needs to fix the value as a constant ... more explanation is needed ...
-        y.box = x.box;
-        y.onready = function (evt) {
-         // This function needs documentation.
-            var href, pool_req;
-         // NOTE: Do NOT change the following to say `y.key` etc.!
-            if (x.hasOwnProperty('key')) {
-                href = mothership + '/box/' + x.box + '?key=' + x.key;
-            } else if (x.hasOwnProperty('status')) {
-                href = mothership + '/box/' + x.box + '?status=' + x.status;
-            } else {
-                return evt.fail('No flags specified for `https_GET`.');
-            }
-            pool_req = avar({val: false});
-            pool_req.onerror = function (message) {
-             // This function needs documentation.
-                if (pool_req.val === true) {
-                 // Release the resources back into the pool ...
-                    state.requests_remaining += 1;
-                }
-                return evt.fail(message);
-            };
-            pool_req.onready = function (evt) {
-             // This function needs documentation.
-                if (state.requests_remaining <= 0) {
-                    return evt.stay('Waiting for previous requests to close.');
-                }
-                state.requests_remaining -= 1;
-                pool_req.val = true;
-                return evt.exit();
-            };
-            pool_req.onready = function (evt) {
-             // This function needs documentation.
-                if (isBrowser() === false) {
-                    return evt.exit();
-                }
-                var req = ajax_request();
-                req.onreadystatechange = function () {
-                 // This function needs documentation.
-                    if (req.readyState === 4) {
-                        if (req.status === 502) {
-                         // These are really annoying me because I am having
-                         // trouble figuring out what's wrong with my server.
-                         // In the meantime, I'll just repeat ad nauseam :-P
-                            return evt.stay();
-                        }
-                        if (req.status !== 200) {
-                         // Something else went wrong, and we can't ignore it.
-                            return evt.fail(req.responseText);
-                        }
-                        y.val = req.responseText;
-                        return evt.exit();
-                    }
-                    return;
-                };
-                req.open('GET', href, true);
-                req.send(null);
-                return;
-            };
-            pool_req.onready = function (pool_evt) {
-             // This function needs documentation.
-                state.requests_remaining += 1;
-                pool_evt.exit();
-                return evt.exit();
-            };
-            return;
-        };
-        return y;
-    };
-
-    https_POST = function (x) {
-     // This function needs documentation.
-        var y = avar(x);
-        y.box = x.box;
-        y.onready = function (evt) {
-         // This function needs documentation.
-            var href, pool_req;
-            href = mothership + '/box/' + y.box + '?key=' + y.key;
-            pool_req = avar({val: false});
-            pool_req.onerror = function (message) {
-             // This function needs documentation.
-                if (pool_req.val === true) {
-                 // Release the resources back into the pool ...
-                    state.requests_remaining += 1;
-                }
-                return evt.fail(message);
-            };
-            pool_req.onready = function (evt) {
-             // This function needs documentation.
-                if (state.requests_remaining <= 0) {
-                    return evt.stay('Waiting for previous requests to close.');
-                }
-                state.requests_remaining -= 1;
-                pool_req.val = true;
-                return evt.exit();
-            };
-            pool_req.onready = function (evt) {
-             // This function needs documentation.
-                if (isBrowser() === false) {
-                    return evt.exit();
-                }
-                var req = ajax_request();
-                req.onreadystatechange = function () {
-                 // This function needs documentation.
-                    if (req.readyState === 4) {
-                        if (req.status === 502) {
-                         // These are really annoying me because I am having
-                         // trouble figuring out what's wrong with my server.
-                         // In the meantime, I'll just repeat ad nauseam :-P
-                            return evt.stay();
-                        }
-                        if (req.status !== 201) {
-                         // Something else went wrong, and we can't ignore it.
-                            return evt.fail(req.responseText);
-                        }
-                        y.val = req.responseText;
-                        return evt.exit();
-                    }
-                    return;
-                };
-                req.open('POST', href, true);
-                req.setRequestHeader('Content-Type', 'application/json');
-                req.send(JSON.stringify(y));
-                return;
-            };
-            pool_req.onready = function (pool_evt) {
-             // This function needs documentation.
-                state.requests_remaining += 1;
-                pool_evt.exit();
-                return evt.exit();
-            };
-            return;
-        };
-        return y;
-    };
-
     isBrowser = function () {
      // This function needs documentation.
         return ((global.hasOwnProperty('location'))             &&
                 (global.hasOwnProperty('navigator'))            &&
                 (global.hasOwnProperty('phantom') === false)    &&
                 (global.hasOwnProperty('system') === false));
-    };
-
-    isFunction = function (f) {
-     // This function needs documentation.
-        return ((typeof f === 'function') && (f instanceof Function));
     };
 
     isWebWorker = function () {
@@ -238,6 +104,17 @@
                 (global.hasOwnProperty('navigator'))            &&
                 (global.hasOwnProperty('phantom') === false)    &&
                 (global.hasOwnProperty('system') === false));
+    };
+
+    jobs = function (box) {
+     // This function needs documentation.
+        var y = ajax('GET', mothership + '/box/' + box + '?status=waiting');
+        y.onready = function (evt) {
+         // This function needs documentation.
+            y.val = JSON.parse(y.val);
+            return evt.exit();
+        };
+        return y;
     };
 
     lib = function (url) {
@@ -355,6 +232,19 @@
 
     ply = Q.ply;
 
+    read = function (x) {
+     // This function needs documentation.
+        var y = ajax('GET', mothership + '/box/' + x.box + '?key=' + x.key);
+        y.onready = function (evt) {
+         // This function deserializes the string returned as the `val` of
+         // `y` into a temporary variable and then copies its property values
+         // back onto `y`.
+            shallow_copy(avar(y.val), y);
+            return evt.exit();
+        };
+        return y;
+    };
+
     reduce = function (f) {
      // This function needs to be recursive, but ... how best to do it?
         var afunc, x;
@@ -416,6 +306,108 @@
         return afunc;
     };
 
+    remote_call = function (obj, secret) {
+     // This function distributes computations to remote execution nodes by
+     // constructing a task that represents the computation, writing it to a
+     // shared storage, polling for changes to its status, and then reading
+     // the new values back into the local variables. My strategy is to use
+     // a bunch of temporary avars that only execute locally -- on this part
+     // I must be very careful, because remote calls should be able to make
+     // remote calls of their own, but execution of a remote call should not
+     // require remote calls of its own! A publication is forthcoming, and at
+     // that point I'll simply use a self-citation as an explanation :-)
+        var f, first, x;
+     // Step 1: copy the computation's function and data into fresh instances,
+     // define some error handlers, and write the copies to the "filesystem".
+     // If special property values have been added to `x`, they will be copied
+     // onto `f` and `x` via the "copy constructor" idiom. Note that special
+     // properties defined for `f` will be overwritten ...
+        f = avar({box: obj.x.box, val: obj.f});
+        first = true;
+        x = avar({box: obj.x.box, key: obj.x.key, val: obj.x.val});
+        f.onerror = x.onerror = function (message) {
+         // This function tells the original `x` that something has gone awry.
+            if (first === true) {
+                first = false;
+                obj.x.comm({fail: message, secret: secret});
+            }
+            return;
+        };
+        f.onready = x.onready = update_remote;
+     // Step 2: Use a `when` statement to represent the remote computation and
+     // track its execution status on whatever system is using Quanah.
+        when(f, x).areready = function (evt) {
+         // This function creates a `task` object to represent the computation
+         // and monitors its status by "polling" the "filesystem" for changes.
+         // It initializes using `avar`'s "copy constructor" idiom to enable
+         // `task` to "inherit" system-specific properties such as QMachine's
+         // `box` property automatically. My design here reflects the idea that
+         // the execution should follow the data.
+            var task = avar({
+                box: obj.x.box,
+                status: 'waiting',
+                val: {
+                    f: f.key,
+                    x: x.key
+                }
+            });
+            task.onerror = function (message) {
+             // This function alerts `f` and `x` that something has gone awry.
+                return evt.fail(message);
+            };
+            task.onready = update_remote;
+            task.onready = function (evt) {
+             // This function polls for changes in the `status` property using
+             // a variation on the `update_local` function as a non-blocking
+             // `while` loop -- hooray for disposable avars!
+                var temp = read(task);
+                temp.onerror = function (message) {
+                 // This alerts `task` that something has gone awry.
+                    return evt.fail(message);
+                };
+                temp.onready = function (temp_evt) {
+                 // This function analyzes the results of the `read` operation
+                 // to determine if the `task` computation is ready to proceed.
+                    switch (temp.status) {
+                    case 'done':
+                        task.val = temp.val;
+                        evt.exit();
+                        break;
+                    case 'failed':
+                        evt.fail(temp.val.epitaph);
+                        break;
+                    default:
+                        evt.stay('Waiting for results ...');
+                    }
+                    return temp_evt.exit();
+                };
+                return;
+            };
+            task.onready = function (task_evt) {
+             // This function ends the enclosing `when` statement.
+                task_evt.exit();
+                return evt.exit();
+            };
+            return;
+        };
+     // Step 3: Update the local instances of `f` and `x` by retrieving the
+     // remote versions' representations. If possible, these operations will
+     // run concurrently.
+        f.onready = x.onready = update_local;
+     // Step 4: Use a `when` statement to wait for the updates in Step 3 to
+     // finish before copying the new values into the original `obj` argument.
+        when(f, x).areready = function (evt) {
+         // This function copies the new values into the old object. Please
+         // note that we cannot simply write `obj.foo = foo` because we would
+         // lose the original avar's internal state!
+            obj.f = f.val;
+            obj.x.val = x.val;
+            obj.x.comm({done: [], secret: secret});
+            return evt.exit();
+        };
+        return;
+    };
+
     retrieve = function (f) {
      // This function needs documentation.
         var y = avar();
@@ -440,16 +432,233 @@
         return y;
     };
 
+    volunteer = function (box) {
+     // This function, combined with `remote_call`, provides the remote code
+     // execution mechanism in Quanah. When `remote_call` on one machine sends
+     // a serialized task to another machine, that other machine runs it with
+     // the `volunteer` function. This function outputs the avar representing
+     // the task so that the underlying system (not Quanah) can control system
+     // resources itself. Examples will be included in the distribution that
+     // will accompany the upcoming publication(s).
+        if (box === undefined) {
+            box = Q.box;
+        }
+        var task = avar({box: box});
+        task.onready = function (evt) {
+         // This function retrieves the key of a task from the queue so we
+         // can retrieve that task's full description. If no tasks are found,
+         // we will simply check back later :-)
+            var temp = jobs(box);
+            temp.onerror = function (message) {
+             // This function notifies `task` that something has gone wrong
+             // during retrieval and interpretation of its description.
+                return evt.fail(message);
+            };
+            temp.onready = function (temp_evt) {
+             // This function chooses a task from the queue and runs it.
+                var queue = temp.val;
+                if ((queue instanceof Array) === false) {
+                 // This seems like a common problem that will occur whenever
+                 // users begin implementing custom storage mechanisms.
+                    return temp_evt.fail('`jobs` should return an array');
+                }
+                if (queue.length === 0) {
+                 // Here, we choose to `fail` not because this is a dreadful
+                 // occurrence or something, but because this decision allows
+                 // us to avoid running subsequent functions whose assumptions
+                 // depend precisely on having found a task to run. If we were
+                 // instead to `stay` and wait for something to do, it would
+                 // be much harder to tune Quanah externally.
+                    return temp_evt.fail('Nothing to do ...');
+                }
+             // Here, we grab a random entry from the queue, rather than the
+             // first element in the queue. Why? Well, recall that tasks cannot
+             // enter the "global" queue until the avars they will transform
+             // are ready; this immediately implies that no task in the remote
+             // queue can ever run out of order anyway. Unfortunately, without
+             // fancy server-side transactional logic, workers can potentially
+             // execute the same job redundantly, especially when there are a
+             // large number of workers and a small number of jobs. This isn't
+             // a big deal for an opportunistic system, and it may even be a
+             // desirable "inefficiency" because it means the invoking machine
+             // will get an answer faster. In some cases, though, such as for
+             // batch jobs that take roughly the same amount of time to run, we
+             // need to "jitter" the queue a little to avoid deadlock.
+                task.key = queue[Math.floor(Math.random() * queue.length)];
+                temp_evt.exit();
+                return evt.exit();
+            };
+            return;
+        };
+        task.onready = update_local;
+        task.onready = function (evt) {
+         // This function changes the `status` property of the local `task`
+         // object we just synced from remote; the next step, obviously, is
+         // to sync back to remote so that the abstract task will disappear
+         // from the "waiting" queue.
+            task.status = 'running';
+            return evt.exit();
+        };
+        task.onready = update_remote;
+        task.onready = function (evt) {
+         // This function executes the abstract task by recreating `f` and `x`
+         // and running them in the local environment. Since we know `task` is
+         // serializable, we cannot simply add its deserialized form to the
+         // local machine's queue (`stack`), because `revive` would just send
+         // it back out for remote execution again. Thus, we deliberately close
+         // over local variables like `avar` in order to restrict execution to
+         // the current environment. The transform defined in `task.val.f` is
+         // still able to distribute its own sub-tasks for remote execution.
+            var f, first, x;
+            f = avar({box: box, key: task.val.f});
+            first = true;
+            x = avar({box: box, key: task.val.x});
+            f.onerror = x.onerror = function (message) {
+             // This function runs if execution of the abstract task fails.
+             // The use of a `first` value prevents this function from running
+             // more than once, because aside from annoying the programmer by
+             // returning lots of error messages on his or her screen, such a
+             // situation can also wreak all kinds of havoc for reentrancy.
+                var temp_f, temp_x;
+                if (first) {
+                    first = false;
+                    task.val.epitaph = message;
+                    task.status = 'failed';
+                    temp_f = avar(f);
+                    temp_x = avar(x);
+                    temp_f = temp_x = update_remote;
+                    when(temp_f, temp_x).areready = function (temp_evt) {
+                     // This function runs only when the error messages have
+                     // finished syncing to remote storage successfully.
+                        temp_evt.exit();
+                        return evt.exit();
+                    };
+                }
+                return;
+            };
+            f.onready = x.onready = update_local;
+            when(f, x).areready = function (evt) {
+             // This function contains the _actual_ execution. (Boring, huh?)
+                f.val.call(x, evt);
+                return;
+            };
+         //
+         // Here, I would like to have a function that checks `f` and `x` to
+         // using `is_closed` to ensure that the results it returns to the
+         // invoking machine are the same as the results it computed, because
+         // it _is_ actually possible to write a serializable function which
+         // renders itself unserializable during its evaluation. Specifically,
+         // if the results are not serializable and we are therefore unable to
+         // return an accurate representation of the results, then I want to
+         // send a special signal to the invoking machine to let it know that,
+         // although no error has occurred, results will not be returned; the
+         // invoking machine would then execute the "offending" task itself.
+         // I have included a simple outline of such a function:
+         //
+         //     when(f, x).areready = function (evt) {
+         //         if (is_closed(f.val) || is_closed(x.val)) {
+         //             return evt.abort('Results will not be returned.');
+         //         }
+         //         return evt.exit();
+         //     };
+         //
+            f.onready = x.onready = update_remote;
+            when(f, x).areready = function (temp_evt) {
+             // This function only executes when the task has successfully
+             // executed and the transformed values of `f` and `x` are synced
+             // back to remote storage. Thus, we are now free to send the
+             // signal for successful completion to the invoking machine by
+             // updating the `status` property locally and syncing to remote.
+                task.status = 'done';
+                temp_evt.exit();
+                return evt.exit();
+            };
+            return;
+        };
+        task.onready = update_remote;
+        return task;
+    };
+
+    shallow_copy = function (x, y) {
+     // This function copies the properties of `x` to `y`, specifying `y` as
+     // object literal if it was not provided as an input argument. It does
+     // not perform a "deep copy", which means that properties whose values
+     // are objects will be "copied by reference" rather than by value. Right
+     // now, I see no reason to worry about deep copies or getters / setters.
+        if (y === undefined) {
+         // At one point, I used a test here that `arguments.length === 1`,
+         // but it offended JSLint:
+         //     "Do not mutate parameter 'y' when using 'arguments'."
+            y = {};
+        }
+        var key;
+        for (key in x) {
+            if (x.hasOwnProperty(key)) {
+                y[key] = x[key];
+            }
+        }
+        return y;
+    };
+
     state = {
-     // This object needs documentation. It may also need a mechanism to keep
-     // the requests from polling too quickly. Eventually I'd like to move to
-     // HTML5 Server Sent Events, but for now, GET and POST will have to do.
+     // Should I initialize this from `localStorage` first?
         box: avar().key,
-        requests_remaining: 10,
         shelf: []
     };
 
+    update_local = function (evt) {
+     // This function is used in the `remote_call` and `volunteer` functions
+     // to update the local copy of an avar so that its `val` property matches
+     // the one from its remote representation. It is written as a function of
+     // `evt` because it is intended to be assigned to `onready`.
+        var local, temp;
+        local = this;
+        temp = read(local);
+        temp.onerror = function (message) {
+         // This function tells `local` that something has gone awry.
+            return evt.fail(message);
+        };
+        temp.onready = function (temp_evt) {
+         // Here, we copy the remote representation into the local one.
+            shallow_copy(temp, local);
+            temp_evt.exit();
+            return evt.exit();
+        };
+        return;
+    };
+
+    update_remote = function (evt) {
+     // This function is used in the `remote_call` and `volunteer` functions
+     // to update the remote copy of an avar so that its `val` property matches
+     // the one from its local representation. It is written as a function of
+     // `evt` because it is intended to be assigned to `onready`.
+        var temp = write(this);
+        temp.onerror = function (message) {
+         // This tells the local avar (`this`) that something has gone awry.
+            return evt.fail(message);
+        };
+        temp.onready = function (temp_evt) {
+         // This function just releases execution for the local avar (`this`).
+            temp_evt.exit();
+            return evt.exit();
+        };
+        return;
+    };
+
     when = Q.when;
+
+    write = function (x) {
+     // This function sends an HTTP POST to QMachine. It doesn't worry
+     // about the return data because QMachine isn't going to return
+     // any data -- the request will either succeed or fail, as
+     // indicated by the HTTP status code returned. It returns an avar.
+        var url = mothership + '/box/' + x.box + '?key=' + x.key;
+        return ajax('POST', url, JSON.stringify(x));
+    };
+
+ // Prototype definitions
+
+    // (see next section)
 
  // Out-of-scope definitions
 
@@ -505,7 +714,8 @@
             lib:        lib,
             map:        map,
             reduce:     reduce,
-            retrieve:   retrieve
+            retrieve:   retrieve,
+            volunteer:  volunteer
         };
         for (key in template) {
             if (template.hasOwnProperty(key)) {
@@ -524,78 +734,9 @@
         return;
     }());
 
-    Q.init({
-        jobs: function (box) {
-         // This function needs documentation.
-            if ((box === undefined) || (box === null)) {
-                box = Q.box;
-            }
-            var x, y;
-            x = {box: box, status: 'waiting', val: []};
-            y = https_GET(x);
-            y.onready = function (evt) {
-             // This function deserializes the string returned by QMachine into
-             // the array of keys that it represents. This is one of the rare
-             // instances in which I deliberately change a variable's "type" by
-             // assignment -- this is not typically advisable because it may
-             // impact the performance of JIT compilers.
-                y.val = JSON.parse(y.val);
-                return evt.exit();
-            };
-            return y;
-        },
-        read: function (x) {
-         // This function needs documentation.
-            var y = https_GET(x);
-            y.onready = function (evt) {
-             // This function deserializes the string returned as the `val` of
-             // `y` into a `temp` variable and then uses them to update the
-             // property values of `y`. It returns an avar.
-                var key, temp;
-                temp = avar(y.val);
-                for (key in temp) {
-                    if (temp.hasOwnProperty(key)) {
-                        y[key] = temp[key];
-                    }
-                }
-                return evt.exit();
-            };
-            return y;
-        },
-        write: function (x) {
-         // This function sends an HTTP POST to QMachine. It doesn't worry
-         // about the return data because QMachine isn't going to return
-         // any data -- the request will either succeed or fail, as
-         // indicated by the HTTP status code returned. It returns an avar.
-            x.box = x.box;
-            return https_POST(x);
-        }
-    }).Q(function (evt) {
-     // This function configures a background "daemon" to revive execution if
-     // nothing has triggered it in a while. This strategy allows an otherwise
-     // completely event-driven model to avoid the deadlock that occurs when
-     // the queue for a given box is completely empty, for example. I will be
-     // re-evaluating this strategy soon, though, because it seems unnecessary.
-     //
-     // NOTE: I am reusing the avar that gets returned by the `init` method to
-     // avoid the overhead of creating new avars needlessly every time.
-     //
-        if ((typeof global.clearTimeout === 'function') &&
-                (typeof this.val === 'number')) {
-            global.clearTimeout(this.val);
-        }
-        if (typeof global.setTimeout === 'function') {
-            this.val = global.setTimeout(this.revive, 1000);
-        }
-        return evt.exit();
-    }).onerror = function (message) {
-     // This function needs documentation.
-        if ((global.hasOwnProperty('console')) &&
-                (isFunction(global.console.error))) {
-            global.console.error('Error:', message);
-        }
-        return;
-    };
+    Q.def({
+        remote_call: remote_call
+    });
 
  // That's all, folks!
 
@@ -603,9 +744,9 @@
 
 }(Function.prototype.call.call(function (that) {
     'use strict';
- // See the bottom of "quanah.js" for documentation.
+ // For full documentation, refer to the bottom of "quanah.js".
     /*jslint indent: 4, maxlen: 80 */
-    /*global global: true */
+    /*global global: false */
     if (this === null) {
         return (typeof global === 'object') ? global : that;
     }
