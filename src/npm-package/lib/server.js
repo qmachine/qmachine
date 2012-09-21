@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- server.js ~~
-//                                                      ~~ (c) SRW, 12 Sep 2012
+//                                                      ~~ (c) SRW, 20 Sep 2012
 
 (function () {
     'use strict';
@@ -73,6 +73,12 @@
             www_url:        'http://127.0.0.1:5984/www/_design/app/_rewrite'
         });
         if (cluster.isMaster) {
+            cluster.on('death', function (worker) {
+             // This function needs documentation.
+                console.log('Process ' + worker.pid + ' exited.');
+                launch_workers(1);
+                return;
+            });
             cluster.on('exit', function (worker) {
              // This function needs documentation.
                 console.log('Process ' + worker.pid + ' exited.');

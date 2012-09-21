@@ -41,6 +41,12 @@
         config.port = process.env.PORT;
     }
 
+    if (process.env.VMC_APP_PORT !== undefined) {
+     // This is for use with AppFog.
+        config.host = null;
+        config.port = process.env.VMC_APP_PORT;
+    }
+
     qm.launch_server({
         db_url:     config.couch + '/db/_design/app',
         hostname:   config.host,
