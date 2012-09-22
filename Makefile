@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 20 Sep 2012
+#                                                       ~~ (c) SRW, 22 Sep 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -280,10 +280,10 @@ $(CACHE_DIR)/meyerweb-reset.css: | $(CACHE_DIR)
                 "http://meyerweb.com/eric/tools/css/reset/reset.css")
 
 $(CACHE_DIR)/q.js:                                                          \
-    $(CACHE_DIR)/jslint.js                                                  \
-    $(CACHE_DIR)/json2.js                                                   \
     $(CACHE_DIR)/quanah.js                                                  \
     $(CACHE_DIR)/qmachine.js                                                \
+    $(CACHE_DIR)/jslint.js                                                  \
+    $(CACHE_DIR)/json2.js                                                   \
     |   $(CACHE_DIR)
 	@   $(call replace-mothership, $^, $@)
 

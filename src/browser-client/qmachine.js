@@ -1,7 +1,7 @@
 //- JavaScript source code
 
-//- remote.js ~~
-//                                                      ~~ (c) SRW, 21 Sep 2012
+//- qmachine.js ~~
+//                                                      ~~ (c) SRW, 22 Sep 2012
 
 (function (global) {
     'use strict';
@@ -9,6 +9,20 @@
  // Pragmas
 
     /*jslint indent: 4, maxlen: 80 */
+
+    /*properties
+        ActiveXObject, Q, XDomainRequest, XMLHttpRequest, appendChild, apply,
+        areready, avar, body, box, by, call, capture, comm, concat,
+        configurable, constructor, createElement, def, defineProperty,
+        document, done, enumerable, epitaph, exit, f, fail, floor, get,
+        getElementsByTagName, global, hasOwnProperty, head, host,
+        importScripts, key, length, lib, location, map, onerror, onload,
+        onready, onreadystatechange, open, parse, ply, protocol, prototype,
+        push, random, readyState, reduce, remote_call, responseText, retrieve,
+        revive, secret, send, set, shelf, splice, src, status, stay, stringify,
+        toString, using, val, value, volunteer, when, withCredentials,
+        writable, x, y
+    */
 
  // Prerequisites
 
