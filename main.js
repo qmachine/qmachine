@@ -52,7 +52,7 @@
     global.onload = function () {
      // This function needs documentation.
         var remaining, tests;
-        remaining = 20;
+        remaining = 19;
         tests = avar({val: 1});
         tests.onerror = function (message) {
          // This function needs documentation.
@@ -78,6 +78,7 @@
         tests.onready = function (evt) {
          // This function needs documentation.
             puts('Done.');
+            puts('(to run Test 20, run `Q.lib("./test-20.js");`)');
             return evt.exit();
         };
         return;
