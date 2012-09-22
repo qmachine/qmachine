@@ -9,7 +9,7 @@
 #
 #   NOTE: Documentation has been removed but will be added again later (maybe).
 #
-#                                                       ~~ (c) SRW, 18 Sep 2012
+#                                                       ~~ (c) SRW, 22 Sep 2012
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -35,37 +35,21 @@ define available
     )
 endef
 
-define compile-css
-    if [ $(words $(1)) -eq 1 ]; then                                        \
-        $(call aside, "Optimizing stylesheet: $(1) -> $(2)")            ;   \
-    else                                                                    \
-        $(call aside, "Optimizing stylesheets: $(1) -> $(2)")           ;   \
-    fi                                                                  ;   \
-    $(CAT) $(1) > $(2)                                                  ;   \
-    $(YUICOMP) --type css $(2) -o $(2)
-endef
-
 define compile-js
     if [ $(words $(1)) -eq 1 ]; then                                        \
         $(call aside, "Optimizing script: $(1) -> $(2)")                ;   \
     else                                                                    \
         $(call aside, "Optimizing scripts: $(1) -> $(2)")               ;   \
     fi                                                                  ;   \
-    $(call compile-with-google-closure, $(1), $(2))
-endef
-
-define compile-with-cat
-    $(CAT) $(1) > $(2)
-endef
-
-define compile-with-google-closure
-    $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS \
-        $(1:%=--js %) --js_output_file $(2)
-endef
-
-define compile-with-yuicompressor
-    $(CAT) $(1) > $(2)                                                  ;   \
-    $(YUICOMP) --type js $(2) -o $(2)
+    if [ "$(strip $(MINIFY))" = "$(firstword $(CLOSURE))" ]; then           \
+        $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS                 \
+            $(1:%=--js %) --js_output_file $(2)                         ;   \
+    elif [ "$(strip $(MINIFY))" = "$(firstword $(YUICOMP))" ]; then         \
+        $(CAT) $(1) > $(2)                                              ;   \
+        $(YUICOMP) --type js $(2) > $(2)                                ;   \
+    else                                                                    \
+        $(CAT) $(1) > $(2)                                              ;   \
+    fi
 endef
 
 define contingent
@@ -121,6 +105,38 @@ define make-directory
     if [ ! -d "$@" ]; then $(MKDIR) "$@"; fi
 endef
 
+define minify-css
+    if [ $(words $(1)) -eq 1 ]; then                                        \
+        $(call aside, "Optimizing stylesheet: $(1) -> $(2)")            ;   \
+    else                                                                    \
+        $(call aside, "Optimizing stylesheets: $(1) -> $(2)")           ;   \
+    fi                                                                  ;   \
+    echo "/* $(MOTHERSHIP)/$(notdir $(2)) */\n" > $(2)                  ;   \
+    $(CAT) $(1) > $(2)-temp.js                                          ;   \
+    if [ "$(firstword $(YUICOMP))" != "echo" ]; then                        \
+        $(YUICOMP) --type css $(2)-temp.js -o $(2)-temp.js              ;   \
+    fi                                                                  ;   \
+    $(CAT) $(2)-temp.js >> $(2)                                         ;   \
+    $(RM) $(2)-temp.js
+endef
+
+define minify-js
+    if [ "$(strip $(MINIFY))" = "$(firstword $(CLOSURE))" ]; then           \
+        echo "// $(MOTHERSHIP)/$(notdir $(2))\n" > $(2)                 ;   \
+        $(CLOSURE) --compilation_level WHITESPACE_ONLY                      \
+            $(1:%=--js %) >> $(2)                                       ;   \
+    elif [ "$(strip $(MINIFY))" = "$(firstword $(YUICOMP))" ]; then         \
+        echo "// $(MOTHERSHIP)/$(notdir $(2))\n" > $(2)                 ;   \
+        $(YUICOMP) --nomunge --disable-optimizations                        \
+            --type js $(1) >> $(2)                                      ;   \
+    elif [ "$(strip $(MINIFY))" = "$(firstword $(JSMIN))" ]; then           \
+        $(CAT) $(1) | $(JSMIN) "$(MOTHERSHIP)/$(notdir $(2))" > $(2)    ;   \
+    else                                                                    \
+        echo "// $(MOTHERSHIP)/$(notdir $(2))\n" > $(2)                 ;   \
+        $(CAT) $(1) >> $(2)                                             ;   \
+    fi
+endef
+
 define open-in-browser
     $(strip $(foreach page, $(1),                                           \
         browser="$(call contingent, \
@@ -163,11 +179,13 @@ CP          :=  $(call contingent, gcp cp) -rf
 CURL        :=  $(call contingent, curl)
 DATE        :=  $(call contingent, date)
 HEROKU      :=  $(call contingent, heroku)
+JSMIN       :=  $(call contingent, jsmin)
 KANSO       :=  $(call contingent, kanso)
 LAUNCHCTL   :=  $(call contingent, launchctl)
 LN          :=  $(call contingent, gln ln) -fs
 LS          :=  $(call contingent, gls ls) 2>/dev/null
 MKDIR       :=  $(call contingent, gmkdir mkdir)
+MINIFY      :=  $(call contingent, closure-compiler yuicompressor jsmin cat)
 NODEJS      :=  $(call contingent, nodejs node)
 NPM         :=  $(call contingent, npm)
 PHANTOMJS   :=  $(call contingent, phantomjs)

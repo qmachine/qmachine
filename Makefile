@@ -16,7 +16,7 @@
 #           $ npm install -g kanso
 #
 #       ... as many of the optional dependencies as you desire by typing
-#           $ brew install closure-compiler qrencode yuicompressor
+#           $ brew install closure-compiler jsmin qrencode yuicompressor
 #
 #   For a long time, icon generation from LaTeX source code was included as an
 #   extra touch, but folks complained too much about the extra dependency on
@@ -174,6 +174,11 @@ $(BUILD_DIR)/browser-client/cache.manifest:                                 \
     |   $(BUILD_DIR)/browser-client
 	@   $(call timestamp, $<, $@)
 
+$(BUILD_DIR)/browser-client/%.js:                                           \
+    $(CACHE_DIR)/%.js                                                       \
+    |   $(BUILD_DIR)/browser-client
+	@   $(call minify-js, $<, $@)
+
 $(BUILD_DIR)/browser-client/%: $(CACHE_DIR)/% | $(BUILD_DIR)/browser-client
 	@   $(CP) $< $@
 
@@ -304,7 +309,7 @@ $(CACHE_DIR)/style.css: $(SRC_DIR)/browser-client/style.css | $(CACHE_DIR)
 	@   $(CP) $< $@
 
 $(CACHE_DIR)/style-min.css: $(CACHE_DIR)/style.css | $(CACHE_DIR)
-	@   $(call compile-css, $<, $@)
+	@   $(call minify-css, $<, $@)
 
 $(ICONS_DIR):
 	@   $(call make-directory, $@)
