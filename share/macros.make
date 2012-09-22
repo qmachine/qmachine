@@ -121,6 +121,19 @@ define make-directory
     if [ ! -d "$@" ]; then $(MKDIR) "$@"; fi
 endef
 
+define open-in-browser
+    $(strip $(foreach page, $(1),                                           \
+        browser="$(call contingent, \
+            gnome-www-browser gnome-open x-www-browser open)"           ;   \
+        $(if $(filter http%,$(page)),                                       \
+            $${browser} $(page),                                            \
+            if [ -f $(page) ]; then                                         \
+                $${browser} $(page)                                     ;   \
+            fi                                                          ;   \
+        )                                                                   \
+    ))
+endef
+
 define red-printf
     printf '\033[1;31m'$(strip $(1))'\033[1;0m' $(strip $(2))
 endef

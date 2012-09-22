@@ -136,6 +136,7 @@ local-sandbox:
             CLOUDANT_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push www    ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
+                $(call open-in-browser, $(strip $(LOCAL_NODE)))         ;   \
             else                                                            \
                 $(call alert, 'Service is not running.')                ;   \
             fi
