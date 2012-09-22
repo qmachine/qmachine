@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- main.js ~~
-//                                                      ~~ (c) SRW, 21 Sep 2012
+//                                                      ~~ (c) SRW, 22 Sep 2012
 
 (function (global) {
     'use strict';
@@ -78,7 +78,6 @@
         tests.onready = function (evt) {
          // This function needs documentation.
             puts('Done.');
-            puts('(to run Test 20, run `Q.lib("./test-20.js");`)');
             return evt.exit();
         };
         return;
