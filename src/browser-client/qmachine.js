@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 22 Sep 2012
+//                                                      ~~ (c) SRW, 23 Sep 2012
 
 (function (global) {
     'use strict';
@@ -32,8 +32,8 @@
 
  // Declarations
 
-    var Q, ajax, avar, capture, isBrowser, isWebWorker, jobs, lib, map,
-        mothership, origin, ply, read, reduce, remote_call, retrieve,
+    var Q, ajax, avar, capture, isBrowser, isFunction, isWebWorker, jobs, lib,
+        map, mothership, origin, ply, read, reduce, remote_call, retrieve,
         shallow_copy, state, update_local, update_remote, volunteer, when,
         write;
 
@@ -45,9 +45,15 @@
      // This function needs documentation.
         var y = avar();
         y.onready = function (evt) {
-         // This function needs documentation.
+         // This function needs documentation of a more general form ...
             var request;
-            if (global.hasOwnProperty('XMLHttpRequest')) {
+         // As of Chrome 21 (and maybe sooner than that), Web Workers do have
+         // the `XMLHttpRequest` constructor, but it isn't one of `global`'s
+         // own properties like it is Firefox 15.01 or Safari 6. In Safari 6,
+         // however, `XMLHttpRequest` has type 'object' rather than 'function',
+         // which makes _zero_ sense to me right now. Thus, my test is _not_
+         // intuitive in the slightest ...
+            if (global.XMLHttpRequest instanceof Object) {
                 request = new global.XMLHttpRequest();
                 if (origin() !== mothership) {
                  // This is a slightly weaker test than using `hasOwnProperty`,
@@ -111,11 +117,16 @@
                 (global.hasOwnProperty('system') === false));
     };
 
+    isFunction = function (f) {
+     // This function needs documentation.
+        return ((typeof f === 'function') && (f instanceof Function));
+    };
+
     isWebWorker = function () {
      // This function needs documentation.
-        return ((global.hasOwnProperty('importScripts'))        &&
-                (global.hasOwnProperty('location'))             &&
-                (global.hasOwnProperty('navigator'))            &&
+        return ((isFunction(global.importScripts))              &&
+                (global.location instanceof Object)             &&
+                (global.navigator instanceof Object)            &&
                 (global.hasOwnProperty('phantom') === false)    &&
                 (global.hasOwnProperty('system') === false));
     };
