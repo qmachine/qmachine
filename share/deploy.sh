@@ -9,10 +9,14 @@ else
     HEROKU_APP="--app ${1}";
 fi
 
-CLOUDANT_URL="`heroku config:get CLOUDANT_URL ${HEROKU_APP}`" kanso install ./
+COUCH_URL="`heroku config:get CLOUDANT_URL ${HEROKU_APP}`";
 
-CLOUDANT_URL="`heroku config:get CLOUDANT_URL ${HEROKU_APP}`" kanso push db
+if [ ! -d "./packages" ]; then
+    CLOUDANT_URL="${COUCH_URL}" kanso install ./;
+fi
 
-CLOUDANT_URL="`heroku config:get CLOUDANT_URL ${HEROKU_APP}`" kanso push www
+CLOUDANT_URL="${COUCH_URL}" kanso push db;
+
+CLOUDANT_URL="${COUCH_URL}" kanso push www;
 
 #-  vim:set syntax=sh:

@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 22 Sep 2012
+#                                                       ~~ (c) SRW, 23 Sep 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -54,7 +54,16 @@ PLISTS          :=  $(addprefix $(VAR_DIR)/com.QM., couchdb.plist nodejs.plist)
 all: $(shell $(LS) $(SRC_DIR))
 
 clean: reset
-	@   $(RM) $(BUILD_DIR)                                          ;   \
+	@   if [ -d "$(BUILD_DIR)/web-service/packages" ]; then             \
+                $(CP) $(BUILD_DIR)/web-service/packages/ $(PROJ_ROOT)   ;   \
+                $(RM) $(BUILD_DIR)                                      ;   \
+                $(MKDIR) $(BUILD_DIR)                                   ;   \
+                $(MKDIR) $(BUILD_DIR)/web-service                       ;   \
+                $(CP) $(PROJ_ROOT)/packages $(BUILD_DIR)/web-service    ;   \
+                $(RM) $(PROJ_ROOT)/packages                             ;   \
+            else                                                            \
+                $(RM) $(BUILD_DIR)                                      ;   \
+            fi                                                          ;   \
             for each in $(PLISTS); do                                       \
                 if [ -f "$${each}" ]; then                                  \
                     $(LAUNCHCTL) unload -w $${each} >/dev/null 2>&1     ;   \
