@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 23 Sep 2012
+//                                                      ~~ (c) SRW, 25 Sep 2012
 
 (function (global) {
     'use strict';
@@ -16,12 +16,12 @@
         configurable, constructor, createElement, def, defineProperty,
         document, done, enumerable, epitaph, exit, f, fail, floor, get,
         getElementsByTagName, global, hasOwnProperty, head, host,
-        importScripts, key, length, lib, location, map, onerror, onload,
-        onready, onreadystatechange, open, parse, ply, protocol, prototype,
-        push, random, readyState, reduce, remote_call, responseText, retrieve,
-        revive, secret, send, set, shelf, splice, src, status, stay, stringify,
-        toString, using, val, value, volunteer, when, withCredentials,
-        writable, x, y
+        importScripts, key, length, lib, location, map, navigator, onerror,
+        onload, onready, onreadystatechange, open, parse, ply, protocol,
+        prototype, push, random, readyState, reduce, remote_call, responseText,
+        retrieve, revive, secret, send, set, shelf, splice, src, status, stay,
+        stringify, toString, using, val, value, volunteer, when,
+        withCredentials, writable, x, y
     */
 
  // Prerequisites
