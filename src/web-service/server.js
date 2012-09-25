@@ -48,10 +48,13 @@
     }
 
     qm.launch_server({
-        db_url:     config.couch + '/db/_design/app',
+        couchdb: {
+            db:     config.couch + '/db/_design/app',
+            www:    config.couch + '/www/_design/app/_rewrite'
+        },
         hostname:   config.host,
         port:       config.port,
-        www_url:    config.couch + '/www/_design/app/_rewrite'
+        storage:    'couchdb'
     });
 
  // That's all, folks!

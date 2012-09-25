@@ -137,6 +137,8 @@ local-sandbox:
                     $(VAR_DIR)/nodejs/node_modules                          \
                     $(VAR_DIR)/nodejs/server.js                             \
                     web-service                                         ;   \
+            $(CP) $(BUILD_DIR)/browser-client                               \
+                $(VAR_DIR)/nodejs/public_html                           ;   \
             for each in $(PLISTS); do                                       \
                 $(LAUNCHCTL) load -w $${each}                           ;   \
             done                                                        ;   \
