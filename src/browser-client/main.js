@@ -20,7 +20,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 22 Sep 2012
+//                                                  ~~ last updated 26 Sep 2012
 
 (function (global) {
     'use strict';
@@ -107,7 +107,10 @@
         var task = Q.volunteer();
         task.onerror = function (message) {
          // This function needs documentation.
-            if (message !== 'Nothing to do ...') {
+            if (message === 'Nothing to do ...') {
+             // Back by popular demand ;-)
+                jsout(message);
+            } else {
                 jserr('Error:', message);
             }
             global.setTimeout(volunteer, 1000);
