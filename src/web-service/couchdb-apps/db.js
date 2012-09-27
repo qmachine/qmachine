@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- db.js ~~
-//                                                      ~~ (c) SRW, 20 Sep 2012
+//                                                      ~~ (c) SRW, 26 Sep 2012
 
 (function () {
     'use strict';
@@ -13,9 +13,10 @@
     /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        'Content-Type', '_id', 'as-array', body, box, data, hasOwnProperty,
-        headers, id, jobs, key, lists, map, parse, shows, status, stringify,
-        timestamp, updates, uuid, value, views
+        'Content-Type', '_id', 'as-array', body, box, data, forbidden,
+        hasOwnProperty, headers, id, jobs, key, lists, map, parse, shows,
+        status, stringify, timestamp, updates, uuid, validate_doc_update,
+        value, views
     */
 
  // Out-of-scope definitions
@@ -84,7 +85,7 @@
          //     POST /box/foo?key=bar {"box":"foo","key":"baz","val":"quux"}
          //
             /*jslint nomen: true */
-            var key, newDoc, response;
+            var key, newDoc, response, x1, x2;
             newDoc = JSON.parse(req.body);
             if (doc === null) {
                 if ((newDoc.hasOwnProperty('box')) &&
@@ -115,6 +116,60 @@
             };
             return [doc, response];
         }
+    };
+
+    exports.validate_doc_update = function (newDoc, oldDoc, userCtx) {
+     // This function needs documentation.
+     //
+     // NOTE: The following is from "CouchDB: The Definitive Guide":
+     //
+     //     CouchDB’s validation functions also can’t have any side effects,
+     //     and they have the opportunity to block not only end user document
+     //     saves, but also replicated documents from other nodes.
+     //
+     // if (userCtx.roles.indexOf('_admin') !== -1) { return true; }
+        if ((oldDoc === null) || (newDoc._deleted === true)) {
+            return;
+        }
+        var x1, x2;
+        x1 = oldDoc.status;
+        x2 = newDoc.status;
+        if (x1 === x2) {
+            return;
+        }
+     // At this point, we know that `x1` and `x2` have different values.
+        if (x1 === undefined) {
+            throw {
+                forbidden: 'Cannot add `status` property'
+            };
+        }
+        if (x2 === undefined) {
+            throw {
+                forbidden: 'Cannot remove `status` property'
+            };
+        }
+        if ((x1 === 'done') || (x1 === 'failed')) {
+            throw {
+                forbidden: 'Cannot change `status` once it is "' + x1 + '"'
+            };
+        }
+        if (x1 === 'running') {
+            if ((x2 === 'done') || (x2 === 'failed')) {
+                return;
+            }
+            throw {
+                forbidden: 'Invalid `status` update'
+            };
+        }
+        if (x1 === 'waiting') {
+            if ((x2 === 'running') || (x2 === 'failed')) {
+                return;
+            }
+            throw {
+                forbidden: 'Invalid `status` update'
+            };
+        }
+        return;
     };
 
     exports.views = {

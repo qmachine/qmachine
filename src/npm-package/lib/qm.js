@@ -2,7 +2,7 @@
 
 //- qm.js ~~
 //                                                      ~~ (c) SRW, 16 Jul 2012
-//                                                  ~~ last updated 18 Aug 2012
+//                                                  ~~ last updated 26 Sep 2012
 
 (function () {
     'use strict';
@@ -25,7 +25,7 @@
 
     exports.launch_client = require('./client').launch_client;
 
-    exports.launch_server = require('./server').launch_server;
+    exports.launch_service = require('./service').launch_service;
 
  // That's all, folks!
 

@@ -1,7 +1,7 @@
 //- JavaScript source code
 
-//- server.js ~~
-//                                                      ~~ (c) SRW, 25 Sep 2012
+//- service.js ~~
+//                                                      ~~ (c) SRW, 26 Sep 2012
 
 (function () {
     'use strict';
@@ -41,7 +41,7 @@
 
  // Out-of-scope definitions
 
-    exports.launch_server = function (options) {
+    exports.launch_service = function (options) {
      // This function needs documentation.
         var config, defs, service;
         config = configure(options, {

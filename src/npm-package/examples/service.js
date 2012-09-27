@@ -1,7 +1,7 @@
 //- JavaScript source code
 
-//- server.js ~~
-//                                                      ~~ (c) SRW, 28 Jun 2012
+//- service.js ~~
+//                                                      ~~ (c) SRW, 26 Sep 2012
 
 (function () {
     'use strict';
@@ -22,7 +22,7 @@
 
  // Invocations
 
-    qm.launch_server({
+    qm.launch_service({
         hostname:   '127.0.0.1',
         port:       8177
     });

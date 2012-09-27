@@ -47,7 +47,7 @@
         config.port = process.env.VMC_APP_PORT;
     }
 
-    qm.launch_server({
+    qm.launch_service({
         couchdb: {
             db:     config.couch + '/db/_design/app',
             www:    config.couch + '/www/_design/app/_rewrite'
