@@ -3,7 +3,7 @@ QMachine
 
 [QMachine](https://qmachine.org) is a web service that uses
 [Quanah](http://wilkinson.github.com/quanah) to act as a "supercomputer" that
-runs distributes computations across web browsers using only
+distributes computations across web browsers using only
 [Node.js](http://nodejs.org) and [Apache CouchDB](http://couchdb.apache.org/).
 My only reason for using Node.js is the lack of support for
 [CORS](http://www.w3.org/TR/cors/) in CouchDB, which is otherwise completely
