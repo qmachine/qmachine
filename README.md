@@ -2,12 +2,13 @@ QMachine
 =========
 
 [QMachine](https://qmachine.org) is a web service that uses
-[Quanah](http://wilkinson.github.com/quanah) to act as a "supercomputer" for
-running scientific computations using only web browsers and
-[CouchDB](http://couchdb.apache.org/). I have also written a "port" to
-[Node.js](http://nodejs.org/) that uses [SQLite](http://www.sqlite.org/) for
-its persistent storage mechanism. I am currently writing several papers about
-Quanah and QMachine, but I promise I will write more documentation soon!
+[Quanah](http://wilkinson.github.com/quanah) to act as a "supercomputer" that
+runs distributes computations using only web browsers,
+[Node.js](http://nodejs.org), and [CouchDB](http://couchdb.apache.org/). The
+backend can use [SQLite](http://www.sqlite.org) if you prefer, and bindings for
+[PostgreSQL](http://www.postgresql.org) are in preparation. Because I am
+currently writing several academic papers about Quanah and QMachine, the "live"
+client for Node.js is on a backburner, and documentation is still forthcoming.
 
 There are several "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),
@@ -31,6 +32,7 @@ In the future, I would like to integrate QMachine with "app ecosystems" like
 -   [Dropbox](https://www.dropbox.com/developers/apps/)
 -   [ePrintCenter](https://h30495.www3.hp.com/apps/)
 -   [Google Apps Marketplace](https://www.google.com/enterprise/marketplace/)
+-   [Heroku](https://addons.heroku.com/)
 -   [Internet Explorer Gallery](http://www.iegallery.com/)
 -   [Kynetx](http://developer.kynetx.com/)
 -   [Mozilla Marketplace](https://www.mozilla.org/en-US/apps/partners/)
