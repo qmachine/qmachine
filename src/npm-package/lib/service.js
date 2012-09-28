@@ -56,11 +56,7 @@
             port:           80,
             storage:        'couchdb'
         });
-        if (config.storage === 'couchdb') {
-            defs = require('./defs-couchdb');
-        } else {
-            defs = require('./defs-sqlite');
-        }
+        defs = require('./defs-' + config.storage);
         defs.init(config);
         service = api.create();
         service.def({
