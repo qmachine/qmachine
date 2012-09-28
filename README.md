@@ -3,12 +3,21 @@ QMachine
 
 [QMachine](https://qmachine.org) is a web service that uses
 [Quanah](http://wilkinson.github.com/quanah) to act as a "supercomputer" that
-runs distributes computations using only web browsers,
-[Node.js](http://nodejs.org), and [CouchDB](http://couchdb.apache.org/). The
-backend can use [SQLite](http://www.sqlite.org) if you prefer, and bindings for
-[PostgreSQL](http://www.postgresql.org) are in preparation. Because I am
-currently writing several academic papers about Quanah and QMachine, the "live"
-client for Node.js is on a backburner, and documentation is still forthcoming.
+distributes computations across web browsers using only
+[Node.js](http://nodejs.org) and [Apache CouchDB](http://couchdb.apache.org/).
+My only reason for using Node.js is the lack of support for
+[CORS](http://www.w3.org/TR/cors/) in CouchDB, which is otherwise completely
+sufficient by itself to implement the QMachine API; the silver lining here,
+however, is that the CORS-enabled proxy I wrote with Node.js can then be bound
+to other databases like [SQLite](http://www.sqlite.org) and
+[PostgreSQL](http://www.postgresql.org). Note, however, that the SQLite
+implementation is still experimental and that the PostgreSQL bindings are still
+in preparation. Because I am currently writing several academic papers about
+Quanah and QMachine, the Node.js client may be out-of-date.
+
+As in all my projects, the best documentation is contained inline as comments
+within the source code. I have written some tutorials recently, but those are
+very low priority until the papers are completed.
 
 There are several "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),

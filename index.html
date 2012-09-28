@@ -21,12 +21,21 @@
 
 <p><a href="https://qmachine.org">QMachine</a> is a web service that uses
 <a href="http://wilkinson.github.com/quanah">Quanah</a> to act as a &quot;supercomputer&quot; that
-runs distributes computations using only web browsers,
-<a href="http://nodejs.org">Node.js</a>, and <a href="http://couchdb.apache.org/">CouchDB</a>. The
-backend can use <a href="http://www.sqlite.org">SQLite</a> if you prefer, and bindings for
-<a href="http://www.postgresql.org">PostgreSQL</a> are in preparation. Because I am
-currently writing several academic papers about Quanah and QMachine, the &quot;live&quot;
-client for Node.js is on a backburner, and documentation is still forthcoming.</p>
+distributes computations across web browsers using only
+<a href="http://nodejs.org">Node.js</a> and <a href="http://couchdb.apache.org/">Apache CouchDB</a>.
+My only reason for using Node.js is the lack of support for
+<a href="http://www.w3.org/TR/cors/">CORS</a> in CouchDB, which is otherwise completely
+sufficient by itself to implement the QMachine API; the silver lining here,
+however, is that the CORS-enabled proxy I wrote with Node.js can then be bound
+to other databases like <a href="http://www.sqlite.org">SQLite</a> and
+<a href="http://www.postgresql.org">PostgreSQL</a>. Note, however, that the SQLite
+implementation is still experimental and that the PostgreSQL bindings are still
+in preparation. Because I am currently writing several academic papers about
+Quanah and QMachine, the Node.js client may be out-of-date.</p>
+
+<p>As in all my projects, the best documentation is contained inline as comments
+within the source code. I have written some tutorials recently, but those are
+very low priority until the papers are completed.</p>
 
 <p>There are several &quot;mirrors&quot; available on
 <a href="https://bitbucket.org/wilkinson/qmachine">Bitbucket</a>,
