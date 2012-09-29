@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- db.js ~~
-//                                                      ~~ (c) SRW, 26 Sep 2012
+//                                                      ~~ (c) SRW, 28 Sep 2012
 
 (function () {
     'use strict';
@@ -100,7 +100,7 @@
                     headers: {
                         'Content-Type': 'text/plain'
                     },
-                    body: newDoc._id
+                    body: 'Hooray!'
                 }];
             }
             for (key in newDoc) {
@@ -112,7 +112,7 @@
                 headers: {
                     'Content-Type': 'text/plain'
                 },
-                body: doc._id
+                body: 'Hooray!'
             };
             return [doc, response];
         }
