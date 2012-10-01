@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 23 Sep 2012
+#                                                       ~~ (c) SRW, 01 Oct 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -43,7 +43,7 @@ VAR_DIR         :=  $(PROJ_ROOT)/var
 HEROKU_APP      :=  qmachine
 LOCAL_COUCH     :=  http://localhost:5984
 LOCAL_NODE      :=  http://localhost:8177
-MOTHERSHIP      :=  https://qmachine.herokuapp.com
+MOTHERSHIP      :=  https://$(strip $(HEROKU_APP)).herokuapp.com
 PLISTS          :=  $(addprefix $(VAR_DIR)/com.QM., couchdb.plist nodejs.plist)
 
 .PHONY: all clean clobber distclean help reset
