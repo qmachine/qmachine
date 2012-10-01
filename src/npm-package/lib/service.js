@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- service.js ~~
-//                                                      ~~ (c) SRW, 26 Sep 2012
+//                                                      ~~ (c) SRW, 01 Oct 2012
 
 (function () {
     'use strict';
@@ -54,6 +54,7 @@
             max_sockets:    500,
             max_workers:    os.cpus().length,
             port:           80,
+            postgres:       'postgres://localhost:5432/' + process.env.USER,
             storage:        'couchdb'
         });
         defs = require('./defs-' + config.storage);
