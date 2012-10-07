@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- server.js ~~
-//                                                      ~~ (c) SRW, 28 Sep 2012
+//                                                      ~~ (c) SRW, 06 Oct 2012
 
 (function () {
     'use strict';
@@ -27,13 +27,14 @@
 
  // Invocations
 
-    if (process.env.CLOUDANT_URL !== undefined) {
+    if (process.env.COUCHDB_URL !== undefined) {
+     // This is my own environment variable that I use with Heroku and AppFog.
+        config.couch = process.env.COUCHDB_URL;
+    } else if (process.env.CLOUDANT_URL !== undefined) {
      // This is for use with Heroku.
         config.couch = process.env.CLOUDANT_URL;
-    }
-
-    if (process.env.DATABASE_URL !== undefined) {
-     // This is for use with Heroku.
+    } else if (process.env.DATABASE_URL !== undefined) {
+     // This is for use with the Heroku PostgreSQL service.
         config.postgres = process.env.DATABASE_URL;
     }
 
