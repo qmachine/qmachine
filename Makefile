@@ -12,7 +12,7 @@
 #
 #       ... Node Package Manager (NPM) using directions from https://npmjs.org.
 #
-#       ... Kanso by typing
+#       ... Kanso (if you want to use the CouchDB backend) by typing
 #           $ npm install -g kanso
 #
 #       ... as many of the optional dependencies as you desire by typing
@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 01 Oct 2012
+#                                                       ~~ (c) SRW, 10 Oct 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -109,6 +109,7 @@ browser-client:                                                             \
         apple-touch-startup-image-1496x2048.png                             \
         cache.manifest                                                      \
         favicon.ico                                                         \
+        fluidicon.png                                                       \
         giant-favicon.ico                                                   \
         homepage.js                                                         \
         ie.js                                                               \
@@ -345,10 +346,11 @@ $(ICONS_DIR):
         facebook-16x16.png                                                  \
         facebook-75x75.png                                                  \
         favicon.ico                                                         \
-        icon-128.png                                                        \
+        fluidicon.png                                                       \
         giant-favicon.ico                                                   \
         google-apps-header.png                                              \
         googlecode.png                                                      \
+        icon-128.png                                                        \
         large-app-icon.png                                                  \
         qr.png                                                              \
     )
@@ -404,6 +406,9 @@ $(ICONS_DIR)/facebook-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 
 $(ICONS_DIR)/favicon.ico: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, $<, -compress Zip -resize 16x16)
+
+$(ICONS_DIR)/fluidicon.png: $(ICONS_DIR)/icon-512.png | $(ICONS_DIR)
+	@   $(CP) $< $@ 
 
 $(ICONS_DIR)/giant-favicon.ico: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, , $<,                               \

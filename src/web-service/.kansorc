@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- .kansorc ~~
-//                                                      ~~ (c) SRW, 12 Sep 2012
+//                                                      ~~ (c) SRW, 10 Oct 2012
 
 (function () {
     'use strict';
@@ -10,20 +10,34 @@
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
- // Out-of-scope definitions
+ // Declarations
 
-    console.log('CLOUDANT_URL:', process.env.CLOUDANT_URL);
+    var couch;
+
+ // Definitions
+
+    if (process.env.COUCHDB_URL !== undefined) {
+        couch = process.env.COUCHDB_URL;
+    } else if (process.env.CLOUDANT_URL !== undefined) {
+        couch = process.env.CLOUDANT_URL;
+    } else if (process.env.DATABASE_URL !== undefined) {
+        couch = process.env.DATABASE_URL;
+    } else {
+        couch = 'http://localhost:5984';
+    }
+
+ // Out-of-scope definitions
 
     exports.env = {
         db: {
-            db: (process.env.CLOUDANT_URL || 'http://localhost:5984') + '/db',
+            db: couch + '/db',
             minify: true,
             overrides: {
                 load: 'couchdb-apps/db'
             }
         },
         www: {
-            db: (process.env.CLOUDANT_URL || 'http://localhost:5984') + '/www',
+            db: couch + '/www',
             minify: true,
             overrides: {
                 attachments: ['public_html'],
