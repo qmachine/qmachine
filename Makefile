@@ -131,7 +131,7 @@ chrome-hosted-app:                                                          \
 
 local-sandbox:
 	@   $(MAKE)                                                         \
-                CLOUDANT_URL="$(strip $(LOCAL_COUCH))"                      \
+                COUCHDB_URL="$(strip $(LOCAL_COUCH))"                       \
                 MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
                     $(PLISTS)                                               \
                     $(VAR_DIR)/couchdb.ini                                  \
@@ -144,8 +144,8 @@ local-sandbox:
                 $(LAUNCHCTL) load -w $${each}                           ;   \
             done                                                        ;   \
             $(CD) $(BUILD_DIR)/web-service                              ;   \
-            CLOUDANT_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push db     ;   \
-            CLOUDANT_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push www    ;   \
+            COUCHDB_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push db      ;   \
+            COUCHDB_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push www     ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
                 $(call open-in-browser, $(strip $(LOCAL_NODE)))         ;   \
@@ -246,12 +246,12 @@ $(BUILD_DIR)/web-service/.gitignore:                                        \
 $(BUILD_DIR)/web-service/packages:                                          \
     $(BUILD_DIR)/web-service/kanso.json                                     \
     |   $(BUILD_DIR)/web-service
-	@   TMPURL="$(strip $(CLOUDANT_URL))"                           ;   \
+	@   TMPURL="$(strip $(COUCHDB_URL))"                            ;   \
             if [ "$${TMPURL}" = "" ]; then                                  \
                 TMPURL="$(strip $(shell $(HEROKU) config:get                \
-                    CLOUDANT_URL --app $(HEROKU_APP)))"                 ;   \
+                    COUCHDB_URL --app $(HEROKU_APP)))"                  ;   \
             fi                                                          ;   \
-            CLOUDANT_URL="$${TMPURL}" $(KANSO) install $(BUILD_DIR)/web-service
+            COUCHDB_URL="$${TMPURL}" $(KANSO) install $(BUILD_DIR)/web-service
 
 $(BUILD_DIR)/web-service/public_html: browser-client | $(BUILD_DIR)/web-service
 	@   $(CP) $(BUILD_DIR)/browser-client/ $@
