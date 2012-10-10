@@ -4,7 +4,7 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": ">= 0.1.6"
+        "qm": ">= 0.1.10"
     },
     "devDependencies": {},
     "engines": {
