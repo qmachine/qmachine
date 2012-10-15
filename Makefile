@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 10 Oct 2012
+#                                                       ~~ (c) SRW, 15 Oct 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -387,8 +387,13 @@ $(ICONS_DIR)/bitbucket.jpg: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -alpha remove                                               \
                 -alpha off                                                  \
                 -density 96                                                 \
-                -resize 35x35                                               \
+                -resize 112x112                                             \
                 -quality 100                                                \
+                -gravity center                                             \
+                -extent 128x128                                             \
+                -background white                                           \
+                -alpha remove                                               \
+                -alpha off                                                  \
             )
 
 $(ICONS_DIR)/dropbox-%.png: $(ICONS_DIR)/icon-%.png | $(ICONS_DIR)
