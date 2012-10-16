@@ -16,12 +16,12 @@
         configurable, constructor, createElement, def, defineProperty,
         document, done, enumerable, epitaph, exit, f, fail, floor, get,
         getElementsByTagName, global, hasOwnProperty, head, host,
-        importScripts, key, length, lib, location, map, navigator, onerror,
-        onload, onready, onreadystatechange, open, parse, ply, protocol,
-        prototype, push, random, readyState, reduce, remote_call, responseText,
-        retrieve, revive, secret, send, set, shelf, splice, src, status, stay,
-        stringify, test, toString, using, val, value, volunteer, when,
-        withCredentials, writable, x, y
+        importScripts, key, length, lib, loadScript, location, map, navigator,
+        onerror, onload, onready, onreadystatechange, open, parse, ply,
+        protocol, prototype, push, random, readyState, reduce, remote_call,
+        responseText, retrieve, revive, secret, send, set, shelf, splice, src,
+        status, stay, stringify, test, toString, using, val, value, volunteer,
+        when, withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -38,9 +38,9 @@
  // Declarations
 
     var Q, ajax, avar, capture, isBrowser, isFunction, isWebWorker, jobs, lib,
-        map, mothership, origin, ply, read, reduce, remote_call, retrieve,
-        shallow_copy, state, update_local, update_remote, volunteer, when,
-        write;
+        loadScript, map, mothership, origin, ply, read, reduce, remote_call,
+        retrieve, shallow_copy, state, update_local, update_remote, volunteer,
+        when, write;
 
  // Definitions
 
@@ -200,6 +200,28 @@
             };
         }
         return y;
+    };
+
+    loadScript = function (url, callback) {
+     // This function loads external JavaScript files using the usual callback
+     // idioms to which most JavaScripters are accustomed / addicted ;-)
+        if (isFunction(callback) === false) {
+            callback = function (err) {
+             // This function demonstrates the expected "signature" and also
+             // serves as a fallback when the user omits a `callback`.
+                return;
+            };
+        }
+        lib(url).Q(function (evt) {
+         // This function only runs if the script loaded successfully.
+            callback(null);
+            return evt.exit();
+        }).onerror = function (message) {
+         // This function only runs if the script failed to load.
+            callback(message);
+            return;
+        };
+        return;
     };
 
     map = function (f) {
@@ -752,11 +774,12 @@
     (function () {
      // Here, we add some static methods to `QM` that make QMachine a little
      // more convenient to use ...
-        var key, template;
+        var template;
         template = {
             avar:       avar,
             capture:    capture,
             lib:        lib,
+            loadScript: loadScript,
             map:        map,
             ply:        ply,
             reduce:     reduce,
@@ -765,20 +788,20 @@
             volunteer:  volunteer,
             when:       when
         };
-        for (key in template) {
-            if (template.hasOwnProperty(key)) {
-                if (global.QM.hasOwnProperty(key) === false) {
-                    Object.defineProperty(global.QM, key, {
-                     // NOTE: I commented out two of the next three lines
-                     // because their values match the ES5.1 default values.
-                        //configurable: false,
-                        enumerable: true,
-                        //writable: false,
-                        value: template[key]
-                    });
-                }
+        ply(template).by(function (key, val) {
+         // This function needs documentation.
+            if (global.QM.hasOwnProperty(key) === false) {
+                Object.defineProperty(global.QM, key, {
+                 // NOTE: I commented out two of the next three lines
+                 // because their values match the ES5.1 default values.
+                    //configurable: false,
+                    enumerable: true,
+                    //writable: false,
+                    value: val
+                });
             }
-        }
+            return;
+        });
         return;
     }());
 
