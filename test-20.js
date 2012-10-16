@@ -8,7 +8,7 @@
 //  "testing". After this program runs, both volunteers should be polling the
 //  queue for "testing" :-)
 //
-//                                                      ~~ (c) SRW, 22 Sep 2012
+//                                                      ~~ (c) SRW, 15 Oct 2012
 
 (function () {
     'use strict';
@@ -31,7 +31,7 @@
         temp.onready = function (evt) {
          // This function runs remotely in the "botnet" queue but switches a
          // volunteer's default `box` value and thereby abducts its resources.
-            this.Q.box = 'testing';
+            this.QM.box = 'testing';
             return evt.exit();
         };
         temp.onready = function (temp_evt) {
