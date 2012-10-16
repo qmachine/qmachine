@@ -20,7 +20,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 26 Sep 2012
+//                                                  ~~ last updated 15 Oct 2012
 
 (function (global) {
     'use strict';
@@ -32,10 +32,10 @@
     /*global jQuery: false */
 
     /*properties
-        Q, blur, box, call, click, console, document, error, exit, getItem,
+        Q, QM, blur, box, call, click, console, document, error, exit, getItem,
         global, hasOwnProperty, is, jQuery, join, key, keydown, localStorage,
-        log, onerror, onready, preventDefault, prototype, ready, setItem,
-        setTimeout, stay, val, value, volunteer, which
+        log, onerror, onready, preventDefault, prototype, ready, revive,
+        setItem, setTimeout, stay, val, value, volunteer, which
     */
 
  // Prerequisites
@@ -44,19 +44,23 @@
         throw new Error('jQuery is missing.');
     }
 
+    if (global.hasOwnProperty('QM') === false) {
+        throw new Error('QMachine is missing.');
+    }
+
     if (Object.prototype.hasOwnProperty('Q') === false) {
         throw new Error('Method Q is missing.');
     }
 
  // Declarations
 
-    var $, Q, detect, isFunction, jserr, jsout, volunteer;
+    var $, QM, detect, isFunction, jserr, jsout, volunteer;
 
  // Definitions
 
     $ = global.jQuery;
 
-    Q = Object.prototype.Q;
+    QM = global.QM;
 
     detect = function (feature_name) {
      // This function needs documentation.
@@ -104,7 +108,7 @@
         if ($('#QM-volunteer-input').is(':checked') === false) {
             return;
         }
-        var task = Q.volunteer();
+        var task = QM.volunteer();
         task.onerror = function (message) {
          // This function needs documentation.
             if (message === 'Nothing to do ...') {
@@ -132,13 +136,13 @@
         if (detect('localStorage')) {
          // Here, we load a user's previous settings if they are available.
             if (global.localStorage.hasOwnProperty('QM_box')) {
-                Q.box = global.localStorage.getItem('QM_box');
+                QM.box = global.localStorage.getItem('QM_box');
             }
         }
         $('#QM-box-input').blur(function () {
          // This function needs documentation.
-            Q.box = this.value;
-            Q.avar().revive();
+            QM.box = this.value;
+            QM.revive();
             return;
         }).keydown(function (evt) {
          // This function needs documentation.
@@ -151,15 +155,15 @@
          // This function synchronizes the jQuery object that represents the
          // input element directly with QM's `box` property using Quanah's own
          // event loop. Thankfully, this function won't distribute to another
-         // machine because it closes over `Q.box` :-)
+         // machine because it closes over `QM.box` :-)
             if (this.val.is(':focus') === false) {
-                this.val.val(Q.box);
+                this.val.val(QM.box);
             }
             if (detect('localStorage')) {
              // We assume here that HTML5 localStorage has not been tampered
              // with. Super-secure code isn't necessary here because the value
-             // of `Q.box` is already publicly available anyway.
-                global.localStorage.setItem('QM_box', Q.box);
+             // of `QM.box` is already publicly available anyway.
+                global.localStorage.setItem('QM_box', QM.box);
             }
             return evt.stay('This task repeats indefinitely.');
         });

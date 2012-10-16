@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 25 Sep 2012
+//                                                      ~~ (c) SRW, 15 Oct 2012
 
 (function (global) {
     'use strict';
@@ -11,8 +11,8 @@
     /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        ActiveXObject, Q, XDomainRequest, XMLHttpRequest, appendChild, apply,
-        areready, avar, body, box, by, call, capture, comm, concat,
+        ActiveXObject, Q, QM, XDomainRequest, XMLHttpRequest, appendChild,
+        apply, areready, avar, body, box, by, call, capture, comm, concat,
         configurable, constructor, createElement, def, defineProperty,
         document, done, enumerable, epitaph, exit, f, fail, floor, get,
         getElementsByTagName, global, hasOwnProperty, head, host,
@@ -20,11 +20,16 @@
         onload, onready, onreadystatechange, open, parse, ply, protocol,
         prototype, push, random, readyState, reduce, remote_call, responseText,
         retrieve, revive, secret, send, set, shelf, splice, src, status, stay,
-        stringify, toString, using, val, value, volunteer, when,
+        stringify, test, toString, using, val, value, volunteer, when,
         withCredentials, writable, x, y
     */
 
  // Prerequisites
+
+    if (global.hasOwnProperty('QM')) {
+     // Exit early if the object already exists.
+        return;
+    }
 
     if (Object.prototype.hasOwnProperty('Q') === false) {
         throw new Error('Method Q is missing.');
@@ -466,7 +471,7 @@
      // resources itself. Examples will be included in the distribution that
      // will accompany the upcoming publication(s).
         if (box === undefined) {
-            box = Q.box;
+            box = global.QM.box;
         }
         var task = avar({box: box});
         task.onready = function (evt) {
@@ -683,55 +688,69 @@
 
  // Prototype definitions
 
-    // (see next section)
+    Object.defineProperty(avar().constructor.prototype, 'box', {
+     // This definition adds a `box` property to Quanah's avars as a means to
+     // enable QMachine's per-instance queueing system. The other necessary
+     // component is the `QM.box` definition a little further down.
+        configurable: true,
+        enumerable: false,
+        get: function () {
+         // This function needs documentation.
+            return state.box;
+        },
+        set: function (x) {
+         // This function needs documentation.
+            if (typeof x !== 'string') {
+                throw new TypeError('`box` property must be a string.');
+            }
+            if ((/^[A-z0-9_\-]+$/).test(x) === false) {
+                throw new Error('Invalid assignment to `box`: ' + x);
+            }
+            Object.defineProperty(this, 'box', {
+                configurable: true,
+                enumerable: true,
+                writable: true,
+                value: x
+            });
+            return;
+        }
+    });
 
  // Out-of-scope definitions
 
-    if (Q.hasOwnProperty('box') === false) {
+    Object.defineProperty(global, 'QM', {
+     // This creates the "namespace" for QMachine.
+        configurable: false,
+        enumerable: true,
+        writable: false,
+        value: {}
+    });
+
+    Object.defineProperty(global.QM, 'box', {
      // Here, we enable users to send jobs to different "boxes" by labeling
      // the avars on a per-case basis, rather than on a session-level basis.
      // More explanation will be included in the upcoming paper :-)
-        Object.defineProperty(Q, 'box', {
-            configurable: false,
-            enumerable: true,
-            get: function () {
-             // This function needs documentation.
-                return state.box;
-            },
-            set: function (x) {
-             // This function needs documentation.
-                if (typeof x !== 'string') {
-                    throw new TypeError('`Q.box` must be a string.');
-                }
-                state.box = x.toString();
-                return;
+        configurable: false,
+        enumerable: true,
+        get: function () {
+         // This function needs documentation.
+            return state.box;
+        },
+        set: function (x) {
+         // This function needs documentation.
+            if (typeof x !== 'string') {
+                throw new TypeError('`QM.box` must be a string.');
             }
-        });
-        Object.defineProperty(avar().constructor.prototype, 'box', {
-            configurable: true,
-            enumerable: false,
-            get: function () {
-             // This function needs documentation.
-                return state.box;
-            },
-            set: function (x) {
-             // This function needs documentation.
-                if (typeof x !== 'string') {
-                    throw new TypeError('`box` property must be a string.');
-                }
-                Object.defineProperty(this, 'box', {
-                    configurable: true,
-                    enumerable: true,
-                    writable: true,
-                    value: x.toString()
-                });
-                return;
+            if ((/^[A-z0-9_\-]+$/).test(x) === false) {
+                throw new Error('Invalid assignment to `QM.box`: ' + x);
             }
-        });
-    }
+            state.box = x.toString();
+            return;
+        }
+    });
 
     (function () {
-     // Here, we add some static methods to Q that make QMachine a little
+     // Here, we add some static methods to `QM` that make QMachine a little
      // more convenient to use ...
         var key, template;
         template = {
@@ -739,13 +758,14 @@
             lib:        lib,
             map:        map,
             reduce:     reduce,
+            revive:     avar().revive,
             retrieve:   retrieve,
             volunteer:  volunteer
         };
         for (key in template) {
             if (template.hasOwnProperty(key)) {
-                if (Q.hasOwnProperty(key) === false) {
-                    Object.defineProperty(Q, key, {
+                if (global.QM.hasOwnProperty(key) === false) {
+                    Object.defineProperty(global.QM, key, {
                      // NOTE: I commented out two of the next three lines
                      // because their values match the ES5.1 default values.
                         //configurable: false,
@@ -759,9 +779,7 @@
         return;
     }());
 
-    Q.def({
-        remote_call: remote_call
-    });
+    Q.def({remote_call: remote_call});
 
  // That's all, folks!
 
