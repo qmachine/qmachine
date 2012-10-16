@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- volunteer.js ~~
-//                                                      ~~ (c) SRW, 22 Sep 2012
+//                                                      ~~ (c) SRW, 15 Oct 2012
 
 (function (global) {
     'use strict';
@@ -12,21 +12,25 @@
 
  // Prerequisites
 
+    if (global.hasOwnProperty('QM') === false) {
+        throw new Error('QMachine is missing.');
+    }
+
     if (Object.prototype.hasOwnProperty('Q') === false) {
         throw new Error('Method Q is missing.');
     }
 
  // Declarations
 
-    var Q, avar, load_script, oops, puts;
+    var QM, avar, load_script, oops, puts;
 
  // Definitions
 
-    Q = Object.prototype.Q;
+    QM = global.QM;
 
-    avar = Q.avar;
+    avar = Object.prototype.Q.avar;
 
-    load_script = Q.lib;
+    load_script = QM.lib;
 
     oops = function () {
      // This function needs documentation.
@@ -44,7 +48,7 @@
 
     global.onload = function () {
      // This function needs documentation.
-        Q.box = 'testing';
+        QM.box = 'testing';
         var volunteer;
         volunteer = function () {
          // This function needs documentation.
@@ -66,7 +70,7 @@
                     global.location.search = 'testing';
                 }
              */
-                var task = Q.volunteer();
+                var task = QM.volunteer();
                 task.onerror = function (message) {
                  // This function needs documentation.
                     return evt.fail(message);
@@ -74,7 +78,7 @@
                 task.onready = function (task_evt) {
                  // This function needs documentation.
                     puts(JSON.stringify({
-                        curr:   Q.box,
+                        curr:   QM.box,
                         date:   new Date(),
                         task:   task
                     }, undefined, 4));

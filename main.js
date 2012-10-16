@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- main.js ~~
-//                                                      ~~ (c) SRW, 22 Sep 2012
+//                                                      ~~ (c) SRW, 15 Oct 2012
 
 (function (global) {
     'use strict';
@@ -12,21 +12,27 @@
 
  // Prerequisites
 
+    if (global.hasOwnProperty('QM') === false) {
+        throw new Error('QMachine is missing.');
+    }
+
     if (Object.prototype.hasOwnProperty('Q') === false) {
         throw new Error('Method Q is missing.');
     }
 
  // Declarations
 
-    var Q, avar, load_script, oops, puts;
+    var Q, QM, avar, load_script, oops, puts;
 
  // Definitions
 
     Q = Object.prototype.Q;
 
+    QM = global.QM;
+
     avar = Q.avar;
 
-    load_script = Q.lib;
+    load_script = QM.lib;
 
     oops = function () {
      // This function needs documentation.
