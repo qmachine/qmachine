@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 15 Oct 2012
+//                                                      ~~ (c) SRW, 16 Oct 2012
 
 (function (global) {
     'use strict';
@@ -754,13 +754,16 @@
      // more convenient to use ...
         var key, template;
         template = {
+            avar:       avar,
             capture:    capture,
             lib:        lib,
             map:        map,
+            ply:        ply,
             reduce:     reduce,
             revive:     avar().revive,
             retrieve:   retrieve,
-            volunteer:  volunteer
+            volunteer:  volunteer,
+            when:       when
         };
         for (key in template) {
             if (template.hasOwnProperty(key)) {
