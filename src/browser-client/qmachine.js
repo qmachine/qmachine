@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 16 Oct 2012
+//                                                      ~~ (c) SRW, 18 Oct 2012
 
 (function (global) {
     'use strict';
@@ -16,12 +16,13 @@
         configurable, constructor, createElement, def, defineProperty,
         document, done, enumerable, epitaph, exit, f, fail, floor, get,
         getElementsByTagName, global, hasOwnProperty, head, host,
-        importScripts, key, length, lib, loadScript, location, map, navigator,
-        onerror, onload, onready, onreadystatechange, open, parse, ply,
-        protocol, prototype, push, random, readyState, reduce, remote_call,
-        responseText, retrieve, revive, secret, send, set, shelf, splice, src,
-        status, stay, stringify, test, toString, using, val, value, volunteer,
-        when, withCredentials, writable, x, y
+        importScripts, join, key, length, lib, load_data, load_script,
+        location, map, navigator, onerror, onload, onready, onreadystatechange,
+        open, parse, ply, protocol, prototype, push, query, random, readyState,
+        reduce, remote_call, responseText, result, results, retrieve, revive,
+        secret, send, set, shelf, splice, src, status, stay, stringify, test,
+        toString, using, val, value, volunteer, when, withCredentials,
+        writable, x, y
     */
 
  // Prerequisites
@@ -38,9 +39,9 @@
  // Declarations
 
     var Q, ajax, avar, capture, isBrowser, isFunction, isWebWorker, jobs, lib,
-        loadScript, map, mothership, origin, ply, read, reduce, remote_call,
-        retrieve, shallow_copy, state, update_local, update_remote, volunteer,
-        when, write;
+        load_data, load_script, map, mothership, origin, ply, read, reduce,
+        remote_call, retrieve, shallow_copy, state, update_local,
+        update_remote, volunteer, when, write;
 
  // Definitions
 
@@ -202,7 +203,52 @@
         return y;
     };
 
-    loadScript = function (url, callback) {
+    load_data = function (url, callback) {
+     // This function needs documentation.
+        var y = avar();
+        y.onerror = function (message) {
+         // This function needs documentation.
+            if (isFunction(callback)) {
+                callback(message, undefined);
+            }
+            return;
+        };
+        y.onready = function (evt) {
+         // This function uses Yahoo Query Language (YQL) as a cross-domain
+         // proxy for retrieving text files. Binary file types probably won't
+         // work very well at the moment, but I'll tweak the Open Data Table
+         // I created soon to see what can be done toward that end.
+            var base, callback, format, params, query, temp;
+            global.QM.shelf['temp' + y.key] = function (obj) {
+             // This function needs documentation.
+                y.val = obj.query.results.result;
+                delete global.QM.shelf['temp' + y.key];
+                return evt.exit();
+            };
+            base = '//query.yahooapis.com/v1/public/yql?';
+            callback = 'callback=QM.shelf.temp' + y.key;
+            format = 'format=json';
+            query = 'q=' +
+                'USE "http://wilkinson.github.com/qmachine/qm.proxy.xml";' +
+                'SELECT * FROM qm.proxy WHERE url="' + url + '";';
+            temp = lib(base + [callback, format, query].join('&'));
+            temp.onerror = function (message) {
+             // This function needs documentation.
+                return evt.fail(message);
+            };
+            return;
+        };
+        y.onready = function (evt) {
+         // This function needs documentation.
+            if (isFunction(callback)) {
+                callback(null, y.val);
+            }
+            return evt.exit();
+        };
+        return y;
+    };
+
+    load_script = function (url, callback) {
      // This function loads external JavaScript files using the usual callback
      // idioms to which most JavaScripters are accustomed / addicted ;-)
         if (isFunction(callback) === false) {
@@ -212,16 +258,22 @@
                 return;
             };
         }
-        lib(url).Q(function (evt) {
-         // This function only runs if the script loaded successfully.
-            callback(null);
-            return evt.exit();
-        }).onerror = function (message) {
+        var y = lib(url);
+        y.onerror = function (message) {
          // This function only runs if the script failed to load.
-            callback(message);
+            if (isFunction(callback)) {
+                callback(message);
+            }
             return;
         };
-        return;
+        y.onready = function (evt) {
+         // This function only runs if the script loaded successfully.
+            if (isFunction(callback)) {
+                callback(null);
+            }
+            return evt.exit();
+        };
+        return y;
     };
 
     map = function (f) {
@@ -776,17 +828,19 @@
      // more convenient to use ...
         var template;
         template = {
-            avar:       avar,
-            capture:    capture,
-            lib:        lib,
-            loadScript: loadScript,
-            map:        map,
-            ply:        ply,
-            reduce:     reduce,
-            revive:     avar().revive,
-            retrieve:   retrieve,
-            volunteer:  volunteer,
-            when:       when
+            avar:           avar,
+            capture:        capture,
+            lib:            lib,
+            load_data:      load_data,
+            load_script:    load_script,
+            map:            map,
+            ply:            ply,
+            reduce:         reduce,
+            revive:         avar().revive,
+            retrieve:       retrieve,
+            shelf:          {},
+            volunteer:      volunteer,
+            when:           when
         };
         ply(template).by(function (key, val) {
          // This function needs documentation.
