@@ -3,8 +3,16 @@
   <meta>
     <author>Sean Wilkinson</author>
     <description>Returns plain-text resources from URIs</description>
-    <sampleQuery><![CDATA[
+    <sampleQuery description="Bitbucket"><![CDATA[
+      USE "https://bitbucket.org/wilkinson/qmachine/raw/gh-pages/qm.proxy.xml";
+      SELECT * FROM qm.proxy WHERE url="https://qmachine.org/q.js";
+    ]]></sampleQuery>
+    <sampleQuery description="GitHub"><![CDATA[
       USE "http://wilkinson.github.com/qmachine/qm.proxy.xml" AS qm.proxy;
+      SELECT * FROM qm.proxy WHERE url="https://qmachine.org/q.js";
+    ]]></sampleQuery>
+    <sampleQuery description="Google Code"><![CDATA[
+      USE "https://qmachine.googlecode.com/git-history/gh-pages/qm.proxy.xml";
       SELECT * FROM qm.proxy WHERE url="https://qmachine.org/q.js";
     ]]></sampleQuery>
   </meta>
