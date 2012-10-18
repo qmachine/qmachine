@@ -4,14 +4,14 @@
     <author>Sean Wilkinson</author>
     <description>Returns plain-text resources from URIs</description>
     <sampleQuery><![CDATA[
-      USE "http://wilkinson.github.com/qmachine/open-data-table.xml" AS proxy;
-      SELECT * FROM proxy WHERE url="https://qmachine.org/q.js";
+      USE "http://wilkinson.github.com/qmachine/open-data-table.xml" AS web;
+      SELECT * FROM web WHERE url="https://qmachine.org/q.js";
     ]]></sampleQuery>
   </meta>
   <bindings>
-    <select itemPath="" produces="XML">
+    <select itemPath="" produces="JSON">
       <inputs>
-        <key id='url' type='xs:string' paramType='variable' required="true" />
+        <key id="url" type="xs:string" paramType="variable" required="true" />
       </inputs>
       <execute><![CDATA[
         response.object = y.rest(url).get().response.toString();
