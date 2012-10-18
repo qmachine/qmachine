@@ -251,13 +251,6 @@
     load_script = function (url, callback) {
      // This function loads external JavaScript files using the usual callback
      // idioms to which most JavaScripters are accustomed / addicted ;-)
-        if (isFunction(callback) === false) {
-            callback = function (err) {
-             // This function demonstrates the expected "signature" and also
-             // serves as a fallback when the user omits a `callback`.
-                return;
-            };
-        }
         var y = lib(url);
         y.onerror = function (message) {
          // This function only runs if the script failed to load.
