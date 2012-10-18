@@ -4,8 +4,8 @@
     <author>Sean Wilkinson</author>
     <description>Returns plain-text resources from URIs</description>
     <sampleQuery><![CDATA[
-      USE "http://wilkinson.github.com/qmachine/qm.webrw.xml" AS qm.webrw;
-      SELECT * FROM qm.webrw WHERE url="https://qmachine.org/q.js";
+      USE "http://wilkinson.github.com/qmachine/qm.webrw.xml" AS qm.proxy;
+      SELECT * FROM qm.proxy WHERE url="https://qmachine.org/q.js";
     ]]></sampleQuery>
   </meta>
   <bindings>
