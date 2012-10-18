@@ -14,8 +14,8 @@
         ActiveXObject, Q, QM, XDomainRequest, XMLHttpRequest, appendChild,
         apply, areready, avar, body, box, by, call, capture, comm, concat,
         configurable, constructor, createElement, def, defineProperty,
-        document, done, enumerable, epitaph, exit, f, fail, floor, get,
-        getElementsByTagName, global, hasOwnProperty, head, host,
+        diagnostics, document, done, enumerable, epitaph, exit, f, fail, floor,
+        get, getElementsByTagName, global, hasOwnProperty, head, host,
         importScripts, join, key, length, lib, load_data, load_script,
         location, map, navigator, onerror, onload, onready, onreadystatechange,
         open, parse, ply, protocol, prototype, push, query, random, readyState,
@@ -209,7 +209,7 @@
         y.onerror = function (message) {
          // This function needs documentation.
             if (isFunction(callback)) {
-                callback(message, undefined);
+                callback(message, y.val);
             }
             return;
         };
@@ -218,20 +218,24 @@
          // proxy for retrieving text files. Binary file types probably won't
          // work very well at the moment, but I'll tweak the Open Data Table
          // I created soon to see what can be done toward that end.
-            var base, callback, format, params, query, temp;
+            var base, callback, diag, format, params, query, temp;
             global.QM.shelf['temp' + y.key] = function (obj) {
              // This function needs documentation.
+                if (obj.query.results === null) {
+                    return evt.fail(obj.query.diagnostics);
+                }
                 y.val = obj.query.results.result;
                 delete global.QM.shelf['temp' + y.key];
                 return evt.exit();
             };
             base = '//query.yahooapis.com/v1/public/yql?';
+            diag = 'diagnostics=true';
             callback = 'callback=QM.shelf.temp' + y.key;
             format = 'format=json';
             query = 'q=' +
                 'USE "http://wilkinson.github.com/qmachine/qm.proxy.xml";' +
                 'SELECT * FROM qm.proxy WHERE url="' + url + '";';
-            temp = lib(base + [callback, format, query].join('&'));
+            temp = lib(base + [callback, diag, format, query].join('&'));
             temp.onerror = function (message) {
              // This function needs documentation.
                 return evt.fail(message);
