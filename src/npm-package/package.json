@@ -2,7 +2,7 @@
     "author": "Sean Wilkinson",
     "dependencies": {
         "corser": "1.1.1",
-        "quanah": "0.0.6"
+        "quanah": "0.0.7"
     },
     "description": "The World's Most Relaxed Supercomputer",
     "devDependencies": {},
@@ -21,5 +21,5 @@
         "url": "https://github.com/wilkinson/qmachine.git"
     },
     "scripts": {},
-    "version": "0.1.10"
+    "version": "0.1.11"
 }

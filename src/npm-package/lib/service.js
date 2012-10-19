@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- service.js ~~
-//                                                      ~~ (c) SRW, 01 Oct 2012
+//                                                      ~~ (c) SRW, 19 Oct 2012
 
 (function () {
     'use strict';
@@ -51,8 +51,8 @@
                 www:        'http://127.0.0.1:5984/www/_design/app/_rewrite'
             },
             hostname:       'qmachine.org',
+            max_procs:      os.cpus().length,
             max_sockets:    500,
-            max_workers:    os.cpus().length,
             port:           80,
             postgres:       'postgres://localhost:5432/' + process.env.USER,
             storage:        'couchdb'

@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- api.js ~~
-//                                                      ~~ (c) SRW, 16 Sep 2012
+//                                                      ~~ (c) SRW, 19 Oct 2012
 
 (function () {
     'use strict';
@@ -12,7 +12,7 @@
 
  // Declarations
 
-    var API, api, corser, http;
+    var API, api, cluster, corser, http;
 
  // Definitions
 
@@ -27,6 +27,8 @@
      // This function needs documentation.
         return new API(obj);
     };
+
+    cluster = require('cluster');
 
     corser = require('corser');
 
@@ -66,12 +68,63 @@
         if (obj.hasOwnProperty('hostname') === false) {
             throw new Error('No "hostname" property specified.');
         }
+        if (obj.hasOwnProperty('max_procs') === false) {
+            throw new Error('No "max_procs" property specified.');
+        }
+        if (obj.hasOwnProperty('max_sockets') === false) {
+            throw new Error('No "max_sockets" property specified.');
+        }
         if (obj.hasOwnProperty('port') === false) {
             throw new Error('No "port" property specified.');
         }
-        var enable_cors, that;
+        var enable_cors, n, spawn_worker, that;
         enable_cors = corser.create({});
+        n = obj.max_procs;
+        spawn_worker = function () {
+         // This function needs documentation.
+            var worker = cluster.fork();
+            worker.on('error', function (err) {
+             // This function needs documentation.
+                console.error(err);
+                return;
+            });
+            worker.on('message', function (message) {
+             // This function needs documentation.
+                console.log(worker.pid + ':', message.cmd);
+                return;
+            });
+            return worker;
+        };
         that = this;
+        if ((cluster.isMaster) && (n > 1)) {
+         // If this process is the master process, we will launch `max_procs`
+         // worker processes to make sure we're using all of the cores in the
+         // machine. Obviously this would be pretty wasteful if there's only
+         // one core in the machine anyway, which is why we require `n > 1`.
+            if (process.version.slice(0, 4) === 'v0.6') {
+                cluster.on('death', function (prev_worker) {
+                 // This function needs documentation.
+                    var next_worker, output;
+                    next_worker = spawn_worker();
+                    console.log(prev_worker.pid + ':', 'RIP', next_worker.pid);
+                    return;
+                });
+            } else if (process.version.slice(0, 4) === 'v0.8') {
+                cluster.on('exit', function (prev_worker) {
+                 // This function needs documentation.
+                    var next_worker, output;
+                    next_worker = spawn_worker();
+                    console.log(prev_worker.pid + ':', 'RIP', next_worker.pid);
+                    return;
+                });
+            }
+         // Finally, we launch the worker processes :-)
+            while (n > 0) {
+                spawn_worker();
+                n -= 1;
+            }
+            return;
+        }
         that.server = http.createServer(function (req, res) {
          // This function needs documentation.
             enable_cors(req, res, function () {
@@ -98,6 +151,7 @@
             });
             return;
         });
+        http.globalAgent.maxSockets = obj.max_sockets;
         that.server.listen(obj.port, obj.hostname);
         return;
     };
