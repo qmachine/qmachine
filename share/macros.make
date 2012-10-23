@@ -155,7 +155,7 @@ define red-printf
 endef
 
 define replace-iso-date
-    $(SED) -e 's|ISO_DATE|$(shell $(DATE) "+%Y-%m-%d %H:%M:%S")|g' $(1) > $(2)
+    $(SED) -e 's|ISO_DATE|$(shell $(DATE) "+%Y-%m-%d")|g' $(1) > $(2)
 endef
 
 define replace-mothership
