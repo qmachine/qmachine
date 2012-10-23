@@ -9,5 +9,6 @@
 
 User-agent: *
 Disallow: /box/
+Sitemap: MOTHERSHIP/sitemap.xml
 
 #-  vim:set syntax=robots:

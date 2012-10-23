@@ -117,6 +117,7 @@ browser-client:                                                             \
         q.js                                                                \
         q-min.js                                                            \
         robots.txt                                                          \
+        sitemap.xml                                                         \
         style-min.css                                                       \
     )
 	@   $(call hilite, 'Created $@.')
@@ -316,7 +317,12 @@ $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
             $(call download-url, "$${SEANHUB}/quanah/master/src/quanah.js")
 
 $(CACHE_DIR)/robots.txt: $(SRC_DIR)/browser-client/robots.txt | $(CACHE_DIR)
-	@   $(CP) $< $@
+	@   $(call replace-mothership, $<, $@)
+
+$(CACHE_DIR)/sitemap.xml: $(SRC_DIR)/browser-client/sitemap.xml | $(CACHE_DIR)
+	@   $(call replace-iso-date, $<, $@-temp)                       ;   \
+            $(call replace-mothership, $@-temp, $@)                     ;   \
+            $(RM) $@-temp
 
 $(CACHE_DIR)/style.css: $(SRC_DIR)/browser-client/style.css | $(CACHE_DIR)
 	@   $(CP) $< $@

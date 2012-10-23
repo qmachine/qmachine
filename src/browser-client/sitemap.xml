@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    sitemap.xml ~~
+
+    For more information, see http://en.wikipedia.org/wiki/Sitemaps .
+
+                                                        ~~ (c) SRW, 22 Oct 2012
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>MOTHERSHIP/</loc>
+    <lastmod>ISO_DATE</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

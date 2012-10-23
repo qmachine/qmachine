@@ -9,7 +9,7 @@
 #
 #   NOTE: Documentation has been removed but will be added again later (maybe).
 #
-#                                                       ~~ (c) SRW, 22 Sep 2012
+#                                                       ~~ (c) SRW, 22 Oct 2012
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -139,7 +139,7 @@ endef
 
 define open-in-browser
     $(strip $(foreach page, $(1),                                           \
-        browser="$(call contingent, \
+        browser="$(call contingent,                                         \
             gnome-www-browser gnome-open x-www-browser open)"           ;   \
         $(if $(filter http%,$(page)),                                       \
             $${browser} $(page),                                            \
@@ -152,6 +152,10 @@ endef
 
 define red-printf
     printf '\033[1;31m'$(strip $(1))'\033[1;0m' $(strip $(2))
+endef
+
+define replace-iso-date
+    $(SED) -e 's|ISO_DATE|$(shell $(DATE) "+%Y-%m-%d %H:%M:%S")|g' $(1) > $(2)
 endef
 
 define replace-mothership
