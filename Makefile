@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 15 Oct 2012
+#                                                       ~~ (c) SRW, 22 Oct 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -170,6 +170,7 @@ web-service:                                                                \
         Procfile                                                            \
         public_html/                                                        \
         server.js                                                           \
+        .slugignore                                                         \
     )
 	@   $(call hilite, 'Created $@.')
 

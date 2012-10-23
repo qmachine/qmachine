@@ -2,13 +2,14 @@
 
 #-  .slugignore ~~
 #
-#   Read the documentation online at
-#       https://devcenter.heroku.com/articles/slug-compiler .
+#   See Heroku's documentation online at
+#       https://devcenter.heroku.com/articles/slug-compiler
 #
 #                                                       ~~ (c) SRW, 22 Oct 2012
 
-.kansorc
+couchdb-apps/
 deploy.sh
+.kansorc
 kanso.json
 packages/
 public_html/
