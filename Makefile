@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 22 Oct 2012
+#                                                       ~~ (c) SRW, 23 Oct 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -284,12 +284,10 @@ $(CACHE_DIR)/jquery.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://code.jquery.com/jquery-latest.js")
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
-	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
-            $(call download-url, "$${CROCKHUB}/JSLint/master/jslint.js")
+	@   $(call download-url, "http://git.io/6pCWog")
 
 $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
-	@   CROCKHUB="https://raw.github.com/douglascrockford"          ;   \
-            $(call download-url, "$${CROCKHUB}/JSON-js/master/json2.js")
+	@   $(call download-url, "http://git.io/aClKMA")
 
 $(CACHE_DIR)/main.js: $(SRC_DIR)/browser-client/main.js | $(CACHE_DIR)
 	@   $(call replace-mothership, $<, $@)
@@ -313,8 +311,7 @@ $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
 	@   $(call replace-mothership, $<, $@)
 
 $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
-	@   SEANHUB="https://raw.github.com/wilkinson"                  ;   \
-            $(call download-url, "$${SEANHUB}/quanah/master/src/quanah.js")
+	@   $(call download-url, "http://git.io/5rxl6Q")
 
 $(CACHE_DIR)/robots.txt: $(SRC_DIR)/browser-client/robots.txt | $(CACHE_DIR)
 	@   $(call replace-mothership, $<, $@)
