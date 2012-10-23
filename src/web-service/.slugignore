@@ -1,0 +1,16 @@
+#-  Heroku "slug compiler" configuration file
+
+#-  .slugignore ~~
+#
+#   Read the documentation online at
+#       https://devcenter.heroku.com/articles/slug-compiler .
+#
+#                                                       ~~ (c) SRW, 22 Oct 2012
+
+.kansorc
+deploy.sh
+kanso.json
+packages/
+public_html/
+
+#-  vim:set syntax=gitconfig:
