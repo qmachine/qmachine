@@ -1,2 +1,13 @@
+#-  Robots exclusion standard configuration file
+
+#-  robots.txt ~~
+#
+#   For more information, see the article on Wikipedia at
+#       http://en.wikipedia.org/wiki/Robots_exclusion_standard .
+#
+#                                                       ~~ (c) SRW, 22 Oct 2012
+
 User-agent: *
 Disallow: /box/
+
+#-  vim:set syntax=robots:
