@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- db.js ~~
-//                                                      ~~ (c) SRW, 28 Sep 2012
+//                                                      ~~ (c) SRW, 23 Oct 2012
 
 (function () {
     'use strict';
@@ -127,7 +127,12 @@
      //     and they have the opportunity to block not only end user document
      //     saves, but also replicated documents from other nodes.
      //
-     // if (userCtx.roles.indexOf('_admin') !== -1) { return true; }
+     /*
+        if (userCtx.roles.indexOf('_admin') !== -1) {
+         // This part is still experimental ...
+            return;
+        }
+     */
         if ((oldDoc === null) || (newDoc._deleted === true)) {
             return;
         }

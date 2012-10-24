@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 18 Oct 2012
+//                                                      ~~ (c) SRW, 23 Oct 2012
 
 (function (global) {
     'use strict';
@@ -621,6 +621,13 @@
              // returning lots of error messages on his or her screen, such a
              // situation can also wreak all kinds of havoc for reentrancy.
                 var temp_f, temp_x;
+                if (message === 409) {
+                 // If we get `409` as an error message, it is most likely to
+                 // be because the server has already received a result for
+                 // this task from some other volunteer and thus that we have
+                 // received a `409` HTTP status code for an update conflict.
+                    return evt.fail('Results were already submitted.');
+                }
                 if (first) {
                     first = false;
                     task.val.epitaph = message;
