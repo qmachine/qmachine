@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 23 Oct 2012
+//                                                      ~~ (c) SRW, 29 Oct 2012
 
 (function (global) {
     'use strict';
@@ -782,7 +782,7 @@
                 throw new TypeError('`box` property must be a string.');
             }
             if ((/^[A-z0-9_\-]+$/).test(x) === false) {
-                throw new Error('Invalid assignment to `box`: ' + x);
+                throw new Error('Invalid assignment to `box`: "' + x + '"');
             }
             Object.defineProperty(this, 'box', {
                 configurable: true,
@@ -820,7 +820,7 @@
                 throw new TypeError('`QM.box` must be a string.');
             }
             if ((/^[A-z0-9_\-]+$/).test(x) === false) {
-                throw new Error('Invalid assignment to `QM.box`: ' + x);
+                throw new Error('Invalid assignment to `QM.box`: "' + x + '"');
             }
             state.box = x.toString();
             return;

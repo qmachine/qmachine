@@ -20,7 +20,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 15 Oct 2012
+//                                                  ~~ last updated 29 Oct 2012
 
 (function (global) {
     'use strict';
@@ -32,10 +32,10 @@
     /*global jQuery: false */
 
     /*properties
-        Q, QM, blur, box, call, click, console, document, error, exit, getItem,
-        global, hasOwnProperty, is, jQuery, join, key, keydown, localStorage,
-        log, onerror, onready, preventDefault, prototype, ready, revive,
-        setItem, setTimeout, stay, val, value, volunteer, which
+        Q, QM, alert, blur, box, call, click, console, document, error, exit,
+        getItem, global, hasOwnProperty, is, jQuery, join, key, keydown,
+        localStorage, log, onerror, onready, preventDefault, prototype, ready,
+        revive, setItem, setTimeout, stay, val, value, volunteer, which
     */
 
  // Prerequisites
@@ -141,7 +141,13 @@
         }
         $('#QM-box-input').blur(function () {
          // This function needs documentation.
-            QM.box = this.value;
+            try {
+                QM.box = this.value;
+            } catch (err) {
+             // This part doesn't work well in web workers, but they're not a
+             // huge priority right now ...
+                global.alert(err);
+            }
             QM.revive();
             return;
         }).keydown(function (evt) {

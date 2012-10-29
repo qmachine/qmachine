@@ -1,7 +1,7 @@
 /*- CSS style sheet */
 
 /*- style.css ~~
- *                                                      ~~ (c) SRW, 16 Aug 2012
+ *                                                      ~~ (c) SRW, 29 Oct 2012
  */
 
 @media all {
@@ -29,6 +29,10 @@
     html {
      /* This snippet makes text look nicer (source: http://goo.gl/fr85e). */
         -webkit-font-smoothing: antialiased;
+    }
+    input:required:invalid {
+        background-color: #FFEBEB;
+        border-color: red;
     }
     noscript {
         color: red;
