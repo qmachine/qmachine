@@ -781,7 +781,7 @@
             if (typeof x !== 'string') {
                 throw new TypeError('`box` property must be a string.');
             }
-            if ((/^[A-z0-9_\-]+$/).test(x) === false) {
+            if ((/^[\w-]+$/).test(x) === false) {
                 throw new Error('Invalid assignment to `box`: "' + x + '"');
             }
             Object.defineProperty(this, 'box', {
@@ -819,7 +819,7 @@
             if (typeof x !== 'string') {
                 throw new TypeError('`QM.box` must be a string.');
             }
-            if ((/^[A-z0-9_\-]+$/).test(x) === false) {
+            if ((/^[\w-]+$/).test(x) === false) {
                 throw new Error('Invalid assignment to `QM.box`: "' + x + '"');
             }
             state.box = x.toString();
