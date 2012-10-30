@@ -2,7 +2,7 @@
     "author": "Sean Wilkinson",
     "dependencies": {
         "corser": "1.1.2",
-        "quanah": "0.0.8"
+        "quanah": "0.0.9"
     },
     "description": "The World's Most Relaxed Supercomputer",
     "devDependencies": {},
