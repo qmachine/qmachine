@@ -9,7 +9,13 @@
 #
 #   NOTE: Documentation has been removed but will be added again later (maybe).
 #
-#                                                       ~~ (c) SRW, 22 Oct 2012
+#   NOTE: I have discontinued the use of JS minifiers / optimizers until I get
+#   a chance to evaluate appropriate testing frameworks. The fact that I just
+#   wasted a bunch of time tracking down "bugs" that were due to the usage of
+#   Google's Closure compiler in WHITESPACE_ONLY optimization mode is absurd.
+#   When I can test for regressions instantly, I will reconsider. UGH.
+#
+#                                                       ~~ (c) SRW, 30 Oct 2012
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -42,7 +48,7 @@ define compile-js
         $(call aside, "Optimizing scripts: $(1) -> $(2)")               ;   \
     fi                                                                  ;   \
     if [ "$(strip $(MINIFY))" = "$(firstword $(CLOSURE))" ]; then           \
-        $(CLOSURE) --compilation_level SIMPLE_OPTIMIZATIONS                 \
+        $(CLOSURE) --compilation_level WHITESPACE_ONLY                      \
             $(1:%=--js %) --js_output_file $(2)                         ;   \
     elif [ "$(strip $(MINIFY))" = "$(firstword $(YUICOMP))" ]; then         \
         $(CAT) $(1) > $(2)                                              ;   \
@@ -189,7 +195,7 @@ LAUNCHCTL   :=  $(call contingent, launchctl)
 LN          :=  $(call contingent, gln ln) -fs
 LS          :=  $(call contingent, gls ls) 2>/dev/null
 MKDIR       :=  $(call contingent, gmkdir mkdir)
-MINIFY      :=  $(call contingent, closure-compiler yuicompressor jsmin cat)
+MINIFY      :=  $(call contingent, cat closure-compiler yuicompressor jsmin)
 NODEJS      :=  $(call contingent, nodejs node)
 NPM         :=  $(call contingent, npm)
 PHANTOMJS   :=  $(call contingent, phantomjs)

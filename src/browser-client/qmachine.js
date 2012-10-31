@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 29 Oct 2012
+//                                                      ~~ (c) SRW, 30 Oct 2012
 
 (function (global) {
     'use strict';
@@ -14,15 +14,15 @@
         ActiveXObject, Q, QM, XDomainRequest, XMLHttpRequest, appendChild,
         apply, areready, avar, body, box, by, call, capture, comm, concat,
         configurable, constructor, createElement, def, defineProperty,
-        diagnostics, document, done, enumerable, epitaph, exit, f, fail, floor,
-        get, getElementsByTagName, global, hasOwnProperty, head, host,
-        importScripts, join, key, length, lib, load_data, load_script,
+        diagnostics, document, done, enumerable, env, envs, epitaph, exit, f,
+        fail, floor, get, getElementsByTagName, global, hasOwnProperty, head,
+        host, importScripts, join, key, length, lib, load_data, load_script,
         location, map, navigator, onerror, onload, onready, onreadystatechange,
-        open, parse, ply, protocol, prototype, push, query, random, readyState,
-        reduce, remote_call, responseText, result, results, retrieve, revive,
-        secret, send, set, shelf, splice, src, status, stay, stringify, test,
-        toString, using, val, value, volunteer, when, withCredentials,
-        writable, x, y
+        open, parse, ply, predef, protocol, prototype, push, query, random,
+        readyState, reduce, remote_call, responseText, result, results,
+        retrieve, revive, secret, send, set, shelf, splice, src, status, stay,
+        stringify, submit, test, toString, using, val, value, volunteer, when,
+        withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -39,9 +39,9 @@
  // Declarations
 
     var Q, ajax, avar, capture, isBrowser, isFunction, isWebWorker, jobs, lib,
-        load_data, load_script, map, mothership, origin, ply, read, reduce,
-        remote_call, retrieve, shallow_copy, state, update_local,
-        update_remote, volunteer, when, write;
+        load_data, load_script, map, mothership, origin, ply, predef, read,
+        reduce, remote_call, retrieve, shallow_copy, state, submit,
+        update_local, update_remote, volunteer, when, write;
 
  // Definitions
 
@@ -333,6 +333,27 @@
 
     ply = Q.ply;
 
+    predef = function (task) {
+     // This function needs documentation.
+        var flag, globals;
+        flag = ((task instanceof Object)        &&
+                (task.hasOwnProperty('x'))      &&
+                (task.x instanceof Object)      &&
+                (task.x.hasOwnProperty('key'))  &&
+                (state.envs.hasOwnProperty(task.x.key)));
+        globals = {
+            'QM': false
+        };
+        if (flag === true) {
+            ply(state.envs[task.x.key]).by(function (key, val) {
+             // This function needs documentation.
+                globals[key] = false;
+                return;
+            });
+        }
+        return globals;
+    };
+
     read = function (x) {
      // This function needs documentation.
         var y = ajax('GET', mothership + '/box/' + x.box + '?key=' + x.key);
@@ -533,6 +554,143 @@
         return y;
     };
 
+    shallow_copy = function (x, y) {
+     // This function copies the properties of `x` to `y`, specifying `y` as
+     // object literal if it was not provided as an input argument. It does
+     // not perform a "deep copy", which means that properties whose values
+     // are objects will be "copied by reference" rather than by value. Right
+     // now, I see no reason to worry about deep copies or getters / setters.
+        if (y === undefined) {
+         // At one point, I used a test here that `arguments.length === 1`,
+         // but it offended JSLint:
+         //     "Do not mutate parameter 'y' when using 'arguments'."
+            y = {};
+        }
+        var key;
+        for (key in x) {
+            if (x.hasOwnProperty(key)) {
+                y[key] = x[key];
+            }
+        }
+        return y;
+    };
+
+    state = {
+        box: avar().key,
+        envs: {},
+        shelf: []
+    };
+
+    submit = function (obj) {
+     // This function needs documentation.
+        var y = avar({val: obj});
+        y.onready = function (evt) {
+         // This function validates the input and closes over `avar` and `y`
+         // to induce local execution on the submitter's own machine.
+            var obj, temp;
+            obj = this.val;
+            if ((obj instanceof Object) === false) {
+                return evt.fail('Input argument must be an object.');
+            }
+            if (obj.hasOwnProperty('f') === false) {
+                return evt.fail('`f` property is missing.');
+            }
+            if (obj.hasOwnProperty('x') === false) {
+                return evt.fail('`x` property is missing.');
+            }
+            if (obj.hasOwnProperty('box')) {
+                y.box = obj.box;
+                delete obj.box;
+            }
+            temp = avar({box: y.box, val: obj});
+            temp.onerror = function (message) {
+             // This function needs documentation.
+                delete state.envs[temp.key];
+                return evt.fail(message);
+            };
+            if (obj.hasOwnProperty('env')) {
+                if ((obj.env instanceof Object) === false) {
+                    return evt.fail('`env` property must be an object.');
+                }
+             // NOTE: I should probably check that all properties of `env` are
+             // arrays, too, and that all such properties with non-zero lengths
+             // have only elements which are strings that represent URLs ...
+                state.envs[temp.key] = obj.env;
+            }
+            temp.onready = function (evt) {
+             // This function runs remotely on a volunteer's machine because
+             // `QM` is always excepted from JSLint scrutiny.
+                /*global QM: false */
+                var env, f, temp, x;
+             // NOTE: Still need to load all scripts specified in `env` ...
+                env = this.val.env;
+                f = this.val.f;
+                temp = this;
+                x = QM.avar(this.val.x);
+                x.onerror = function (message) {
+                 // This function needs documentation.
+                    return evt.fail(message);
+                };
+                x.onready = f;
+                x.onready = function (x_evt) {
+                 // This function needs documentation.
+                    temp.val = x.val;
+                    x_evt.exit();
+                    return evt.exit();
+                };
+                return;
+            };
+            temp.onready = function (temp_evt) {
+             // This function needs documentation.
+                y.val = temp.val;
+                delete state.envs[temp.key];
+                temp_evt.exit();
+                return evt.exit();
+            };
+            return;
+        };
+        return y;
+    };
+
+    update_local = function (evt) {
+     // This function is used in the `remote_call` and `volunteer` functions
+     // to update the local copy of an avar so that its `val` property matches
+     // the one from its remote representation. It is written as a function of
+     // `evt` because it is intended to be assigned to `onready`.
+        var local, temp;
+        local = this;
+        temp = read(local);
+        temp.onerror = function (message) {
+         // This function tells `local` that something has gone awry.
+            return evt.fail(message);
+        };
+        temp.onready = function (temp_evt) {
+         // Here, we copy the remote representation into the local one.
+            shallow_copy(temp, local);
+            temp_evt.exit();
+            return evt.exit();
+        };
+        return;
+    };
+
+    update_remote = function (evt) {
+     // This function is used in the `remote_call` and `volunteer` functions
+     // to update the remote copy of an avar so that its `val` property matches
+     // the one from its local representation. It is written as a function of
+     // `evt` because it is intended to be assigned to `onready`.
+        var temp = write(this);
+        temp.onerror = function (message) {
+         // This tells the local avar (`this`) that something has gone awry.
+            return evt.fail(message);
+        };
+        temp.onready = function (temp_evt) {
+         // This function just releases execution for the local avar (`this`).
+            temp_evt.exit();
+            return evt.exit();
+        };
+        return;
+    };
+
     volunteer = function (box) {
      // This function, combined with `remote_call`, provides the remote code
      // execution mechanism in Quanah. When `remote_call` on one machine sends
@@ -605,7 +763,7 @@
          // This function executes the abstract task by recreating `f` and `x`
          // and running them in the local environment. Since we know `task` is
          // serializable, we cannot simply add its deserialized form to the
-         // local machine's queue (`stack`), because `revive` would just send
+         // local machine's queue (`queue`), because `revive` would just send
          // it back out for remote execution again. Thus, we deliberately close
          // over local variables like `avar` in order to restrict execution to
          // the current environment. The transform defined in `task.val.f` is
@@ -687,72 +845,6 @@
         return task;
     };
 
-    shallow_copy = function (x, y) {
-     // This function copies the properties of `x` to `y`, specifying `y` as
-     // object literal if it was not provided as an input argument. It does
-     // not perform a "deep copy", which means that properties whose values
-     // are objects will be "copied by reference" rather than by value. Right
-     // now, I see no reason to worry about deep copies or getters / setters.
-        if (y === undefined) {
-         // At one point, I used a test here that `arguments.length === 1`,
-         // but it offended JSLint:
-         //     "Do not mutate parameter 'y' when using 'arguments'."
-            y = {};
-        }
-        var key;
-        for (key in x) {
-            if (x.hasOwnProperty(key)) {
-                y[key] = x[key];
-            }
-        }
-        return y;
-    };
-
-    state = {
-     // Should I initialize this from `localStorage` first?
-        box: avar().key,
-        shelf: []
-    };
-
-    update_local = function (evt) {
-     // This function is used in the `remote_call` and `volunteer` functions
-     // to update the local copy of an avar so that its `val` property matches
-     // the one from its remote representation. It is written as a function of
-     // `evt` because it is intended to be assigned to `onready`.
-        var local, temp;
-        local = this;
-        temp = read(local);
-        temp.onerror = function (message) {
-         // This function tells `local` that something has gone awry.
-            return evt.fail(message);
-        };
-        temp.onready = function (temp_evt) {
-         // Here, we copy the remote representation into the local one.
-            shallow_copy(temp, local);
-            temp_evt.exit();
-            return evt.exit();
-        };
-        return;
-    };
-
-    update_remote = function (evt) {
-     // This function is used in the `remote_call` and `volunteer` functions
-     // to update the remote copy of an avar so that its `val` property matches
-     // the one from its local representation. It is written as a function of
-     // `evt` because it is intended to be assigned to `onready`.
-        var temp = write(this);
-        temp.onerror = function (message) {
-         // This tells the local avar (`this`) that something has gone awry.
-            return evt.fail(message);
-        };
-        temp.onready = function (temp_evt) {
-         // This function just releases execution for the local avar (`this`).
-            temp_evt.exit();
-            return evt.exit();
-        };
-        return;
-    };
-
     when = Q.when;
 
     write = function (x) {
@@ -781,7 +873,7 @@
             if (typeof x !== 'string') {
                 throw new TypeError('`box` property must be a string.');
             }
-            if ((/^[\w-]+$/).test(x) === false) {
+            if ((/^[\w\-]+$/).test(x) === false) {
                 throw new Error('Invalid assignment to `box`: "' + x + '"');
             }
             Object.defineProperty(this, 'box', {
@@ -819,7 +911,7 @@
             if (typeof x !== 'string') {
                 throw new TypeError('`QM.box` must be a string.');
             }
-            if ((/^[\w-]+$/).test(x) === false) {
+            if ((/^[\w\-]+$/).test(x) === false) {
                 throw new Error('Invalid assignment to `QM.box`: "' + x + '"');
             }
             state.box = x.toString();
@@ -843,6 +935,7 @@
             revive:         avar().revive,
             retrieve:       retrieve,
             shelf:          {},
+            submit:         submit,
             volunteer:      volunteer,
             when:           when
         };
@@ -863,7 +956,10 @@
         return;
     }());
 
-    Q.def({remote_call: remote_call});
+    Q.def({
+        predef: predef,
+        remote_call: remote_call
+    });
 
  // That's all, folks!
 

@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- service.js ~~
-//                                                      ~~ (c) SRW, 19 Oct 2012
+//                                                      ~~ (c) SRW, 30 Oct 2012
 
 (function () {
     'use strict';
@@ -72,17 +72,17 @@
         });
         service.def({
             method:     'GET',
-            pattern:    /^\/box\/([A-z0-9_\-]+)\?key=([A-z0-9]+)$/,
+            pattern:    /^\/box\/([\w\-]+)\?key=([A-z0-9]+)$/,
             handler:    defs.get_box_key
         });
         service.def({
             method:     'GET',
-            pattern:    /^\/box\/([A-z0-9_\-]+)\?status=([A-z0-9]+)$/,
+            pattern:    /^\/box\/([\w\-]+)\?status=([A-z0-9]+)$/,
             handler:    defs.get_box_status
         });
         service.def({
             method:     'POST',
-            pattern:    /^\/box\/([A-z0-9_\-]+)\?key=([A-z0-9]+)$/,
+            pattern:    /^\/box\/([\w\-]+)\?key=([A-z0-9]+)$/,
             handler:    defs.post_box_key
         });
         service.def({
