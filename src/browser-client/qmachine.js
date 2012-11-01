@@ -11,21 +11,22 @@
     /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        ActiveXObject, AVar, Q, QM, XDomainRequest, XMLHttpRequest,
-        addEventListener, appendChild, apply, areready, attachEvent, avar,
-        body, box, by, call, capture, comm, concat, configurable, constructor,
-        contentWindow, createElement, data, def, defineProperty, detachEvent,
-        diagnostics, display, document, done, enumerable, env, envs, epitaph,
-        exit, f, fail, floor, get, getElementsByTagName, global,
-        hasOwnProperty, head, host, importScripts, join, key, length, lib,
-        load_data, load_script, location, map, navigator, onerror, onload,
-        onready, onreadystatechange, open, parentElement, parse, ply,
-        postMessage, predef, protocol, prototype, push, query, random,
-        readyState, reduce, remote_call, removeChild, removeEventListener,
-        responseText, result, results, retrieve, revive, secret, send, set,
-        shelf, shift, slice, splice, src, status, stay, stringify, style,
-        submit, test, toString, url, using, val, value, via, visibility,
-        volunteer, when, window, withCredentials, writable, x, y
+        ActiveXObject, AVar, JSLINT, Q, QM, XDomainRequest, XMLHttpRequest,
+        addEventListener, allow, appendChild, apply, areready, attachEvent,
+        avar, body, box, by, call, callback, capture, comm, concat,
+        configurable, constructor, contentWindow, createElement, data, def,
+        defineProperty, detachEvent, diagnostics, display, document, done,
+        enumerable, env, epitaph, errors, exit, f, fail, floor, get,
+        getElementsByTagName, global, hasOwnProperty, head, host,
+        importScripts, join, key, kill, length, lib, load_data, load_script,
+        location, map, navigator, onerror, onload, onready, onreadystatechange,
+        open, parentElement, parse, ply, postMessage, predef, protocol,
+        prototype, push, query, random, readyState, reduce, remote_call,
+        removeChild, removeEventListener, responseText, result, results,
+        retrieve, revive, secret, send, set, shelf, shift, shmockford, slice,
+        splice, src, status, stay, stringify, style, submit, submitted, test,
+        toString, url, using, val, value, via, visibility, volunteer, when,
+        window, withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -42,8 +43,8 @@
  // Declarations
 
     var Q, ajax, AVar, avar, capture, isBrowser, isFunction, isWebWorker, jobs,
-        lib, load_data, load_script, map, mothership, origin, ply, predef,
-        read, reduce, remote_call, retrieve, shallow_copy, state, submit,
+        lib, load_data, load_script, map, mothership, origin, ply, read,
+        reduce, remote_call, retrieve, shallow_copy, shmockford, state, submit,
         update_local, update_remote, volunteer, when, write;
 
  // Definitions
@@ -56,7 +57,8 @@
         y.onready = function (evt) {
          // This function needs documentation of a more general form ...
             if ((body !== undefined) && (body.length > 1048576)) {
-                return evt.fail('Upload size is too big.');
+             // If it's certain to fail, why not just fail preemptively?
+                return evt.fail('Upload size is too large.');
             }
             var request;
          // As of Chrome 21 (and maybe sooner than that), Web Workers do have
@@ -408,27 +410,6 @@
 
     ply = Q.ply;
 
-    predef = function (task) {
-     // This function needs documentation.
-        var flag, globals;
-        flag = ((task instanceof Object)        &&
-                (task.hasOwnProperty('x'))      &&
-                (task.x instanceof Object)      &&
-                (task.x.hasOwnProperty('key'))  &&
-                (state.envs.hasOwnProperty(task.x.key)));
-        globals = {
-            'QM': false
-        };
-        if (flag === true) {
-            ply(state.envs[task.x.key]).by(function (key, val) {
-             // This function needs documentation.
-                globals[key] = false;
-                return;
-            });
-        }
-        return globals;
-    };
-
     read = function (x) {
      // This function needs documentation.
         var y = ajax('GET', mothership + '/box/' + x.box + '?key=' + x.key);
@@ -513,6 +494,12 @@
      // remote calls of their own, but execution of a remote call should not
      // require remote calls of its own! A publication is forthcoming, and at
      // that point I'll simply use a self-citation as an explanation :-)
+        if (state.kill.hasOwnProperty(obj.x.key)) {
+         // This function isn't actually distributable, and it needs to be
+         // aborted cleanly.
+            obj.x.comm({fail: state.kill[obj.x.key], secret: secret});
+            return;
+        }
         var f, first, x;
      // Step 1: copy the computation's function and data into fresh instances,
      // define some error handlers, and write the copies to the "filesystem".
@@ -650,10 +637,37 @@
         return y;
     };
 
+    shmockford = function (task) {
+     // This function needs documentation.
+        var flag, options;
+        flag = ((task instanceof Object)        &&
+                (task.hasOwnProperty('x'))      &&
+                (task.x instanceof Object)      &&
+                (task.x.hasOwnProperty('key')));
+        options = {
+            allow: {
+                predef: {
+                    'QM': false
+                }
+            }
+        };
+        if ((flag === true) && (state.submitted.hasOwnProperty(task.x.key))) {
+            ply(state.submitted[task.x.key].env).by(function (key, val) {
+             // This function needs documentation.
+                options.allow.predef[key] = false;
+                return;
+            });
+            options.callback = state.submitted[task.x.key].callback;
+            delete state.submitted[task.x.key];
+        }
+        return options;
+    };
+
     state = {
         box: avar().key,
-        envs: {},
-        shelf: []
+        kill: {},
+        shelf: [],
+        submitted: {}
     };
 
     submit = function (obj) {
@@ -695,8 +709,26 @@
             temp = avar({box: y.box, val: obj});
             temp.onerror = function (message) {
              // This function needs documentation.
-                delete state.envs[temp.key];
+                delete state.submitted[temp.key];
                 return evt.fail(message);
+            };
+            state.submitted[temp.key] = {
+                callback: function (flag) {
+                 // This function needs documentation.
+                    if (flag === true) {
+                     // The task just failed JSLint, and we need to glean the
+                     // error messages off of it right quick before they get
+                     // overwritten. Of course, we can't really abort the next
+                     // `onready` functions for `temp`, so instead we will lie
+                     // to Quanah by telling it that the task actually passed
+                     // inspection and is not closed. Thus, `revive` will send
+                     // it on to `remote_call` where we _can_ kill it cleanly,
+                     // since `remote_call` is in the same scope as `submit`.
+                        state.kill[temp.key] = global.JSLINT.errors;
+                    }
+                    return false;
+                },
+                env: {}
             };
             if (obj.hasOwnProperty('env')) {
                 if ((obj.env instanceof Object) === false) {
@@ -705,7 +737,7 @@
              // NOTE: I should probably check that all properties of `env` are
              // arrays, too, and that all such properties with non-zero lengths
              // have only elements which are strings that represent URLs ...
-                state.envs[temp.key] = obj.env;
+                state.submitted[temp.key].env = obj.env;
             }
             temp.onready = function (evt) {
              // This function runs remotely on a volunteer's machine because
@@ -775,7 +807,7 @@
             temp.onready = function (temp_evt) {
              // This function needs documentation.
                 y.val = temp.val;
-                delete state.envs[temp.key];
+                delete state.submitted[temp.key];
                 temp_evt.exit();
                 return evt.exit();
             };
@@ -1089,8 +1121,8 @@
     }());
 
     Q.def({
-        predef: predef,
-        remote_call: remote_call
+        remote_call: remote_call,
+        shmockford: shmockford
     });
 
  // That's all, folks!
