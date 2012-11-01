@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 30 Oct 2012
+//                                                      ~~ (c) SRW, 31 Oct 2012
 
 (function (global) {
     'use strict';
@@ -11,18 +11,21 @@
     /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        ActiveXObject, Q, QM, XDomainRequest, XMLHttpRequest, appendChild,
-        apply, areready, avar, body, box, by, call, capture, comm, concat,
-        configurable, constructor, createElement, def, defineProperty,
-        diagnostics, document, done, enumerable, env, envs, epitaph, exit, f,
-        fail, floor, get, getElementsByTagName, global, hasOwnProperty, head,
-        host, importScripts, join, key, length, lib, load_data, load_script,
-        location, map, navigator, onerror, onload, onready, onreadystatechange,
-        open, parse, ply, predef, protocol, prototype, push, query, random,
-        readyState, reduce, remote_call, responseText, result, results,
-        retrieve, revive, secret, send, set, shelf, splice, src, status, stay,
-        stringify, submit, test, toString, using, val, value, volunteer, when,
-        withCredentials, writable, x, y
+        ActiveXObject, AVar, Q, QM, XDomainRequest, XMLHttpRequest,
+        addEventListener, appendChild, apply, areready, attachEvent, avar,
+        body, box, by, call, capture, comm, concat, configurable, constructor,
+        contentWindow, createElement, data, def, defineProperty, detachEvent,
+        diagnostics, display, document, done, enumerable, env, envs, epitaph,
+        exit, f, fail, floor, get, getElementsByTagName, global,
+        hasOwnProperty, head, host, importScripts, join, key, length, lib,
+        load_data, load_script, location, map, navigator, onerror, onload,
+        onready, onreadystatechange, open, parentElement, parse, ply,
+        postMessage, predef, protocol, prototype, push, query, random,
+        readyState, reduce, remote_call, removeChild, removeEventListener,
+        responseText, result, results, retrieve, revive, secret, send, set,
+        shelf, shift, slice, splice, src, status, stay, stringify, style,
+        submit, test, toString, url, using, val, value, via, visibility,
+        volunteer, when, window, withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -38,9 +41,9 @@
 
  // Declarations
 
-    var Q, ajax, avar, capture, isBrowser, isFunction, isWebWorker, jobs, lib,
-        load_data, load_script, map, mothership, origin, ply, predef, read,
-        reduce, remote_call, retrieve, shallow_copy, state, submit,
+    var Q, ajax, AVar, avar, capture, isBrowser, isFunction, isWebWorker, jobs,
+        lib, load_data, load_script, map, mothership, origin, ply, predef,
+        read, reduce, remote_call, retrieve, shallow_copy, state, submit,
         update_local, update_remote, volunteer, when, write;
 
  // Definitions
@@ -106,6 +109,8 @@
         return y;
     };
 
+    AVar = Q.avar().constructor;
+
     avar = Q.avar;
 
     capture = function (data) {
@@ -167,15 +172,39 @@
              // will need to start documenting best practices to teach others
              // how to construct idempotent scripts that won't leak memory and
              // plan to begin using "disposable execution contexts" like Web
-             // Workers again soon. See also: http://goo.gl/byXCA .
+             // Workers again soon.
+             //
+             // See also: http://goo.gl/byXCA and http://goo.gl/fUCXa .
+             //
                 /*jslint browser: true, unparam: true */
                 var current, script;
                 current = global.document.getElementsByTagName('script');
                 script = global.document.createElement('script');
-                script.onload = function () {
-                 // This function needs documentation.
-                    return evt.exit();
-                };
+                if (isFunction(script.attachEvent)) {
+                    script.attachEvent('onload', function onload() {
+                     // This function needs documentation.
+                        script.detachEvent('onload', onload);
+                        if (script.parentElement === global.document.head) {
+                            global.document.head.removeChild(script);
+                        } else {
+                            global.document.body.removeChild(script);
+                        }
+                        script = null;
+                        return evt.exit();
+                    });
+                } else {
+                    script.addEventListener('load', function onload() {
+                     // This function needs documentation.
+                        script.removeEventListener('load', onload, false);
+                        if (script.parentElement === global.document.head) {
+                            global.document.head.removeChild(script);
+                        } else {
+                            global.document.body.removeChild(script);
+                        }
+                        script = null;
+                        return evt.exit();
+                    }, false);
+                }
                 script.src = url;
                 ply(current).by(function (key, val) {
                  // This function needs documentation.
@@ -191,7 +220,7 @@
                 } else {
                     global.document.body.appendChild(script);
                 }
-                current = script = null;
+                current = null;
                 return;
             };
         } else {
@@ -203,17 +232,43 @@
         return y;
     };
 
-    load_data = function (url, callback) {
-     // This function needs documentation.
-        var y = avar();
-        y.onerror = function (message) {
+    load_data = function (x, callback) {
+     // This function is an incredibly rare one in the sense that it accepts
+     // `x` which can be either an object literal or a string. Typically, I am
+     // too "purist" to write such a _convenient_ function :-P
+        var xdm, y, yql;
+        xdm = function (evt) {
          // This function needs documentation.
-            if (isFunction(callback)) {
-                callback(message, y.val);
-            }
+            var proxy, request;
+            proxy = global.document.createElement('iframe');
+            request = this;
+            proxy.src = request.val.via;
+            proxy.display = 'none';
+            proxy.style.visibility = 'hidden';
+            proxy.onload = function () {
+             // This function runs when the iframe loads.
+                proxy.contentWindow.postMessage(JSON.stringify({
+                    x: request.val.url
+                }), proxy.src);
+                return;
+            };
+            global.window.addEventListener('message', function cb(dom_evt) {
+             // This function needs documentation.
+                var temp = JSON.parse(dom_evt.data);
+                if (temp.x === request.val.url) {
+                    request.val = temp.y;
+                    global.window.removeEventListener('message', cb, false);
+                    global.document.body.removeChild(proxy);
+                    proxy = null;
+                    return evt.exit();
+                }
+                return;
+            }, false);
+            global.document.body.appendChild(proxy);
             return;
         };
-        y.onready = function (evt) {
+        y = avar((x instanceof AVar) ? x : {val: x});
+        yql = function (evt) {
          // This function uses Yahoo Query Language (YQL) as a cross-domain
          // proxy for retrieving text files. Binary file types probably won't
          // work very well at the moment, but I'll tweak the Open Data Table
@@ -234,13 +289,30 @@
             format = 'format=json';
             query = 'q=' +
                 'USE "http://wilkinson.github.com/qmachine/qm.proxy.xml";' +
-                'SELECT * FROM qm.proxy WHERE url="' + url + '";';
+                'SELECT * FROM qm.proxy WHERE url="' + y.val.url + '";';
             temp = lib(base + [callback, diag, format, query].join('&'));
             temp.onerror = function (message) {
              // This function needs documentation.
                 return evt.fail(message);
             };
             return;
+        };
+        y.onerror = function (message) {
+         // This function needs documentation.
+            if (isFunction(callback)) {
+                callback(message, y.val);
+            }
+            return;
+        };
+        y.onready = function (evt) {
+         // This function needs documentation.
+            var flag;
+            flag = ((y.val instanceof Object)       &&
+                    (y.val.hasOwnProperty('url'))   &&
+                    (y.val.hasOwnProperty('via'))   &&
+                    (isBrowser() === true)          &&
+                    (isFunction(global.window.postMessage)));
+            return (flag) ? xdm.call(y, evt) : yql.call(y, evt);
         };
         y.onready = function (evt) {
          // This function needs documentation.
@@ -583,7 +655,26 @@
 
     submit = function (obj) {
      // This function needs documentation.
-        var y = avar({val: obj});
+        var arg_box, arg_env, arg_f, arg_x, y;
+        if (arguments.length === 1) {
+            arg_box = obj.box;
+            arg_env = obj.env;
+            arg_f = obj.f;
+            arg_x = obj.x;
+        } else {
+            throw new Error('The "training wheels" are not available yet.');
+        }
+        y = avar();
+        when(arg_box, arg_env, arg_f, arg_x, y).areready = function (evt) {
+         // This function needs documentation.
+            y.box = (arg_box instanceof AVar) ? arg_box.val : arg_box;
+            y.val = {
+                env: ((arg_env instanceof AVar) ? arg_env.val : arg_env),
+                f: ((arg_f instanceof AVar) ? arg_f.val : arg_f),
+                x: ((arg_x instanceof AVar) ? arg_x.val : arg_x)
+            };
+            return evt.exit();
+        };
         y.onready = function (evt) {
          // This function validates the input and closes over `avar` and `y`
          // to induce local execution on the submitter's own machine.
@@ -597,10 +688,6 @@
             }
             if (obj.hasOwnProperty('x') === false) {
                 return evt.fail('`x` property is missing.');
-            }
-            if (obj.hasOwnProperty('box')) {
-                y.box = obj.box;
-                delete obj.box;
             }
             temp = avar({box: y.box, val: obj});
             temp.onerror = function (message) {
@@ -623,13 +710,55 @@
                 /*global QM: false */
                 var env, f, temp, x;
              // NOTE: Still need to load all scripts specified in `env` ...
-                env = this.val.env;
+                env = QM.avar({val: this.val.env});
                 f = this.val.f;
                 temp = this;
-                x = QM.avar(this.val.x);
-                x.onerror = function (message) {
+                x = QM.avar({val: this.val.x});
+                env.onerror = x.onerror = function (message) {
                  // This function needs documentation.
                     return evt.fail(message);
+                };
+                QM.when(env, x).areready = function (evt) {
+                 // This function ensures that the task will not execute until
+                 // the prerequisite scripts have finished loading.
+                    var prereqs = [];
+                    QM.ply(env.val).by(function (key, val) {
+                     // This function uses a `for` loop because order matters.
+                        var libs = QM.avar({val: val.slice()});
+                        libs.onerror = function (message) {
+                         // This function needs documentation.
+                            return evt.fail(message);
+                        };
+                        libs.onready = function (evt) {
+                         // This function needs documentation.
+                            if (libs.val.length === 0) {
+                                return evt.exit();
+                            }
+                            var v = libs.val;
+                            QM.load_script(v.shift()).Q(function (v_evt) {
+                             // This function needs documentation.
+                                v_evt.exit();
+                                if (v.length === 0) {
+                                 // This shaves off an extra step, but I'm not
+                                 // sure if it's worth the extra lines ...
+                                    return evt.exit();
+                                }
+                                return evt.stay('Recursing ...');
+                            }).onerror = function (message) {
+                             // This function needs documentation.
+                                return evt.fail(message);
+                            };
+                            return;
+                        };
+                        prereqs.push(libs);
+                        return;
+                    });
+                    QM.when.apply(null, prereqs).onready = function (w_evt) {
+                     // This function needs documentation.
+                        w_evt.exit();
+                        return evt.exit();
+                    };
+                    return;
                 };
                 x.onready = f;
                 x.onready = function (x_evt) {

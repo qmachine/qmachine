@@ -20,31 +20,31 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 29 Oct 2012
+//                                                  ~~ last updated 31 Oct 2012
 
-(function (global) {
+(function () {
     'use strict';
 
  // Pragmas
 
-    /*jslint indent: 4, maxlen: 80 */
+    /*jslint browser: true, indent: 4, maxlen: 80 */
 
     /*global jQuery: false */
 
     /*properties
         Q, QM, alert, blur, box, call, click, console, document, error, exit,
-        getItem, global, hasOwnProperty, is, jQuery, join, key, keydown,
-        localStorage, log, onerror, onready, preventDefault, prototype, ready,
-        revive, setItem, setTimeout, stay, val, value, volunteer, which
+        getItem, hasOwnProperty, is, jQuery, join, key, keydown, localStorage,
+        log, on, onerror, onready, preventDefault, prototype, ready, revive,
+        setItem, setTimeout, stay, val, value, volunteer, which
     */
 
  // Prerequisites
 
-    if (global.hasOwnProperty('jQuery') === false) {
+    if (window.hasOwnProperty('jQuery') === false) {
         throw new Error('jQuery is missing.');
     }
 
-    if (global.hasOwnProperty('QM') === false) {
+    if (window.hasOwnProperty('QM') === false) {
         throw new Error('QMachine is missing.');
     }
 
@@ -58,22 +58,22 @@
 
  // Definitions
 
-    $ = global.jQuery;
+    $ = window.jQuery;
 
-    QM = global.QM;
+    QM = window.QM;
 
     detect = function (feature_name) {
      // This function needs documentation.
         switch (feature_name) {
         case 'console.error':
-            return ((global.hasOwnProperty('console')) &&
-                    (isFunction(global.console.error)));
+            return ((window.hasOwnProperty('console')) &&
+                    (isFunction(window.console.error)));
         case 'console.log':
-            return ((global.hasOwnProperty('console')) &&
-                    (isFunction(global.console.log)));
+            return ((window.hasOwnProperty('console')) &&
+                    (isFunction(window.console.log)));
         case 'localStorage':
          // HTML5 localStorage object
-            return (global.localStorage instanceof Object);
+            return (window.localStorage instanceof Object);
         default:
          // (placeholder)
         }
@@ -90,7 +90,7 @@
     jserr = function () {
      // This function needs documentation.
         if (detect('console.error')) {
-            global.console.error(Array.prototype.join.call(arguments, ' '));
+            window.console.error(Array.prototype.join.call(arguments, ' '));
         }
         return;
     };
@@ -98,7 +98,7 @@
     jsout = function () {
      // This function needs documentation.
         if (detect('console.log')) {
-            global.console.log(Array.prototype.join.call(arguments, ' '));
+            window.console.log(Array.prototype.join.call(arguments, ' '));
         }
         return;
     };
@@ -117,13 +117,13 @@
             } else {
                 jserr('Error:', message);
             }
-            global.setTimeout(volunteer, 1000);
+            window.setTimeout(volunteer, 1000);
             return;
         };
         task.onready = function (evt) {
          // This function needs documentation.
             jsout('Done:', this.key);
-            global.setTimeout(volunteer, 1000);
+            window.setTimeout(volunteer, 1000);
             return evt.exit();
         };
         return;
@@ -131,14 +131,15 @@
 
  // Invocations
 
-    $(global.document).ready(function () {
+    $(window.document).ready(function () {
      // This function needs documentation.
         if (detect('localStorage')) {
          // Here, we load a user's previous settings if they are available.
-            if (global.localStorage.hasOwnProperty('QM_box')) {
-                QM.box = global.localStorage.getItem('QM_box');
+            if (window.localStorage.hasOwnProperty('QM_box')) {
+                QM.box = window.localStorage.getItem('QM_box');
             }
         }
+        $(window).on('blur focus', QM.revive);
         $('#QM-box-input').blur(function () {
          // This function needs documentation.
             try {
@@ -146,7 +147,7 @@
             } catch (err) {
              // This part doesn't work well in web workers, but they're not a
              // huge priority right now ...
-                global.alert(err);
+                window.alert(err);
             }
             QM.revive();
             return;
@@ -156,6 +157,7 @@
                 evt.preventDefault();
                 $(this).blur();
             }
+            QM.revive();
             return;
         }).Q(function (evt) {
          // This function synchronizes the jQuery object that represents the
@@ -169,7 +171,7 @@
              // We assume here that HTML5 localStorage has not been tampered
              // with. Super-secure code isn't necessary here because the value
              // of `QM.box` is already publicly available anyway.
-                global.localStorage.setItem('QM_box', QM.box);
+                window.localStorage.setItem('QM_box', QM.box);
             }
             return evt.stay('This task repeats indefinitely.');
         });
@@ -202,15 +204,6 @@
 
     return;
 
-}(Function.prototype.call.call(function (that) {
-    'use strict';
- // See the bottom of "quanah.js" for documentation.
-    /*jslint indent: 4, maxlen: 80 */
-    /*global global: true */
-    if (this === null) {
-        return (typeof global === 'object') ? global : that;
-    }
-    return (typeof this.global === 'object') ? this.global : this;
-}, null, this)));
+}());
 
 //- vim:set syntax=javascript:
