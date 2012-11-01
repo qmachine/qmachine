@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 31 Oct 2012
+//                                                      ~~ (c) SRW, 01 Nov 2012
 
 (function (global) {
     'use strict';
@@ -55,6 +55,9 @@
         var y = avar();
         y.onready = function (evt) {
          // This function needs documentation of a more general form ...
+            if ((body !== undefined) && (body.length > 1048576)) {
+                return evt.fail('Upload size is too big.');
+            }
             var request;
          // As of Chrome 21 (and maybe sooner than that), Web Workers do have
          // the `XMLHttpRequest` constructor, but it isn't one of `global`'s

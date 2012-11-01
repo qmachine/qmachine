@@ -2,6 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 30 Oct 2012
+//                                                  ~~ last updated 01 Nov 2012
 
 (function () {
     'use strict';
@@ -51,6 +52,7 @@
                 www:        'http://127.0.0.1:5984/www/_design/app/_rewrite'
             },
             hostname:       'qmachine.org',
+            max_fu_size:    1048576,    //- 1024 * 1024 bytes = 1 Megabyte
             max_procs:      os.cpus().length,
             max_sockets:    500,
             port:           80,

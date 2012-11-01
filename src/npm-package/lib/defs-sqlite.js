@@ -5,6 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
+//                                                  ~~ last updated 01 Nov 2012
 
 (function () {
     'use strict';
@@ -270,6 +271,16 @@
 
     post_box_key = function (request, response, params) {
      // This function needs documentation.
+        if ((request.headers.hasOwnProperty('content-length') === false) ||
+                (request.headers['content-length'] > config.max_fu_size)) {
+         // Either the user is using incorrect headers or he/she is uploading
+         // a file that is too big. Don't fool with it either way. QMachine is
+         // not a free hard drive for people who are too cheap to buy storage,
+         // because we didn't buy storage, either ;-)
+            response.writeHead(444);
+            response.end();
+            return;
+        }
         var box, key, sql, temp;
         box = params[0];
         key = params[1];
