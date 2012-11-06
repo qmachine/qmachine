@@ -13,13 +13,15 @@
     "main": "lib/qm.js",
     "name": "qm",
     "optionalDependencies": {
+        "mongodb": "1.1.11",
         "pg": "0.8.6",
         "sqlite3": "2.1.5"
     },
+    "private": false,
     "repository": {
         "type": "git",
         "url": "https://github.com/wilkinson/qmachine.git"
     },
     "scripts": {},
-    "version": "0.1.15"
+    "version": "0.1.16"
 }

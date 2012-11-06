@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 30 Oct 2012
-//                                                  ~~ last updated 01 Nov 2012
+//                                                  ~~ last updated 05 Nov 2012
 
 (function () {
     'use strict';
@@ -25,10 +25,12 @@
             user_input = {};
         }
         var key, y;
-        y = {};
+        y = (default_values instanceof Array) ? [] : {};
         for (key in default_values) {
             if (default_values.hasOwnProperty(key)) {
-                if (user_input.hasOwnProperty(key)) {
+                if (default_values[key] instanceof Object) {
+                    y[key] = configure(user_input[key], default_values[key]);
+                } else if (user_input.hasOwnProperty(key)) {
                     y[key] = user_input[key];
                 } else {
                     y[key] = default_values[key];
@@ -55,6 +57,10 @@
             max_fu_size:    1048576,    //- 1024 * 1024 bytes = 1 Megabyte
             max_procs:      os.cpus().length,
             max_sockets:    500,
+            mongo: {
+                host:       'localhost',
+                port:       27017
+            },
             port:           80,
             postgres:       'postgres://localhost:5432/' + process.env.USER,
             storage:        'couchdb'

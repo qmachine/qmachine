@@ -175,7 +175,12 @@
             }
             return evt.stay('This task repeats indefinitely.');
         });
-        $('#QM-volunteer-input').click(volunteer);
+        $('#QM-volunteer-input').click(function () {
+         // There is a problem here -- if you click it on and off a couple of
+         // times, you end up with several volunteer "instances" ...
+            volunteer();
+            return;
+        });
         return;
     });
 
