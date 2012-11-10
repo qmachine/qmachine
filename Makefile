@@ -27,7 +27,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 23 Oct 2012
+#                                                       ~~ (c) SRW, 10 Nov 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -115,7 +115,6 @@ browser-client:                                                             \
         ie.js                                                               \
         index.html                                                          \
         q.js                                                                \
-        q-min.js                                                            \
         robots.txt                                                          \
         sitemap.xml                                                         \
         style-min.css                                                       \
@@ -303,9 +302,6 @@ $(CACHE_DIR)/q.js:                                                          \
     $(CACHE_DIR)/json2.js                                                   \
     |   $(CACHE_DIR)
 	@   $(call replace-mothership, $^, $@)
-
-$(CACHE_DIR)/q-min.js: $(CACHE_DIR)/q.js | $(CACHE_DIR)
-	@   $(call compile-js, $<, $@)
 
 $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
 	@   $(call replace-mothership, $<, $@)

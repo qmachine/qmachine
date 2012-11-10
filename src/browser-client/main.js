@@ -9,18 +9,11 @@
 //
 //      <script src="MOTHERSHIP/q.js"></script>
 //
-//  NOTE: For maximum performance in your own app, embed "q-min.js", which is
-//  a minified, optimized version of "q.js". Typically, I use either Google's
-//  Closure compiler or else the YUI Compressor to produce this version. I
-//  make it available out of the goodness of my heart (what little there is),
-//  but I will not respond to bug reports that cannot be reproduced in "q.js"
-//  because I am not an active developer for either of the optimizers.
-//
 //  KNOWN ISSUES:
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 31 Oct 2012
+//                                                  ~~ last updated 10 Nov 2012
 
 (function () {
     'use strict';
@@ -32,10 +25,11 @@
     /*global jQuery: false */
 
     /*properties
-        Q, QM, alert, blur, box, call, click, console, document, error, exit,
-        getItem, hasOwnProperty, is, jQuery, join, key, keydown, localStorage,
-        log, on, onerror, onready, preventDefault, prototype, ready, revive,
-        setItem, setTimeout, stay, val, value, volunteer, which
+        Q, QM, alert, blur, box, call, clearTimeout, click, console, document,
+        error, exit, getItem, hasOwnProperty, is, jQuery, join, key, keydown,
+        localStorage, log, on, onerror, onready, preventDefault, prototype,
+        ready, revive, setItem, setTimeout, stay, val, value, volunteer,
+        volunteer_timer, which
     */
 
  // Prerequisites
@@ -54,7 +48,7 @@
 
  // Declarations
 
-    var $, QM, detect, isFunction, jserr, jsout, volunteer;
+    var $, QM, detect, isFunction, jserr, jsout, state, volunteer;
 
  // Definitions
 
@@ -103,9 +97,12 @@
         return;
     };
 
+    state = {};
+
     volunteer = function () {
      // This function needs documentation.
         if ($('#QM-volunteer-input').is(':checked') === false) {
+            window.clearTimeout(state.volunteer_timer);
             return;
         }
         var task = QM.volunteer();
@@ -117,13 +114,13 @@
             } else {
                 jserr('Error:', message);
             }
-            window.setTimeout(volunteer, 1000);
+            state.volunteer_timer = window.setTimeout(volunteer, 1000);
             return;
         };
         task.onready = function (evt) {
          // This function needs documentation.
             jsout('Done:', this.key);
-            window.setTimeout(volunteer, 1000);
+            state.volunteer_timer = window.setTimeout(volunteer, 1000);
             return evt.exit();
         };
         return;
