@@ -48,7 +48,7 @@
 
  // Declarations
 
-    var $, QM, detect, isFunction, jserr, jsout, state, volunteer;
+    var $, QM, detect, isFunction, jserr, jsout, state;
 
  // Definitions
 
@@ -99,33 +99,6 @@
 
     state = {};
 
-    volunteer = function () {
-     // This function needs documentation.
-        if ($('#QM-volunteer-input').is(':checked') === false) {
-            window.clearTimeout(state.volunteer_timer);
-            return;
-        }
-        var task = QM.volunteer();
-        task.onerror = function (message) {
-         // This function needs documentation.
-            if (message === 'Nothing to do ...') {
-             // Back by popular demand ;-)
-                jsout(message);
-            } else {
-                jserr('Error:', message);
-            }
-            state.volunteer_timer = window.setTimeout(volunteer, 1000);
-            return;
-        };
-        task.onready = function (evt) {
-         // This function needs documentation.
-            jsout('Done:', this.key);
-            state.volunteer_timer = window.setTimeout(volunteer, 1000);
-            return evt.exit();
-        };
-        return;
-    };
-
  // Invocations
 
     $(window.document).ready(function () {
@@ -172,10 +145,37 @@
             }
             return evt.stay('This task repeats indefinitely.');
         });
-        $('#QM-volunteer-input').click(function () {
-         // There is a problem here -- if you click it on and off a couple of
-         // times, you end up with several volunteer "instances" ...
-            volunteer();
+        $('#QM-volunteer-input').click(function volunteer() {
+         // This function needs documentation.
+            if ($('#QM-volunteer-input').is(':checked') === false) {
+             // Yes, you're right, it _does_ look inefficient to ask jQuery to
+             // search for #QM-volunteer-input twice, but because `volunteer`
+             // calls itself recursively using `setTimeout`, using `$(this)`
+             // can do some pretty wacky stuff if you're not careful. I prefer
+             // the strategy here because it's simple :-)
+                window.clearTimeout(state.volunteer_timer);
+                return;
+            }
+            var task = QM.volunteer();
+            task.onerror = function (message) {
+             // This function needs documentation.
+                if (message === 'Nothing to do ...') {
+                 // Back by popular demand ;-)
+                    jsout(message);
+                } else {
+                    jserr('Error:', message);
+                }
+                window.clearTimeout(state.volunteer_timer);
+                state.volunteer_timer = window.setTimeout(volunteer, 1000);
+                return;
+            };
+            task.onready = function (evt) {
+             // This function needs documentation.
+                jsout('Done:', this.key);
+                window.clearTimeout(state.volunteer_timer);
+                state.volunteer_timer = window.setTimeout(volunteer, 1000);
+                return evt.exit();
+            };
             return;
         });
         return;
