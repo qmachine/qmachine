@@ -19,6 +19,7 @@
     config = {
         couch:      'http://localhost:5984',
         host:       '0.0.0.0',
+        mongo:      'mongodb://localhost:27017',
         port:       8177,
         postgres:   'postgres://localhost:5432/' + process.env.USER
     };
@@ -36,6 +37,11 @@
     } else if (process.env.DATABASE_URL !== undefined) {
      // This is for use with the Heroku PostgreSQL service.
         config.postgres = process.env.DATABASE_URL;
+    }
+
+    if (process.env.MONGODB_URL !== undefined) {
+     // This is my own environment variable that I use with Heroku and AppFog.
+        config.mongo = process.env.MONGODB_URL;
     }
 
     if (process.env.IP !== undefined) {
@@ -60,6 +66,10 @@
             www:    config.couch + '/www/_design/app/_rewrite'
         },
         hostname:   config.host,
+        mongo: {
+            host:   require('url').parse(config.mongo).hostname,
+            port:   require('url').parse(config.mongo).port
+        },
         port:       config.port,
         postgres:   config.postgres,
         storage:    'couchdb'
