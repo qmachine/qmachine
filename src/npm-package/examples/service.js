@@ -13,9 +13,22 @@
 
  // Declarations
 
-    var qm;
+    var examples, qm;
 
  // Definitions
+
+    examples = {
+        api: {
+            couch:      'http://127.0.0.1:5984/db/_design/app',
+            mongo:      'mongodb://localhost:27017',
+            postgres:   'postgres://localhost:5432/' + process.env.USER,
+            sqlite:     'qm.db'
+        },
+        www: {
+            couch:      'http://127.0.0.1:5984/www/_design/app/_rewrite',
+            sqlite:     ':memory:'
+        }
+    };
 
     qm = require('lib/main');
 
@@ -23,10 +36,10 @@
 
     qm.launch_service({
         api: {
-            sqlite: ':memory:'
+            sqlite:     ':memory:'
         },
-        hostname:   '127.0.0.1',
-        port:       8177
+        max_workers:    require('os').cpus().length,
+        port:           8177
     });
 
  // That's all, folks!

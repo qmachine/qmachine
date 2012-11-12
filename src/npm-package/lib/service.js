@@ -234,6 +234,8 @@
                 spawn_worker();
                 n -= 1;
             }
+            console.log('QM service (x%d) available at http://%s:%d ...',
+                obj.max_workers, obj.hostname, obj.port);
             return;
         }
         that.server = http.createServer(function (req, res) {
