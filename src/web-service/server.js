@@ -18,7 +18,7 @@
  // Definitions
 
     options = {
-        max_workers:    require('os').cpus().length
+        max_workers: require('os').cpus().length
     };
 
     qm = require('qm');

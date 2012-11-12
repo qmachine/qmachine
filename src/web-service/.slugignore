@@ -6,12 +6,13 @@
 #       https://devcenter.heroku.com/articles/slug-compiler
 #
 #                                                       ~~ (c) SRW, 22 Oct 2012
+#                                                   ~~ last updated 12 Nov 2012
 
 couchdb-apps/
 deploy.sh
 .kansorc
 kanso.json
 packages/
-public_html/
+#public_html/
 
 #-  vim:set syntax=gitconfig:
