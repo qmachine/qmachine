@@ -2,6 +2,7 @@
 
 //- client.js ~~
 //                                                      ~~ (c) SRW, 28 Jun 2012
+//                                                  ~~ last updated 12 Nov 2012
 
 (function () {
     'use strict';
@@ -10,15 +11,13 @@
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
- // Prerequisites
-
  // Declarations
 
     var qm;
 
  // Definitions
 
-    qm = require('lib/qm');
+    qm = require('lib/main');
 
  // Invocations
 

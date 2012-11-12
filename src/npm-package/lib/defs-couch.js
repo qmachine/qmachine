@@ -1,8 +1,8 @@
 //- JavaScript source code
 
-//- defs-couchdb.js ~~
+//- defs-couch.js ~~
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 01 Nov 2012
+//                                                  ~~ last updated 10 Nov 2012
 
 (function () {
     'use strict';
@@ -11,21 +11,20 @@
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
- // Prerequisites
-
  // Declarations
 
-    var config, get_box_key, get_box_status, get_static_content, http, https,
-        init, post_box_key, proxy, url;
+    var get_box_key, get_box_status, get_static_content, http, https, init,
+        post_box_key, proxy, set_static_content, url;
 
  // Definitions
 
     get_box_key = function (request, response, params) {
      // This function needs documentation.
-        var box, key, options, target;
+        var box, db, key, options, target;
         box = params[0];
+        db = this;
         key = params[1];
-        target = config.couchdb.db + '/_show/data/' + box + '&' + key;
+        target = db + '/_show/data/' + box + '&' + key;
         options = url.parse(target);
         options.headers = request.headers;
         delete options.headers.host;
@@ -37,10 +36,11 @@
 
     get_box_status = function (request, response, params) {
      // This function needs documentation.
-        var box, options, status, target;
+        var box, db, options, status, target;
         box = params[0];
+        db = this;
         status = params[1];
-        target = config.couchdb.db +
+        target = db +
                 '/_list/as-array/jobs?key=["' + box + '","' + status + '"]';
         options = url.parse(target);
         options.headers = request.headers;
@@ -53,8 +53,9 @@
 
     get_static_content = function (request, response, params) {
      // This function needs documentation.
-        var options, target;
-        target = config.couchdb.www + request.url;
+        var db, options, target;
+        db = this;
+        target = db + request.url;
         options = url.parse(target);
         options.headers = request.headers;
         delete options.headers.host;
@@ -67,34 +68,59 @@
 
     https = require('https');
 
-    init = function (options) {
+    init = function (url) {
      // This function needs documentation.
-        config = options;
-        return;
+        return {
+            get_box_key: function (request, response, params) {
+             // This function needs documentation.
+                return get_box_key.call(url, request, response, params);
+            },
+            get_box_status: function (request, response, params) {
+             // This function needs documentation.
+                return get_box_status.call(url, request, response, params);
+            },
+            get_static_content: function (request, response, params) {
+             // This function needs documentation.
+                return get_static_content.call(url, request, response, params);
+            },
+            post_box_key: function (request, response, params) {
+             // This function needs documentation.
+                return post_box_key.call(url, request, response, params);
+            },
+            set_static_content: function (public_html) {
+             // This function needs documentation.
+                return set_static_content.call(url, public_html);
+            }
+        };
     };
 
     post_box_key = function (request, response, params) {
      // This function needs documentation.
-        if ((request.headers.hasOwnProperty('content-length') === false) ||
-                (request.headers['content-length'] > config.max_fu_size)) {
-         // Either the user is using incorrect headers or he/she is uploading
-         // a file that is too big. Don't fool with it either way. QMachine is
-         // not a free hard drive for people who are too cheap to buy storage,
-         // because we didn't buy storage, either ;-)
-            response.writeHead(444);
+        var box, db, key, sql, temp;
+        box = params[0];
+        db = this;
+        key = params[1];
+        sql = 'INSERT OR REPLACE INTO avars VALUES ($box, $key, $status, $val)';
+        temp = [];
+        request.on('data', function (chunk) {
+         // This function needs documentation.
+            temp.push(chunk.toString());
+            return;
+        });
+        request.on('end', function () {
+         // This function needs documentation.
+            var body = JSON.parse(temp.join(''));
+            db.run(sql, {
+                $box:       body.box,
+                $key:       body.key,
+                $status:    body.status,
+                $val:       JSON.stringify(body.val)
+            });
+            response.writeHead(201, {'Content-Type': 'text/plain'});
+            response.write('Hooray!');
             response.end();
             return;
-        }
-        var box, key, options, target;
-        box = params[0];
-        key = params[1];
-        target = config.couchdb.db + '/_update/timestamp/' + box + '&' + key;
-        options = url.parse(target);
-        options.headers = request.headers;
-        delete options.headers.host;
-        options.headers['Content-Type'] = 'application/json';
-        options.method = 'POST';
-        proxy(request, response, options);
+        });
         return;
     };
 
@@ -125,19 +151,21 @@
         return;
     };
 
+    set_static_content = function (public_html) {
+     // This function needs documentation.
+        if (typeof public_html !== 'string') {
+            public_html = 'public_html/';
+        }
+        var db = this;
+        console.warn('Use "couchapp" or "kanso" to upload static content.');
+        return;
+    };
+
     url = require('url');
 
  // Out-of-scope definitions
 
-    exports.get_box_key = get_box_key;
-
-    exports.get_box_status = get_box_status;
-
-    exports.get_static_content = get_static_content;
-
     exports.init = init;
-
-    exports.post_box_key = post_box_key;
 
  // That's all, folks!
 

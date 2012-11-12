@@ -2,10 +2,22 @@
 
 //- defs-postgres.js ~~
 //
-//  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
+//  KNOWN ISSUES:
 //
-//                                                      ~~ (c) SRW, 28 Sep 2012
-//                                                  ~~ last updated 01 Nov 2012
+//  The following call causes a "tuple concurrently updated" error:
+//
+//      connection_string = 'postgres://localhost:5432/' + process.env.USER;
+//      qm.launch_server({
+//          api: {
+//              postgres:   connection_string
+//          },
+//          www: {
+//              postgres:   connection_string
+//          }
+//      });
+//
+//                                                      ~~ (c) SRW, 25 Sep 2012
+//                                                  ~~ last updated 10 Nov 2012
 
 (function () {
     'use strict';
@@ -14,29 +26,24 @@
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
- // Prerequisites
-
  // Declarations
 
-    var Q, avar, config, db, fs, get_box_key, get_box_status,
-        get_static_content, init, pg, post_box_key;
+    var fs, get_box_key, get_box_status, get_static_content, init, mime_types,
+        pg, post_box_key, set_static_content;
 
  // Definitions
-
-    Q = require('quanah');
-
-    avar = Q.avar;
 
     fs = require('fs');
 
     get_box_key = function (request, response, params) {
      // This function needs documentation.
-        var box, key, sql;
+        var box, db, key, sql;
         box = params[0];
+        db = this;
         key = params[1];
         sql = 'SELECT * FROM avars ' +
                 "WHERE box = '" + box + "' AND key = '" + key + "'";
-        db.val.query(sql, function (err, results) {
+        db.query(sql, function (err, results) {
          // This function needs documentation.
             var row;
             if (err !== null) {
@@ -63,12 +70,13 @@
 
     get_box_status = function (request, response, params) {
      // This function needs documentation.
-        var box, status, pgsql;
+        var box, db, status, pgsql;
         box = params[0];
+        db = this;
         status = params[1];
         pgsql = 'SELECT key FROM avars ' +
                 "WHERE box = '" + box + "' AND status = '" + status + "'";
-        db.val.query(pgsql, function (err, results) {
+        db.query(pgsql, function (err, results) {
          // This function needs documentation.
             if ((err !== null) || (results === undefined)) {
                 results = {rows: []};
@@ -86,13 +94,14 @@
 
     get_static_content = function (request, response, params) {
      // This function needs documentation.
-        var sql, target;
+        var db, sql, target;
+        db = this;
         target = request.url.split('?')[0];
         if (target === '/') {
             target = '/index.html';
         }
-        sql = "SELECT file FROM public_html WHERE name = '" + target + "'";
-        db.val.query(sql, function (err, results) {
+        sql = 'SELECT file FROM public_html WHERE name = "' + target + '"';
+        db.query(sql, function (err, results) {
          // This function needs documentation.
             if ((err !== null) || (results === undefined) ||
                     ((results.rows.length === 0))) {
@@ -103,122 +112,41 @@
             var extension, headers;
             extension = target.split('.').pop();
             headers = {
-             // ...
+                'Content-Type': 'application/octet-stream'
             };
-            switch (extension) {
-            case 'appcache':
-                headers['Content-Type'] = 'text/cache-manifest';
-                break;
-            case 'css':
-                headers['Content-Type'] = 'text/css';
-                break;
-            case 'html':
-                headers['Content-Type'] = 'text/html';
-                break;
-            case 'ico':
-                headers['Content-Type'] = 'image/x-icon';
-                break;
-            case 'jpg':
-                headers['Content-Type'] = 'image/jpeg';
-                break;
-            case 'js':
-             // NOTE: Should I use 'application/javascript' instead?
-                headers['Content-Type'] = 'text/javascript';
-                break;
-            case 'json':
-                headers['Content-Type'] = 'application/json';
-                break;
-            case 'manifest':
-                headers['Content-Type'] = 'text/cache-manifest';
-                break;
-            case 'png':
-                headers['Content-Type'] = 'image/png';
-                break;
-            case 'txt':
-                headers['Content-Type'] = 'text/plain';
-                break;
-            default:
-                headers['Content-Type'] = 'application/octet-stream';
+            if (mime_types.hasOwnProperty(extension)) {
+                headers['Content-Type'] = mime_types[extension];
             }
             response.writeHead(200, headers);
-            response.write(results.rows[0].file);
+            response.write(results.row[0].file);
             response.end();
             return;
         });
         return;
     };
 
-    init = function (options) {
+    init = function (connection_string) {
      // This function needs documentation.
-        config = options;
-        db = Q.avar();
-        db.onerror = function (message) {
+        var create_db, create_stored_procedures, create_tables, db, ready;
+        create_db = function () {
          // This function needs documentation.
-            console.error('Error:', message);
-            if ((db.val instanceof Object) && (db.val.hasOwnProperty('end'))) {
-                db.val.end();
-            }
-            return;
+            var db;
+            db = new pg.Client(connection_string);
+            db.on('connect', create_tables);
+            db.on('error', function (err) {
+             // This function needs documentation.
+                console.error('Error:', err);
+                return;
+            });
+            db.connect();
+            return db;
         };
-        db.onready = function (evt) {
+        create_stored_procedures = function () {
          // This function needs documentation.
-            db.val = new pg.Client(config.postgres);
-            db.val.on('connect', function () {
-             // This function needs documentation.
-                // ...
-                return evt.exit();
-            });
-            db.val.on('error', function (err) {
-             // This function needs documentation.
-                return evt.fail(err);
-            });
-            db.val.connect();
-            return;
-        };
-        db.onready = function (evt) {
-         // This function assumes you have already preconfigured your Postgres
-         // instance so that the appropriate databases already exist. I may or
-         // may not automate the safety code for that part in the future ...
-            var pgsql;
-            pgsql = 'CREATE TABLE IF NOT EXISTS avars (' +
-                    '   box TEXT NOT NULL,' +
-                    '   key TEXT NOT NULL,' +
-                    '   status TEXT,'       +
-                    '   val TEXT NOT NULL,' +
-                    '   UNIQUE (box, key)'  +
-                    ')';
-            db.val.query(pgsql, function (err) {
-             // This function needs documentation.
-                if (err !== null) {
-                    return evt.fail(err);
-                }
-                return evt.exit();
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            var pgsql;
-            pgsql = 'CREATE TABLE IF NOT EXISTS public_html (' +
-                    '   name TEXT NOT NULL,'    +
-                    '   file BYTEA NOT NULL,'   +
-                    '   UNIQUE (name)'          +
-                    ')';
-            db.val.query(pgsql, function (err) {
-             // This function needs documentation.
-                if (err !== null) {
-                    return evt.fail(err);
-                }
-                return evt.exit();
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            var pgsql;
-            pgsql = [
+            var code1, code2;
+            code1 = [
                 'CREATE OR REPLACE FUNCTION upsert_avar' +
-                '(b2 TEXT, k2 TEXT, s2 TEXT, v2 TEXT) RETURNS VOID AS',
+                    '(b2 TEXT, k2 TEXT, s2 TEXT, v2 TEXT) RETURNS VOID AS',
                 '$$',
                 'BEGIN',
                 '   LOOP',
@@ -239,19 +167,7 @@
                 '$$',
                 'LANGUAGE plpgsql;'
             ];
-            db.val.query(pgsql.join('\n'), function (err) {
-             // This function needs documentation.
-                if (err !== null) {
-                    return evt.fail(err);
-                }
-                return evt.exit();
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            var pgsql;
-            pgsql = [
+            code2 = [
                 'CREATE OR REPLACE FUNCTION upsert_file',
                 '(n2 TEXT, f2 BYTEA) RETURNS VOID AS',
                 '$$',
@@ -272,85 +188,99 @@
                 '$$',
                 'LANGUAGE plpgsql;'
             ];
-            db.val.query(pgsql.join('\n'), function (err) {
+            db.query(code1.join('\n'), function (err) {
              // This function needs documentation.
                 if (err !== null) {
-                    return evt.fail(err);
+                    throw err;
                 }
-                return evt.exit();
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            var public_html = process.cwd() + '/public_html/';
-            fs.exists(public_html, function (exists) {
-             // This function needs documentation.
-                if (exists === false) {
-                    return evt.exit();
-                }
-                fs.readdir(public_html, function (err, files) {
+                db.query(code2.join('\n'), function (err) {
                  // This function needs documentation.
                     if (err !== null) {
-                        return evt.fail(err);
+                        throw err;
                     }
-                    var remaining = files.length;
-                    files.forEach(function (name) {
-                     // This function needs documentation.
-                        fs.readFile(public_html + name, function (err, file) {
-                         // This function needs documentation.
-                            if (err !== null) {
-                                return evt.fail(err);
-                            }
-                            var args, callback, pgsql;
-                            args = ['/' + name, '\\x' + file.toString('hex')];
-                            callback = function (err) {
-                             // This function needs documentation.
-                                if (err !== null) {
-                                    return evt.fail(err);
-                                }
-                                remaining -= 1;
-                                if (remaining === 0) {
-                                    return evt.exit();
-                                }
-                                return;
-                            };
-                            pgsql = 'SELECT upsert_file($1, $2)';
-                            db.val.query(pgsql, args, callback);
-                            return;
-                        });
-                        return;
-                    });
+                    ready = true;
                     return;
                 });
                 return;
             });
             return;
         };
-        db.onready = function (evt) {
+        create_tables = function () {
          // This function needs documentation.
-            console.log('Database is ready.');
-            return evt.exit();
+            var code1, code2;
+            code1 = 'CREATE TABLE IF NOT EXISTS avars (' +
+                    '   box TEXT NOT NULL,'     +
+                    '   key TEXT NOT NULL,'     +
+                    '   status TEXT,'           +
+                    '   val TEXT NOT NULL,'     +
+                    '   UNIQUE (box, key)'      +
+                    ')';
+            code2 = 'CREATE TABLE IF NOT EXISTS public_html (' +
+                    '   name TEXT NOT NULL,'    +
+                    '   file BYTEA NOT NULL,'   +
+                    '   UNIQUE (name)'          +
+                    ')';
+            db.query(code1, function (err) {
+             // This function needs documentation.
+                if (err !== null) {
+                    throw err;
+                }
+                db.query(code2, function (err) {
+                 // This function needs documentation.
+                    if (err !== null) {
+                        throw err;
+                    }
+                    create_stored_procedures();
+                    return;
+                });
+                return;
+            });
+            return;
         };
-        return;
+        db = create_db();
+        ready = false;
+        return {
+            get_box_key: function (request, response, params) {
+             // This function needs documentation.
+                return get_box_key.call(db, request, response, params);
+            },
+            get_box_status: function (request, response, params) {
+             // This function needs documentation.
+                return get_box_status.call(db, request, response, params);
+            },
+            get_static_content: function (request, response, params) {
+             // This function needs documentation.
+                return get_static_content.call(db, request, response, params);
+            },
+            post_box_key: function (request, response, params) {
+             // This function needs documentation.
+                return post_box_key.call(db, request, response, params);
+            },
+            set_static_content: function f(public_html) {
+             // This function needs documentation.
+                if (ready === true) {
+                    set_static_content.call(db, public_html);
+                } else {
+                    process.nextTick(function () {
+                     // This function needs documentation.
+                        f(public_html);
+                        return;
+                    });
+                }
+                return;
+            }
+        };
     };
 
-    pg = require('pg').native;
+    mime_types = require('./mime-types');
+
+    pg = require('pg');                 //- or, use `require('pg').native` ...
 
     post_box_key = function (request, response, params) {
      // This function needs documentation.
-        if ((request.headers.hasOwnProperty('content-length') === false) ||
-                (request.headers['content-length'] > config.max_fu_size)) {
-         // Either the user is using incorrect headers or he/she is uploading
-         // a file that is too big. Don't fool with it either way. QMachine is
-         // not a free hard drive for people who are too cheap to buy storage,
-         // because we didn't buy storage, either ;-)
-            response.writeHead(444);
-            response.end();
-            return;
-        }
-        var box, key, sql, temp;
+        var box, db, key, sql, temp;
         box = params[0];
+        db = this;
         key = params[1];
         sql = 'SELECT upsert_avar($1, $2, $3, $4)';
         temp = [];
@@ -376,7 +306,57 @@
             };
             x = JSON.parse(temp.join(''));
             x.val = JSON.stringify(x.val);
-            db.val.query(sql, [x.box, x.key, x.status, x.val], callback);
+            db.query(sql, [x.box, x.key, x.status, x.val], callback);
+            return;
+        });
+        return;
+    };
+
+    set_static_content = function (public_html) {
+     // This function needs documentation.
+        if (typeof public_html !== 'string') {
+            public_html = 'public_html/';
+        }
+        var db = this;
+        fs.exists(public_html, function (exists) {
+         // This function needs documentation.
+            if (exists === false) {
+                console.warn('No "' + public_html + '" directory found.');
+                return;
+            }
+            fs.readdir(public_html, function (err, files) {
+             // This function needs documentation.
+                if (err !== null) {
+                    throw err;
+                }
+                var remaining = files.length;
+                files.forEach(function (name) {
+                 // This function needs documentation.
+                    fs.readFile(public_html + name, function (err, file) {
+                     // This function needs documentation.
+                        if (err !== null) {
+                            throw err;
+                        }
+                        var args, pgsql;
+                        args = ['/' + name, '\\x' + file.toString('hex')];
+                        pgsql = 'SELECT upsert_file($1, $2)';
+                        db.query(pgsql, args, function (err) {
+                         // This function needs documentation.
+                            if (err !== null) {
+                                throw err;
+                            }
+                            remaining -= 1;
+                            if (remaining === 0) {
+                                console.log('Static content is ready.');
+                            }
+                            return;
+                        });
+                        return;
+                    });
+                    return;
+                });
+                return;
+            });
             return;
         });
         return;
@@ -384,15 +364,7 @@
 
  // Out-of-scope definitions
 
-    exports.get_box_key = get_box_key;
-
-    exports.get_box_status = get_box_status;
-
-    exports.get_static_content = get_static_content;
-
     exports.init = init;
-
-    exports.post_box_key = post_box_key;
 
  // That's all, folks!
 

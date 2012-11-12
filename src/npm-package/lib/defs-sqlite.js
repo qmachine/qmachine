@@ -5,7 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 01 Nov 2012
+//                                                  ~~ last updated 10 Nov 2012
 
 (function () {
     'use strict';
@@ -14,29 +14,24 @@
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
- // Prerequisites
-
  // Declarations
 
-    var Q, avar, config, db, fs, get_box_key, get_box_status,
-        get_static_content, init, post_box_key, sqlite3;
+    var fs, get_box_key, get_box_status, get_static_content, init, mime_types,
+        post_box_key, set_static_content, sqlite3;
 
  // Definitions
-
-    Q = require('quanah');
-
-    avar = Q.avar;
 
     fs = require('fs');
 
     get_box_key = function (request, response, params) {
      // This function needs documentation.
-        var box, key, sql;
+        var box, db, key, sql;
         box = params[0];
+        db = this;
         key = params[1];
         sql = 'SELECT * FROM avars ' +
                 'WHERE box = "' + box + '" AND key = "' + key + '"';
-        db.val.get(sql, function (err, row) {
+        db.get(sql, function (err, row) {
          // This function needs documentation.
             if ((err !== null) || (row === undefined)) {
                 row = {};
@@ -57,13 +52,13 @@
 
     get_box_status = function (request, response, params) {
      // This function needs documentation.
-        var box, status, sql;
+        var box, db, status, sql;
         box = params[0];
+        db = this;
         status = params[1];
-        // ...
         sql = 'SELECT key FROM avars ' +
                 'WHERE box = "' + box + '" AND status = "' + status + '"';
-        db.val.all(sql, function (err, rows) {
+        db.all(sql, function (err, rows) {
          // This function needs documentation.
             if ((err !== null) || (rows === undefined)) {
                 rows = [];
@@ -81,13 +76,14 @@
 
     get_static_content = function (request, response, params) {
      // This function needs documentation.
-        var sql, target;
+        var db, sql, target;
+        db = this;
         target = request.url.split('?')[0];
         if (target === '/') {
             target = '/index.html';
         }
         sql = 'SELECT file FROM public_html WHERE name = "' + target + '"';
-        db.val.get(sql, function (err, row) {
+        db.get(sql, function (err, row) {
          // This function needs documentation.
             if ((err !== null) || (row === undefined)) {
                 response.writeHead(444);
@@ -97,42 +93,10 @@
             var extension, headers;
             extension = target.split('.').pop();
             headers = {
-             // ...
+                'Content-Type': 'application/octet-stream'
             };
-            switch (extension) {
-            case 'appcache':
-                headers['Content-Type'] = 'text/cache-manifest';
-                break;
-            case 'css':
-                headers['Content-Type'] = 'text/css';
-                break;
-            case 'html':
-                headers['Content-Type'] = 'text/html';
-                break;
-            case 'ico':
-                headers['Content-Type'] = 'image/x-icon';
-                break;
-            case 'jpg':
-                headers['Content-Type'] = 'image/jpeg';
-                break;
-            case 'js':
-             // NOTE: Should I use 'application/javascript' instead?
-                headers['Content-Type'] = 'text/javascript';
-                break;
-            case 'json':
-                headers['Content-Type'] = 'application/json';
-                break;
-            case 'manifest':
-                headers['Content-Type'] = 'text/cache-manifest';
-                break;
-            case 'png':
-                headers['Content-Type'] = 'image/png';
-                break;
-            case 'txt':
-                headers['Content-Type'] = 'text/plain';
-                break;
-            default:
-                headers['Content-Type'] = 'application/octet-stream';
+            if (mime_types.hasOwnProperty(extension)) {
+                headers['Content-Type'] = mime_types[extension];
             }
             response.writeHead(200, headers);
             response.write(row.file);
@@ -142,147 +106,96 @@
         return;
     };
 
-    init = function (options) {
+    init = function (path_to_db_file) {
      // This function needs documentation.
-        config = options;
-        db = Q.avar();
-        db.onerror = function (message) {
+        var create_db, create_tables, db, ready;
+        create_db = function () {
          // This function needs documentation.
-            console.error('Error:', message);
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            db.val = new sqlite3.cached.Database('main.db', function (err) {
+            var db;
+            db = new sqlite3.cached.Database(path_to_db_file, function (err) {
              // This function needs documentation.
                 if (err !== null) {
-                    return evt.fail(err);
+                    throw err;
                 }
-                return evt.exit();
+                create_tables();
+                return;
             });
-            return;
+            return db;
         };
-        db.onready = function (evt) {
+        create_tables = function () {
          // This function needs documentation.
-            var code;
-            code = 'CREATE TABLE IF NOT EXISTS avars ' +
-                    '(box TEXT, key TEXT, status TEXT, val TEXT)';
-            db.val.run(code, function (err) {
+            var code1, code2;
+            code1 = 'CREATE TABLE IF NOT EXISTS avars (' +
+                    '   box TEXT NOT NULL,'     +
+                    '   key TEXT NOT NULL,'     +
+                    '   status TEXT,'           +
+                    '   val TEXT NOT NULL,'     +
+                    '   UNIQUE (box, key)'      +
+                    ')';
+            code2 = 'CREATE TABLE IF NOT EXISTS public_html (' +
+                    '   name TEXT NOT NULL,'    +
+                    '   file BLOB NOT NULL,'    +
+                    '   UNIQUE (name)'          +
+                    ')';
+            db.run(code1, function (err) {
              // This function needs documentation.
                 if (err !== null) {
-                    return evt.fail(err);
+                    throw err;
                 }
-                return evt.exit();
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            var code;
-            code = 'CREATE TABLE IF NOT EXISTS public_html ' +
-                    '(name TEXT, file BLOB)';
-            db.val.run(code, function (err) {
-             // This function needs documentation.
-                if (err !== null) {
-                    return evt.fail(err);
-                }
-                return evt.exit();
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            var code;
-            code = 'CREATE UNIQUE INDEX IF NOT EXISTS x ON avars (box, key)';
-            this.val.run(code, function (err) {
-             // This function needs documentation.
-                if (err !== null) {
-                    return evt.fail(err);
-                }
-                return evt.exit();
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            var code;
-            code = 'CREATE UNIQUE INDEX IF NOT EXISTS y ON public_html (name)';
-            this.val.run(code, function (err) {
-             // This function needs documentation.
-                if (err !== null) {
-                    return evt.fail(err);
-                }
-                return evt.exit();
-            });
-            return;
-        };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            var public_html = 'public_html/';
-            fs.exists(public_html, function (exists) {
-             // This function needs documentation.
-                if (exists === false) {
-                    return evt.exit();
-                }
-                fs.readdir(public_html, function (err, files) {
+                db.run(code2, function (err) {
                  // This function needs documentation.
                     if (err !== null) {
-                        return evt.fail(err);
+                        throw err;
                     }
-                    var remaining = files.length;
-                    files.forEach(function (name) {
-                     // This function needs documentation.
-                        fs.readFile(public_html + name, function (err, file) {
-                         // This function needs documentation.
-                            if (err !== null) {
-                                return evt.fail(err);
-                            }
-                            var sql;
-                            sql = 'INSERT OR REPLACE INTO public_html ' +
-                                    '(name, file) VALUES (?, ?)';
-                            db.val.run(sql, '/' + name, file, function (err) {
-                             // This function needs documentation.
-                                if (err !== null) {
-                                    return evt.fail(err);
-                                }
-                                remaining -= 1;
-                                if (remaining === 0) {
-                                    return evt.exit();
-                                }
-                                return;
-                            });
-                            return;
-                        });
-                        return;
-                    });
+                    ready = true;
                     return;
                 });
                 return;
             });
             return;
         };
-        db.onready = function (evt) {
-         // This function needs documentation.
-            console.log('Database is ready.');
-            return evt.exit();
+        db = create_db();
+        ready = false;
+        return {
+            get_box_key: function (request, response, params) {
+             // This function needs documentation.
+                return get_box_key.call(db, request, response, params);
+            },
+            get_box_status: function (request, response, params) {
+             // This function needs documentation.
+                return get_box_status.call(db, request, response, params);
+            },
+            get_static_content: function (request, response, params) {
+             // This function needs documentation.
+                return get_static_content.call(db, request, response, params);
+            },
+            post_box_key: function (request, response, params) {
+             // This function needs documentation.
+                return post_box_key.call(db, request, response, params);
+            },
+            set_static_content: function f(public_html) {
+             // This function needs documentation.
+                if (ready === true) {
+                    set_static_content.call(db, public_html);
+                } else {
+                    process.nextTick(function () {
+                     // This function needs documentation.
+                        f(public_html);
+                        return;
+                    });
+                }
+                return;
+            }
         };
-        return;
     };
+
+    mime_types = require('./mime-types');
 
     post_box_key = function (request, response, params) {
      // This function needs documentation.
-        if ((request.headers.hasOwnProperty('content-length') === false) ||
-                (request.headers['content-length'] > config.max_fu_size)) {
-         // Either the user is using incorrect headers or he/she is uploading
-         // a file that is too big. Don't fool with it either way. QMachine is
-         // not a free hard drive for people who are too cheap to buy storage,
-         // because we didn't buy storage, either ;-)
-            response.writeHead(444);
-            response.end();
-            return;
-        }
-        var box, key, sql, temp;
+        var box, db, key, sql, temp;
         box = params[0];
+        db = this;
         key = params[1];
         sql = 'INSERT OR REPLACE INTO avars VALUES ($box, $key, $status, $val)';
         temp = [];
@@ -294,7 +207,7 @@
         request.on('end', function () {
          // This function needs documentation.
             var body = JSON.parse(temp.join(''));
-            db.val.run(sql, {
+            db.run(sql, {
                 $box:       body.box,
                 $key:       body.key,
                 $status:    body.status,
@@ -308,19 +221,61 @@
         return;
     };
 
+    set_static_content = function (public_html) {
+     // This function needs documentation.
+        if (typeof public_html !== 'string') {
+            public_html = 'public_html/';
+        }
+        var db = this;
+        fs.exists(public_html, function (exists) {
+         // This function needs documentation.
+            if (exists === false) {
+                console.warn('No "' + public_html + '" directory found.');
+                return;
+            }
+            fs.readdir(public_html, function (err, files) {
+             // This function needs documentation.
+                if (err !== null) {
+                    throw err;
+                }
+                var remaining = files.length;
+                files.forEach(function (name) {
+                 // This function needs documentation.
+                    fs.readFile(public_html + name, function (err, file) {
+                     // This function needs documentation.
+                        if (err !== null) {
+                            throw err;
+                        }
+                        var sql;
+                        sql = 'INSERT OR REPLACE INTO public_html ' +
+                                '(name, file) VALUES (?, ?)';
+                        db.run(sql, '/' + name, file, function (err) {
+                         // This function needs documentation.
+                            if (err !== null) {
+                                throw err;
+                            }
+                            remaining -= 1;
+                            if (remaining === 0) {
+                                console.log('Static content is ready.');
+                            }
+                            return;
+                        });
+                        return;
+                    });
+                    return;
+                });
+                return;
+            });
+            return;
+        });
+        return;
+    };
+
     sqlite3 = require('sqlite3');
 
  // Out-of-scope definitions
 
-    exports.get_box_key = get_box_key;
-
-    exports.get_box_status = get_box_status;
-
-    exports.get_static_content = get_static_content;
-
     exports.init = init;
-
-    exports.post_box_key = post_box_key;
 
  // That's all, folks!
 
