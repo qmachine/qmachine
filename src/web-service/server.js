@@ -2,6 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
+//                                                  ~~ last updated 12 Nov 2012
 
 (function () {
     'use strict';
@@ -12,68 +13,45 @@
 
  // Declarations
 
-    var config, qm;
+    var options, qm;
 
  // Definitions
 
-    config = {
-        couch:      'http://localhost:5984',
-        host:       '0.0.0.0',
-        mongo:      'mongodb://localhost:27017',
-        port:       8177,
-        postgres:   'postgres://localhost:5432/' + process.env.USER
+    options = {
+        max_workers:    require('os').cpus().length
     };
 
     qm = require('qm');
 
  // Invocations
 
-    if (process.env.COUCHDB_URL !== undefined) {
-     // This is my own environment variable that I use with Heroku and AppFog.
-        config.couch = process.env.COUCHDB_URL;
-    } else if (process.env.CLOUDANT_URL !== undefined) {
-     // This is for use with Heroku.
-        config.couch = process.env.CLOUDANT_URL;
-    } else if (process.env.DATABASE_URL !== undefined) {
-     // This is for use with the Heroku PostgreSQL service.
-        config.postgres = process.env.DATABASE_URL;
-    }
-
-    if (process.env.MONGODB_URL !== undefined) {
-     // This is my own environment variable that I use with Heroku and AppFog.
-        config.mongo = process.env.MONGODB_URL;
-    }
-
     if (process.env.IP !== undefined) {
      // This is for debugging on Cloud9, if memory serves ...
-        config.host = process.env.IP;
+        options.hostname = process.env.IP;
     }
 
     if (process.env.PORT !== undefined) {
      // This is for use with Heroku.
-        config.port = process.env.PORT;
+        options.port = process.env.PORT;
+    }
+
+    if (process.env.QM_API_STRING !== undefined) {
+     // This is a custom environment variable I use with Heroku and AppFog.
+        options.api = JSON.parse(process.env.QM_API_STRING);
+    }
+
+    if (process.env.QM_WWW_STRING !== undefined) {
+     // This is a custom environment variable I use with Heroku and AppFog.
+        options.www = JSON.parse(process.env.QM_WWW_STRING);
     }
 
     if (process.env.VMC_APP_PORT !== undefined) {
      // This is for use with AppFog.
-        config.host = null;
-        config.port = process.env.VMC_APP_PORT;
+        options.hostname = null;
+        options.port = process.env.VMC_APP_PORT;
     }
 
-    qm.launch_service({
-        couchdb: {
-            db:     config.couch + '/db/_design/app',
-            www:    config.couch + '/www/_design/app/_rewrite'
-        },
-        hostname:   config.host,
-        mongo: {
-            host:   require('url').parse(config.mongo).hostname,
-            port:   require('url').parse(config.mongo).port
-        },
-        port:       config.port,
-        postgres:   config.postgres,
-        storage:    'couchdb'
-    });
+    qm.launch_service(options);
 
  // That's all, folks!
 

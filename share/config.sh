@@ -8,6 +8,7 @@
 #   doesn't make a lot of sense to try and embed it into the Makefile anyway.
 #
 #                                                       ~~ (c) SRW, 29 Jun 2012
+#                                                   ~~ last updated 12 Nov 2012
 
 #-  First, we'll enable strict adherence to the POSIX standard.
 
@@ -86,6 +87,13 @@ generate_config ${NODEJS_PLIST:=/dev/null} <<-EOF
         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
     <plist version="1.0">
       <dict>
+        <key>EnvironmentVariables</key>
+        <dict>
+          <key>QM_API_STRING</key>
+          <string>${QM_API_STRING}</string>
+          <key>QM_WWW_STRING</key>
+          <string>${QM_WWW_STRING}</string>
+        </dict>
         <key>KeepAlive</key>
         <false/>
         <key>Label</key>

@@ -93,7 +93,8 @@ reset:
 
 ###
 
-.PHONY: browser-client chrome-hosted-app local-sandbox npm-package web-service
+.PHONY: browser-client chrome-hosted-app local-couch local-sandbox npm-package
+.PHONY: web-service
 
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
@@ -129,10 +130,12 @@ chrome-hosted-app:                                                          \
     )
 	@   $(call hilite, 'Created $@.')
 
-local-sandbox:
+local-couch:
 	@   $(MAKE)                                                         \
                 COUCHDB_URL="$(strip $(LOCAL_COUCH))"                       \
                 MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
+                QM_API_STRING='{"couch":"$(LOCAL_COUCH)/db/_design/app"}'   \
+                QM_WWW_STRING='{"couch":"$(LOCAL_COUCH)/www/_design/app"}'  \
                     $(PLISTS)                                               \
                     $(VAR_DIR)/couchdb.ini                                  \
                     $(VAR_DIR)/nodejs/node_modules                          \
@@ -146,6 +149,25 @@ local-sandbox:
             $(CD) $(BUILD_DIR)/web-service                              ;   \
             COUCHDB_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push db      ;   \
             COUCHDB_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push www     ;   \
+            if [ $$? -eq 0 ]; then                                          \
+                $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
+                $(call open-in-browser, $(strip $(LOCAL_NODE)))         ;   \
+            else                                                            \
+                $(call alert, 'Service is not running.')                ;   \
+            fi
+
+local-sandbox:
+	@   $(MAKE)                                                         \
+                MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
+                QM_API_STRING='{"sqlite":":memory:"}'                       \
+                QM_WWW_STRING='{"sqlite":":memory:"}'                       \
+                    browser-client                                          \
+                    $(VAR_DIR)/com.QM.nodejs.plist                          \
+                    $(VAR_DIR)/nodejs/node_modules                          \
+                    $(VAR_DIR)/nodejs/server.js                         ;   \
+            $(CP) $(BUILD_DIR)/browser-client                               \
+                $(VAR_DIR)/nodejs/public_html                           ;   \
+            $(LAUNCHCTL) load -w $(VAR_DIR)/com.QM.nodejs.plist         ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
                 $(call open-in-browser, $(strip $(LOCAL_NODE)))         ;   \
