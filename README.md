@@ -9,11 +9,11 @@ My only reason for using Node.js is the lack of support for
 [CORS](http://www.w3.org/TR/cors/) in CouchDB, which is otherwise completely
 sufficient by itself to implement the QMachine API; the silver lining here,
 however, is that the CORS-enabled proxy I wrote with Node.js can then be bound
-to other databases like [SQLite](http://www.sqlite.org) and
-[PostgreSQL](http://www.postgresql.org). Keep in mind that the bindings for
-databases other than CouchDB are still experimental! Also, because I am
-currently writing several academic papers about Quanah and QMachine, the
-Node.js client may be out-of-date.
+to other databases like [MongoDB](http://www.mongodb.org/),
+[PostgreSQL](http://www.postgresql.org), and [SQLite](http://www.sqlite.org).
+Keep in mind that the bindings for databases other than CouchDB are still
+experimental! Also, because I am currently writing several academic papers
+about Quanah and QMachine, the Node.js client has fallen out of date.
 
 As in all my projects, the best documentation is contained inline as comments
 within the source code. I have written some tutorials recently, but those are
