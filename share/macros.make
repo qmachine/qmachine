@@ -164,8 +164,11 @@ define replace-iso-date
     $(SED) -e 's|ISO_DATE|$(shell $(DATE) "+%Y-%m-%d")|g' $(1) > $(2)
 endef
 
-define replace-mothership
-    $(SED) -e 's|MOTHERSHIP|$(strip $(MOTHERSHIP))|g' $(1) > $(2)
+define replace-url-macros
+    $(SED) \
+        -e 's|MOTHERSHIP|$(strip $(MOTHERSHIP))|g'  \
+        -e 's|QM_API_URL|$(strip $(QM_API_URL))|g'  \
+        -e 's|QM_WWW_URL|$(strip $(QM_WWW_URL))|g'  $(1) > $(2)
 endef
 
 define show-usage-info

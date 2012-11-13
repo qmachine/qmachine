@@ -47,22 +47,24 @@
 #
 #                                                       ~~ (c) SRW, 12 Nov 2012
 
-PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
+PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
 include $(PROJ_ROOT)/share/macros.make
 
-BUILD_DIR       :=  $(PROJ_ROOT)/build
-CACHE_DIR       :=  $(PROJ_ROOT)/cache
-ICONS_DIR       :=  $(PROJ_ROOT)/icons
-SHARE_DIR       :=  $(PROJ_ROOT)/share
-SRC_DIR         :=  $(PROJ_ROOT)/src
-VAR_DIR         :=  $(PROJ_ROOT)/var
+BUILD_DIR   :=  $(PROJ_ROOT)/build
+CACHE_DIR   :=  $(PROJ_ROOT)/cache
+ICONS_DIR   :=  $(PROJ_ROOT)/icons
+SHARE_DIR   :=  $(PROJ_ROOT)/share
+SRC_DIR     :=  $(PROJ_ROOT)/src
+VAR_DIR     :=  $(PROJ_ROOT)/var
 
-HEROKU_APP      :=  qmachine
-LOCAL_COUCH     :=  http://localhost:5984
-LOCAL_NODE      :=  http://localhost:8177
-MOTHERSHIP      :=  https://$(strip $(HEROKU_APP)).herokuapp.com
-PLISTS          :=  $(addprefix $(VAR_DIR)/com.QM., couchdb.plist nodejs.plist)
+HEROKU_APP  :=  qmachine
+LOCAL_COUCH :=  http://localhost:5984
+LOCAL_NODE  :=  http://localhost:8177
+MOTHERSHIP  :=  https://$(strip $(HEROKU_APP)).herokuapp.com
+PLISTS      :=  $(addprefix $(VAR_DIR)/com.QM., couchdb.plist nodejs.plist)
+QM_API_URL  :=  $(MOTHERSHIP)
+QM_WWW_URL  :=  $(MOTHERSHIP)
 
 .PHONY: all clean clobber distclean help reset
 .SILENT: ;
@@ -269,7 +271,7 @@ $(BUILD_DIR)/chrome-hosted-app/snapshot-%.png:                              \
     |   $(BUILD_DIR)/chrome-hosted-app
 	@   $(PHANTOMJS)                                                    \
                 --config=$(SRC_DIR)/chrome-hosted-app/phantomjs-config.json \
-                $(SHARE_DIR)/snapshot.js $(MOTHERSHIP) $* $@
+                $(SHARE_DIR)/snapshot.js $(QM_WWW_URL) $* $@
 
 $(BUILD_DIR)/npm-package: $(SRC_DIR)/npm-package | $(BUILD_DIR)
 	@   $(CP) $< $@
@@ -312,13 +314,13 @@ $(CACHE_DIR)/homepage.js:                                                   \
     $(CACHE_DIR)/q.js                                                       \
     $(CACHE_DIR)/main.js                                                    \
     |   $(CACHE_DIR)
-	@   $(call replace-mothership, $^, $@)
+	@   $(call replace-url-macros, $^, $@)
 
 $(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
-	@   $(call replace-mothership, $<, $@)
+	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
-	@   $(call replace-mothership, $<, $@)
+	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/jquery.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://code.jquery.com/jquery-latest.js")
@@ -330,7 +332,7 @@ $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/aClKMA")
 
 $(CACHE_DIR)/main.js: $(SRC_DIR)/browser-client/main.js | $(CACHE_DIR)
-	@   $(call replace-mothership, $<, $@)
+	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/meyerweb-reset.css: | $(CACHE_DIR)
 	@   $(call download-url, \
@@ -342,20 +344,20 @@ $(CACHE_DIR)/q.js:                                                          \
     $(CACHE_DIR)/jslint.js                                                  \
     $(CACHE_DIR)/json2.js                                                   \
     |   $(CACHE_DIR)
-	@   $(call replace-mothership, $^, $@)
+	@   $(call replace-url-macros, $^, $@)
 
 $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
-	@   $(call replace-mothership, $<, $@)
+	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/5rxl6Q")
 
 $(CACHE_DIR)/robots.txt: $(SRC_DIR)/browser-client/robots.txt | $(CACHE_DIR)
-	@   $(call replace-mothership, $<, $@)
+	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/sitemap.xml: $(SRC_DIR)/browser-client/sitemap.xml | $(CACHE_DIR)
 	@   $(call replace-iso-date, $<, $@-temp)                       ;   \
-            $(call replace-mothership, $@-temp, $@)                     ;   \
+            $(call replace-url-macros, $@-temp, $@)                     ;   \
             $(RM) $@-temp
 
 $(CACHE_DIR)/style.css: $(SRC_DIR)/browser-client/style.css | $(CACHE_DIR)
@@ -515,7 +517,7 @@ $(ICONS_DIR)/logo.png: | $(ICONS_DIR)
             )
 
 $(ICONS_DIR)/qr.png: | $(ICONS_DIR)
-	@   $(QRENCODE) --margin=1 --size=10 --output=$@ $(MOTHERSHIP)
+	@   $(QRENCODE) --margin=1 --size=10 --output=$@ $(QM_WWW_URL)
 
 $(VAR_DIR):
 	@   $(call make-directory, $@)

@@ -4,11 +4,11 @@
 
     For more information, see http://en.wikipedia.org/wiki/Sitemaps .
 
-                                                        ~~ (c) SRW, 22 Oct 2012
+                                                        ~~ (c) SRW, 12 Nov 2012
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>MOTHERSHIP/</loc>
+    <loc>QM_WWW_URL/</loc>
     <lastmod>ISO_DATE</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>

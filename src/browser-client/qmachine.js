@@ -393,7 +393,7 @@
         return afunc;
     };
 
-    mothership = 'MOTHERSHIP';
+    mothership = 'QM_API_URL';
 
     origin = function () {
      // This function needs documentation.

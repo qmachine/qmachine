@@ -11,7 +11,7 @@
         "node": "0.8.x",
         "npm":  "1.1.x"
     },
-    "name": "mothership",
+    "name": "MOTHERSHIP",
     "private": true,
     "readme": "(no documentation)",
     "scripts": {},

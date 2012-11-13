@@ -7,13 +7,13 @@
 //  It doesn't load "q.js" dynamically anymore -- that task has been replaced
 //  by a script tag load in the HTML page:
 //
-//      <script src="MOTHERSHIP/q.js"></script>
+//      <script src="QM_WWW_URL/homepage.js"></script>
 //
 //  KNOWN ISSUES:
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 10 Nov 2012
+//                                                  ~~ last updated 12 Nov 2012
 
 (function () {
     'use strict';
