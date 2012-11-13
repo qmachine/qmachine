@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
-//                                                      ~~ (c) SRW, 01 Nov 2012
+//                                                      ~~ (c) SRW, 12 Nov 2012
 
 (function (global) {
     'use strict';
@@ -13,20 +13,19 @@
     /*properties
         ActiveXObject, AVar, JSLINT, Q, QM, XDomainRequest, XMLHttpRequest,
         addEventListener, allow, appendChild, apply, areready, attachEvent,
-        avar, body, box, by, call, callback, capture, comm, concat,
-        configurable, constructor, contentWindow, createElement, data, def,
-        defineProperty, detachEvent, diagnostics, display, document, done,
-        enumerable, env, epitaph, errors, exit, f, fail, floor, get,
-        getElementsByTagName, global, hasOwnProperty, head, host,
-        importScripts, join, key, kill, length, lib, load_data, load_script,
-        location, map, navigator, onerror, onload, onready, onreadystatechange,
-        open, parentElement, parse, ply, postMessage, predef, protocol,
-        prototype, push, query, random, readyState, reduce, remote_call,
-        removeChild, removeEventListener, responseText, result, results,
-        retrieve, revive, secret, send, set, shelf, shift, shmockford, slice,
-        splice, src, status, stay, stringify, style, submit, submitted, test,
-        toString, url, using, val, value, via, visibility, volunteer, when,
-        window, withCredentials, writable, x, y
+        avar, body, box, by, call, callback, comm, concat, configurable,
+        constructor, contentWindow, createElement, data, def, defineProperty,
+        detachEvent, diagnostics, display, document, done, enumerable, env,
+        epitaph, errors, exit, f, fail, floor, get, getElementsByTagName,
+        global, hasOwnProperty, head, host, importScripts, join, key, kill,
+        length, lib, load_data, load_script, location, map, navigator, onerror,
+        onload, onready, onreadystatechange, open, parentElement, parse, ply,
+        postMessage, predef, protocol, prototype, push, query, random,
+        readyState, reduce, remote_call, removeChild, removeEventListener,
+        responseText, result, results, revive, secret, send, set, shelf, shift,
+        shmockford, slice, splice, src, status, stay, stringify, style, submit,
+        submitted, test, toString, url, using, val, value, via, visibility,
+        volunteer, when, window, withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -42,10 +41,10 @@
 
  // Declarations
 
-    var Q, ajax, AVar, avar, capture, isBrowser, isFunction, isWebWorker, jobs,
-        lib, load_data, load_script, map, mothership, origin, ply, read,
-        reduce, remote_call, retrieve, shallow_copy, shmockford, state, submit,
-        update_local, update_remote, volunteer, when, write;
+    var Q, ajax, AVar, avar, isBrowser, isFunction, isWebWorker, jobs, lib,
+        load_data, load_script, map, mothership, origin, ply, read, reduce,
+        remote_call, shallow_copy, shmockford, state, submit, update_local,
+        update_remote, volunteer, when, write;
 
  // Definitions
 
@@ -63,7 +62,7 @@
             var request;
          // As of Chrome 21 (and maybe sooner than that), Web Workers do have
          // the `XMLHttpRequest` constructor, but it isn't one of `global`'s
-         // own properties like it is Firefox 15.01 or Safari 6. In Safari 6,
+         // own properties as it is in Firefox 15.01 or Safari 6. In Safari 6,
          // however, `XMLHttpRequest` has type 'object' rather than 'function',
          // which makes _zero_ sense to me right now. Thus, my test is _not_
          // intuitive in the slightest ...
@@ -117,13 +116,6 @@
     AVar = Q.avar().constructor;
 
     avar = Q.avar;
-
-    capture = function (data) {
-     // This function "captures" incoming data by saving a reference to it
-     // in `state.shelf`. It is quite useful when combined with JSONP :-)
-        state.shelf.push(data);
-        return avar().revive();
-    };
 
     isBrowser = function () {
      // This function needs documentation.
@@ -592,30 +584,6 @@
         return;
     };
 
-    retrieve = function (f) {
-     // This function needs documentation.
-        var y = avar();
-        y.onready = function (evt) {
-         // This function needs documentation.
-            var flag, i;
-            flag = false;
-            i = 0;
-            while ((flag === false) && (i < state.shelf.length)) {
-                if (f(state.shelf[i]) === true) {
-                    y.val = state.shelf.splice(i, 1)[0];
-                    flag = true;
-                } else {
-                    i += 1;
-                }
-            }
-            if (flag === false) {
-                return evt.stay('Nothing matched yet ...');
-            }
-            return evt.exit();
-        };
-        return y;
-    };
-
     shallow_copy = function (x, y) {
      // This function copies the properties of `x` to `y`, specifying `y` as
      // object literal if it was not provided as an input argument. It does
@@ -666,20 +634,26 @@
     state = {
         box: avar().key,
         kill: {},
-        shelf: [],
         submitted: {}
     };
 
-    submit = function (obj) {
+    submit = function (x, f, box, env) {
      // This function needs documentation.
         var arg_box, arg_env, arg_f, arg_x, y;
         if (arguments.length === 1) {
-            arg_box = obj.box;
-            arg_env = obj.env;
-            arg_f = obj.f;
-            arg_x = obj.x;
+         // Assume here that the input argument is an object with properties
+         // corresponding to the four variables. Although this is my preferred
+         // syntax, it is not the default because this function is not intended
+         // for users like me -- it's the "training wheels" introduction to QM.
+            arg_box = x.box;
+            arg_env = x.env;
+            arg_f = x.f;
+            arg_x = x.x;
         } else {
-            throw new Error('The "training wheels" are not available yet.');
+            arg_box = box;
+            arg_env = env;
+            arg_f = f;
+            arg_x = x;
         }
         y = avar();
         when(arg_box, arg_env, arg_f, arg_x, y).areready = function (evt) {
@@ -1089,7 +1063,6 @@
         var template;
         template = {
             avar:           avar,
-            capture:        capture,
             lib:            lib,
             load_data:      load_data,
             load_script:    load_script,
@@ -1097,7 +1070,6 @@
             ply:            ply,
             reduce:         reduce,
             revive:         avar().revive,
-            retrieve:       retrieve,
             shelf:          {},
             submit:         submit,
             volunteer:      volunteer,
