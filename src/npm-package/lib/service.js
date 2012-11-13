@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 10 Nov 2012
-//                                                  ~~ last updated 12 Nov 2012
+//                                                  ~~ last updated 13 Nov 2012
 
 (function () {
     'use strict';
@@ -122,6 +122,9 @@
                     pattern:    /^\//,
                     handler:    defs_www.get_static_content
                 });
+             // NOTE: Don't try to streamline the initial static content load
+             // by restricting it to `cluster.isMaster` -- it doesn't seem to
+             // work with SQLite in-memory databases.
                 defs_www.set_static_content(config.public_html);
             }
         }
