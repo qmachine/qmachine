@@ -2,7 +2,7 @@
     "cookiesFile":                      "/dev/null",
     "diskCache":                        false,
     "ignoreSslErrors":                  false,
-    "localToRemoveUrlAccessEnabled":    false,
+    "localToRemoteUrlAccessEnabled":    false,
     "loadImages":                       true,
     "maxDiskCacheSize":                 0,
     "outputEncoding":                   "utf8",
