@@ -45,7 +45,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 12 Nov 2012
+#                                                       ~~ (c) SRW, 13 Nov 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -82,20 +82,13 @@ clean: reset
             $(RM) $(VAR_DIR)
 
 clobber: clean
-	@   if [ -d "$(BUILD_DIR)/web-service/packages" ]; then             \
-                $(CP) $(BUILD_DIR)/web-service/packages/ $(PROJ_ROOT)   ;   \
-                $(RM) $(BUILD_DIR)                                      ;   \
-                $(MKDIR) $(BUILD_DIR)                                   ;   \
-                $(MKDIR) $(BUILD_DIR)/web-service                       ;   \
-                $(CP) $(PROJ_ROOT)/packages $(BUILD_DIR)/web-service    ;   \
-                $(RM) $(PROJ_ROOT)/packages                             ;   \
-            else                                                            \
-                $(RM) $(BUILD_DIR)                                      ;   \
-            fi                                                          ;   \
+	@   $(RM) $(BUILD_DIR)/browser-client/                          ;   \
+            $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
+            $(RM) $(BUILD_DIR)/web-service/                             ;   \
             $(RM) $(CACHE_DIR)
 
 distclean: clobber
-	@   $(RM) $(PROJ_ROOT)/.d8_history $(PROJ_ROOT)/.v8_history     ;   \
+	@   $(RM) $(BUILD_DIR) $(PROJ_ROOT)/.*_history                  ;   \
             if [ -f "$(ICONS_DIR)/logo.pdf" ]; then                         \
                 $(CP) $(ICONS_DIR)/logo.pdf $(PROJ_ROOT)/logo.pdf       ;   \
                 $(RM) $(ICONS_DIR)                                      ;   \
