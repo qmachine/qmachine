@@ -2,32 +2,50 @@
 
 #-  Makefile ~~
 #
-#   This contains a live development workflow for QMachine. To get started on
-#   Mac OS X 10.8 "Mountain Lion", you will need to install ...
+#   This contains a live development workflow for QMachine (QM). To get started
+#   on Mac OS X 10.8 "Mountain Lion" with your own local sandbox, you will need
+#   to install ...
 #
 #       ... Homebrew using directions from http://mxcl.github.com/homebrew/.
 #
 #       ... a minimal set of native dependencies by typing
-#           $ brew install couchdb imagemagick node phantomjs
+#           $ brew install imagemagick node
 #
 #       ... Node Package Manager (NPM) using directions from https://npmjs.org.
 #
-#       ... Kanso (if you want to use the CouchDB backend) by typing
+#   Then, to launch a local sandbox environment that uses SQLite for storage,
+#   run
+#
+#           $ make local-sandbox
+#
+#   If you want to use the CouchDB backend, you will need to install CouchDB
+#   (duh) as well as Kanso ...
+#
+#           $ brew install couchdb
 #           $ npm install -g kanso
 #
-#       ... as many of the optional dependencies as you desire by typing
-#           $ brew install closure-compiler jsmin qrencode yuicompressor
+#   ... before running the following command to launch the CouchDB sandbox:
+#
+#           $ make local-couch
+#
+#   QMachine also supports MongoDB and PostgreSQL for persistent storage, but
+#   I have not automated those variants and have to plans to do so. Other
+#   dependencies for other tasks, some of which are optional, can be installed
+#   via
+#
+#           $ brew install closure-compiler jsmin mongodb qrencode \
+#               phantomjs yuicompressor
 #
 #   For a long time, icon generation from LaTeX source code was included as an
 #   extra touch, but folks complained too much about the extra dependency on
 #   MacTeX 2012. Consequently, the workflow now generates a green placeholder
 #   directly from ImageMagick which can be overridden by your own image file
 #   if you provide one. If you want to deploy to your own Heroku instance, you
-#   will need to install their "Heroku Toolbelt".
+#   will need to install the Heroku-provided "Heroku Toolbelt".
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 10 Nov 2012
+#                                                       ~~ (c) SRW, 12 Nov 2012
 
 PROJ_ROOT       :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -54,6 +72,14 @@ PLISTS          :=  $(addprefix $(VAR_DIR)/com.QM., couchdb.plist nodejs.plist)
 all: $(shell $(LS) $(SRC_DIR))
 
 clean: reset
+	@   for each in $(PLISTS); do                                       \
+                if [ -f "$${each}" ]; then                                  \
+                    $(LAUNCHCTL) unload -w $${each} >/dev/null 2>&1     ;   \
+                fi                                                      ;   \
+            done                                                        ;   \
+            $(RM) $(VAR_DIR)
+
+clobber: clean
 	@   if [ -d "$(BUILD_DIR)/web-service/packages" ]; then             \
                 $(CP) $(BUILD_DIR)/web-service/packages/ $(PROJ_ROOT)   ;   \
                 $(RM) $(BUILD_DIR)                                      ;   \
@@ -64,14 +90,7 @@ clean: reset
             else                                                            \
                 $(RM) $(BUILD_DIR)                                      ;   \
             fi                                                          ;   \
-            for each in $(PLISTS); do                                       \
-                if [ -f "$${each}" ]; then                                  \
-                    $(LAUNCHCTL) unload -w $${each} >/dev/null 2>&1     ;   \
-                fi                                                      ;   \
-            done
-
-clobber: clean
-	@   $(RM) $(CACHE_DIR) $(VAR_DIR)
+            $(RM) $(CACHE_DIR)
 
 distclean: clobber
 	@   $(RM) $(PROJ_ROOT)/.d8_history $(PROJ_ROOT)/.v8_history     ;   \
