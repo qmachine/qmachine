@@ -173,7 +173,7 @@ local-couch:
 local-sandbox:
 	@   $(MAKE)                                                         \
                 MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
-                QM_API_STRING='{"sqlite":":memory:"}'                       \
+                QM_API_STRING='{"sqlite":"qm.db"}'                          \
                 QM_WWW_STRING='{"sqlite":":memory:"}'                       \
                     browser-client                                          \
                     $(VAR_DIR)/com.QM.nodejs.plist                          \

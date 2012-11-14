@@ -13,7 +13,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 12 Nov 2012
+//                                                  ~~ last updated 13 Nov 2012
 
 (function () {
     'use strict';
@@ -133,7 +133,7 @@
          // This function synchronizes the jQuery object that represents the
          // input element directly with QM's `box` property using Quanah's own
          // event loop. Thankfully, this function won't distribute to another
-         // machine because it closes over `QM.box` :-)
+         // machine because it closes over `detect` :-)
             if (this.val.is(':focus') === false) {
                 this.val.val(QM.box);
             }
