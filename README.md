@@ -35,6 +35,7 @@ I have done some preliminary investigation into app integration for
 In the future, I would like to integrate QMachine with "app ecosystems" like
 
 -   [Android](https://play.google.com/store/apps)
+-   [App.net](https://github.com/appdotnet/api-spec/wiki/Developer-Wiki)
 -   [BlackBerry](http://us.blackberry.com/apps-software/appworld/)
 -   [CloudFlare](https://www.cloudflare.com/apps/)
 -   [DirecTV](http://tvapps.directv.com/)
