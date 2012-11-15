@@ -2,8 +2,8 @@
     "author": "Sean Wilkinson",
     "dependencies": {
         "corser": "1.1.2",
-        "mongodb": "1.1.11",
-        "pg": "0.8.6",
+        "mongodb": "1.2.0",
+        "pg": "0.8.7",
         "sqlite3": "2.1.5"
     },
     "description": "The World's Most Relaxed Supercomputer",
@@ -16,10 +16,11 @@
     "name": "qm",
     "optionalDependencies": {},
     "private": false,
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/wilkinson/qmachine.git"
-    },
+    "repositories": [
+        {"type": "git", "url": "https://bitbucket.org/wilkinson/qmachine.git"},
+        {"type": "git", "url": "https://code.google.com/p/qmachine/"},
+        {"type": "git", "url": "https://github.com/wilkinson/qmachine.git"}
+    ],
     "scripts": {},
-    "version": "0.1.17"
+    "version": "0.1.18"
 }
