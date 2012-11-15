@@ -2,6 +2,7 @@
 
 #-  render.rb ~~
 #                                                       ~~ (c) SRW, 19 Sep 2012
+#                                                   ~~ last updated 15 Nov 2012
 
 require "date"
 require "redcarpet"
@@ -31,7 +32,7 @@ File::open(filename, "w") do |f|
     <title>Project Description: QMachine</title>
     <link rel="stylesheet" href="./print.css" media="print"/>
     <link rel="stylesheet" href="./screen.css" media="screen"/>
-    <link rel="shortcut icon" href="https://qmachine.org/favicon.ico"/>
+    <link rel="shortcut icon" href="https://www.qmachine.org/favicon.ico"/>
   </head>
   <body>
     <noscript>This page requires JavaScript.</noscript>
@@ -39,7 +40,7 @@ File::open(filename, "w") do |f|
       <span>Fork me on GitHub!</span>
     </a>
     #{markdown.render(IO.read("README.md")).chomp} 
-    <script async src="https://qmachine.org/q.js"></script>
+    <script async src="https://www.qmachine.org/q.js"></script>
   </body>
 </html>
 EOF
