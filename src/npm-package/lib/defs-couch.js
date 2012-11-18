@@ -2,7 +2,7 @@
 
 //- defs-couch.js ~~
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 10 Nov 2012
+//                                                  ~~ last updated 18 Nov 2012
 
 (function () {
     'use strict';
@@ -96,31 +96,17 @@
 
     post_box_key = function (request, response, params) {
      // This function needs documentation.
-        var box, db, key, sql, temp;
+        var box, db, key, options, target;
         box = params[0];
         db = this;
         key = params[1];
-        sql = 'INSERT OR REPLACE INTO avars VALUES ($box, $key, $status, $val)';
-        temp = [];
-        request.on('data', function (chunk) {
-         // This function needs documentation.
-            temp.push(chunk.toString());
-            return;
-        });
-        request.on('end', function () {
-         // This function needs documentation.
-            var body = JSON.parse(temp.join(''));
-            db.run(sql, {
-                $box:       body.box,
-                $key:       body.key,
-                $status:    body.status,
-                $val:       JSON.stringify(body.val)
-            });
-            response.writeHead(201, {'Content-Type': 'text/plain'});
-            response.write('Hooray!');
-            response.end();
-            return;
-        });
+        target = db + '/_update/timestamp/' + box + '&' + key;
+        options = url.parse(target);
+        options.headers = request.headers;
+        delete options.headers.host;
+        options.headers['Content-Type'] = 'application/json';
+        options.method = 'POST';
+        proxy(request, response, options);
         return;
     };
 

@@ -45,7 +45,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 13 Nov 2012
+#                                                       ~~ (c) SRW, 18 Nov 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -145,11 +145,12 @@ chrome-hosted-app:                                                          \
 	@   $(call hilite, 'Created $@.')
 
 local-couch:
-	@   $(MAKE)                                                         \
+	@   API_STR='{"couch":"$(strip $(LOCAL_COUCH))/'                ;   \
+            $(MAKE)                                                         \
                 COUCHDB_URL="$(strip $(LOCAL_COUCH))"                       \
                 MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
-                QM_API_STRING='{"couch":"$(LOCAL_COUCH)/db/_design/app"}'   \
-                QM_WWW_STRING='{"couch":"$(LOCAL_COUCH)/www/_design/app"}'  \
+                QM_API_STRING=$${API_STR}'db/_design/app"}'                 \
+                QM_WWW_STRING=$${API_STR}'www/_design/app/_rewrite"}'       \
                     $(PLISTS)                                               \
                     $(VAR_DIR)/couchdb.ini                                  \
                     $(VAR_DIR)/nodejs/node_modules                          \
