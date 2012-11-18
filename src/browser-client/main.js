@@ -13,7 +13,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 13 Nov 2012
+//                                                  ~~ last updated 17 Nov 2012
 
 (function () {
     'use strict';
@@ -25,11 +25,11 @@
     /*global jQuery: false */
 
     /*properties
-        Q, QM, alert, blur, box, call, clearTimeout, click, console, document,
-        error, exit, getItem, hasOwnProperty, is, jQuery, join, key, keydown,
-        localStorage, log, on, onerror, onready, preventDefault, prototype,
-        ready, revive, setItem, setTimeout, stay, val, value, volunteer,
-        volunteer_timer, which
+        Q, QM, activeElement, alert, avar, blur, box, call, clearTimeout,
+        click, console, document, error, exit, getItem, hasOwnProperty, id, is,
+        jQuery, join, key, keydown, localStorage, log, on, preventDefault,
+        prototype, ready, revive, setItem, setTimeout, stay, val, value,
+        volunteer, volunteer_timer, which
     */
 
  // Prerequisites
@@ -48,7 +48,7 @@
 
  // Declarations
 
-    var $, QM, detect, isFunction, jserr, jsout, state;
+    var $, QM, detect, is_Function, jserr, jsout, state;
 
  // Definitions
 
@@ -61,10 +61,10 @@
         switch (feature_name) {
         case 'console.error':
             return ((window.hasOwnProperty('console')) &&
-                    (isFunction(window.console.error)));
+                    (is_Function(window.console.error)));
         case 'console.log':
             return ((window.hasOwnProperty('console')) &&
-                    (isFunction(window.console.log)));
+                    (is_Function(window.console.log)));
         case 'localStorage':
          // HTML5 localStorage object
             return (window.localStorage instanceof Object);
@@ -74,7 +74,7 @@
         return false;
     };
 
-    isFunction = function (f) {
+    is_Function = function (f) {
      // This function returns `true` only if and only if `f` is a function.
      // The second condition is necessary to return `false` for a regular
      // expression in some of the older browsers.
@@ -129,13 +129,14 @@
             }
             QM.revive();
             return;
-        }).Q(function (evt) {
+        });
+        QM.avar().Q(function (evt) {
          // This function synchronizes the jQuery object that represents the
          // input element directly with QM's `box` property using Quanah's own
          // event loop. Thankfully, this function won't distribute to another
          // machine because it closes over `detect` :-)
-            if (this.val.is(':focus') === false) {
-                this.val.val(QM.box);
+            if ($(document.activeElement)[0].id !== 'QM-box-input') {
+                $('#QM-box-input').val(QM.box);
             }
             if (detect('localStorage')) {
              // We assume here that HTML5 localStorage has not been tampered
@@ -144,20 +145,22 @@
                 window.localStorage.setItem('QM_box', QM.box);
             }
             return evt.stay('This task repeats indefinitely.');
+        }).on('error', function (message) {
+            jserr('Error:', message);
+            return;
         });
         $('#QM-volunteer-input').click(function volunteer() {
          // This function needs documentation.
             if ($('#QM-volunteer-input').is(':checked') === false) {
              // Yes, you're right, it _does_ look inefficient to ask jQuery to
-             // search for #QM-volunteer-input twice, but because `volunteer`
-             // calls itself recursively using `setTimeout`, using `$(this)`
-             // can do some pretty wacky stuff if you're not careful. I prefer
-             // the strategy here because it's simple :-)
+             // do separate queries, but because `volunteer` calls itself
+             // recursively using `setTimeout`, using `$(this)` can do some
+             // pretty wacky stuff if you're not careful. I prefer the strategy
+             // here because it's simple :-)
                 window.clearTimeout(state.volunteer_timer);
                 return;
             }
-            var task = QM.volunteer();
-            task.onerror = function (message) {
+            QM.volunteer(QM.box).on('error', function (message) {
              // This function needs documentation.
                 if (message === 'Nothing to do ...') {
                  // Back by popular demand ;-)
@@ -168,14 +171,13 @@
                 window.clearTimeout(state.volunteer_timer);
                 state.volunteer_timer = window.setTimeout(volunteer, 1000);
                 return;
-            };
-            task.onready = function (evt) {
+            }).Q(function (evt) {
              // This function needs documentation.
                 jsout('Done:', this.key);
                 window.clearTimeout(state.volunteer_timer);
                 state.volunteer_timer = window.setTimeout(volunteer, 1000);
                 return evt.exit();
-            };
+            });
             return;
         });
         return;
