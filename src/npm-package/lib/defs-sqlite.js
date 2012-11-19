@@ -5,7 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 10 Nov 2012
+//                                                  ~~ last updated 18 Nov 2012
 
 (function () {
     'use strict';
@@ -130,12 +130,12 @@
                     '   key TEXT NOT NULL,'     +
                     '   status TEXT,'           +
                     '   val TEXT NOT NULL,'     +
-                    '   UNIQUE (box, key)'      +
+                    '   PRIMARY KEY (box, key)' +
                     ')';
             code2 = 'CREATE TABLE IF NOT EXISTS public_html (' +
                     '   name TEXT NOT NULL,'    +
                     '   file BLOB NOT NULL,'    +
-                    '   UNIQUE (name)'          +
+                    '   PRIMARY KEY (name)'     +
                     ')';
             db.run(code1, function (err) {
              // This function needs documentation.
