@@ -116,7 +116,17 @@
         protocol = (options.protocol === 'http:') ? http : https;
         inner_req = protocol.request(options, function (inner_res) {
          // This function needs documentation.
-            outer_res.writeHead(inner_res.statusCode, inner_res.headers);
+            if ((options.method === 'POST') &&
+                    (inner_res.statusCode === 202)) {
+             // Batch mode returns an "HTTP 202: Accepted" response sometimes,
+             // and Cloudant's BigCouch seems to be using batch mode sometimes.
+             // Since the browser client expects a 201 and has no way to know
+             // whether QM is using CouchDB or not, the best way to isolate and
+             // handle the issue is to tweak the CouchDB definitions.
+                outer_res.writeHead(201, inner_res.headers);
+            } else {
+                outer_res.writeHead(inner_res.statusCode, inner_res.headers);
+            }
             inner_res.pipe(outer_res);
             return;
         });
