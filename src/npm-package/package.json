@@ -1,10 +1,10 @@
 {
     "author": "Sean Wilkinson",
     "dependencies": {
-        "corser": "1.1.2",
-        "mongodb": "1.2.0",
-        "pg": "0.8.7",
-        "sqlite3": "2.1.5"
+        "corser": ">= 1.2.0",
+        "mongodb": ">= 1.2.0",
+        "pg": ">= 0.8.7",
+        "sqlite3": ">= 2.1.5"
     },
     "description": "The World's Most Relaxed Supercomputer",
     "devDependencies": {},
@@ -22,5 +22,5 @@
         {"type": "git", "url": "https://github.com/wilkinson/qmachine.git"}
     ],
     "scripts": {},
-    "version": "0.2.3"
+    "version": "0.2.4"
 }
