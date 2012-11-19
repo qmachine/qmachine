@@ -118,6 +118,7 @@ browser-client:                                                             \
         apple-touch-icon-144x144.png                                        \
         apple-touch-startup-image-320x460.png                               \
         apple-touch-startup-image-640x920.png                               \
+        apple-touch-startup-image-640x1096.png                              \
         apple-touch-startup-image-768x1004.png                              \
         apple-touch-startup-image-748x1024.png                              \
         apple-touch-startup-image-1536x2008.png                             \
