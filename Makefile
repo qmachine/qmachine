@@ -45,7 +45,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 18 Nov 2012
+#                                                       ~~ (c) SRW, 19 Nov 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -193,10 +193,12 @@ local-sandbox:
 npm-package: $(BUILD_DIR)/npm-package/README.md
 	@   $(CD) $(dir $<)                                             ;   \
             $(NPM) install                                              ;   \
+            $(NPM) shrinkwrap                                           ;   \
             $(call hilite, 'Created $@.')
 
 web-service:                                                                \
     $(addprefix $(BUILD_DIR)/web-service/,                                  \
+        cloudfoundry.json                                                   \
         couchdb-apps/                                                       \
         deploy.sh                                                           \
         .gitignore                                                          \
