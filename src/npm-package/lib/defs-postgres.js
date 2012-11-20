@@ -41,9 +41,8 @@
         box = params[0];
         db = this;
         key = params[1];
-        sql = 'SELECT * FROM avars ' +
-                "WHERE box = '" + box + "' AND key = '" + key + "'";
-        db.query(sql, function (err, results) {
+        sql = 'SELECT * FROM avars WHERE box = $1 AND key = $2';
+        db.query(sql, [box, key], function (err, results) {
          // This function needs documentation.
             var row;
             if (err !== null) {
@@ -74,9 +73,8 @@
         box = params[0];
         db = this;
         status = params[1];
-        pgsql = 'SELECT key FROM avars ' +
-                "WHERE box = '" + box + "' AND status = '" + status + "'";
-        db.query(pgsql, function (err, results) {
+        pgsql = 'SELECT key FROM avars WHERE box = $1 AND status = $2';
+        db.query(pgsql, [box, status], function (err, results) {
          // This function needs documentation.
             if ((err !== null) || (results === undefined)) {
                 results = {rows: []};
@@ -100,8 +98,8 @@
         if (target === '/') {
             target = '/index.html';
         }
-        sql = 'SELECT file FROM public_html WHERE name = "' + target + '"';
-        db.query(sql, function (err, results) {
+        sql = 'SELECT file FROM public_html WHERE name = $1';
+        db.query(sql, [target], function (err, results) {
          // This function needs documentation.
             if ((err !== null) || (results === undefined) ||
                     ((results.rows.length === 0))) {
@@ -168,7 +166,7 @@
                 'LANGUAGE plpgsql;'
             ];
             code2 = [
-                'CREATE OR REPLACE FUNCTION upsert_file',
+                'CREATE OR REPLACE FUNCTION upsert_file' +
                 '(n2 TEXT, f2 BYTEA) RETURNS VOID AS',
                 '$$',
                 'BEGIN',

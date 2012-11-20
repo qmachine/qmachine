@@ -80,7 +80,6 @@
         if (target === '/') {
             target = '/index.html';
         }
-        //sql = 'SELECT file FROM public_html WHERE name = ?';
         sql = 'SELECT file FROM public_html WHERE name = $name';
         db.get(sql, {$name: target}, function (err, row) {
          // This function needs documentation.
