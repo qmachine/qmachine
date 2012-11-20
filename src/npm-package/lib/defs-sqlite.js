@@ -5,7 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 18 Nov 2012
+//                                                  ~~ last updated 20 Nov 2012
 
 (function () {
     'use strict';
@@ -29,9 +29,8 @@
         box = params[0];
         db = this;
         key = params[1];
-        sql = 'SELECT * FROM avars ' +
-                'WHERE box = "' + box + '" AND key = "' + key + '"';
-        db.get(sql, function (err, row) {
+        sql = 'SELECT * FROM avars WHERE box = $box AND key = $key';
+        db.get(sql, {$box: box, $key: key}, function (err, row) {
          // This function needs documentation.
             if ((err !== null) || (row === undefined)) {
                 row = {};
@@ -56,9 +55,8 @@
         box = params[0];
         db = this;
         status = params[1];
-        sql = 'SELECT key FROM avars ' +
-                'WHERE box = "' + box + '" AND status = "' + status + '"';
-        db.all(sql, function (err, rows) {
+        sql = 'SELECT key FROM avars WHERE box = $box AND status = $status';
+        db.all(sql, {$box: box, $status: status}, function (err, rows) {
          // This function needs documentation.
             if ((err !== null) || (rows === undefined)) {
                 rows = [];
@@ -82,8 +80,9 @@
         if (target === '/') {
             target = '/index.html';
         }
-        sql = 'SELECT file FROM public_html WHERE name = "' + target + '"';
-        db.get(sql, function (err, row) {
+        //sql = 'SELECT file FROM public_html WHERE name = ?';
+        sql = 'SELECT file FROM public_html WHERE name = $name';
+        db.get(sql, {$name: target}, function (err, row) {
          // This function needs documentation.
             if ((err !== null) || (row === undefined)) {
                 response.writeHead(444);
