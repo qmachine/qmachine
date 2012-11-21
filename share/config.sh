@@ -8,7 +8,7 @@
 #   doesn't make a lot of sense to try and embed it into the Makefile anyway.
 #
 #                                                       ~~ (c) SRW, 29 Jun 2012
-#                                                   ~~ last updated 12 Nov 2012
+#                                                   ~~ last updated 21 Nov 2012
 
 #-  First, we'll enable strict adherence to the POSIX standard.
 
@@ -53,9 +53,9 @@ generate_config ${COUCHDB_PLIST:=/dev/null} <<-EOF
         <key>EnvironmentVariables</key>
         <dict>
           <key>HOME</key>
-          <string>~</string>
+          <string>${HOME}</string>
           <key>DYLD_LIBRARY_PATH</key>
-          <string>/opt/local/lib:$DYLD_LIBRARY_PATH</string>
+          <string>${DYLD_LIBRARY_PATH}</string>
         </dict>
         <key>KeepAlive</key>
         <false/>

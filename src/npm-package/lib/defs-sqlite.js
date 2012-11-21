@@ -5,7 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 20 Nov 2012
+//                                                  ~~ last updated 21 Nov 2012
 
 (function () {
     'use strict';
@@ -74,14 +74,14 @@
 
     get_static_content = function (request, response, params) {
      // This function needs documentation.
-        var db, sql, target;
+        var db, name, sql;
         db = this;
-        target = request.url.split('?')[0];
-        if (target === '/') {
-            target = '/index.html';
+        name = request.url.split('?')[0];
+        if (name === '/') {
+            name = '/index.html';
         }
         sql = 'SELECT file FROM public_html WHERE name = $name';
-        db.get(sql, {$name: target}, function (err, row) {
+        db.get(sql, {$name: name}, function (err, row) {
          // This function needs documentation.
             if ((err !== null) || (row === undefined)) {
                 response.writeHead(444);
@@ -89,7 +89,7 @@
                 return;
             }
             var extension, headers;
-            extension = target.split('.').pop();
+            extension = name.split('.').pop();
             headers = {
                 'Content-Type': 'application/octet-stream'
             };

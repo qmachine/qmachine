@@ -17,7 +17,7 @@
 //      });
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 10 Nov 2012
+//                                                  ~~ last updated 21 Nov 2012
 
 (function () {
     'use strict';
@@ -167,7 +167,7 @@
             ];
             code2 = [
                 'CREATE OR REPLACE FUNCTION upsert_file' +
-                '(n2 TEXT, f2 BYTEA) RETURNS VOID AS',
+                    '(n2 TEXT, f2 BYTEA) RETURNS VOID AS',
                 '$$',
                 'BEGIN',
                 '   LOOP',
