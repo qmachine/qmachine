@@ -27,7 +27,7 @@
     var ajax, atob, AVar, avar, btoa, can_run_remotely, copy, deserialize,
         in_a_browser, in_a_WebWorker, is_closed, is_online, is_Function,
         is_RegExp, jobs, lib, load_data, load_script, map, mothership, origin,
-        ply, read, reduce, run_remotely, serialize, state, submit,
+        ply, read, recent, reduce, run_remotely, serialize, state, submit,
         update_local, update_remote, volunteer, when, write;
 
  // Definitions
@@ -40,6 +40,12 @@
             if ((body !== undefined) && (body.length > 1048576)) {
              // If it's certain to fail, why not just fail preemptively?
                 return evt.fail('Upload size is too large.');
+            }
+            if (recent(method, url)) {
+             // If we have already issued this request recently, we need to
+             // wait a minute before doing it again to avoid hammering the
+             // server needlessly.
+                return evt.stay('Enforcing refractory period ...');
             }
             var request;
          // As of Chrome 21 (and maybe sooner than that), Web Workers do have
@@ -792,6 +798,33 @@
         });
     };
 
+    recent = function (method, url) {
+     // This function helps keep clients from polling too rapidly when they are
+     // waiting for a remote task to finish. It keeps track of HTTP requests
+     // made within the last 1000 milliseconds in order to prevent repeat calls
+     // that use the same method and URL. This doesn't affect task execution by
+     // volunteers, however, because those alternate between GETs and POSTs.
+        var flag, key, time;
+        time = Date.now();
+        for (key in state.recent) {
+            if (state.recent.hasOwnProperty(key)) {
+                if ((time - state.recent[key].time) > 1000) {
+                    delete state.recent[key];
+                }
+            }
+        }
+        flag = ((state.recent.hasOwnProperty(url)) &&
+                (state.recent[url].method === method));
+        if (flag === false) {
+            state.recent[url] = {
+                method: method,
+                time:   time
+            };
+            global.setTimeout(avar().revive, 1000);
+        }
+        return flag;
+    };
+
     reduce = function (f) {
      // This function needs to be recursive, but ... how best to do it?
         var afunc, x;
@@ -1057,7 +1090,8 @@
     };
 
     state = {
-        box: avar().key
+        box: avar().key,
+        recent: {}
     };
 
     submit = function (x, f, box, env) {
