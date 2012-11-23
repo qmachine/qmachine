@@ -804,11 +804,12 @@
      // made within the last 1000 milliseconds in order to prevent repeat calls
      // that use the same method and URL. This doesn't affect task execution by
      // volunteers, however, because those alternate between GETs and POSTs.
-        var flag, key, time;
+        var dt, flag, key, time;
+        dt = 1000;
         time = Date.now();
         for (key in state.recent) {
             if (state.recent.hasOwnProperty(key)) {
-                if ((time - state.recent[key].time) > 1000) {
+                if ((time - state.recent[key].time) > dt) {
                     delete state.recent[key];
                 }
             }
@@ -820,7 +821,7 @@
                 method: method,
                 time:   time
             };
-            global.setTimeout(avar().revive, 1000);
+            global.setTimeout(avar().revive, dt + 1);
         }
         return flag;
     };
