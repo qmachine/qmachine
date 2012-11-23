@@ -999,7 +999,12 @@
      // not found a test case yet that proves I need to work around the issue,
      // but if I do, I will follow advice given at http://goo.gl/cciXV.
         /*jslint unparam: true */
-        return JSON.stringify(x, function replacer(key, val) {
+        var comm, y;
+        if (x instanceof AVar) {
+            comm = x.comm;
+            delete x.comm;
+        }
+        y = JSON.stringify(x, function replacer(key, val) {
          // For more information on the use of `replacer` functions with the
          // `JSON.stringify` method, read the [inline] documentation for the
          // reference implementation, "json2.js", available online at
@@ -1088,6 +1093,10 @@
             }
             return ($val === undefined) ? val : $val;
         });
+        if (is_Function(comm)) {
+            x.comm = comm;
+        }
+        return y;
     };
 
     state = {

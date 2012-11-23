@@ -422,6 +422,7 @@
             return;
         });
         http.globalAgent.maxSockets = obj.max_sockets;
+        //https.globalAgent.maxSockets = obj.max_sockets;
         that.server.listen(obj.port, obj.hostname);
         return;
     };
