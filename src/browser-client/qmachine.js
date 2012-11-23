@@ -999,12 +999,7 @@
      // not found a test case yet that proves I need to work around the issue,
      // but if I do, I will follow advice given at http://goo.gl/cciXV.
         /*jslint unparam: true */
-        var comm, y;
-        if (x instanceof AVar) {
-            comm = x.comm;
-            delete x.comm;
-        }
-        y = JSON.stringify(x, function replacer(key, val) {
+        return JSON.stringify(x, function replacer(key, val) {
          // For more information on the use of `replacer` functions with the
          // `JSON.stringify` method, read the [inline] documentation for the
          // reference implementation, "json2.js", available online at
@@ -1093,10 +1088,6 @@
             }
             return ($val === undefined) ? val : $val;
         });
-        if (is_Function(comm)) {
-            x.comm = comm;
-        }
-        return y;
     };
 
     state = {
@@ -1489,7 +1480,12 @@
          // This function exists as a way to ensure that `JSON.stringify` can
          // serialize avars correctly, because that function will delegate to
          // an input argument's `toJSON` prototype method if one is available.
-            return JSON.parse(serialize(copy(this)));
+            var comm, y;
+            comm = this.comm;
+            delete this.comm;
+            y = JSON.parse(serialize(copy(this)));
+            this.comm = comm;
+            return y;
         }
     });
 
