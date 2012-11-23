@@ -1,8 +1,7 @@
 //- JavaScript source code
 
 //- service.js ~~
-//                                                      ~~ (c) SRW, 10 Nov 2012
-//                                                  ~~ last updated 13 Nov 2012
+//                                                      ~~ (c) SRW, 21 Nov 2012
 
 (function () {
     'use strict';
@@ -11,9 +10,11 @@
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
+ // Prerequisites
+
  // Declarations
 
-    var cluster, configure, corser, http, launch_service, RESTful_Service,
+    var cluster, configure, corser, fs, http, launch_service, RESTful_Service,
         restful_service;
 
  // Definitions
@@ -41,13 +42,14 @@
 
     corser = require('corser');
 
+    fs = require('fs');
+
     http = require('http');
 
-    launch_service = function (obj) {
+    launch_service = function (options) {
      // This function needs documentation.
-        var backends, config, defs_api, defs_www, i, prepost, service;
-        backends = ['couch', 'mongo', 'postgres', 'sqlite'];
-        config = configure(obj, {
+        var api_defs, config, service, www_defs;
+        config = configure(options, {
             api:            {},
             hostname:       '0.0.0.0',
             max_fu_size:    1048576,    //- 1024 * 1024 bytes = 1 Megabyte
@@ -57,31 +59,31 @@
             public_html:    'public_html/',
             www:            {}
         });
-        prepost = function (f) {
-         // This function is a higher-order wrapper function that simplifies
-         // the implementation of the `post_box_key` methods.
-            return function (request, response, params) {
-             // This function needs documentation.
-                var fu_size;
-                if (request.headers.hasOwnProperty('content-length')) {
-                    fu_size = request.headers['content-length'];
-                    if (fu_size < config.max_fu_size) {
-                        return f(request, response, params);
-                    }
-                }
-             // If we land here, then the user is either using incorrect
-             // headers or he/she is uploading a file that is too big. Don't
-             // fool with it either way. QMachine is not a free hard drive for
-             // people who are too cheap to buy storage, because we didn't buy
-             // storage, either ;-)
-                response.writeHead(444);
-                response.end();
-                return;
-            };
-        };
+        if (config.api.hasOwnProperty('couch')) {
+            api_defs = require('./defs-couch').api(config.api.couch);
+        } else if (config.api.hasOwnProperty('mongo')) {
+            api_defs = require('./defs-mongo').api(config.api.mongo);
+        } else if (config.api.hasOwnProperty('postgres')) {
+            api_defs = require('./defs-postgres').api(config.api.postgres);
+        } else if (config.api.hasOwnProperty('sqlite')) {
+            api_defs = require('./defs-sqlite').api(config.api.sqlite);
+        } else {
+            api_defs = {};
+        }
+        if (config.www.hasOwnProperty('couch')) {
+            www_defs = require('./defs-couch').www(config.www.couch);
+        } else if (config.www.hasOwnProperty('mongo')) {
+            www_defs = require('./defs-mongo').www(config.www.mongo);
+        } else if (config.www.hasOwnProperty('postgres')) {
+            www_defs = require('./defs-postgres').www(config.www.postgres);
+        } else if (config.www.hasOwnProperty('sqlite')) {
+            www_defs = require('./defs-sqlite').www(config.www.sqlite);
+        } else {
+            www_defs = {};
+        }
         service = restful_service();
         service.def({
-            method: 'OPTIONS',
+            method:  'OPTIONS',
             pattern: /^\//,
             handler: function (request, response) {
              // This function needs documentation.
@@ -90,48 +92,200 @@
                 return;
             }
         });
-        for (i = 0; i < backends.length; i += 1) {
-            if ((config.api instanceof Object) &&
-                    (config.api.hasOwnProperty(backends[i]))) {
-             // This arm needs documentation.
-                defs_api = require('./defs-' + backends[i])
-                    .init(config.api[backends[i]]);
-                service.def({
-                    method:     'GET',
-                    pattern:    /^\/box\/([\w\-]+)\?key=([A-z0-9]+)$/,
-                    handler:    defs_api.get_box_key
-                });
-                service.def({
-                    method:     'GET',
-                    pattern:    /^\/box\/([\w\-]+)\?status=([A-z0-9]+)$/,
-                    handler:    defs_api.get_box_status
-                });
-                service.def({
-                    method:     'POST',
-                    pattern:    /^\/box\/([\w\-]+)\?key=([A-z0-9]+)$/,
-                    handler:    prepost(defs_api.post_box_key)
-                });
+        if (api_defs.hasOwnProperty('get_box_key')) {
+            service.def({
+                method:  'GET',
+                pattern: /^\/box\/([\w\-]+)\?key=([A-z0-9]+)$/,
+                handler: function (request, response, params) {
+                 // This function needs documentation.
+                    var callback;
+                    callback = function (err, results) {
+                     // This function needs documentation.
+                        if (err !== null) {
+                            console.error(err);
+                            results = {};
+                        }
+                        response.writeHead(200, {
+                            'Content-Type': 'application/json'
+                        });
+                        response.write(JSON.stringify(results));
+                        response.end();
+                        return;
+                    };
+                    api_defs.get_box_key.apply(this, [
+                        request, response, params, callback
+                    ]);
+                    return;
+                }
+            });
+        }
+        if (api_defs.hasOwnProperty('get_box_status')) {
+            service.def({
+                method:  'GET',
+                pattern: /^\/box\/([\w\-]+)\?status=([A-z0-9]+)$/,
+                handler: function (request, response, params) {
+                 // This function needs documentation.
+                    var callback;
+                    callback = function (err, results) {
+                     // This function needs documentation.
+                        if (err !== null) {
+                            console.error(err);
+                            results = [];
+                        }
+                        response.writeHead(200, {
+                            'Content-Type': 'application/json'
+                        });
+                        response.write(JSON.stringify(results));
+                        response.end();
+                        return;
+                    };
+                    api_defs.get_box_status.apply(this, [
+                        request, response, params, callback
+                    ]);
+                    return;
+                }
+            });
+        }
+        if (api_defs.hasOwnProperty('post_box_key')) {
+            service.def({
+                method:  'POST',
+                pattern: /^\/box\/([\w\-]+)\?key=([A-z0-9]+)$/,
+                handler: function (request, response, params) {
+                 // This function needs documentation.
+                    var callback, headers;
+                    callback = function (err) {
+                     // This function needs documentation.
+                        if (err !== null) {
+                            console.error(err);
+                            response.writeHead(444);
+                            response.end();
+                            return;
+                        }
+                        response.writeHead(201, {
+                            'Content-Type': 'text/plain'
+                        });
+                        response.write('Hooray!');
+                        response.end();
+                        return;
+                    };
+                    headers = request.headers;
+                    if (headers.hasOwnProperty('content-length')  === false) {
+                        return callback('Missing "content-length" header');
+                    }
+                    if (headers['content-length'] > config.max_fu_size) {
+                        return callback('Maximum file upload size exceeded');
+                    }
+                    api_defs.post_box_key.apply(this, [
+                        request, response, params, callback
+                    ]);
+                    return;
+                }
+            });
+        }
+        if (www_defs.hasOwnProperty('get_static_content')) {
+            service.def({
+                method:  'GET',
+                pattern: /^(\/[\w\-\.]*)/,
+                handler: function (request, response, params) {
+                 // This function needs documentation.
+                    var callback, name;
+                    callback = function (err, results) {
+                     // This function needs documentation.
+                        if (err !== null) {
+                            console.error(err);
+                            response.write(444);
+                            response.end();
+                            return;
+                        }
+                        var extension, headers, mime_types;
+                        extension = name.split('.').pop();
+                        headers = {
+                            'Content-Type': 'application/octet-stream'
+                        };
+                        mime_types = {
+                            appcache:       'text/cache-manifest',
+                            css:            'text/css',
+                            html:           'text/html',
+                            ico:            'image/x-icon',
+                            jpg:            'image/jpeg',
+                            js:             'text/javascript',
+                            json:           'application/json',
+                            manifest:       'text/cache-manifest',
+                            png:            'image/png',
+                            txt:            'text/plain',
+                            xml:            'application/xml'
+                        };
+                        if (mime_types.hasOwnProperty(extension)) {
+                            headers['Content-Type'] = mime_types[extension];
+                        }
+                        response.writeHead(200, headers);
+                        response.write(results);
+                        response.end();
+                        return;
+                    };
+                    name = (params[0] === '/') ? '/index.html' : params[0];
+                    www_defs.get_static_content.apply(this, [
+                        request, response, [name], callback
+                    ]);
+                    return;
+                }
+            });
+        }
+        if (www_defs.hasOwnProperty('set_static_content')) {
+         // NOTE: Don't try to streamline the initial static content load by
+         // restricting it to `cluster.isMaster` -- it doesn't seem to work
+         // with SQLite in-memory databases.
+            if (typeof config.public_html !== 'string') {
+                config.public_html = 'public_html/';
             }
-            if ((config.www instanceof Object) &&
-                    (config.www.hasOwnProperty(backends[i]))) {
-             // This arm needs documentation.
-                defs_www = require('./defs-' + backends[i])
-                    .init(config.www[backends[i]]);
-                service.def({
-                    method:     'GET',
-                    pattern:    /^\//,
-                    handler:    defs_www.get_static_content
+            fs.exists(config.public_html, function (exists) {
+             // This function needs documentation.
+                if (exists === false) {
+                    console.warn('"' + config.public_html + '" is missing.');
+                    return;
+                }
+                fs.readdir(config.public_html, function (err, files) {
+                 // This function needs documentation.
+                    if (err !== null) {
+                        throw err;
+                    }
+                    var callback, remaining;
+                    callback = function (err) {
+                     // This function needs documentation.
+                        if (err !== null) {
+                            throw err;
+                        }
+                        remaining -= 1;
+                        if (remaining === 0) {
+                            console.log('Static content is ready.');
+                        }
+                        return;
+                    };
+                    remaining = files.length;
+                    files.forEach(function (name) {
+                     // This function needs documentation.
+                        var path_to_file = config.public_html + name;
+                        fs.readFile(path_to_file, function (err, file) {
+                         // This function needs documentation.
+                            if (err !== null) {
+                                throw err;
+                            }
+                            www_defs.set_static_content.apply(this, [
+                                name, file, callback
+                            ]);
+                            return;
+                        });
+                        return;
+                    });
+                    return;
                 });
-             // NOTE: Don't try to streamline the initial static content load
-             // by restricting it to `cluster.isMaster` -- it doesn't seem to
-             // work with SQLite in-memory databases.
-                defs_www.set_static_content(config.public_html);
-            }
+                return;
+            });
         }
         if (service.rules.length > 1) {
             service.launch(config);
         } else {
-            console.log('No servers were specified.');
+            console.log('No servers are running.');
         }
         return;
     };
