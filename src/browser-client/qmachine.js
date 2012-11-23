@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 17 Nov 2012
+//                                                  ~~ last updated 23 Nov 2012
 
 (function (global, sandbox) {
     'use strict';
@@ -212,6 +212,7 @@
                 (task.hasOwnProperty('x'))          &&
                 (is_Function(task.f))               &&
                 (task.x instanceof AVar)            &&
+                (is_online())                       &&
                 ((is_closed(task)) === false));
     };
 
@@ -441,7 +442,7 @@
 
     is_online = function () {
      // This function needs documentation.
-        return global.navigator.onLine;
+        return (mothership === 'LOCAL_NODE') || global.navigator.onLine;
     };
 
     jobs = function (box) {

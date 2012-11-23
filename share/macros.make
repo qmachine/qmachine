@@ -15,7 +15,7 @@
 #   Google's Closure compiler in WHITESPACE_ONLY optimization mode is absurd.
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
-#                                                       ~~ (c) SRW, 30 Oct 2012
+#                                                       ~~ (c) SRW, 23 Nov 2012
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -168,6 +168,7 @@ define replace-url-macros
     $(SED) \
         -e 's|MOTHERSHIP|$(strip $(MOTHERSHIP))|g'  \
         -e 's|QM_API_URL|$(strip $(QM_API_URL))|g'  \
+        -e 's|LOCAL_NODE|$(strip $(LOCAL_NODE))|g'  \
         -e 's|QM_WWW_URL|$(strip $(QM_WWW_URL))|g'  $(1) > $(2)
 endef
 
