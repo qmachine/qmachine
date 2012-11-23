@@ -193,7 +193,12 @@
                      // This function needs documentation.
                         if (err !== null) {
                             console.error(err);
-                            response.write(444);
+                            response.writeHead(444);
+                            response.end();
+                            return;
+                        }
+                        if ((results === null) || (results === undefined)) {
+                            response.writeHead(444);
                             response.end();
                             return;
                         }
