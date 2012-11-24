@@ -1,7 +1,7 @@
 //- JavaScript source code
 
 //- service.js ~~
-//                                                      ~~ (c) SRW, 21 Nov 2012
+//                                                      ~~ (c) SRW, 24 Nov 2012
 
 (function () {
     'use strict';
@@ -65,6 +65,10 @@
             api_defs = require('./defs-mongo').api(config.api.mongo);
         } else if (config.api.hasOwnProperty('postgres')) {
             api_defs = require('./defs-postgres').api(config.api.postgres);
+     /*
+        } else if (config.api.hasOwnProperty('redis')) {
+            api_defs = require('./defs-redis').api(config.api.redis);
+     */
         } else if (config.api.hasOwnProperty('sqlite')) {
             api_defs = require('./defs-sqlite').api(config.api.sqlite);
         } else {
@@ -76,6 +80,8 @@
             www_defs = require('./defs-mongo').www(config.www.mongo);
         } else if (config.www.hasOwnProperty('postgres')) {
             www_defs = require('./defs-postgres').www(config.www.postgres);
+        } else if (config.www.hasOwnProperty('redis')) {
+            www_defs = require('./defs-redis').www(config.www.redis);
         } else if (config.www.hasOwnProperty('sqlite')) {
             www_defs = require('./defs-sqlite').www(config.www.sqlite);
         } else {

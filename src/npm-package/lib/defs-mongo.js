@@ -2,7 +2,7 @@
 
 //- defs-mongo.js ~~
 //                                                      ~~ (c) SRW, 05 Nov 2012
-//                                                  ~~ last updated 23 Nov 2012
+//                                                  ~~ last updated 24 Nov 2012
 
 (function () {
     'use strict';
@@ -132,6 +132,7 @@
                 auto_reconnect: true
             });
             storage = new mongo.Db('qm', server, {
+                native_parser: true,
                 safe: true,
                 strict: true
             });
@@ -257,6 +258,7 @@
                 auto_reconnect: true
             });
             storage = new mongo.Db('qm', server, {
+                native_parser: true,
                 safe: true,
                 strict: true
             });

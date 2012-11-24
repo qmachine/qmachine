@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 26 Sep 2012
-//                                                  ~~ last updated 12 Nov 2012
+//                                                  ~~ last updated 24 Nov 2012
 
 (function () {
     'use strict';
@@ -26,6 +26,8 @@
         },
         www: {
             couch:      'http://127.0.0.1:5984/www/_design/app/_rewrite',
+            postgres:   'pg://localhost:5432/' + process.env.USER,
+            redis:      'redis://:@127.0.0.1:6379',
             sqlite:     ':memory:'
         }
     };
@@ -36,7 +38,7 @@
 
     qm.launch_service({
         api: {
-            sqlite:     ':memory:'
+            sqlite:     examples.api.sqlite
         },
         max_workers:    require('os').cpus().length,
         port:           8177
