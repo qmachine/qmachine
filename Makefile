@@ -28,24 +28,34 @@
 #
 #           $ make local-couch
 #
-#   QMachine also supports MongoDB and PostgreSQL for persistent storage, but
-#   I have not automated those variants and have to plans to do so. Other
-#   dependencies for other tasks, some of which are optional, can be installed
-#   via
+#   QMachine also supports MongoDB, PostgreSQL, and Redis for persistent
+#   storage, but I have not automated those variants and have no plans to do
+#   so. Other dependencies for other tasks, some of which are optional, can be
+#   installed via
 #
 #           $ brew install closure-compiler jsmin mongodb qrencode \
-#               phantomjs yuicompressor
+#               phantomjs redis yuicompressor
+#
+#   I personally use Postgres.app (http://postgresapp.com) rather than the
+#   version that ships with Mountain Lion. I use Heroku's platform-as-a-service
+#   (PaaS) for deployment, and this workflow does use the "Heroku Toolbelt" to
+#   build some of its targets. Please note that I have no disclosures; I'm just
+#   documenting my tools for the sake of scientific reproducibility.
+#
+#   Of course, if you are reading this and you represent a company interested
+#   in donating resources that will help me take QMachine to that proverbial
+#   "next level", then by all means contact me! I will consider all such offers
+#   and acknowledge your generosity in all ways tasteful and appropriate.
 #
 #   For a long time, icon generation from LaTeX source code was included as an
 #   extra touch, but folks complained too much about the extra dependency on
 #   MacTeX 2012. Consequently, the workflow now generates a green placeholder
 #   directly from ImageMagick which can be overridden by your own image file
-#   if you provide one. If you want to deploy to your own Heroku instance, you
-#   will need to install the Heroku-provided "Heroku Toolbelt".
+#   if you create an "icons/logo.pdf" file beforehand.
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 20 Nov 2012
+#                                                       ~~ (c) SRW, 25 Nov 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
