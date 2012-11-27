@@ -15,7 +15,7 @@
 #   Google's Closure compiler in WHITESPACE_ONLY optimization mode is absurd.
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
-#                                                       ~~ (c) SRW, 23 Nov 2012
+#                                                       ~~ (c) SRW, 26 Nov 2012
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -181,7 +181,7 @@ endef
 
 define timestamp
     $(CP) $(1) $(2)                                                     ;   \
-    $(DATE) -j -f '%a %b %d %T %Z %Y' "`date`" '+# %s' >> $(2)
+    printf '# %s\n' `$(DATE)` >> $(2)
 endef
 
 CAT         :=  $(call contingent, gcat cat)
