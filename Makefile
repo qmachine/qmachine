@@ -55,7 +55,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 25 Nov 2012
+#                                                       ~~ (c) SRW, 28 Nov 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -66,6 +66,7 @@ CACHE_DIR   :=  $(PROJ_ROOT)/cache
 ICONS_DIR   :=  $(PROJ_ROOT)/icons
 SHARE_DIR   :=  $(PROJ_ROOT)/share
 SRC_DIR     :=  $(PROJ_ROOT)/src
+TEST_DIR    :=  $(PROJ_ROOT)/tests
 VAR_DIR     :=  $(PROJ_ROOT)/var
 
 HEROKU_APP  :=  qmachine
@@ -76,12 +77,15 @@ PLISTS      :=  $(addprefix $(VAR_DIR)/com.QM., couchdb.plist nodejs.plist)
 QM_API_URL  :=  $(MOTHERSHIP)
 QM_WWW_URL  :=  $(MOTHERSHIP)
 
-.PHONY: all clean clobber distclean help reset
+.PHONY: all check clean clobber distclean help reset
 .SILENT: ;
 
 '': help;
 
 all: $(shell $(LS) $(SRC_DIR))
+
+check: local-sandbox
+	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json $(TEST_DIR)/tests.js
 
 clean: reset
 	@   for each in $(PLISTS); do                                       \

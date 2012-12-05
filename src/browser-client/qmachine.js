@@ -375,7 +375,7 @@
              // returns `false` because the scan fails for some reason, the
              // answer to our question would be `true`, which is why we have
              // to negate JSLINT's output.
-                flag = (false === global.JSLINT($f, copy(options.allow, {
+                flag = (false === global.JSLINT($f, copy(options, {
                  // JSLINT configuration options, as of version 2012-07-27:
                     'adsafe':   false,  //- enforce ADsafe rules?
                     'anon':     true,   //- allow `function()`?
@@ -619,7 +619,7 @@
                     (y.val.hasOwnProperty('via'))   &&
                     (in_a_browser() === true)       &&
                     (is_Function(global.window.postMessage)));
-            return (flag) ? xdm.call(y, evt) : yql.call(y, evt);
+            return (flag === true) ? xdm.call(y, evt) : yql.call(y, evt);
         }).Q(function (evt) {
          // This function needs documentation.
             if (is_Function(callback)) {
@@ -1115,7 +1115,7 @@
         }
         y = avar();
         when(arg_box, arg_env, arg_f, arg_x, y).Q(function (evt) {
-         // This function needs documentation.
+         // This function runs locally.
             y.box = (arg_box instanceof AVar) ? arg_box.val : arg_box;
             y.val = {
                 env: ((arg_env instanceof AVar) ? arg_env.val : arg_env),
@@ -1125,8 +1125,13 @@
             return evt.exit();
         });
         y.Q(function (evt) {
-         // This function runs locally because it closes over `is_closed` and
-         // `global.JSLINT`.
+         // This function runs locally.
+            if (y.val.hasOwnProperty('f') === false) {
+                return evt.fail('`f` property is missing.');
+            }
+            if (y.val.hasOwnProperty('x') === false) {
+                return evt.fail('`x` property is missing.');
+            }
             var key, options, task;
             options = {
                 predef: {
@@ -1142,25 +1147,17 @@
                     options.predef[key] = false;
                 }
             }
-            if (is_closed(task, options) === false) {
-                return evt.fail(global.JSLINT.errors);
+            if (is_closed(task, options)) {
+                return evt.fail(global.JSLINT.errors[0].reason);
             }
+         //
+         // (placeholder)
+         //
             return evt.exit();
         }).Q(function (evt) {
          // This function validates the input and closes over `avar` and `y`
          // to induce local execution on the submitter's own machine.
-            var obj, temp;
-            obj = this.val;
-            if ((obj instanceof Object) === false) {
-                return evt.fail('Input argument must be an object.');
-            }
-            if (obj.hasOwnProperty('f') === false) {
-                return evt.fail('`f` property is missing.');
-            }
-            if (obj.hasOwnProperty('x') === false) {
-                return evt.fail('`x` property is missing.');
-            }
-            temp = avar({box: y.box, val: obj});
+            var temp = avar({box: y.box, val: y.val});
             temp.on('error', function (message) {
              // This function needs documentation.
                 return evt.fail(message);
