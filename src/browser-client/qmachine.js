@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 23 Nov 2012
+//                                                  ~~ last updated 05 Dec 2012
 
 (function (global, sandbox) {
     'use strict';
@@ -10,6 +10,30 @@
  // Pragmas
 
     /*jslint indent: 4, maxlen: 80 */
+
+    /*properties
+        ActiveXObject, JSLINT, Q, QM, XDomainRequest, XMLHttpRequest,
+        addEventListener, adsafe, anon, appendChild, apply, atob, attachEvent,
+        avar, bitwise, body, box, browser, btoa, by, call, can_run_remotely,
+        cap, charAt, charCodeAt, comm, concat, configurable, constructor,
+        contentWindow, continue, createElement, css, data, debug, def,
+        defineProperty, detachEvent, devel, diagnostics, display, document,
+        done, enumerable, env, epitaph, eqeq, errors, es5, evil, exemptions,
+        exit, f, fail, floor, forin, fragment, fromCharCode, get,
+        getElementsByTagName, global, hasOwnProperty, head, host, ignoreCase,
+        importScripts, indexOf, join, key, length, lib, load_data, load_script,
+        location, map, method, multiline, navigator, newcap, node, nomen, now,
+        on, onLine, onload, onreadystatechange, open, parentElement, parse,
+        passfail, plusplus, ply, postMessage, predef, properties, protocol,
+        prototype, push, query, random, readyState, reason, recent, reduce,
+        regexp, removeChild, removeEventListener, replace, responseText,
+        result, results, revive, rhino, run_remotely, safe, send, set,
+        setTimeout, shelf, shift, slice, sloppy, source, src, status, stay,
+        stringify, stupid, style, sub, submit, test, time, toJSON, toSource,
+        toString, todo, undef, unparam, url, using, val, value, valueOf, vars,
+        via, visibility, volunteer, when, white, window, windows,
+        withCredentials, writable, x, y
+    */
 
  // Prerequisites
 
@@ -219,7 +243,7 @@
                 (is_Function(task.f))               &&
                 (task.x instanceof AVar)            &&
                 (is_online())                       &&
-                ((is_closed(task)) === false));
+                (is_closed(task, state.exemptions[task.x.key]) === false));
     };
 
     copy = function (x, y) {
@@ -581,7 +605,7 @@
          // proxy for retrieving text files. Binary file types probably won't
          // work very well at the moment, but I'll tweak the Open Data Table
          // I created soon to see what can be done toward that end.
-            var base, callback, diag, format, params, query, temp;
+            var base, callback, diag, format, query, temp;
             global.QM.shelf['temp' + y.key] = function (obj) {
              // This function needs documentation.
                 if (obj.query.results === null) {
@@ -1092,6 +1116,7 @@
 
     state = {
         box: avar().key,
+        exemptions: {},
         recent: {}
     };
 
@@ -1132,7 +1157,7 @@
             if (y.val.hasOwnProperty('x') === false) {
                 return evt.fail('`x` property is missing.');
             }
-            var key, options, task;
+            var key, options, task, temp;
             options = {
                 predef: {
                     'QM': false
@@ -1150,24 +1175,17 @@
             if (is_closed(task, options)) {
                 return evt.fail(global.JSLINT.errors[0].reason);
             }
-         //
-         // (placeholder)
-         //
-            return evt.exit();
-        }).Q(function (evt) {
-         // This function validates the input and closes over `avar` and `y`
-         // to induce local execution on the submitter's own machine.
-            var temp = avar({box: y.box, val: y.val});
+            temp = avar({box: y.box, val: y.val});
+            state.exemptions[temp.key] = options;
             temp.on('error', function (message) {
              // This function needs documentation.
+                delete state.exemptions[temp.key];
                 return evt.fail(message);
             });
             temp.Q(function (evt) {
-             // This function runs remotely on a volunteer's machine because
-             // `QM` is always excepted from JSLint scrutiny.
+             // This function runs remotely on a volunteer machine.
                 /*global QM: false */
                 var env, f, handler, temp, x;
-             // NOTE: Still need to load all scripts specified in `env` ...
                 env = QM.avar({val: this.val.env});
                 f = this.val.f;
                 handler = function (message) {
@@ -1183,7 +1201,7 @@
                  // the prerequisite scripts have finished loading.
                     var prereqs = [];
                     QM.ply(env.val).by(function (key, val) {
-                     // This function uses a `for` loop because order matters.
+                     // This function needs documentation.
                         var libs = QM.avar({val: val.slice()});
                         libs.on('error', function (message) {
                          // This function needs documentation.
@@ -1202,7 +1220,7 @@
                                  // sure if it's worth the extra lines ...
                                     return evt.exit();
                                 }
-                                return evt.stay('Recursing ...');
+                                return evt.stay('Recursing ... (' + key + ')');
                             }).on('error', function (message) {
                              // This function needs documentation.
                                 return evt.fail(message);
@@ -1227,7 +1245,8 @@
                 });
                 return;
             }).Q(function (temp_evt) {
-             // This function needs documentation.
+             // This function runs locally.
+                delete state.exemptions[temp.key];
                 y.val = temp.val;
                 temp_evt.exit();
                 return evt.exit();
