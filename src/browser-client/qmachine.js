@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 05 Dec 2012
+//                                                  ~~ last updated 06 Dec 2012
 
 (function (global, sandbox) {
     'use strict';
@@ -1147,6 +1147,9 @@
                 f: ((arg_f instanceof AVar) ? arg_f.val : arg_f),
                 x: ((arg_x instanceof AVar) ? arg_x.val : arg_x)
             };
+            if (y.hasOwnProperty('box') === false) {
+                y.box = global.QM.box;
+            }
             if ((y.val.env instanceof Object) === false) {
                 y.val.env = {};
             }
