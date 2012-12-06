@@ -1141,18 +1141,22 @@
         y = avar();
         when(arg_box, arg_env, arg_f, arg_x, y).Q(function (evt) {
          // This function runs locally.
-            y.box = (arg_box instanceof AVar) ? arg_box.val : arg_box;
+            var box, env, f, x;
+            box = (arg_box instanceof AVar) ? arg_box.val : arg_box;
+            env = (arg_env instanceof AVar) ? arg_env.val : arg_env;
+            f = (arg_f instanceof AVar) ? arg_f.val : arg_f;
+            x = (arg_x instanceof AVar) ? arg_x.val : arg_x;
+            if ((box !== null) && (box !== undefined)) {
+                y.box = box;
+            }
+            if (is_Function(f) === false) {
+                return evt.fail('No transformation specified');
+            }
             y.val = {
-                env: ((arg_env instanceof AVar) ? arg_env.val : arg_env),
-                f: ((arg_f instanceof AVar) ? arg_f.val : arg_f),
-                x: ((arg_x instanceof AVar) ? arg_x.val : arg_x)
+                env: ((env instanceof Object) ? env : {}),
+                f: f,
+                x: x
             };
-            if (y.hasOwnProperty('box') === false) {
-                y.box = global.QM.box;
-            }
-            if ((y.val.env instanceof Object) === false) {
-                y.val.env = {};
-            }
             return evt.exit();
         });
         y.Q(function (evt) {
