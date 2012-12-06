@@ -1147,6 +1147,9 @@
                 f: ((arg_f instanceof AVar) ? arg_f.val : arg_f),
                 x: ((arg_x instanceof AVar) ? arg_x.val : arg_x)
             };
+            if ((y.val.env instanceof Object) === false) {
+                y.val.env = {};
+            }
             return evt.exit();
         });
         y.Q(function (evt) {
@@ -1230,6 +1233,9 @@
                         prereqs.push(libs);
                         return;
                     });
+                    if (prereqs.length === 0) {
+                        return evt.exit();
+                    }
                     QM.when.apply(null, prereqs).Q(function (w_evt) {
                      // This function needs documentation.
                         w_evt.exit();
@@ -1237,7 +1243,13 @@
                     });
                     return;
                 });
-                x.Q(f).Q(function (x_evt) {
+                x.Q(function (evt) {
+                 // This function must be written as shown, rather than as the
+                 // seemingly innocuous `x.Q(f)`, to avoid redistributing the
+                 // task again. We need to run the task in the environment we
+                 // just created, after all!
+                    return f.call(this, evt);
+                }).Q(function (x_evt) {
                  // This function needs documentation.
                     temp.val = x.val;
                     x_evt.exit();
