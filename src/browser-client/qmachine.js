@@ -1127,7 +1127,7 @@
          // Assume here that the input argument is an object with properties
          // corresponding to the four variables. Although this is my preferred
          // syntax, it is not the default because this function is not intended
-         // for users like me -- it's the "training wheels" introduction to QM.
+         // for advanced users -- it's the "training wheels" version of QM.
             arg_box = x.box;
             arg_env = x.env;
             arg_f = x.f;
@@ -1146,11 +1146,11 @@
             env = (arg_env instanceof AVar) ? arg_env.val : arg_env;
             f = (arg_f instanceof AVar) ? arg_f.val : arg_f;
             x = (arg_x instanceof AVar) ? arg_x.val : arg_x;
-            if ((box !== null) && (box !== undefined)) {
-                y.box = box;
-            }
             if (is_Function(f) === false) {
                 return evt.fail('No transformation specified');
+            }
+            if (typeof box === 'string') {
+                y.box = box;
             }
             y.val = {
                 env: ((env instanceof Object) ? env : {}),
@@ -1161,12 +1161,6 @@
         });
         y.Q(function (evt) {
          // This function runs locally.
-            if (y.val.hasOwnProperty('f') === false) {
-                return evt.fail('`f` property is missing.');
-            }
-            if (y.val.hasOwnProperty('x') === false) {
-                return evt.fail('`x` property is missing.');
-            }
             var key, options, task, temp;
             options = {
                 predef: {
