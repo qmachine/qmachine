@@ -12,27 +12,27 @@
     /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        ActiveXObject, JSLINT, Q, QM, XDomainRequest, XMLHttpRequest,
-        addEventListener, adsafe, anon, appendChild, apply, atob, attachEvent,
-        avar, bitwise, body, box, browser, btoa, by, call, can_run_remotely,
-        cap, charAt, charCodeAt, comm, concat, configurable, constructor,
-        contentWindow, continue, createElement, css, data, debug, def,
-        defineProperty, detachEvent, devel, diagnostics, display, document,
-        done, enumerable, env, epitaph, eqeq, errors, es5, evil, exemptions,
-        exit, f, fail, floor, forin, fragment, fromCharCode, get,
-        getElementsByTagName, global, hasOwnProperty, head, host, ignoreCase,
-        importScripts, indexOf, join, key, length, lib, load_data, load_script,
-        location, map, method, multiline, navigator, newcap, node, nomen, now,
-        on, onLine, onload, onreadystatechange, open, parentElement, parse,
-        passfail, plusplus, ply, postMessage, predef, properties, protocol,
-        prototype, push, query, random, readyState, reason, recent, reduce,
-        regexp, removeChild, removeEventListener, replace, responseText,
-        result, results, revive, rhino, run_remotely, safe, send, set,
-        setTimeout, shelf, shift, slice, sloppy, source, src, status, stay,
-        stringify, stupid, style, sub, submit, test, time, toJSON, toSource,
-        toString, todo, undef, unparam, url, using, val, value, valueOf, vars,
-        via, visibility, volunteer, when, white, window, windows,
-        withCredentials, writable, x, y
+        ActiveXObject, CoffeeScript, JSLINT, Q, QM, XDomainRequest,
+        XMLHttpRequest, addEventListener, adsafe, anon, appendChild, apply,
+        atob, attachEvent, avar, bitwise, body, box, browser, btoa, by, call,
+        can_run_remotely, cap, charAt, charCodeAt, comm, compile, concat,
+        configurable, constructor, contentWindow, continue, createElement, css,
+        data, debug, def, defineProperty, detachEvent, devel, diagnostics,
+        display, document, done, enumerable, env, epitaph, eqeq, errors, es5,
+        eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
+        fromCharCode, get, getElementsByTagName, global, hasOwnProperty, head,
+        host, ignoreCase, importScripts, indexOf, join, key, length, lib,
+        load_data, load_script, location, map, method, multiline, navigator,
+        newcap, node, nomen, now, on, onLine, onload, onreadystatechange, open,
+        parentElement, parse, passfail, plusplus, ply, postMessage, predef,
+        properties, protocol, prototype, push, query, random, readyState,
+        reason, recent, reduce, regexp, removeChild, removeEventListener,
+        replace, responseText, result, results, revive, rhino, run_remotely,
+        safe, send, set, setTimeout, shelf, shift, slice, sloppy, source, src,
+        status, stay, stringify, stupid, style, sub, submit, test, time,
+        toJSON, toSource, toString, todo, undef, unparam, url, using, val,
+        value, valueOf, vars, via, visibility, volunteer, when, white, window,
+        windows, withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -1152,9 +1152,6 @@
             env = (arg_env instanceof AVar) ? arg_env.val : arg_env;
             f = (arg_f instanceof AVar) ? arg_f.val : arg_f;
             x = (arg_x instanceof AVar) ? arg_x.val : arg_x;
-            if (is_Function(f) === false) {
-                return evt.fail('No transformation specified');
-            }
             if (typeof box === 'string') {
                 y.box = box;
             }
@@ -1163,7 +1160,25 @@
                 f: f,
                 x: x
             };
-            return evt.exit();
+            if (is_Function(f) === false) {
+                if ((typeof f === 'string') || (f instanceof String)) {
+                 // Assume that the string represents CoffeeScript. If that's
+                    lib('coffeescript.js').Q(function (lib_evt) {
+                     // This function needs documentation.
+                        y.val.f = global.CoffeeScript.eval(y.val.f);
+                        lib_evt.exit();
+                        return evt.exit();
+                    }).on('error', function (message) {
+                     // This function needs documentation.
+                        return evt.fail(message);
+                    });
+                } else {
+                    return evt.fail('No transformation specified.');
+                }
+            } else {
+                return evt.exit();
+            }
+            return;
         });
         y.Q(function (evt) {
          // This function runs locally.

@@ -55,7 +55,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 28 Nov 2012
+#                                                       ~~ (c) SRW, 10 Dec 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -138,6 +138,7 @@ browser-client:                                                             \
         apple-touch-startup-image-1536x2008.png                             \
         apple-touch-startup-image-1496x2048.png                             \
         cache.manifest                                                      \
+        coffeescript.js                                                     \
         favicon.ico                                                         \
         fluidicon.png                                                       \
         giant-favicon.ico                                                   \
@@ -332,6 +333,9 @@ $(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
 
 $(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
+
+$(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://git.io/2OUH7Q")
 
 $(CACHE_DIR)/jquery.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://code.jquery.com/jquery-latest.js")
