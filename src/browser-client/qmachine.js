@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 06 Dec 2012
+//                                                  ~~ last updated 10 Dec 2012
 
 (function (global, sandbox) {
     'use strict';
@@ -1244,12 +1244,18 @@
                     });
                     return;
                 });
+/*
                 x.Q(function (evt) {
                  // This function must be written as shown, rather than as the
                  // seemingly innocuous `x.Q(f)`, to avoid redistributing the
                  // task again. We need to run the task in the environment we
                  // just created, after all!
                     return f.call(this, evt);
+*/
+                x.Q(function (evt) {
+                 // This function needs documentation.
+                    this.val = f(this.val);
+                    return evt.exit();
                 }).Q(function (x_evt) {
                  // This function needs documentation.
                     temp.val = x.val;
