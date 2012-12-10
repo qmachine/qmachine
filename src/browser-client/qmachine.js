@@ -1162,7 +1162,11 @@
             };
             if (is_Function(f) === false) {
                 if ((typeof f === 'string') || (f instanceof String)) {
-                 // Assume that the string represents CoffeeScript. If that's
+                 // Assume that the string represents CoffeeScript.
+                    if (global.hasOwnProperty('CoffeeScript')) {
+                        y.val.f = global.CoffeeScript.eval(y.val.f);
+                        return evt.exit();
+                    }
                     lib('coffeescript.js').Q(function (lib_evt) {
                      // This function needs documentation.
                         y.val.f = global.CoffeeScript.eval(y.val.f);
