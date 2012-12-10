@@ -1269,17 +1269,23 @@
                     });
                     return;
                 });
-/*
                 x.Q(function (evt) {
-                 // This function must be written as shown, rather than as the
-                 // seemingly innocuous `x.Q(f)`, to avoid redistributing the
-                 // task again. We need to run the task in the environment we
-                 // just created, after all!
-                    return f.call(this, evt);
-*/
-                x.Q(function (evt) {
-                 // This function needs documentation.
-                    this.val = f(this.val);
+                 // This function is crucial for enabling synchronous syntax in
+                 // the asynchronous world of the web.
+                    var temp = f(this.val);
+                    if (temp instanceof QM.avar().constructor) {
+                        temp.Q(function (temp_evt) {
+                         // This function needs documentation.
+                            x.val = temp.val;
+                            temp_evt.exit();
+                            return evt.exit();
+                        }).on('error', function (message) {
+                         // This function needs documentation.
+                            return evt.fail(message);
+                        });
+                        return;
+                    }
+                    this.val = temp;
                     return evt.exit();
                 }).Q(function (x_evt) {
                  // This function needs documentation.
