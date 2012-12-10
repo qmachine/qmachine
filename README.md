@@ -10,10 +10,11 @@ My only reason for using Node.js is the lack of support for
 sufficient by itself to implement the QMachine API; the silver lining here,
 however, is that the CORS-enabled proxy I wrote with Node.js can then be bound
 to other databases like [MongoDB](http://www.mongodb.org/),
-[PostgreSQL](http://www.postgresql.org), and [SQLite](http://www.sqlite.org).
-Keep in mind that the bindings for databases other than CouchDB are still
-experimental! Also, because I am currently writing several academic papers
-about Quanah and QMachine, the Node.js client has fallen out of date.
+[PostgreSQL](http://www.postgresql.org), [Redis](http://redis.io), and
+[SQLite](http://www.sqlite.org). Keep in mind that the bindings for databases
+other than CouchDB are still experimental! Also, because I am currently writing
+several academic papers about Quanah and QMachine, the Node.js client has
+fallen out of date.
 
 As in all my projects, the best documentation is contained inline as comments
 within the source code. I have written some tutorials recently, but those are
@@ -49,6 +50,7 @@ In the future, I would like to integrate QMachine with "app ecosystems" like
 -   [iOS](http://itunes.apple.com/us/app/)
 -   [Podio](https://podio.com/store)
 -   [Samsung](http://www.samsungapps.com/)
+-   [SkyDrive](https://apps.live.com/skydrive)
 -   [SMART Platform](http://www.smartplatforms.org/)
 -   [Windows Phone](http://www.windowsphone.com/en-US/marketplace)
 -   [Yahoo! Connected TV](http://connectedtv.yahoo.com/developer/tvstore/)
