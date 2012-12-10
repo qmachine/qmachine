@@ -2,6 +2,7 @@
 
 //- test-1.js ~~
 //                                                      ~~ (c) SRW, 21 Sep 2012
+//                                                  ~~ last updated 10 Dec 2012
 
 (function () {
     'use strict';
@@ -12,15 +13,15 @@
 
     var x = avar({val: 'Test 1: Success.'});
 
-    x.onerror = oops;
+    x.on('error', oops);
 
-    x.onready = function (evt) {
+    x.Q(function (evt) {
      // This function runs locally because it closes over `puts`.
         puts(this.val);
         return evt.exit();
-    };
+    });
 
-    x.onready = run_next_test;
+    x.Q(run_next_test);
 
     return;
 

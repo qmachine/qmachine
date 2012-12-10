@@ -2,6 +2,7 @@
 
 //- volunteer.js ~~
 //                                                      ~~ (c) SRW, 15 Oct 2012
+//                                                  ~~ last updated 10 Dec 2012
 
 (function (global) {
     'use strict';
@@ -53,15 +54,15 @@
         volunteer = function () {
          // This function needs documentation.
             var x = avar();
-            x.onerror = function (message) {
+            x.on('error', function (message) {
              // This function needs documentation.
                 if (message !== 'Nothing to do ...') {
                     oops('Error:', message);
                 }
                 global.setTimeout(volunteer, 1000);
                 return;
-            };
-            x.onready = function (evt) {
+            });
+            x.Q(function (evt) {
              // This function needs documentation.
              /*
                 var box, task;
@@ -71,11 +72,11 @@
                 }
              */
                 var task = QM.volunteer();
-                task.onerror = function (message) {
+                task.on('error', function (message) {
                  // This function needs documentation.
                     return evt.fail(message);
-                };
-                task.onready = function (task_evt) {
+                });
+                task.Q(function (task_evt) {
                  // This function needs documentation.
                     puts(JSON.stringify({
                         curr:   QM.box,
@@ -85,9 +86,9 @@
                     global.setTimeout(volunteer, 1000);
                     task_evt.exit();
                     return evt.exit();
-                };
+                });
                 return;
-            };
+            });
             return;
         };
         volunteer();

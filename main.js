@@ -2,6 +2,7 @@
 
 //- main.js ~~
 //                                                      ~~ (c) SRW, 15 Oct 2012
+//                                                  ~~ last updated 10 Dec 2012
 
 (function (global) {
     'use strict';
@@ -60,12 +61,12 @@
         var remaining, tests;
         remaining = 19;
         tests = avar({val: 1});
-        tests.onerror = function (message) {
+        tests.on('error', function (message) {
          // This function needs documentation.
             oops('Error:', message);
             return;
-        };
-        tests.onready = function (tests_evt) {
+        });
+        tests.Q(function (tests_evt) {
          // This function needs documentation.
             global.run_next_test = function (evt) {
              // This function needs documentation.
@@ -75,17 +76,17 @@
                 return (remaining > 0) ? tests_evt.stay() : tests_evt.exit();
             };
             var temp = load_script('test-' + tests.val + '.js');
-            temp.onerror = function (message) {
+            temp.on('error', function (message) {
              // This function needs documentation.
                 return tests_evt.fail(message);
-            };
+            });
             return;
-        };
-        tests.onready = function (evt) {
+        });
+        tests.Q(function (evt) {
          // This function needs documentation.
             puts('Done.');
             return evt.exit();
-        };
+        });
         return;
     };
 
