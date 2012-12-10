@@ -50,6 +50,7 @@ In the future, I would like to integrate QMachine with "app ecosystems" like
 -   [iOS](http://itunes.apple.com/us/app/)
 -   [Podio](https://podio.com/store)
 -   [Samsung](http://www.samsungapps.com/)
+-   [SkyDrive](https://apps.live.com/skydrive)
 -   [SMART Platform](http://www.smartplatforms.org/)
 -   [Windows Phone](http://www.windowsphone.com/en-US/marketplace)
 -   [Yahoo! Connected TV](http://connectedtv.yahoo.com/developer/tvstore/)
