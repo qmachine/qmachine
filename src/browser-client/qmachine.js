@@ -1139,6 +1139,12 @@
             arg_x = x;
         }
         y = avar();
+        y.on('error', function (message) {
+         // This function _can_ be overridden if the user specifies his or her
+         // own handler. Otherwise, this function ensures that errors cause the
+         // computation to self-destruct in a really ugly horrible way :-P
+            throw message;
+        });
         when(arg_box, arg_env, arg_f, arg_x, y).Q(function (evt) {
          // This function runs locally.
             var box, env, f, x;
