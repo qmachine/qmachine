@@ -55,7 +55,7 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 10 Dec 2012
+#                                                       ~~ (c) SRW, 12 Dec 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -214,7 +214,6 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
 
 web-service:                                                                \
     $(addprefix $(BUILD_DIR)/web-service/,                                  \
-        cloudfoundry.json                                                   \
         couchdb-apps/                                                       \
         deploy.sh                                                           \
         .gitignore                                                          \
