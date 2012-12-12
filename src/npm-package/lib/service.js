@@ -2,6 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
+//                                                  ~~ last updated 12 Dec 2012
 
 (function () {
     'use strict';
@@ -376,27 +377,13 @@
         };
         that = this;
         if ((cluster.isMaster) && (n > 1)) {
-         // If this process is the master process, we will launch `max_workers`
-         // worker processes to make sure we're using all of the cores in the
-         // machine. Obviously this would be pretty wasteful if there's only
-         // one core in the machine anyway, which is why we require `n > 1`.
-            if (process.version.slice(0, 4) === 'v0.6') {
-                cluster.on('death', function (prev_worker) {
-                 // This function needs documentation.
-                    var next_worker, output;
-                    next_worker = spawn_worker();
-                    console.log(prev_worker.pid + ':', 'RIP', next_worker.pid);
-                    return;
-                });
-            } else if (process.version.slice(0, 4) === 'v0.8') {
-                cluster.on('exit', function (prev_worker) {
-                 // This function needs documentation.
-                    var next_worker, output;
-                    next_worker = spawn_worker();
-                    console.log(prev_worker.pid + ':', 'RIP', next_worker.pid);
-                    return;
-                });
-            }
+            cluster.on('exit', function (prev_worker) {
+             // This function needs documentation.
+                var next_worker, output;
+                next_worker = spawn_worker();
+                console.log(prev_worker.pid + ':', 'RIP', next_worker.pid);
+                return;
+            });
          // Finally, we launch the worker processes :-)
             while (n > 0) {
                 spawn_worker();
