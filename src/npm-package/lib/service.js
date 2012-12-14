@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 12 Dec 2012
+//                                                  ~~ last updated 13 Dec 2012
 
 (function () {
     'use strict';
@@ -66,10 +66,8 @@
             api_defs = require('./defs-mongo').api(config.api.mongo);
         } else if (config.api.hasOwnProperty('postgres')) {
             api_defs = require('./defs-postgres').api(config.api.postgres);
-     /*
         } else if (config.api.hasOwnProperty('redis')) {
             api_defs = require('./defs-redis').api(config.api.redis);
-     */
         } else if (config.api.hasOwnProperty('sqlite')) {
             api_defs = require('./defs-sqlite').api(config.api.sqlite);
         } else {
@@ -110,13 +108,19 @@
                      // This function needs documentation.
                         if (err !== null) {
                             console.error(err);
+                        }
+                        if ((results === null) || (results === undefined)) {
+                            results = '{}';
+                        }
+/*
+                        if ((results instanceof Object) === false) {
                             results = {};
                         }
+*/
                         response.writeHead(200, {
                             'Content-Type': 'application/json'
                         });
-                        response.write(JSON.stringify(results));
-                        response.end();
+                        response.end(results);
                         return;
                     };
                     api_defs.get_box_key.apply(this, [
@@ -137,13 +141,14 @@
                      // This function needs documentation.
                         if (err !== null) {
                             console.error(err);
+                        }
+                        if ((results instanceof Array) === false) {
                             results = [];
                         }
                         response.writeHead(200, {
                             'Content-Type': 'application/json'
                         });
-                        response.write(JSON.stringify(results));
-                        response.end();
+                        response.end(JSON.stringify(results));
                         return;
                     };
                     api_defs.get_box_status.apply(this, [

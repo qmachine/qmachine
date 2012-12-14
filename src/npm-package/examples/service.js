@@ -22,6 +22,7 @@
             couch:      'http://127.0.0.1:5984/db/_design/app',
             mongo:      'mongodb://localhost:27017',
             postgres:   'postgres://localhost:5432/' + process.env.USER,
+            redis:      'redis://:@127.0.0.1:6379',
             sqlite:     'qm.db'
         },
         www: {
@@ -38,10 +39,13 @@
 
     qm.launch_service({
         api: {
-            sqlite:     examples.api.sqlite
+            redis:      examples.api.redis
         },
         max_workers:    require('os').cpus().length,
-        port:           8177
+        port:           8177,
+        www: {
+            sqlite:     ':memory:'
+        }
     });
 
  // That's all, folks!
