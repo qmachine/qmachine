@@ -8,7 +8,7 @@
 //  like Node.js + Redis and then squander cycles needlessly ...
 //
 //                                                      ~~ (c) SRW, 23 Nov 2012
-//                                                  ~~ last updated 13 Dec 2012
+//                                                  ~~ last updated 14 Dec 2012
 
 (function () {
     'use strict';
@@ -92,6 +92,7 @@
                         multi.sadd(set2, key);
                     }
                     multi.hmset(box + '&' + key, updated);
+                    multi.expire(box + '&' + key, 86400);
                     multi.exec(callback);
                     return;
                 });
