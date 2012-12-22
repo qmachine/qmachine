@@ -7,8 +7,11 @@
 //  MongoDB yet. It's a great project and it's easy to use, but I haven't spent
 //  with it, and that's why I am least confident in this set of definitions.
 //
+//  NOTE: I have noticed that the connection string format my code expects is
+//  different from the conventional format. I probably won't fix it until 2013.
+//
 //                                                      ~~ (c) SRW, 05 Nov 2012
-//                                                  ~~ last updated 20 Dec 2012
+//                                                  ~~ last updated 22 Dec 2012
 
 (function () {
     'use strict';
