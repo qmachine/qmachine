@@ -19,10 +19,9 @@
 #           $ make local-sandbox
 #
 #   If you want to use the CouchDB backend, you will need to install CouchDB
-#   (duh) as well as Kanso ...
+#   either from its website (http://couchdb.apache.org/) or using Homebrew:
 #
 #           $ brew install couchdb
-#           $ npm install -g kanso
 #
 #   ... before running the following command to launch the CouchDB sandbox:
 #
@@ -55,7 +54,8 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 12 Dec 2012
+#                                                       ~~ (c) SRW, 06 Feb 2012
+#                                                   ~~ last updated 21 Dec 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -166,20 +166,17 @@ local-couch:
                 COUCHDB_URL="$(strip $(LOCAL_COUCH))"                       \
                 MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
                 QM_API_STRING=$${API_STR}'db/_design/app"}'                 \
-                QM_WWW_STRING=$${API_STR}'www/_design/app/_rewrite"}'       \
+                QM_WWW_STRING='$(VAR_DIR)/nodejs/katamari.json'             \
                     $(PLISTS)                                               \
                     $(VAR_DIR)/couchdb.ini                                  \
+                    $(VAR_DIR)/nodejs/katamari.json                         \
                     $(VAR_DIR)/nodejs/node_modules                          \
                     $(VAR_DIR)/nodejs/server.js                             \
                     web-service                                         ;   \
-            $(CP) $(BUILD_DIR)/browser-client                               \
-                $(VAR_DIR)/nodejs/public_html                           ;   \
             for each in $(PLISTS); do                                       \
                 $(LAUNCHCTL) load -w $${each}                           ;   \
             done                                                        ;   \
             $(CD) $(BUILD_DIR)/web-service                              ;   \
-            COUCHDB_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push db      ;   \
-            COUCHDB_URL="$(strip $(LOCAL_COUCH))" $(KANSO) push www     ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
                 $(call open-in-browser, $(strip $(LOCAL_NODE)))         ;   \
@@ -191,13 +188,12 @@ local-sandbox:
 	@   $(MAKE)                                                         \
                 MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
                 QM_API_STRING='{"sqlite":"qm.db"}'                          \
-                QM_WWW_STRING='{"sqlite":":memory:"}'                       \
+                QM_WWW_STRING='$(VAR_DIR)/nodejs/katamari.json'             \
                     browser-client                                          \
                     $(VAR_DIR)/com.QM.nodejs.plist                          \
+                    $(VAR_DIR)/nodejs/katamari.json                         \
                     $(VAR_DIR)/nodejs/node_modules                          \
                     $(VAR_DIR)/nodejs/server.js                         ;   \
-            $(CP) $(BUILD_DIR)/browser-client                               \
-                $(VAR_DIR)/nodejs/public_html                           ;   \
             $(LAUNCHCTL) load -w $(VAR_DIR)/com.QM.nodejs.plist         ;   \
             if [ $$? -eq 0 ]; then                                          \
                 $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
@@ -214,15 +210,10 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
 
 web-service:                                                                \
     $(addprefix $(BUILD_DIR)/web-service/,                                  \
-        couchdb-apps/                                                       \
-        deploy.sh                                                           \
         .gitignore                                                          \
-        .kansorc                                                            \
-        kanso.json                                                          \
-        packages/                                                           \
+        katamari.json                                                       \
         package.json                                                        \
         Procfile                                                            \
-        public_html/                                                        \
         server.js                                                           \
         .slugignore                                                         \
     )
@@ -298,18 +289,12 @@ $(BUILD_DIR)/web-service/.gitignore:                                        \
     | $(BUILD_DIR)/web-service
 	@   $(CP) $< $@
 
-$(BUILD_DIR)/web-service/packages:                                          \
-    $(BUILD_DIR)/web-service/kanso.json                                     \
-    |   $(BUILD_DIR)/web-service
-	@   TMPURL="$(strip $(COUCHDB_URL))"                            ;   \
-            if [ "$${TMPURL}" = "" ]; then                                  \
-                TMPURL="$(strip $(shell $(HEROKU) config:get                \
-                    COUCHDB_URL --app $(HEROKU_APP)))"                  ;   \
-            fi                                                          ;   \
-            COUCHDB_URL="$${TMPURL}" $(KANSO) install $(BUILD_DIR)/web-service
-
-$(BUILD_DIR)/web-service/public_html: browser-client | $(BUILD_DIR)/web-service
-	@   $(CP) $(BUILD_DIR)/browser-client/ $@
+$(BUILD_DIR)/web-service/katamari.json:                                     \
+    browser-client                                                          \
+    npm-package                                                             \
+    | $(BUILD_DIR)/web-service
+	@   $(NODEJS) $(BUILD_DIR)/npm-package/examples/roll-up.js          \
+                $(BUILD_DIR)/browser-client $@
 
 $(BUILD_DIR)/web-service/%: $(SHARE_DIR)/% | $(BUILD_DIR)/web-service
 	@   $(CP) $< $@
@@ -347,10 +332,6 @@ $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
 
 $(CACHE_DIR)/main.js: $(SRC_DIR)/browser-client/main.js | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
-
-$(CACHE_DIR)/meyerweb-reset.css: | $(CACHE_DIR)
-	@   $(call download-url, \
-                "http://meyerweb.com/eric/tools/css/reset/reset.css")
 
 $(CACHE_DIR)/q.js:                                                          \
     $(CACHE_DIR)/quanah.js                                                  \

@@ -4,9 +4,8 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": ">= 0.2.7"
+        "qm": ">= 0.3.0"
     },
-    "devDependencies": {},
     "engines": {
         "node": "0.8.x",
         "npm":  "1.1.x"
