@@ -13,33 +13,28 @@
 #
 #       ... Node Package Manager (NPM) using directions from https://npmjs.org.
 #
-#   Then, to launch a local sandbox environment that uses SQLite for storage,
-#   run
+#   Then, to launch QM on localhost using SQLite for persistent storage, run
 #
 #           $ make local-sandbox
 #
-#   If you want to use the CouchDB backend, you will need to install CouchDB
-#   either from its website (http://couchdb.apache.org/) or using Homebrew:
-#
-#           $ brew install couchdb
-#
-#   ... before running the following command to launch the CouchDB sandbox:
-#
-#           $ make local-couch
-#
-#   QMachine also supports MongoDB, PostgreSQL, and Redis for persistent
-#   storage, but I have not automated those variants and have no plans to do
-#   so. Other dependencies for other tasks, some of which are optional, can be
-#   installed via
+#   QMachine also supports CouchDB, MongoDB, PostgreSQL, and Redis for storage,
+#   but I'm not providing workflow targets for those variants right now because
+#   SQLite, as an embedded database, is much more convenient. I am leaving the
+#   "local-couch" target as-is rather than deleting it, but it isn't supported
+#   at the moment because I have plenty of items on my to-do list. Some targets
+#   may require other packages to be installed by Homebrew, including
 #
 #           $ brew install closure-compiler jsmin mongodb qrencode \
 #               phantomjs redis yuicompressor
 #
-#   I personally use Postgres.app (http://postgresapp.com) rather than the
-#   version that ships with Mountain Lion. I use Heroku's platform-as-a-service
-#   (PaaS) for deployment, and this workflow does use the "Heroku Toolbelt" to
-#   build some of its targets. Please note that I have no disclosures; I'm just
-#   documenting my tools for the sake of scientific reproducibility.
+#   I prefer the standalone "CouchDB Server.app" available from the CouchDB
+#   website (http://couchdb.apache.org/) over the Homebrew-installed version
+#   because it's more convenient. I also prefer Heroku's "Postgres.app"
+#   (http://postgresapp.com) over the version that ships with Mountain Lion.
+#   I use Heroku's platform-as-a-service (PaaS) for deployment, and this
+#   workflow does use the "Heroku Toolbelt" to build some of its targets.
+#   Please note that I have no disclosures; I'm just documenting my tools for
+#   the sake of scientific reproducibility.
 #
 #   Of course, if you are reading this and you represent a company interested
 #   in donating resources that will help me take QMachine to that proverbial
@@ -55,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 21 Dec 2012
+#                                                   ~~ last updated 22 Dec 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
