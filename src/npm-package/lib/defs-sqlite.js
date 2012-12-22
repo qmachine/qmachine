@@ -5,7 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 22 Nov 2012
+//                                                  ~~ last updated 18 Dec 2012
 
 (function () {
     'use strict';
@@ -26,19 +26,32 @@
 
  // Out-of-scope definitions
 
-    exports.api = function (connection_string) {
+    module.exports = function (options) {
      // This function needs documentation.
-        if ((connection_string === ':memory:') && (cluster.isMaster)) {
-            console.warn('\n' + [
-                'WARNING: In-memory SQLite databases do not provide',
-                'shared persistent storage because each worker will',
-                'create and use its own individual database. Thus,',
-                'the API server may behave erratically if you are',
-                'using multiple workers.'
-            ].join(' ').replace(/([\w\-\:\,\.\s]{65,79})\s/g, "$1\n") + '\n');
-        }
-        var db, get_box_key, get_box_status, post_box_key;
-        db = new sqlite.cached.Database(connection_string, function (err) {
+
+        var collect_garbage, db, exp_date, get_box_key, get_box_status,
+            post_box_key;
+
+        collect_garbage = function () {
+         // This function needs documentation.
+            var lines, values;
+            lines = 'DELETE FROM avars WHERE (exp_date < $now)';
+            values = {
+                $now: Math.ceil(Date.now() / 1000)
+            };
+            db.run(lines, values, function (err) {
+             // This function needs documentation.
+                if (err !== null) {
+                    console.error('Error:', err);
+                    return;
+                }
+                console.log('Finished collecting garbage.');
+                return;
+            });
+            return;
+        };
+
+        db = new sqlite.cached.Database(options.sqlite, function (err) {
          // This function needs documentation.
             if (err !== null) {
                 throw err;
@@ -49,11 +62,12 @@
             var lines;
             lines = [
                 'CREATE TABLE IF NOT EXISTS avars (',
-                '   box TEXT NOT NULL,',
-                '   key TEXT NOT NULL,',
-                '   status TEXT,',
-                '   val TEXT NOT NULL,',
-                '   PRIMARY KEY (box, key)',
+                '   body TEXT NOT NULL,',
+                '   box_key TEXT NOT NULL,',
+                '   box_status TEXT,',
+                '   exp_date INTEGER NOT NULL,',
+                '   key TEXT,',
+                '   PRIMARY KEY (box_key)',
                 ')'
             ];
             db.run(lines.join('\n'), function (err) {
@@ -66,37 +80,55 @@
             });
             return;
         });
+
+        exp_date = function () {
+         // This function needs documentation.
+            return Math.ceil((Date.now() / 1000) + options.avar_ttl);
+        };
+
         get_box_key = function (request, response, params, callback) {
          // This function needs documentation.
-            var box, key, sql;
-            box = params[0];
-            key = params[1];
-            sql = 'SELECT * FROM avars WHERE box = $box AND key = $key';
-            db.get(sql, {$box: box, $key: key}, function (err, row) {
+            var box_key, sql;
+            box_key = params[0] + '&' + params[1];
+            sql = 'SELECT body FROM avars WHERE box_key = $box_key';
+            db.get(sql, {$box_key: box_key}, function (err, row) {
              // This function needs documentation.
-                if ((err !== null) || (row === undefined)) {
+                if (err !== null) {
+                    if (err.errno === 5) {
+                        process.nextTick(function () {
+                         // This function needs documentation.
+                            get_box_key(request, response, params, callback);
+                            return;
+                        });
+                        return;
+                    }
                     return callback(err, row);
                 }
-                if (row.status === null) {
-                    delete row.status;
-                }
-                if (row.val !== undefined) {
-                    row.val = JSON.parse(row.val);
-                }
-                return callback(null, row);
+                return callback(null, (row === undefined) ? row : row.body);
             });
             return;
         };
+
         get_box_status = function (request, response, params, callback) {
          // This function needs documentation.
-            var box, sql, status;
-            box = params[0];
-            sql = 'SELECT key FROM avars WHERE box = $box AND status = $status';
-            status = params[1];
-            db.all(sql, {$box: box, $status: status}, function (err, rows) {
+            var box_status, sql;
+            box_status = params[0] + '&' + params[1];
+            sql = 'SELECT key FROM avars WHERE box_status = $box_status';
+            db.all(sql, {$box_status: box_status}, function (err, rows) {
              // This function needs documentation.
-                if ((err !== null) || (rows === undefined)) {
+                if (err !== null) {
+                    if (err.errno === 5) {
+                        process.nextTick(function () {
+                         // This function needs documentation.
+                            get_box_status(request, response, params, callback);
+                            return;
+                        });
+                        return;
+                    }
                     return callback(err, rows);
+                }
+                if (rows === undefined) {
+                    return callback(null, rows);
                 }
                 return callback(null, rows.map(function (row) {
                  // This function needs documentation.
@@ -105,104 +137,62 @@
             });
             return;
         };
+
         post_box_key = function (request, response, params, callback) {
          // This function needs documentation.
-            var temp = [];
-            request.on('data', function (chunk) {
-             // This function needs documentation.
-                temp.push(chunk.toString());
-                return;
-            });
-            request.on('end', function () {
-             // This function needs documentation.
-                var body, box, key, lines, values;
-                body = JSON.parse(temp.join(''));
-                box = params[0];
-                key = params[1];
+            var lines, values;
+            if (params.length === 4) {
                 lines = [
-                    'INSERT OR REPLACE INTO avars (box, key, status, val)',
-                    '   VALUES ($box, $key, $status, $val)'
+                    'INSERT OR REPLACE INTO avars ' +
+                            '(body, box_key, box_status, exp_date, key)',
+                    '   VALUES ($body, ' +
+                            '   $box_key,' +
+                            '   $box_status,' +
+                            '   $exp_date,' +
+                            '   $key)'
                 ];
                 values = {
-                    $box:       body.box,
-                    $key:       body.key,
-                    $status:    body.status,
-                    $val:       JSON.stringify(body.val)
+                    $body:          params[3],
+                    $box_key:       params[0] + '&' + params[1],
+                    $box_status:    params[0] + '&' + params[2],
+                    $exp_date:      exp_date(),
+                    $key:           params[1]
                 };
-                if ((body.box !== box) || (body.key !== key)) {
-                    return callback('Evil `post_box_key` denied', undefined);
-                }
-                db.run(lines.join('\n'), values, callback);
-                return;
-            });
-            return;
-        };
-        return {
-            get_box_key:    get_box_key,
-            get_box_status: get_box_status,
-            post_box_key:   post_box_key
-        };
-    };
-
-    exports.www = function (connection_string) {
-     // This function needs documentation.
-        var db, get_static_content, set_static_content;
-        db = new sqlite.cached.Database(connection_string, function (err) {
-         // This function needs documentation.
-            if (err !== null) {
-                throw err;
+            } else {
+                lines = [
+                    'INSERT OR REPLACE INTO avars ' +
+                            '(body, box_key, exp_date)',
+                    '   VALUES ($body, $box_key, $exp_date)'
+                ];
+                values = {
+                    $body:          params[2],
+                    $box_key:       params[0] + '&' + params[1],
+                    $exp_date:      exp_date()
+                };
             }
-            if ((cluster.isWorker) && (connection_string !== ':memory:')) {
-                return;
-            }
-            var lines;
-            lines = [
-                'CREATE TABLE IF NOT EXISTS public_html (',
-                '   name TEXT NOT NULL,',
-                '   file BLOB NOT NULL,',
-                '   PRIMARY KEY (name)',
-                ')'
-            ];
-            db.run(lines.join('\n'), function (err) {
+            db.run(lines.join('\n'), values, function (err) {
              // This function needs documentation.
                 if (err !== null) {
-                    throw err;
+                    if (err.errno === 5) {
+                        process.nextTick(function () {
+                         // This function needs documentation.
+                            post_box_key(request, response, params, callback);
+                            return;
+                        });
+                        return;
+                    }
+                    return callback(err);
                 }
-                console.log('WWW: SQLite storage is ready.');
-                return;
-            });
-            return;
-        });
-        get_static_content = function (request, response, params, callback) {
-         // This function needs documentation.
-            var name, sql;
-            name = params[0];
-            sql = 'SELECT file FROM public_html WHERE name = $name';
-            db.get(sql, {$name: name}, function (err, row) {
-             // This function needs documentation.
-                if ((err !== null) || (row === undefined)) {
-                    return callback(err, row);
-                }
-                return callback(null, row.file);
+                return callback(null);
             });
             return;
         };
-        set_static_content = function (name, file, callback) {
-         // This function needs documentation.
-            if ((cluster.isWorker) && (connection_string !== ':memory:')) {
-                return;
-            }
-            var lines;
-            lines = [
-                'INSERT OR REPLACE INTO public_html (name, file)',
-                '   VALUES (?, ?)'
-            ];
-            db.run(lines.join('\n'), '/' + name, file, callback);
-            return;
-        };
+
         return {
-            get_static_content: get_static_content,
-            set_static_content: set_static_content
+            collect_garbage: collect_garbage,
+            get_box_key: get_box_key,
+            get_box_status: get_box_status,
+            post_box_key: post_box_key
         };
     };
 

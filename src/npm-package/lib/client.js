@@ -2,7 +2,7 @@
 
 //- client.js ~~
 //                                                      ~~ (c) SRW, 25 Aug 2012
-//                                                  ~~ last updated 12 Nov 2012
+//                                                  ~~ last updated 18 Dec 2012
 
 (function () {
     'use strict';
@@ -13,9 +13,9 @@
 
  // Out-of-scope definitions
 
-    exports.launch_client = function () {
+    exports.launch = function () {
      // This function needs documentation.
-        throw new Error('The `launch_client` method is currently broken.');
+        throw new Error('The Node.js "native" client is under construction.');
     };
 
  // That's all, folks!

@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 26 Sep 2012
-//                                                  ~~ last updated 24 Nov 2012
+//                                                  ~~ last updated 21 Dec 2012
 
 (function () {
     'use strict';
@@ -18,18 +18,14 @@
  // Definitions
 
     examples = {
-        api: {
-            couch:      'http://127.0.0.1:5984/db/_design/app',
-            mongo:      'mongodb://localhost:27017',
-            postgres:   'postgres://localhost:5432/' + process.env.USER,
-            redis:      'redis://:@127.0.0.1:6379',
-            sqlite:     'qm.db'
-        },
-        www: {
-            couch:      'http://127.0.0.1:5984/www/_design/app/_rewrite',
-            postgres:   'pg://localhost:5432/' + process.env.USER,
-            redis:      'redis://:@127.0.0.1:6379',
-            sqlite:     ':memory:'
+        persistent_storage: {
+            avar_ttl:       60,
+            gc_interval:    1,
+            couch:          'http://127.0.0.1:5984/db',
+            mongo:          'mongodb://localhost:27017',
+            postgres:       'postgres://localhost:5432/' + process.env.USER,
+            redis:          'redis://:@127.0.0.1:6379',
+            sqlite:         'qm.db'
         }
     };
 
@@ -38,14 +34,14 @@
  // Invocations
 
     qm.launch_service({
-        api: {
-            redis:      examples.api.redis
+        enable_api_server:  true,
+        enable_CORS:        true,
+        enable_www_server:  true,
+        persistent_storage: {
+            avar_ttl:       60,
+            sqlite:         examples.persistent_storage.sqlite
         },
-        max_workers:    require('os').cpus().length,
-        port:           8177,
-        www: {
-            sqlite:     ':memory:'
-        }
+        worker_procs:       require('os').cpus().length
     });
 
  // That's all, folks!
