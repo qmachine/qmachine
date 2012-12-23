@@ -12,14 +12,16 @@
 //  Node.js native driver, but it isn't a high priority right now.
 //
 //  NOTE: I have noticed that the connection string format my code expects is
-//  different from the conventional format. I probably won't fix it until 2013.
+//  different from the conventional format. I probably won't fix it fully until
+//  2013 because I'm having a little trouble with authentication; it would make
+//  more sense to migrate to `MongoClient` for this.
 //
 //  NOTE: I also want to use the TTL collection feature, added in version 2.2,
 //  to improve the efficiency of `collect_garbage` and possibly eliminate the
 //  need for such a method at all. (http://goo.gl/KtiQw)
 //
 //                                                      ~~ (c) SRW, 05 Nov 2012
-//                                                  ~~ last updated 22 Dec 2012
+//                                                  ~~ last updated 23 Dec 2012
 
 (function () {
     'use strict';
@@ -166,7 +168,7 @@
             server = new mongo.Server(conn.hostname, parseInt(conn.port, 10), {
                 auto_reconnect: true
             });
-            storage = new mongo.Db('qm', server, {
+            storage = new mongo.Db(conn.pathname.slice(1), server, {
                 native_parser: true,
                 safe: true,
                 strict: true
