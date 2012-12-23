@@ -7,8 +7,16 @@
 //  MongoDB yet. It's a great project and it's easy to use, but I haven't spent
 //  with it, and that's why I am least confident in this set of definitions.
 //
+//  NOTE: I would like to update these definitions to use the new `MongoClient`
+//  object (http://goo.gl/ooIaA) that was introduced in version 1.2 of the
+//  Node.js native driver, but it isn't a high priority right now.
+//
 //  NOTE: I have noticed that the connection string format my code expects is
 //  different from the conventional format. I probably won't fix it until 2013.
+//
+//  NOTE: I also want to use the TTL collection feature, added in version 2.2,
+//  to improve the efficiency of `collect_garbage` and possibly eliminate the
+//  need for such a method at all. (http://goo.gl/KtiQw)
 //
 //                                                      ~~ (c) SRW, 05 Nov 2012
 //                                                  ~~ last updated 22 Dec 2012
