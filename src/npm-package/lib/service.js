@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 20 Dec 2012
+//                                                  ~~ last updated 23 Dec 2012
 
 (function () {
     'use strict';
@@ -239,21 +239,13 @@
                         if ((results === null) || (results === undefined)) {
                             results = '{}';
                         }
-                     /*
-                        if ((results instanceof Object) === false) {
-                            results = {};
-                        }
-                     */
                         response.writeHead(200, {
                             'Content-Type': 'application/json'
                         });
                         response.end(results);
                         return;
                     };
-                    defs.get_box_key.apply(this, [
-                        request, response, params, callback
-                    ]);
-                    return;
+                    return defs.get_box_key(params, callback);
                 }
             });
             rules.push({
@@ -276,10 +268,7 @@
                         response.end(JSON.stringify(results));
                         return;
                     };
-                    defs.get_box_status.apply(this, [
-                        request, response, params, callback
-                    ]);
-                    return;
+                    return defs.get_box_status(params, callback);
                 }
             });
             rules.push({
@@ -333,10 +322,7 @@
                             return callback(err);
                         }
                         params.push(body);
-                        defs.post_box_key.apply(this, [
-                            request, response, params, callback
-                        ]);
-                        return;
+                        return defs.post_box_key(params, callback);
                     });
                     return;
                 }

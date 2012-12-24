@@ -44,7 +44,7 @@
         collect_garbage = function () {
          // This function needs documentation.
             var pattern = {exp_date: {$lte: Math.ceil(Date.now() / 1000)}};
-            db.collection('avars').remove(pattern, function (err, doc) {
+            db.collection('avars').remove(pattern, function (err) {
              // This function needs documentation.
                 if (err !== null) {
                     console.error('Error:', err);
@@ -61,7 +61,7 @@
             return Math.ceil((Date.now() / 1000) + options.avar_ttl);
         };
 
-        get_box_key = function (request, response, params, callback) {
+        get_box_key = function (params, callback) {
          // This function needs documentation.
             var pattern = {_id: params[0] + '&' + params[1]};
             db.collection('avars').findOne(pattern, function (err, item) {
@@ -74,7 +74,7 @@
             return;
         };
 
-        get_box_status = function (request, response, params, callback) {
+        get_box_status = function (params, callback) {
          // This function needs documentation.
             var items, pattern, stream;
             items = [];
@@ -93,7 +93,7 @@
             return;
         };
 
-        post_box_key = function (request, response, params, callback) {
+        post_box_key = function (params, callback) {
          // This function needs documentation.
             var obj, options, spec;
             if (params.length === 4) {

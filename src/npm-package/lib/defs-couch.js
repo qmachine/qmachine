@@ -5,7 +5,7 @@
 //  NOTE: I need to experiment with `require('https').globalAgent.maxSockets`!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 21 Dec 2012
+//                                                  ~~ last updated 23 Dec 2012
 
 (function () {
     'use strict';
@@ -142,7 +142,7 @@
             return Math.ceil((Date.now() / 1000) + options.avar_ttl);
         };
 
-        get_box_key = function (request, response, params, callback) {
+        get_box_key = function (params, callback) {
          // This function needs documentation.
             var opts, req, target;
             target = app_url + '_show/data/' + params[0] + '&' + params[1];
@@ -167,7 +167,7 @@
             return;
         };
 
-        get_box_status = function (request, response, params, callback) {
+        get_box_status = function (params, callback) {
          // This function needs documentation.
             var opts, req, target;
             target = app_url + '_list/as-array/jobs?key=["' +  params[0] +
@@ -195,7 +195,7 @@
 
         protocol = (conn.protocol === 'http:') ? http : https;
 
-        post_box_key = function (request, response, params, callback) {
+        post_box_key = function (params, callback) {
          // This function needs documentation.
             var obj, opts, req;
             if (params.length === 4) {

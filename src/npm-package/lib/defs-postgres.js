@@ -5,7 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 18 Dec 2012
+//                                                  ~~ last updated 23 Dec 2012
 
 (function () {
     'use strict';
@@ -64,7 +64,7 @@
             return Math.ceil((Date.now() / 1000) + options.avar_ttl);
         };
 
-        get_box_key = function (request, response, params, callback) {
+        get_box_key = function (params, callback) {
          // This function needs documentation.
             pg.connect(connection_string, function (err, client) {
              // This function needs documentation.
@@ -87,7 +87,7 @@
             return;
         };
 
-        get_box_status = function (request, response, params, callback) {
+        get_box_status = function (params, callback) {
          // This function needs documentation.
             pg.connect(connection_string, function (err, client) {
              // This function needs documentation.
@@ -111,7 +111,7 @@
             return;
         };
 
-        post_box_key = function (request, response, params, callback) {
+        post_box_key = function (params, callback) {
          // This function needs documentation.
             pg.connect(connection_string, function (err, client) {
              // This function needs documentation.

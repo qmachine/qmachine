@@ -8,7 +8,7 @@
 //  like Node.js + Redis and then squander cycles needlessly ...
 //
 //                                                      ~~ (c) SRW, 23 Nov 2012
-//                                                  ~~ last updated 18 Dec 2012
+//                                                  ~~ last updated 23 Dec 2012
 
 (function () {
     'use strict';
@@ -123,19 +123,19 @@
             return Math.ceil(options.avar_ttl);
         };
 
-        get_box_key = function (request, response, params, callback) {
+        get_box_key = function (params, callback) {
          // This function needs documentation.
             db.hget(params[0] + '&' + params[1], 'body', callback);
             return;
         };
 
-        get_box_status = function (request, response, params, callback) {
+        get_box_status = function (params, callback) {
          // This function needs documentation.
             db.smembers('$:' + params[0] + '&' + params[1], callback);
             return;
         };
 
-        post_box_key = function (request, response, params, callback) {
+        post_box_key = function (params, callback) {
          // This function needs documentation.
             var body, box, key, status;
             if (params.length === 4) {
