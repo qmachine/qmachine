@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 26 Sep 2012
-//                                                  ~~ last updated 21 Dec 2012
+//                                                  ~~ last updated 23 Dec 2012
 
 (function () {
     'use strict';
@@ -22,7 +22,7 @@
             avar_ttl:       60,
             gc_interval:    1,
             couch:          'http://127.0.0.1:5984/db',
-            mongo:          'mongodb://localhost:27017',
+            mongo:          'mongodb://localhost:27017/qm',
             postgres:       'postgres://localhost:5432/' + process.env.USER,
             redis:          'redis://:@127.0.0.1:6379',
             sqlite:         'qm.db'

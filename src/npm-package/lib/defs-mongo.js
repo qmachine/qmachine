@@ -7,18 +7,9 @@
 //  MongoDB yet. It's a great project and it's easy to use, but I haven't spent
 //  with it, and that's why I am least confident in this set of definitions.
 //
-//  NOTE: I would like to update these definitions to use the new `MongoClient`
-//  object (http://goo.gl/ooIaA) that was introduced in version 1.2 of the
-//  Node.js native driver, but it isn't a high priority right now.
-//
-//  NOTE: I have noticed that the connection string format my code expects is
-//  different from the conventional format. I probably won't fix it fully until
-//  2013 because I'm having a little trouble with authentication; it would make
-//  more sense to migrate to `MongoClient` for this.
-//
-//  NOTE: I also want to use the TTL collection feature, added in version 2.2,
-//  to improve the efficiency of `collect_garbage` and possibly eliminate the
-//  need for such a method at all. (http://goo.gl/KtiQw)
+//  NOTE: I also want to use the new TTL collection feature that was added in
+//  MongoDB v2.2 (http://goo.gl/KtiQw) in order to improve the efficiency of
+//  the `collect_garbage` method and/or eliminate the need for it altogether.
 //
 //                                                      ~~ (c) SRW, 05 Nov 2012
 //                                                  ~~ last updated 23 Dec 2012
@@ -38,7 +29,7 @@
 
     cluster = require('cluster');
 
-    mongo = require('mongodb');
+    mongo = require('mongodb').MongoClient;
 
     url = require('url');
 
@@ -52,22 +43,14 @@
 
         collect_garbage = function () {
          // This function needs documentation.
-            db.collection('avars', function (err, collection) {
+            var pattern = {exp_date: {$lte: Math.ceil(Date.now() / 1000)}};
+            db.collection('avars').remove(pattern, function (err, doc) {
              // This function needs documentation.
                 if (err !== null) {
                     console.error('Error:', err);
                     return;
                 }
-                var pattern = {exp_date: {$lte: Math.ceil(Date.now() / 1000)}};
-                collection.remove(pattern, function (err, doc) {
-                 // This function needs documentation.
-                    if (err !== null) {
-                        console.error('Error:', err);
-                        return;
-                    }
-                    console.log('Finished collecting garbage.');
-                    return;
-                });
+                console.log('Finished collecting garbage.');
                 return;
             });
             return;
@@ -80,120 +63,73 @@
 
         get_box_key = function (request, response, params, callback) {
          // This function needs documentation.
-            db.collection('avars', function (err, collection) {
+            var pattern = {_id: params[0] + '&' + params[1]};
+            db.collection('avars').findOne(pattern, function (err, item) {
              // This function needs documentation.
                 if (err !== null) {
                     return callback(err, undefined);
                 }
-                var pattern = {_id: params[0] + '&' + params[1]};
-                collection.findOne(pattern, function (err, item) {
-                 // This function needs documentation.
-                    if (err !== null) {
-                        return callback(err, undefined);
-                    }
-                    return callback(null, (item === null) ? item : item.body);
-                });
-                return;
+                return callback(null, (item === null) ? undefined : item.body);
             });
             return;
         };
 
         get_box_status = function (request, response, params, callback) {
          // This function needs documentation.
-            db.collection('avars', function (err, collection) {
+            var items, pattern, stream;
+            items = [];
+            pattern = {box_status: params[0] + '&' + params[1]};
+            stream = db.collection('avars').find(pattern).stream();
+            stream.on('close', function () {
              // This function needs documentation.
-                if (err !== null) {
-                    return callback(err, undefined);
-                }
-                var items, pattern, stream;
-                items = [];
-                pattern = {box_status: params[0] + '&' + params[1]};
-                stream = collection.find(pattern).stream();
-                stream.on('close', function () {
-                 // This function needs documentation.
-                    return callback(null, items);
-                });
-                stream.on('data', function (item) {
-                 // This function needs documentation.
-                    items.push(item.key);
-                    return;
-                });
-                stream.on('error', callback);
+                return callback(null, items);
+            });
+            stream.on('data', function (item) {
+             // This function needs documentation.
+                items.push(item.key);
                 return;
             });
+            stream.on('error', callback);
             return;
         };
 
         post_box_key = function (request, response, params, callback) {
          // This function needs documentation.
-            db.collection('avars', function (err, collection) {
-             // This function needs documentation.
-                if (err !== null) {
-                    return callback(err, undefined);
-                }
-                var obj, options, spec;
-                if (params.length === 4) {
-                    obj = {
-                        _id:        params[0] + '&' + params[1],
-                        body:       params[3],
-                        box_status: params[0] + '&' + params[2],
-                        exp_date:   exp_date(),
-                        key:        params[1]
-                    };
-                } else {
-                    obj = {
-                        _id:        params[0] + '&' + params[1],
-                        body:       params[2],
-                        exp_date:   exp_date(),
-                        key:        params[1]
-                    };
-                }
-                options = {safe: true, upsert: true};
-                spec = {_id: params[0] + '&' + params[1]};
-                collection.update(spec, obj, options, callback);
-                return;
-            });
+            var obj, options, spec;
+            if (params.length === 4) {
+                obj = {
+                    _id:        params[0] + '&' + params[1],
+                    body:       params[3],
+                    box_status: params[0] + '&' + params[2],
+                    exp_date:   exp_date(),
+                    key:        params[1]
+                };
+            } else {
+                obj = {
+                    _id:        params[0] + '&' + params[1],
+                    body:       params[2],
+                    exp_date:   exp_date(),
+                    key:        params[1]
+                };
+            }
+            options = {safe: true, upsert: true};
+            spec = {_id: params[0] + '&' + params[1]};
+            db.collection('avars').update(spec, obj, options, callback);
             return;
         };
 
-        (function () {
-         // This function initializes MongoDB for use as a QM API server.
-            var conn, server, storage;
-            conn = url.parse(options.mongo);
-         // NOTE: For some reason, the MongoDB driver freaks out if `conn.port`
-         // is a string, but that's what `url.parse` returns. Therefore, we
-         // need to convert it to a number explicitly. Sorry, MongoDB, but I'm
-         // not actually nostalgic for my nights of C++ type anguish, and this
-         // supports my argument that Mongo is for C++ jocks who dabble in JS.
-            server = new mongo.Server(conn.hostname, parseInt(conn.port, 10), {
-                auto_reconnect: true
-            });
-            storage = new mongo.Db(conn.pathname.slice(1), server, {
-                native_parser: true,
-                safe: true,
-                strict: true
-            });
-            storage.open(function (err, db_client) {
-             // This function needs documentation.
-                if (err !== null) {
-                    throw err;
-                }
-                db = db_client;
-                if (cluster.isWorker) {
-                    return;
-                }
-                db.createCollection('avars', function (err, collection) {
-                 // This function needs documentation.
-                    if (err !== null) {
-                        throw err;
-                    }
-                    console.log('API: MongoDB storage is ready.');
-                    return;
-                });
+        mongo.connect(options.mongo, function (err, db_handle) {
+         // This function is a LOT simpler than what I had before!
+            if (err !== null) {
+                throw err;
+            }
+            db = db_handle;
+            if (cluster.isWorker) {
                 return;
-            });
+            }
+            console.log('API: MongoDB storage is ready.');
             return;
-        }());
+        });
 
         return {
             collect_garbage: collect_garbage,
