@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     index.html ~~
-                                                        ~~ (c) SRW, 10 Dec 2012
+                                                        ~~ (c) SRW, 24 Dec 2012
 -->
 <html lang="en">
   <head>
@@ -19,29 +19,30 @@
     </a>
     <h1>QMachine</h1>
 
-<p><a href="https://qmachine.org">QMachine</a> is a web service that uses
+<p><a href="https://www.qmachine.org">QMachine</a> is a web service that uses
 <a href="http://wilkinson.github.com/quanah">Quanah</a> to act as a &quot;supercomputer&quot; that
 distributes computations across web browsers using only
 <a href="http://nodejs.org">Node.js</a> and <a href="http://couchdb.apache.org/">Apache CouchDB</a>.
-My only reason for using Node.js is the lack of support for
-<a href="http://www.w3.org/TR/cors/">CORS</a> in CouchDB, which is otherwise completely
-sufficient by itself to implement the QMachine API; the silver lining here,
-however, is that the CORS-enabled proxy I wrote with Node.js can then be bound
+My original reasons for using Node.js was the lack of support for
+<a href="http://www.w3.org/TR/cors/">CORS</a> in CouchDB as well as a small quirk in its
+redirect handling; otherwise, it would be completely sufficient to implement
+the QMachine API. The silver lining, however, is that I was able to extend the
+CORS-enabled proxy I wrote with Node.js so that it can then be bound
 to other databases like <a href="http://www.mongodb.org/">MongoDB</a>,
 <a href="http://www.postgresql.org">PostgreSQL</a>, <a href="http://redis.io">Redis</a>, and
-<a href="http://www.sqlite.org">SQLite</a>. Keep in mind that the bindings for databases
-other than CouchDB are still experimental! Also, because I am currently writing
-several academic papers about Quanah and QMachine, the Node.js client has
-fallen out of date.</p>
+<a href="http://www.sqlite.org">SQLite</a>. Keep in mind that QM is a research project and
+thus bindings is still experimental! Thus, I do not promise anything to work
+until after I finish the academic papers I am writing about QMachine ;-)</p>
 
 <p>As in all my projects, the best documentation is contained inline as comments
-within the source code. I have written some tutorials recently, but those are
-very low priority until the papers are completed.</p>
+within the source code. I have written some tutorials recently, and I do plan
+to release them sometime in the near future.</p>
 
 <p>There are several &quot;mirrors&quot; available on
 <a href="https://bitbucket.org/wilkinson/qmachine">Bitbucket</a>,
 <a href="https://github.com/wilkinson/qmachine">GitHub</a>, and
-<a href="https://qmachine.googlecode.com">Google Code</a>.</p>
+<a href="https://qmachine.googlecode.com">Google Code</a>. Project statistics are also
+available on <a href="https://www.ohloh.net/p/qm">Ohloh</a>.</p>
 
 <p>A Node.js module can be installed via <a href="https://npmjs.org/package/qm">NPM</a>.</p>
 
