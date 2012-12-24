@@ -23,7 +23,8 @@ to release them sometime in the near future.
 There are several "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),
 [GitHub](https://github.com/wilkinson/qmachine), and
-[Google Code](https://qmachine.googlecode.com).
+[Google Code](https://qmachine.googlecode.com). Project statistics are also
+available on [Ohloh](https://www.ohloh.net/p/qm).
 
 A Node.js module can be installed via [NPM](https://npmjs.org/package/qm).
 
