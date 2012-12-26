@@ -20,9 +20,9 @@
 #   QMachine also supports CouchDB, MongoDB, PostgreSQL, and Redis for storage,
 #   but I'm not providing workflow targets for those variants right now because
 #   SQLite, as an embedded database, is much more convenient. I am leaving the
-#   "local-couch" target as-is rather than deleting it, but it isn't supported
-#   at the moment because I have plenty of items on my to-do list. Some targets
-#   may require other packages to be installed by Homebrew, including
+#   "local-couch" target as-is rather than deleting it, but it is deprecated at
+#   the moment because I am mad at CouchDB. Some optional targets may require
+#   extra packages to be installed by Homebrew, including
 #
 #           $ brew install closure-compiler jsmin mongodb qrencode \
 #               phantomjs redis yuicompressor
@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 22 Dec 2012
+#                                                   ~~ last updated 26 Dec 2012
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -116,8 +116,7 @@ reset:
 
 ###
 
-.PHONY: browser-client chrome-hosted-app local-couch local-sandbox npm-package
-.PHONY: web-service
+.PHONY: browser-client chrome-hosted-app local-sandbox npm-package web-service
 
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
