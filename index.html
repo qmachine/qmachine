@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     index.html ~~
-                                                        ~~ (c) SRW, 24 Dec 2012
+                                                        ~~ (c) SRW, 26 Dec 2012
 -->
 <html lang="en">
   <head>
@@ -19,32 +19,29 @@
     </a>
     <h1>QMachine</h1>
 
-<p><a href="https://www.qmachine.org">QMachine</a> is a web service that uses
-<a href="http://wilkinson.github.com/quanah">Quanah</a> to act as a &quot;supercomputer&quot; that
-distributes computations across web browsers using only
-<a href="http://nodejs.org">Node.js</a> and <a href="http://couchdb.apache.org/">Apache CouchDB</a>.
-My original reasons for using Node.js was the lack of support for
-<a href="http://www.w3.org/TR/cors/">CORS</a> in CouchDB as well as a small quirk in its
-redirect handling; otherwise, it would be completely sufficient to implement
-the QMachine API. The silver lining, however, is that I was able to extend the
-CORS-enabled proxy I wrote with Node.js so that it can then be bound
-to other databases like <a href="http://www.mongodb.org/">MongoDB</a>,
-<a href="http://www.postgresql.org">PostgreSQL</a>, <a href="http://redis.io">Redis</a>, and
-<a href="http://www.sqlite.org">SQLite</a>. Keep in mind that QM is a research project and
-thus bindings is still experimental! Thus, I do not promise anything to work
-until after I finish the academic papers I am writing about QMachine ;-)</p>
-
-<p>As in all my projects, the best documentation is contained inline as comments
-within the source code. I have written some tutorials recently, and I do plan
-to release them sometime in the near future.</p>
+<p><a href="https://www.qmachine.org">QMachine</a> (QM) is a web service that uses
+<a href="http://wilkinson.github.com/quanah">Quanah</a> to create a distributed computer
+that can use ordinary web browsers as ephemeral nodes. It contains three main
+components: an API server, a web server, and a website. The API server and the
+web server are both implemented in <a href="http://nodejs.org">Node.js</a> and available
+for use in server environments via <a href="https://npmjs.org/package/qm">NPM</a>. The API
+server supports <a href="http://www.w3.org/TR/cors/">CORS</a> and configurable persistent
+storage for a variety of popular databases, including
+<a href="http://couchdb.apache.org/">Apache CouchDB</a>,
+<a href="http://www.mongodb.org/">MongoDB</a>, <a href="http://www.postgresql.org">PostgreSQL</a>,
+<a href="http://redis.io">Redis</a>, and <a href="http://www.sqlite.org">SQLite</a>. The web server
+exists only to serve the website. The website functions as an example browser
+client for the QM API, and its implementation as static content written in
+<a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/">HTML5</a>,
+<a href="http://www.w3.org/Style/CSS/Overview.en.html">CSS</a>, and
+<a href="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf">JavaScript</a> allows it to be served out of memory by the web server for high
+performance and used by ordinary web browsers for high portability.</p>
 
 <p>There are several &quot;mirrors&quot; available on
 <a href="https://bitbucket.org/wilkinson/qmachine">Bitbucket</a>,
 <a href="https://github.com/wilkinson/qmachine">GitHub</a>, and
 <a href="https://qmachine.googlecode.com">Google Code</a>. Project statistics are also
 available on <a href="https://www.ohloh.net/p/qm">Ohloh</a>.</p>
-
-<p>A Node.js module can be installed via <a href="https://npmjs.org/package/qm">NPM</a>.</p>
 
 <p>I have done some preliminary investigation into app integration for</p>
 
@@ -54,29 +51,12 @@ available on <a href="https://www.ohloh.net/p/qm">Ohloh</a>.</p>
 <li>  <a href="https://dev.twitter.com/apps/1755018/">Twitter</a></li>
 </ul>
 
-<p>In the future, I would like to integrate QMachine with &quot;app ecosystems&quot; like</p>
-
-<ul>
-<li>  <a href="https://play.google.com/store/apps">Android</a></li>
-<li>  <a href="https://github.com/appdotnet/api-spec/wiki/Developer-Wiki">App.net</a></li>
-<li>  <a href="http://us.blackberry.com/apps-software/appworld/">BlackBerry</a></li>
-<li>  <a href="https://www.cloudflare.com/apps/">CloudFlare</a></li>
-<li>  <a href="http://tvapps.directv.com/">DirecTV</a></li>
-<li>  <a href="https://www.dropbox.com/developers/apps/">Dropbox</a></li>
-<li>  <a href="https://h30495.www3.hp.com/apps/">ePrintCenter</a></li>
-<li>  <a href="https://www.google.com/enterprise/marketplace/">Google Apps Marketplace</a></li>
-<li>  <a href="https://addons.heroku.com/">Heroku</a></li>
-<li>  <a href="http://www.iegallery.com/">Internet Explorer Gallery</a></li>
-<li>  <a href="http://developer.kynetx.com/">Kynetx</a></li>
-<li>  <a href="https://www.mozilla.org/en-US/apps/partners/">Mozilla Marketplace</a></li>
-<li>  <a href="http://itunes.apple.com/us/app/">iOS</a></li>
-<li>  <a href="https://podio.com/store">Podio</a></li>
-<li>  <a href="http://www.samsungapps.com/">Samsung</a></li>
-<li>  <a href="https://apps.live.com/skydrive">SkyDrive</a></li>
-<li>  <a href="http://www.smartplatforms.org/">SMART Platform</a></li>
-<li>  <a href="http://www.windowsphone.com/en-US/marketplace">Windows Phone</a></li>
-<li>  <a href="http://connectedtv.yahoo.com/developer/tvstore/">Yahoo! Connected TV</a></li>
-</ul> 
+<p>I am currently preparing several academic publications that explain some of the
+design decisions behind QM, demonstrate the use of QM in a scientific workflow,
+and elaborate on the future directions of QM. As in all my projects, the best
+documentation is contained inline as comments within the source code. I have
+written some tutorials recently, and I do plan to release them sometime in the
+near future.</p> 
     <script async src="https://www.qmachine.org/q.js"></script>
   </body>
 </html>
