@@ -2,7 +2,7 @@
 
 //- main.js ~~
 //                                                      ~~ (c) SRW, 15 Oct 2012
-//                                                  ~~ last updated 10 Dec 2012
+//                                                  ~~ last updated 28 Dec 2012
 
 (function (global) {
     'use strict';
@@ -92,7 +92,7 @@
 
     global.oops = oops;
 
-    global.ply = Q.ply;
+    global.ply = QM.ply;
 
     global.puts = puts;
 
