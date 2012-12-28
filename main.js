@@ -94,6 +94,8 @@
 
     global.ply = QM.ply;
 
+    console.log(global.ply);
+
     global.puts = puts;
 
     global.when = Q.when;
