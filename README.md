@@ -36,6 +36,6 @@ I am currently preparing several academic publications that explain some of the
 design decisions behind QM, demonstrate the use of QM in a scientific workflow,
 and elaborate on the future directions of QM. As in all my projects, the best
 documentation is contained inline as comments within the source code. I have
-written some tutorials recently, and I do plan to release them sometime in the
-near future.
+written some tutorials recently, but I probably won't get around to releasing
+them until early 2013.
 
