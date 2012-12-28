@@ -19,11 +19,12 @@ client for the QM API, and its implementation as static content written in
 [JavaScript](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf) allows it to be served out of memory by the web server for high
 performance and used by ordinary web browsers for high portability.
 
-There are several "mirrors" available on
+There are several project "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),
 [GitHub](https://github.com/wilkinson/qmachine), and
-[Google Code](https://qmachine.googlecode.com). Project statistics are also
-available on [Ohloh](https://www.ohloh.net/p/qm).
+[Google Code](https://qmachine.googlecode.com). Various project statistics are
+available on [GitHub](https://github.com/wilkinson/qmachine/graphs) and
+[Ohloh](https://www.ohloh.net/p/qm), too.
 
 I have done some preliminary investigation into app integration for
 
