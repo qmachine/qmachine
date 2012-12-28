@@ -1,6 +1,6 @@
 //- JavaScript source code
 
-//- main.js ~~
+//- test.js ~~
 //                                                      ~~ (c) SRW, 15 Oct 2012
 //                                                  ~~ last updated 28 Dec 2012
 
