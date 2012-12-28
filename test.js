@@ -98,6 +98,8 @@
 
     global.when = Q.when;
 
+    puts('NOTE: Remember to open a volunteer page :-)');
+
  // That's all, folks!
 
     return;
