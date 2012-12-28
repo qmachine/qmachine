@@ -2,7 +2,7 @@
 
 //- volunteer.js ~~
 //                                                      ~~ (c) SRW, 15 Oct 2012
-//                                                  ~~ last updated 10 Dec 2012
+//                                                  ~~ last updated 28 Dec 2012
 
 (function (global) {
     'use strict';
@@ -56,7 +56,9 @@
             var x = avar();
             x.on('error', function (message) {
              // This function needs documentation.
-                if (message !== 'Nothing to do ...') {
+                if (message === 'Nothing to do ...') {
+                    puts(message);
+                } else {
                     oops('Error:', message);
                 }
                 global.setTimeout(volunteer, 1000);
