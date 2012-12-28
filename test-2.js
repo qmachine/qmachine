@@ -2,6 +2,7 @@
 
 //- test-2.js ~~
 //                                                      ~~ (c) SRW, 21 Sep 2012
+//                                                  ~~ last updated 27 Dec 2012
 
 (function () {
     'use strict';
@@ -14,7 +15,7 @@
      // This function runs locally because it closes over `puts`.
         puts(this.val);
         return evt.exit();
-    }).Q(run_next_test).onerror = oops;
+    }).Q(run_next_test).on('error', oops);
 
     return;
 

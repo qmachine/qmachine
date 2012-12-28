@@ -2,6 +2,7 @@
 
 //- test-4.js ~~
 //                                                      ~~ (c) SRW, 21 Sep 2012
+//                                                  ~~ last updated 27 Dec 2012
 
 (function () {
     'use strict';
@@ -21,7 +22,7 @@
         }
         puts('Test 4: Success.');
         return evt.exit();
-    }).Q(run_next_test).onerror = oops;
+    }).Q(run_next_test).on('error', oops);
 
     return;
 

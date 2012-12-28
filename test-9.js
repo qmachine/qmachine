@@ -2,6 +2,7 @@
 
 //- test-9.js ~~
 //                                                      ~~ (c) SRW, 21 Sep 2012
+//                                                  ~~ last updated 27 Dec 2012
 
 (function () {
     'use strict';
@@ -12,24 +13,24 @@
 
     var x = avar({val: 2});
 
-    x.onerror = oops;
+    x.on('error', oops);
 
-    when(x).isready = function (evt) {
+    when(x).Q(function (evt) {
      // This function runs locally because it closes over `identity`.
         this.val[0].val += identity(2);
         return evt.exit();
-    };
+    });
 
-    x.onready = function (evt) {
+    x.Q(function (evt) {
      // This function needs documentation.
         if (x.val !== 4) {
             return evt.fail('Test 9: `when..areready` local `this` one avar');
         }
         puts('Test 9: Success.');
         return evt.exit();
-    };
+    });
 
-    x.onready = run_next_test;
+    x.Q(run_next_test);
 
     return;
 

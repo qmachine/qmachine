@@ -9,6 +9,7 @@
 //  queue for "testing" :-)
 //
 //                                                      ~~ (c) SRW, 15 Oct 2012
+//                                                  ~~ last updated 28 Dec 2012
 
 (function () {
     'use strict';
@@ -19,38 +20,38 @@
 
     var x = avar({box: 'testing', val: 2});
 
-    x.onerror = oops;
+    x.on('error', oops);
 
-    x.onready = function (evt) {
+    x.Q(function (evt) {
      // This function runs remotely on a "testing" queue volunteer.
         var temp = this.Q.avar({box: 'botnet'});
-        temp.onerror = function (message) {
+        temp.on('error', function (message) {
          // This function needs documentation.
             return evt.fail(message);
-        };
-        temp.onready = function (evt) {
+        });
+        temp.Q(function (evt) {
          // This function runs remotely in the "botnet" queue but switches a
          // volunteer's default `box` value and thereby abducts its resources.
             this.QM.box = 'testing';
             return evt.exit();
-        };
-        temp.onready = function (temp_evt) {
+        });
+        temp.Q(function (temp_evt) {
          // This function runs "locally" on the original "testing" volunteer,
          // but this is still remote as compared with the original invoking
          // context of `x`.
             temp_evt.exit();
             return evt.exit();
-        };
+        });
         return;
-    };
+    });
 
-    x.onready = function (evt) {
+    x.Q(function (evt) {
      // This function needs documentation.
         puts('Test 20: Success.');
         return evt.exit();
-    };
+    });
 
-    x.onready = run_next_test;
+    x.Q(run_next_test);
 
     return;
 
