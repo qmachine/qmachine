@@ -13,9 +13,11 @@
 //  have trouble understanding it correctly. The "phantomjs-config.json" file
 //  helps keep things from being cached, but if you find yourself needing to
 //  clear the cache, you can find it in Mac OS X under
+//
 //      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
 //
 //                                                      ~~ (c) SRW, 19 Sep 2012
+//                                                  ~~ last updated 10 Jan 2013
 
 (function (global) {
     'use strict';
@@ -23,7 +25,8 @@
  // Pragmas
 
     /*jslint indent: 4, maxlen: 80 */
-    /*global phantom: false */
+
+    /*global phantom: false, require: false */
 
  // Prerequisites
 
@@ -42,16 +45,16 @@
 
     output = phantom.args[2];
 
-    page = new global.WebPage();
+    page = require('webpage').create();
 
-    size = phantom.args[2].split('x');
+    size = phantom.args[1].split('x');
+
+ // Invocations
 
     page.viewportSize = {
         width:  size[0],
         height: size[1]
     };
-
- // Invocations
 
     page.open(address, function (status) {
      // This function needs documentation.
