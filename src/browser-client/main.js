@@ -13,7 +13,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 17 Nov 2012
+//                                                  ~~ last updated 10 Jan 2013
 
 (function () {
     'use strict';
@@ -110,14 +110,18 @@
             }
         }
         $(window).on('blur focus', QM.revive);
-        $('#QM-box-input').blur(function () {
-         // This function needs documentation.
+        $('#QM-box-input').on('blur', function () {
+         // This function doesn't work well in web workers due to the `alert`,
+         // but they aren't a priority right now. The idea here is to try to
+         // assign the new value of the input box to `QM.box` and capture the
+         // error that will be thrown if the value is invalid. Then, we want to
+         // notify the user about the problem and "let" them try again.
             try {
                 QM.box = this.value;
             } catch (err) {
-             // This part doesn't work well in web workers, but they're not a
-             // huge priority right now ...
                 window.alert(err);
+                this.value = QM.box;
+                $(this).focus();
             }
             QM.revive();
             return;
@@ -149,7 +153,7 @@
             jserr('Error:', message);
             return;
         });
-        $('#QM-volunteer-input').click(function volunteer() {
+        $('#QM-volunteer-input').on('click', function volunteer() {
          // This function needs documentation.
             if ($('#QM-volunteer-input').is(':checked') === false) {
              // Yes, you're right, it _does_ look inefficient to ask jQuery to

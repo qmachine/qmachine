@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 10 Dec 2012
+//                                                  ~~ last updated 10 Jan 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -16,23 +16,23 @@
         XMLHttpRequest, addEventListener, adsafe, anon, appendChild, apply,
         atob, attachEvent, avar, bitwise, body, box, browser, btoa, by, call,
         can_run_remotely, cap, charAt, charCodeAt, comm, compile, concat,
-        configurable, constructor, contentWindow, continue, createElement, css,
-        data, debug, def, defineProperty, detachEvent, devel, diagnostics,
-        display, document, done, enumerable, env, epitaph, eqeq, errors, es5,
-        eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
-        fromCharCode, get, getElementsByTagName, global, hasOwnProperty, head,
-        host, ignoreCase, importScripts, indexOf, join, key, length, lib,
-        load_data, load_script, location, map, method, multiline, navigator,
-        newcap, node, nomen, now, on, onLine, onload, onreadystatechange, open,
-        parentElement, parse, passfail, plusplus, ply, postMessage, predef,
-        properties, protocol, prototype, push, query, random, readyState,
-        reason, recent, reduce, regexp, removeChild, removeEventListener,
-        replace, responseText, result, results, revive, rhino, run_remotely,
-        safe, send, set, setTimeout, shelf, shift, slice, sloppy, source, src,
-        status, stay, stringify, stupid, style, sub, submit, test, time,
-        toJSON, toSource, toString, todo, undef, unparam, url, using, val,
-        value, valueOf, vars, via, visibility, volunteer, when, white, window,
-        windows, withCredentials, writable, x, y
+        configurable, console, constructor, contentWindow, continue,
+        createElement, css, data, debug, def, defineProperty, detachEvent,
+        devel, diagnostics, display, document, done, enumerable, env, epitaph,
+        eqeq, errors, es5, eval, evil, exemptions, exit, f, fail, floor, forin,
+        fragment, fromCharCode, get, getElementsByTagName, global,
+        hasOwnProperty, head, host, ignoreCase, importScripts, indexOf, join,
+        key, length, lib, load_data, load_script, location, log, map, method,
+        multiline, navigator, newcap, node, nomen, now, on, onLine, onload,
+        onreadystatechange, open, parentElement, parse, passfail, plusplus,
+        ply, postMessage, predef, properties, protocol, prototype, push, puts,
+        query, random, readyState, reason, recent, reduce, regexp, removeChild,
+        removeEventListener, replace, responseText, result, results, revive,
+        rhino, run_remotely, safe, send, set, setTimeout, shelf, shift, slice,
+        sloppy, source, src, status, stay, stringify, stupid, style, sub,
+        submit, test, time, toJSON, toSource, toString, todo, undef, unparam,
+        url, using, val, value, valueOf, vars, via, visibility, volunteer,
+        when, white, window, windows, withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -51,8 +51,8 @@
     var ajax, atob, AVar, avar, btoa, can_run_remotely, copy, deserialize,
         in_a_browser, in_a_WebWorker, is_closed, is_online, is_Function,
         is_RegExp, jobs, lib, load_data, load_script, map, mothership, origin,
-        ply, read, recent, reduce, run_remotely, serialize, state, submit,
-        update_local, update_remote, volunteer, when, write;
+        ply, puts, read, recent, reduce, run_remotely, serialize, state,
+        submit, update_local, update_remote, volunteer, when, write;
 
  // Definitions
 
@@ -810,6 +810,19 @@
         return y;
     };
 
+    puts = function () {
+     // This function needs documentation.
+        return when.apply(this, arguments).Q(function (evt) {
+         // This function needs documentation.
+            if ((global.hasOwnProperty('console')) &&
+                    (is_Function(global.console.log))) {
+                global.console.log(this.val.join(' '));
+                return evt.exit();
+            }
+            return evt.fail('The `console.log` method is available.');
+        });
+    };
+
     read = function (x) {
      // This function needs documentation.
         var y = ajax('GET', mothership + '/box/' + x.box + '?key=' + x.key);
@@ -1167,7 +1180,7 @@
                         y.val.f = global.CoffeeScript.eval(y.val.f);
                         return evt.exit();
                     }
-                    lib('coffeescript.js').Q(function (lib_evt) {
+                    lib('QM_WWW_URL/coffeescript.js').Q(function (lib_evt) {
                      // This function needs documentation.
                         y.val.f = global.CoffeeScript.eval(y.val.f);
                         lib_evt.exit();
@@ -1600,6 +1613,7 @@
             load_script:    load_script,
             map:            map,
             ply:            ply,
+            puts:           puts,
             reduce:         reduce,
             revive:         avar().revive,
             shelf:          {},

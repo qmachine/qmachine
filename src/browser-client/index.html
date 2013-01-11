@@ -2,15 +2,30 @@
 <!--
     index.html ~~
                                                         ~~ (c) SRW, 20 Nov 2012
+                                                    ~~ last updated 10 Jan 2013
 -->
 <!--[if IE]><![endif]-->
-<html lang="en" manifest="./cache.manifest">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="author" content="Sean Wilkinson">
-    <meta name="description" content="The World's Most Relaxed Supercomputer">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QMachine</title>
-    <link rel="stylesheet" href="./style-min.css">
+
+  <!-- Le styles -->
+
+    <style>
+      body { padding-top: 60px; /* 60px to make the container go all the way
+      to the bottom of the topbar */ }
+    </style>
+
+    <link href="./style-min.css" rel="stylesheet">
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="./html5shiv.js"></script>
+  <![endif]-->
 
   <!--[if IE]>
     <link rel="shortcut icon" href="./giant-favicon.ico">
@@ -79,38 +94,86 @@
     <meta name="msapplication-window" content="width=800;height=600">
 
   </head>
+
   <body>
-    <noscript>This page requires JavaScript.</noscript>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="https://www.qmachine.org/" target="_blank">QMachine</a>
+          <ul class="nav">
+            <li>
+              <a href="https://v1.qmachine.org/" target="_blank">Version 1</a>
+            </li>
+            <li>
+              <a href="https://github.com/wilkinson/qmachine">Source Code</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="hero-unit">
+        <div style="text-align: center;">
+          <h1>HPC + WWW&nbsp;= QM</h1>
+          <br>
+          <p>
+            <a href="https://www.qmachine.org/">QMachine</a> (QM) is a web
+            service for executing distributed workflows that can use ordinary
+            web browsers as ephemeral compute nodes &mdash; no installations
+            required. It's the World's Most Relaxed Supercomputer :-)
+          </p>
+          <a class="btn btn-primary" href="http://wilkinson.github.com/qmachine">Learn more »</a>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="span6">
+          <div style="text-align: center;">
+            <h2>Submitter Example</h2>
+            <p>
+              Open your browser's developer console and enter the following:
+            </p>
+            <p>
+              <code>QM.puts(QM.submit(2, '(x) -&gt; x + 2'));</code>
+            </p>
+            <p>
+              You may need to volunteer to run it, though!
+            </p>
+          </div>
+        </div>
+        <div class="span6">
+          <div style="text-align: center;">
+            <h2>Volunteer Example</h2>
+            <p>
+              Check the box below to volunteer your machine's resources as part
+              of QM's crowdsourced supercomputer. To specify a "box", edit the
+              text :-)
+            </p>
+            <form class="navbar-form">
+              <input type="text" id="QM-box-input" class="span2" size="32"
+                pattern="^[\w\-]+" required>
+              <input type="checkbox" id="QM-volunteer-input">
+            </form>
+          </div>
+        </div>
+      </div>
+      <hr>
+    </div>
 
-    <h1>QMachine</h1>
-
-    <a class="fork-me" href="https://github.com/wilkinson/qmachine">
-      <span>Fork me on GitHub!</span>
-    </a>
-
-    <form>
-      <fieldset>
-        <legend>Options</legend>
+    <footer class="footer">
+      <div class="container" style="text-align: center;">
         <p>
-          <label for="QM-box-input">Box</label>
-          <input type="text" id="QM-box-input"
-              pattern="^[\w\-]+" required size="32">
-          <br/>
-          <label for="QM-volunteer-input">Volunteer</label>
-          <input type="checkbox" id="QM-volunteer-input">
+          <br>&copy; <a href="mailto:wilkinson@uab.edu">Sean Wilkinson</a> 2010-2013
+          <br>University of Alabama at Birmingham
+          <br>Department of Biomedical Engineering
+          <br>Department of Pathology, Division of Informatics
+          <br><a href="http://uab.mathbiol.org/informatics" target="_blank">http
+://uab.mathbiol.org/informatics</a>
         </p>
-      </fieldset>
-    </form>
+      </div>
+    </footer>
 
-  <!--[if lt IE 9]>
-    <script type="text/javascript" src="./ie.js"></script>
-  <![endif]-->
-  <!--[if gte IE 9]>
     <script src="./homepage.js"></script>
-  <![endif]-->
 
-  <!--[if !IE]>-->
-    <script src="./homepage.js"></script>
-  <!--<![endif]-->
   </body>
 </html>

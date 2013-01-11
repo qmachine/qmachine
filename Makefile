@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 26 Dec 2012
+#                                                   ~~ last updated 10 Jan 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -137,6 +137,7 @@ browser-client:                                                             \
         fluidicon.png                                                       \
         giant-favicon.ico                                                   \
         homepage.js                                                         \
+        html5shiv.js                                                        \
         ie.js                                                               \
         index.html                                                          \
         q.js                                                                \
@@ -300,7 +301,8 @@ $(CACHE_DIR):
 	@   $(call make-directory, $@)
 
 $(CACHE_DIR)/homepage.js:                                                   \
-    $(CACHE_DIR)/jquery.js                                                  \
+    $(CACHE_DIR)/jquery-172.js                                              \
+    $(CACHE_DIR)/bootstrap.js                                               \
     $(CACHE_DIR)/q.js                                                       \
     $(CACHE_DIR)/main.js                                                    \
     |   $(CACHE_DIR)
@@ -312,11 +314,23 @@ $(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
 $(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
+$(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/cyijk")
+
+$(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/1uok3")
+
+$(CACHE_DIR)/bootstrap-responsive.css: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/Zfw2I")
+
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/2OUH7Q")
 
-$(CACHE_DIR)/jquery.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://code.jquery.com/jquery-latest.js")
+$(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/4p5Is")
+
+$(CACHE_DIR)/jquery-172.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://code.jquery.com/jquery-1.7.2.js")
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/6pCWog")
@@ -352,8 +366,12 @@ $(CACHE_DIR)/sitemap.xml: $(SRC_DIR)/browser-client/sitemap.xml | $(CACHE_DIR)
 $(CACHE_DIR)/style.css: $(SRC_DIR)/browser-client/style.css | $(CACHE_DIR)
 	@   $(CP) $< $@
 
-$(CACHE_DIR)/style-min.css: $(CACHE_DIR)/style.css | $(CACHE_DIR)
-	@   $(call minify-css, $<, $@)
+$(CACHE_DIR)/style-min.css:                                                 \
+    $(CACHE_DIR)/style.css                                                  \
+    $(CACHE_DIR)/bootstrap.css                                              \
+    $(CACHE_DIR)/bootstrap-responsive.css                                   \
+    | $(CACHE_DIR)
+	@   $(call minify-css, $^, $@)
 
 $(ICONS_DIR):
 	@   $(call make-directory, $@)
