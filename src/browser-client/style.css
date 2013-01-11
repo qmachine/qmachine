@@ -19,6 +19,9 @@
         font-size: 200%;
         text-align: center;
     }
+    .centered {
+        text-align: center;
+    }
 }
 
 @media print {
