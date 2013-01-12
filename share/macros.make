@@ -209,7 +209,7 @@ SED         :=  $(call contingent, gsed sed)
 SORT        :=  $(call contingent, gsort sort) -u
 XARGS       :=  $(call contingent, xargs)
 YUICOMP     :=  $(call contingent, yuicompressor)
-ZIP         :=  $(call contingent, gzip zip)
+ZIP         :=  $(call contingent, zip)
 
 USERNAME    :=  $(shell $(call contingent, whoami))
 
