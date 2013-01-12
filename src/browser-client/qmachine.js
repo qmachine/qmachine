@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 10 Jan 2013
+//                                                  ~~ last updated 11 Jan 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -99,7 +99,7 @@
             request.onreadystatechange = function () {
              // This function needs documentation.
                 if (request.readyState === 4) {
-                    if (request.status === 502) {
+                    if (request.status >= 500) {
                      // These are internal server errors that were occurring
                      // in early "full-stack" versions of QMachine due to a
                      // small error in a Monit script. I've left this arm in
