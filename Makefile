@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 10 Jan 2013
+#                                                   ~~ last updated 12 Jan 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -101,7 +101,7 @@ distclean: clobber
             if [ -f "$(ICONS_DIR)/logo.pdf" ]; then                         \
                 $(CP) $(ICONS_DIR)/logo.pdf $(PROJ_ROOT)/logo.pdf       ;   \
                 $(RM) $(ICONS_DIR)                                      ;   \
-                $(MKDIR) $(ICONS_DIR)                                   ;   \
+                $(call make-directory, $(ICONS_DIR))                    ;   \
                 $(CP) $(PROJ_ROOT)/logo.pdf $(ICONS_DIR)                ;   \
                 $(RM) $(PROJ_ROOT)/logo.pdf                             ;   \
             else                                                            \
@@ -422,12 +422,14 @@ $(ICONS_DIR)/apple-touch-icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -alpha off                                                  \
             )
 
-$(ICONS_DIR)/apple-touch-startup-image-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+$(ICONS_DIR)/apple-touch-startup-image-%.png:                               \
+    $(ICONS_DIR)/logo.png                                                   \
+    | $(ICONS_DIR)
 	@   $(call generate-image-from, $<,                                 \
-                    -fill '#CCCCCC'                                         \
+                    -fill '#EEEEEE'                                         \
                     -draw 'color 0,0 reset'                                 \
                     -extent "$*"                                            \
-                    -background '#CCCCCC'                                   \
+                    -background '#EEEEEE'                                   \
                     -alpha remove                                           \
                     -alpha off                                              \
             )

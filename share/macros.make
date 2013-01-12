@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 22 Dec 2012
+#                                                   ~~ last updated 12 Jan 2013
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -109,7 +109,7 @@ define hilite
 endef
 
 define make-directory
-    if [ ! -d "$@" ]; then $(MKDIR) "$@"; fi
+    if [ ! -d "$(strip $(1))" ]; then $(MKDIR) "$(strip $(1))"; fi
 endef
 
 define minify-css
@@ -192,7 +192,7 @@ CONVERT     :=  $(call contingent, convert)
 COUCHDB     :=  $(call contingent, couchdb)
 CP          :=  $(call contingent, gcp cp) -rf
 CURL        :=  $(call contingent, curl) -L
-DATE        :=  $(call contingent, date)
+DATE        :=  $(call contingent, gdate date)
 HEROKU      :=  $(call contingent, heroku)
 JSMIN       :=  $(call contingent, jsmin)
 LAUNCHCTL   :=  $(call contingent, launchctl)
@@ -209,7 +209,7 @@ SED         :=  $(call contingent, gsed sed)
 SORT        :=  $(call contingent, gsort sort) -u
 XARGS       :=  $(call contingent, xargs)
 YUICOMP     :=  $(call contingent, yuicompressor)
-ZIP         :=  $(call contingent, zip)
+ZIP         :=  $(call contingent, gzip zip)
 
 USERNAME    :=  $(shell $(call contingent, whoami))
 
