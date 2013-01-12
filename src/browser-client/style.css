@@ -2,17 +2,17 @@
 
 /*- style.css ~~
  *                                                      ~~ (c) SRW, 29 Oct 2012
- *                                                  ~~ last updated 10 Jan 2013
+ *                                                  ~~ last updated 12 Jan 2013
  */
 
 @media all {
+    body {
+     /* This extends the container all the way to the bottom of the topbar. */
+        padding-top: 60px;
+    }
     html {
      /* This snippet makes text look nicer (source: http://goo.gl/fr85e). */
         -webkit-font-smoothing: antialiased;
-    }
-    input:required:invalid {
-        background-color: #FFEBEB;
-        border-color: red;
     }
     noscript {
         color: red;
