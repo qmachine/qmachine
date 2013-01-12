@@ -7,13 +7,13 @@
 //  It doesn't load "q.js" dynamically anymore -- that task has been replaced
 //  by a script tag load in the HTML page:
 //
-//      <script src="QM_WWW_URL/homepage.js"></script>
+//      <script src="./homepage.js"></script>
 //
 //  KNOWN ISSUES:
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 10 Jan 2013
+//                                                  ~~ last updated 12 Jan 2013
 
 (function () {
     'use strict';
@@ -26,10 +26,10 @@
 
     /*properties
         Q, QM, activeElement, alert, avar, blur, box, call, clearTimeout,
-        click, console, document, error, exit, getItem, hasOwnProperty, id, is,
-        jQuery, join, key, keydown, localStorage, log, on, preventDefault,
-        prototype, ready, revive, setItem, setTimeout, stay, val, value,
-        volunteer, volunteer_timer, which
+        click, console, document, error, exit, focus, getItem, hasOwnProperty,
+        id, is, jQuery, join, key, keydown, localStorage, log, on,
+        preventDefault, prototype, ready, revive, setItem, setTimeout, stay,
+        val, value, volunteer, volunteer_timer, which
     */
 
  // Prerequisites
