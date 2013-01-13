@@ -268,7 +268,12 @@ $(BUILD_DIR)/chrome-hosted-app/snapshot-%.png:                              \
     |   $(BUILD_DIR)/chrome-hosted-app
 	@   $(PHANTOMJS)                                                    \
                 --config=$(SRC_DIR)/chrome-hosted-app/phantomjs-config.json \
-                $(SHARE_DIR)/snapshot.js $(QM_WWW_URL) $* $@
+                $(SHARE_DIR)/snapshot.js $(QM_WWW_URL) $* $@            ;   \
+            $(CONVERT) -crop $* $@ $@                                   ;   \
+            if [ -f $(@:%.png=%-0.png) ]; then                              \
+                $(CP) $(@:%.png=%-0.png) $@                             ;   \
+                $(RM) $(@:%.png=%)-*.png                                ;   \
+            fi
 
 $(BUILD_DIR)/npm-package: $(SRC_DIR)/npm-package | $(BUILD_DIR)
 	@   $(CP) $< $@
