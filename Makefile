@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 12 Jan 2013
+#                                                   ~~ last updated 13 Jan 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -320,13 +320,13 @@ $(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/cyijk")
+	@   $(call download-url, "http://goo.gl/i9Q5y")
 
 $(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/1uok3")
+	@   $(call download-url, "http://goo.gl/nJdWx")
 
 $(CACHE_DIR)/bootstrap-responsive.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/Zfw2I")
+	@   $(call download-url, "http://goo.gl/ScCCo")
 
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/2OUH7Q")
@@ -335,13 +335,13 @@ $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/4p5Is")
 
 $(CACHE_DIR)/jquery-172.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://code.jquery.com/jquery-1.7.2.js")
+	@   $(call download-url, "http://goo.gl/rvrUK")
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/6pCWog")
 
 $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://git.io/aClKMA")
+	@   $(call download-url, "http://goo.gl/1MnPH")
 
 $(CACHE_DIR)/main.js: $(SRC_DIR)/browser-client/main.js | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
