@@ -7,6 +7,7 @@
 //  that I lied to JSLint about it, hehe.
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
+//                                                  ~~ last updated 14 Jan 2013
 
 (function () {
     'use strict';
@@ -67,6 +68,8 @@
     };
 
  // Invocations
+
+    console.log('NOTE: Remember to launch a worker for "sean"!');
 
     run_test('Results: 4', function () {
      // This function needs documentation.
