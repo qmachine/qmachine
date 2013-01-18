@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 13 Jan 2013
+#                                                   ~~ last updated 17 Jan 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -138,7 +138,6 @@ browser-client:                                                             \
         giant-favicon.ico                                                   \
         homepage.js                                                         \
         html5shiv.js                                                        \
-        ie.js                                                               \
         index.html                                                          \
         q.js                                                                \
         robots.txt                                                          \
