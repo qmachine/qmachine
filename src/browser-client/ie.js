@@ -2,11 +2,16 @@
 
 //- ie.js ~~
 //
-//  Wow. I've never spent much time trying to support IE, and now I remember
-//  _why_. The <script> tags don't even support the 'onload' attribute! Argh.
+//  This code "encourages" users of Internet Explorer (IE) to install Google's
+//  Chrome Frame. I'm not sure if this code is necessary now that I'm using the
+//  "HTML5 Shiv" that Twitter Bootstrap requires, but this code is definitely
+//  not being used right now ...
+//
+//  NOTE: I've never spent much time trying to support IE, and now I remember
+//  _why_. The <script> tags don't even support the `onload` attribute! Argh.
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 18 Sep 2012
+//                                                  ~~ last updated 17 Jan 2013
 
 (function () {
     'use strict';
@@ -14,6 +19,8 @@
  // Pragmas
 
     /*jslint browser: true, indent: 4, maxlen: 80 */
+
+    /*properties appendChild, body, check, createElement, mode, setAttribute */
 
  // Prerequisites
 
