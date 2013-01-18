@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 12 Jan 2013
+#                                                   ~~ last updated 17 Jan 2013
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -52,8 +52,8 @@ define compile-js
         $(CLOSURE) --compilation_level WHITESPACE_ONLY                      \
             $(1:%=--js %) --js_output_file $(2)                         ;   \
     elif [ "$(strip $(MINIFY))" = "$(firstword $(YUICOMP))" ]; then         \
-        $(CAT) $(1) > $(2)                                              ;   \
-        $(YUICOMP) --type js $(2) > $(2)                                ;   \
+        $(YUICOMP) --nomunge --preserve-semi --disable-optimizations        \
+            --type js $(1) -o $(2)                                      ;   \
     else                                                                    \
         $(CAT) $(1) > $(2)                                              ;   \
     fi
@@ -134,7 +134,7 @@ define minify-js
             $(1:%=--js %) >> $(2)                                       ;   \
     elif [ "$(strip $(MINIFY))" = "$(firstword $(YUICOMP))" ]; then         \
         echo "// $(MOTHERSHIP)/$(notdir $(2))\n" > $(2)                 ;   \
-        $(YUICOMP) --nomunge --disable-optimizations                        \
+        $(YUICOMP) --nomunge --preserve-semi --disable-optimizations        \
             --type js $(1) >> $(2)                                      ;   \
     elif [ "$(strip $(MINIFY))" = "$(firstword $(JSMIN))" ]; then           \
         $(CAT) $(1) | $(JSMIN) "$(MOTHERSHIP)/$(notdir $(2))" > $(2)    ;   \
