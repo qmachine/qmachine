@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 17 Jan 2013
+#                                                   ~~ last updated 19 Jan 2013
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -118,7 +118,7 @@ define minify-css
     else                                                                    \
         $(call aside, "Optimizing stylesheets: $(1) -> $(2)")           ;   \
     fi                                                                  ;   \
-    echo "/* $(MOTHERSHIP)/$(notdir $(2)) */\n" > $(2)                  ;   \
+    echo "/*! $(MOTHERSHIP)/$(notdir $(2)) */\n" > $(2)                 ;   \
     $(CAT) $(1) > $(2)-temp.js                                          ;   \
     if [ "$(firstword $(YUICOMP))" != "echo" ]; then                        \
         $(YUICOMP) --type css $(2)-temp.js -o $(2)-temp.js              ;   \
