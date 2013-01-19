@@ -1,0 +1,14 @@
+{
+    "dependencies": {
+        "bootstrap": "2.2.2",
+        "coffee-script": "1.4.0",
+        "jquery": "1.7.2",
+        "quanah": "0.0.14"
+    },
+    "main": [
+        "./src/browser-client/qmachine.js",
+        "./src/browser-client/style.css"
+    ],
+    "name": "qm",
+    "version": "0.3.2"
+}

@@ -1,0 +1,6 @@
+{
+    "directory": "./build/components",
+    "endpoint": "https://bower.herokuapp.com",
+    "json": "component.json",
+    "searchpath": []
+}
