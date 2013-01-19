@@ -17,7 +17,10 @@ client for the QM API, and its implementation as static content written in
 [HTML5](http://www.whatwg.org/specs/web-apps/current-work/multipage/),
 [CSS](http://www.w3.org/Style/CSS/Overview.en.html), and
 [JavaScript](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf) allows it to be served out of memory by the web server for high
-performance and used by ordinary web browsers for high portability.
+performance and used by ordinary web browsers for high portability. Parts of
+the browser client are installable via Twitter's
+[Bower](http://twitter.github.com/bower/) package manager, but I have only
+recently experimented with that.
 
 There are several project "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),
