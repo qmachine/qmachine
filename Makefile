@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 17 Jan 2013
+#                                                   ~~ last updated 21 Jan 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -139,6 +139,7 @@ browser-client:                                                             \
         homepage.js                                                         \
         html5shiv.js                                                        \
         index.html                                                          \
+        minimal.html                                                        \
         q.js                                                                \
         robots.txt                                                          \
         sitemap.xml                                                         \
@@ -332,6 +333,9 @@ $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 
 $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/4p5Is")
+
+$(CACHE_DIR)/minimal.html: $(SRC_DIR)/browser-client/minimal.html | $(CACHE_DIR)
+	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/jquery-172.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/rvrUK")
