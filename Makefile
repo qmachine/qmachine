@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 21 Jan 2013
+#                                                   ~~ last updated 26 Jan 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -308,7 +308,6 @@ $(CACHE_DIR):
 $(CACHE_DIR)/homepage.js:                                                   \
     $(CACHE_DIR)/jquery-172.js                                              \
     $(CACHE_DIR)/bootstrap.js                                               \
-    $(CACHE_DIR)/q.js                                                       \
     $(CACHE_DIR)/main.js                                                    \
     |   $(CACHE_DIR)
 	@   $(call replace-url-macros, $^, $@)
