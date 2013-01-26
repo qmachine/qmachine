@@ -2,12 +2,17 @@
 
 //- main.js ~~
 //
-//  This program's main purpose is to provide an interactive environment for
-//  using the QMachine web service, but it is by no means feature-complete.
-//  It doesn't load "q.js" dynamically anymore -- that task has been replaced
-//  by a script tag load in the HTML page:
+//  This program's main purpose is to provide interaction for the graphical
+//  user interface (GUI) component of the browser client -- the webpage. It is
+//  not intended to be an integrated development environment (IDE), however!
+//  The most important part of QMachine's browser client is the "q.js" script,
+//  which is loaded dynamically after the webpage has loaded. Ultimately, this
+//  script will be concatenated and/or minified with jQuery and Bootstrap to
+//  produce "homepage.js", which is loaded by the webpage using a script tag:
 //
 //      <script src="./homepage.js"></script>
+//
+//  I will describe the rationale behind these design decisions here soon :-)
 //
 //  KNOWN ISSUES:
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
