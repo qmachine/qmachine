@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 11 Jan 2013
+//                                                  ~~ last updated 26 Jan 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -43,6 +43,7 @@
     }
 
     if (Object.prototype.hasOwnProperty('Q') === false) {
+     // It is hard to imagine that `QM` would exist with "Method Q", but ...
         throw new Error('Method Q is missing.');
     }
 
@@ -234,7 +235,7 @@
     };
 
     can_run_remotely = function (task) {
-     // This function needs documentation.
+     // This function returns a boolean.
         return ((global.hasOwnProperty('JSON'))     &&
                 (global.hasOwnProperty('JSLINT'))   &&
                 (task instanceof Object)            &&
@@ -314,7 +315,7 @@
     };
 
     in_a_browser = function () {
-     // This function needs documentation.
+     // This function returns a boolean.
         return ((global.hasOwnProperty('location'))             &&
                 (global.hasOwnProperty('navigator'))            &&
                 (global.hasOwnProperty('phantom') === false)    &&
@@ -322,7 +323,7 @@
     };
 
     in_a_WebWorker = function () {
-     // This function needs documentation.
+     // This function returns a boolean.
         return ((is_Function(global.importScripts))             &&
                 (global.location instanceof Object)             &&
                 (global.navigator instanceof Object)            &&
@@ -459,7 +460,9 @@
     };
 
     is_Function = function (f) {
-     // This function needs documentation.
+     // This function returns `true` if and only if input argument `f` is a
+     // function. The second condition is necessary to avoid a false positive
+     // in a pre-ES5 environment when `f` is a regular expression.
         return ((typeof f === 'function') && (f instanceof Function));
     };
 
@@ -471,12 +474,14 @@
     };
 
     is_online = function () {
-     // This function needs documentation.
+     // This function returns a boolean. It is not currently necessary, but I
+     // have future plans that will require this function, so I have already
+     // generalized QM in preparation.
         return (mothership === 'LOCAL_NODE') || global.navigator.onLine;
     };
 
     jobs = function (box) {
-     // This function needs documentation.
+     // This function retrieves a list of tasks that need to be executed.
         var y = ajax('GET', mothership + '/box/' + box + '?status=waiting');
         return y.Q(function (evt) {
          // This function needs documentation.
@@ -486,7 +491,7 @@
     };
 
     lib = function (url) {
-     // This function needs documentation.
+     // This function returns an avar.
         var y = avar();
         if (in_a_WebWorker()) {
             y.Q(function (evt) {
