@@ -9,7 +9,7 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 16 Jan 2013
+//                                                  ~~ last updated 26 Jan 2013
 
 (function () {
     'use strict';
@@ -36,7 +36,7 @@
 
     mothership = 'http://localhost:8177';
 
-    n = 6;
+    n = 8;
 
     run_test = function (y, f) {
      // This function needs documentation.
@@ -86,7 +86,8 @@
     console.log('NOTE: Remember to launch a worker for "sean"!');
 
     run_test('Results: 1', function f() {
-     // This function needs documentation.
+     // This function tests "Method Q" for the case when all parameters for
+     // remote execution are specified explicitly to the constructor.
         /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
@@ -110,7 +111,8 @@
     });
 
     run_test('Results: 2', function f() {
-     // This function needs documentation.
+     // This function tests "Method Q" for the case when the `box` and `val`
+     // parameters are assigned after the avar has been constructed.
         /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
@@ -136,7 +138,8 @@
     });
 
     run_test('Results: 3', function f() {
-     // This function needs documentation.
+     // This function tests `QM.submit` for the case when the input argument is
+     // an object and the transform `f` is an anonymous JavaScript function.
         /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
@@ -162,7 +165,8 @@
     });
 
     run_test('Results: 4', function f() {
-     // This function needs documentation.
+     // This function tests `QM.submit` for the case when the input arguments
+     // are entered individually.
         /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
@@ -184,7 +188,8 @@
     });
 
     run_test('Results: 5', function f() {
-     // This function needs documentation.
+     // This function tests `QM.submit` for the case when the input argument is
+     // an object and the transform `f` is a CoffeeScript string.
         /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
@@ -207,7 +212,8 @@
     });
 
     run_test('Results: 6', function f() {
-     // This function needs documentation.
+     // This function tests `QM.submit` for the case when the input argument is
+     // an object and the data `x` are represented by an avar.
         /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
@@ -215,8 +221,64 @@
         }
         window.QM.submit({
             box: 'sean',
-            f: '(x) -> x + 2',
-            x: 4
+            f: function (x) {
+             // This function needs documentation.
+                return x + 2;
+            },
+            x: QM.avar({val: 4})
+        }).Q(function (evt) {
+         // This function needs documentation.
+            console.log('Results:', this.val);
+            return evt.exit();
+        }).on('error', function (message) {
+         // This function needs documentation.
+            console.error('Error:', message);
+            return;
+        });
+        return;
+    });
+
+    run_test('Results: 7', function f() {
+     // This function tests `QM.submit` for the case when the input argument is
+     // an object, the transform `f` is a CoffeeScript string, and the data `x`
+     // are represented by an avar.
+        /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
+        window.QM.submit({
+            box: 'sean',
+            f: '(x) -> x + 3',
+            x: QM.avar({val: 4})
+        }).Q(function (evt) {
+         // This function needs documentation.
+            console.log('Results:', this.val);
+            return evt.exit();
+        }).on('error', function (message) {
+         // This function needs documentation.
+            console.error('Error:', message);
+            return;
+        });
+        return;
+    });
+
+    run_test('Results: 8', function f() {
+     // This function tests `QM.submit` for the case when the input argument is
+     // an object and the data `x` are represented by an avar with an explicit
+     // `box` value. The expected behavior here is to use "sean", not "booger".
+        /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
+        window.QM.submit({
+            box: 'sean',
+            f: function (x) {
+             // This function needs documentation.
+                return x * 2;
+            },
+            x: QM.avar({box: 'booger', val: 4})
         }).Q(function (evt) {
          // This function needs documentation.
             console.log('Results:', this.val);
