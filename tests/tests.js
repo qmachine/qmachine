@@ -85,9 +85,13 @@
 
     console.log('NOTE: Remember to launch a worker for "sean"!');
 
-    run_test('Results: 1', function () {
+    run_test('Results: 1', function f() {
      // This function needs documentation.
         /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
         var x = window.QM.avar({box: 'sean', val: 0});
         x.Q(function (evt) {
          // This function needs documentation.
@@ -105,9 +109,13 @@
         return;
     });
 
-    run_test('Results: 2', function () {
+    run_test('Results: 2', function f() {
      // This function needs documentation.
         /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
         var x = window.QM.avar();
         x.box = 'sean';
         x.val = 0;
@@ -127,9 +135,13 @@
         return;
     });
 
-    run_test('Results: 3', function () {
+    run_test('Results: 3', function f() {
      // This function needs documentation.
         /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
         window.QM.submit({
             box: 'sean',
             f: function (x) {
@@ -149,9 +161,13 @@
         return;
     });
 
-    run_test('Results: 4', function () {
+    run_test('Results: 4', function f() {
      // This function needs documentation.
         /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
         window.QM.submit(2, function (x) {
          // This function needs documentation.
             return x + 2;
@@ -167,9 +183,13 @@
         return;
     });
 
-    run_test('Results: 5', function () {
+    run_test('Results: 5', function f() {
      // This function needs documentation.
         /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
         window.QM.submit({
             box: 'sean',
             f: '(x) -> x + 2',
@@ -186,8 +206,13 @@
         return;
     });
 
-    run_test('Results: 6', function () {
+    run_test('Results: 6', function f() {
      // This function needs documentation.
+        /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
         window.QM.submit({
             box: 'sean',
             f: '(x) -> x + 2',
