@@ -52,7 +52,8 @@
     $ = window.jQuery;
 
     detect = function (feature_name) {
-     // This function needs documentation.
+     // This function is a high-level feature detection abstraction that helps
+     // make the rest of the program logic read like English.
         switch (feature_name) {
         case 'console.error':
             return ((window.hasOwnProperty('console')) &&
@@ -72,12 +73,13 @@
     is_Function = function (f) {
      // This function returns `true` only if and only if `f` is a function.
      // The second condition is necessary to return `false` for a regular
-     // expression in some of the older browsers.
+     // expression in some of the old browsers.
         return ((typeof f === 'function') && (f instanceof Function));
     };
 
     jserr = function () {
-     // This function needs documentation.
+     // This function provides an output logging mechanism for error messages
+     // that doesn't totally shatter in old browsers.
         if (detect('console.error')) {
             window.console.error(Array.prototype.join.call(arguments, ' '));
         }
@@ -85,7 +87,8 @@
     };
 
     jsout = function () {
-     // This function needs documentation.
+     // This function provides an output logging mechanism that doesn't totally
+     // shatter in old browsers.
         if (detect('console.log')) {
             window.console.log(Array.prototype.join.call(arguments, ' '));
         }
@@ -97,13 +100,13 @@
  // Invocations
 
     $(window.document).ready(function () {
-     // This function needs documentation.
+     // This function runs when jQuery decides that the webpage has loaded.
         $.ajax({
             url: 'q.js',
             cache: true,
             dataType: 'script',
             success: function () {
-             // This function needs documentation.
+             // This function runs after "q.js" has loaded successfully.
                 var QM = window.QM;
                 if (detect('localStorage')) {
                  // Here, we load a user's previous settings if they are
@@ -130,7 +133,8 @@
                     QM.revive();
                     return;
                 }).keydown(function (evt) {
-                 // This function needs documentation.
+                 // This function runs while the text field is active, whenever
+                 // a key is pressed down (but before the key comes back up).
                     if (evt.which === 13) {
                         evt.preventDefault();
                         $(this).blur();
@@ -161,7 +165,7 @@
                     return;
                 });
                 $('#QM-volunteer-input').on('click', function volunteer() {
-                 // This function needs documentation.
+                 // This function runs every time the checkbox is clicked.
                     if ($('#QM-volunteer-input').is(':checked') === false) {
                      // Yes, you're right, it _does_ look inefficient to ask
                      // jQuery to do separate queries, but because `volunteer`
@@ -172,7 +176,7 @@
                         return;
                     }
                     QM.volunteer(QM.box).on('error', function (message) {
-                     // This function needs documentation.
+                     // This function redirects "error" messages appropriately.
                         if (message === 'Nothing to do ...') {
                          // Back by popular demand ;-)
                             jsout(message);
@@ -183,7 +187,8 @@
                         state.vol_timer = window.setTimeout(volunteer, 1000);
                         return;
                     }).Q(function (evt) {
-                     // This function needs documentation.
+                     // This function provides visual feedback for debugging
+                     // as soon as the volunteer finishes executing a task.
                         jsout('Done:', this.key);
                         window.clearTimeout(state.vol_timer);
                         state.vol_timer = window.setTimeout(volunteer, 1000);
