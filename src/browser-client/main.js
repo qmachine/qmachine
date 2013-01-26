@@ -13,7 +13,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 12 Jan 2013
+//                                                  ~~ last updated 26 Jan 2013
 
 (function () {
     'use strict';
@@ -38,23 +38,13 @@
         throw new Error('jQuery is missing.');
     }
 
-    if (window.hasOwnProperty('QM') === false) {
-        throw new Error('QMachine is missing.');
-    }
-
-    if (Object.prototype.hasOwnProperty('Q') === false) {
-        throw new Error('Method Q is missing.');
-    }
-
  // Declarations
 
-    var $, QM, detect, is_Function, jserr, jsout, state;
+    var $, detect, is_Function, jserr, jsout, state;
 
  // Definitions
 
     $ = window.jQuery;
-
-    QM = window.QM;
 
     detect = function (feature_name) {
      // This function needs documentation.
@@ -103,84 +93,92 @@
 
     $(window.document).ready(function () {
      // This function needs documentation.
-        if (detect('localStorage')) {
-         // Here, we load a user's previous settings if they are available.
-            if (window.localStorage.hasOwnProperty('QM_box')) {
-                QM.box = window.localStorage.getItem('QM_box');
-            }
-        }
-        $(window).on('blur focus', QM.revive);
-        $('#QM-box-input').on('blur', function () {
-         // This function doesn't work well in web workers due to the `alert`,
-         // but they aren't a priority right now. The idea here is to try to
-         // assign the new value of the input box to `QM.box` and capture the
-         // error that will be thrown if the value is invalid. Then, we want to
-         // notify the user about the problem and "let" them try again.
-            try {
-                QM.box = this.value;
-            } catch (err) {
-                window.alert(err);
-                this.value = QM.box;
-                $(this).focus();
-            }
-            QM.revive();
-            return;
-        }).keydown(function (evt) {
+        $.getScript('./q.js', function () {
          // This function needs documentation.
-            if (evt.which === 13) {
-                evt.preventDefault();
-                $(this).blur();
-            }
-            QM.revive();
-            return;
-        });
-        QM.avar().Q(function (evt) {
-         // This function synchronizes the jQuery object that represents the
-         // input element directly with QM's `box` property using Quanah's own
-         // event loop. Thankfully, this function won't distribute to another
-         // machine because it closes over `detect` :-)
-            if ($(document.activeElement)[0].id !== 'QM-box-input') {
-                $('#QM-box-input').val(QM.box);
-            }
+            var QM = window.QM;
             if (detect('localStorage')) {
-             // We assume here that HTML5 localStorage has not been tampered
-             // with. Super-secure code isn't necessary here because the value
-             // of `QM.box` is already publicly available anyway.
-                window.localStorage.setItem('QM_box', QM.box);
-            }
-            return evt.stay('This task repeats indefinitely.');
-        }).on('error', function (message) {
-            jserr('Error:', message);
-            return;
-        });
-        $('#QM-volunteer-input').on('click', function volunteer() {
-         // This function needs documentation.
-            if ($('#QM-volunteer-input').is(':checked') === false) {
-             // Yes, you're right, it _does_ look inefficient to ask jQuery to
-             // do separate queries, but because `volunteer` calls itself
-             // recursively using `setTimeout`, using `$(this)` can do some
-             // pretty wacky stuff if you're not careful. I prefer the strategy
-             // here because it's simple :-)
-                window.clearTimeout(state.volunteer_timer);
-                return;
-            }
-            QM.volunteer(QM.box).on('error', function (message) {
-             // This function needs documentation.
-                if (message === 'Nothing to do ...') {
-                 // Back by popular demand ;-)
-                    jsout(message);
-                } else {
-                    jserr('Error:', message);
+             // Here, we load a user's previous settings if they are available.
+                if (window.localStorage.hasOwnProperty('QM_box')) {
+                    QM.box = window.localStorage.getItem('QM_box');
                 }
-                window.clearTimeout(state.volunteer_timer);
-                state.volunteer_timer = window.setTimeout(volunteer, 1000);
+            }
+            $(window).on('blur focus', QM.revive);
+            $('#QM-box-input').on('blur', function () {
+             // This function doesn't work well in web workers due to the
+             // `alert`, but they aren't a priority right now. The idea here is
+             // to try to assign the new value of the input box to `QM.box` and
+             // capture the error that will be thrown if the value is invalid.
+             // Then, we want to notify the user about the problem and let them
+             // try again.
+                try {
+                    QM.box = this.value;
+                } catch (err) {
+                    window.alert(err);
+                    this.value = QM.box;
+                    $(this).focus();
+                }
+                QM.revive();
                 return;
-            }).Q(function (evt) {
+            }).keydown(function (evt) {
              // This function needs documentation.
-                jsout('Done:', this.key);
-                window.clearTimeout(state.volunteer_timer);
-                state.volunteer_timer = window.setTimeout(volunteer, 1000);
-                return evt.exit();
+                if (evt.which === 13) {
+                    evt.preventDefault();
+                    $(this).blur();
+                }
+                QM.revive();
+                return;
+            });
+            QM.avar().Q(function (evt) {
+             // This function synchronizes the jQuery object that represents
+             // the input element directly with QM's `box` property using
+             // Quanah's own event loop. Thankfully, this function won't
+             // distribute to another machine because it closes over `detect`.
+                if ($(document.activeElement)[0].id !== 'QM-box-input') {
+                    $('#QM-box-input').val(QM.box);
+                }
+                if (detect('localStorage')) {
+                 // We assume here that HTML5 localStorage has not been
+                 // tampered with. Super-secure code isn't necessary here
+                 // because the value of `QM.box` is already publicly available
+                 // anyway.
+                    window.localStorage.setItem('QM_box', QM.box);
+                }
+                return evt.stay('This task repeats indefinitely.');
+            }).on('error', function (message) {
+             // This function forwards to the `jserr` function of "main.js".
+                jserr('Error:', message);
+                return;
+            });
+            $('#QM-volunteer-input').on('click', function volunteer() {
+             // This function needs documentation.
+                if ($('#QM-volunteer-input').is(':checked') === false) {
+                 // Yes, you're right, it _does_ look inefficient to ask
+                 // jQuery to do separate queries, but because `volunteer`
+                 // calls itself recursively using `setTimeout`, using
+                 // `$(this)` can do some pretty wacky stuff if you're not
+                 // careful. I prefer the strategy here because it's simple :-)
+                    window.clearTimeout(state.volunteer_timer);
+                    return;
+                }
+                QM.volunteer(QM.box).on('error', function (message) {
+                 // This function needs documentation.
+                    if (message === 'Nothing to do ...') {
+                     // Back by popular demand ;-)
+                        jsout(message);
+                    } else {
+                        jserr('Error:', message);
+                    }
+                    window.clearTimeout(state.volunteer_timer);
+                    state.volunteer_timer = window.setTimeout(volunteer, 1000);
+                    return;
+                }).Q(function (evt) {
+                 // This function needs documentation.
+                    jsout('Done:', this.key);
+                    window.clearTimeout(state.volunteer_timer);
+                    state.volunteer_timer = window.setTimeout(volunteer, 1000);
+                    return evt.exit();
+                });
+                return;
             });
             return;
         });
