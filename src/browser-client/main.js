@@ -31,10 +31,9 @@
 
     /*properties Q, QM, activeElement, alert, ajax, avar, blur, box, cache,
         call, clearTimeout, console, dataType, document, error, exit, focus,
-        getItem, hasOwnProperty, id, is, join, jQuery, key, keydown,
-        localStorage, log, on, preventDefault, prototype, ready, revive,
-        setItem, setTimeout, success, stay, url, val, value, vol_timer,
-        volunteer, which
+        getItem, hasOwnProperty, id, is, join, jQuery, key, localStorage, log,
+        on, preventDefault, prototype, ready, revive, setItem, setTimeout,
+        success, stay, url, val, value, vol_timer, volunteer, which
     */
 
  // Prerequisites
@@ -132,7 +131,7 @@
                     }
                     QM.revive();
                     return;
-                }).keydown(function (evt) {
+                }).on('keydown', function (evt) {
                  // This function runs while the text field is active, whenever
                  // a key is pressed down (but before the key comes back up).
                     if (evt.which === 13) {
@@ -148,7 +147,7 @@
                  // property using Quanah's own event loop. Thankfully, this
                  // function won't distribute to another machine because it
                  // closes over `detect`.
-                    if ($(document.activeElement)[0].id !== 'QM-box-input') {
+                    if (document.activeElement.id !== 'QM-box-input') {
                         $('#QM-box-input').val(QM.box);
                     }
                     if (detect('localStorage')) {
