@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 26 Jan 2013
+//                                                  ~~ last updated 28 Jan 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -22,17 +22,18 @@
         eqeq, errors, es5, eval, evil, exemptions, exit, f, fail, floor, forin,
         fragment, fromCharCode, get, getElementsByTagName, global,
         hasOwnProperty, head, host, ignoreCase, importScripts, indexOf, join,
-        key, length, lib, load_data, load_script, location, log, map, method,
-        multiline, navigator, newcap, node, nomen, now, on, onLine, onload,
-        onreadystatechange, open, parentElement, parse, passfail, plusplus,
-        ply, postMessage, predef, properties, protocol, prototype, push, puts,
-        query, random, readyState, reason, recent, reduce, regexp, removeChild,
-        removeEventListener, replace, responseText, result, results, revive,
-        rhino, run_remotely, safe, send, set, setTimeout, shelf, shift, slice,
-        sloppy, source, src, status, stay, stringify, stupid, style, sub,
-        submit, test, time, toJSON, toSource, toString, todo, undef, unparam,
-        url, using, val, value, valueOf, vars, via, visibility, volunteer,
-        when, white, window, windows, withCredentials, writable, x, y
+        key, length, lib, load_data, load_script, location, log, map, mapf,
+        mapreduce, method, multiline, navigator, newcap, node, nomen, now, on,
+        onLine, onload, onreadystatechange, open, parentElement, parse,
+        passfail, plusplus, ply, postMessage, predef, properties, protocol,
+        prototype, push, puts, query, random, readyState, reason, recent, redf,
+        reduce, regexp, removeChild, removeEventListener, replace,
+        responseText, result, results, revive, rhino, run_remotely, safe, send,
+        set, setTimeout, shelf, shift, slice, sloppy, source, src, status,
+        stay, stringify, stupid, style, sub, submit, test, time, toJSON,
+        toSource, toString, todo, undef, unparam, url, using, val, value,
+        valueOf, vars, via, visibility, volunteer, when, white, window,
+        windows, withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -49,11 +50,12 @@
 
  // Declarations
 
-    var ajax, atob, AVar, avar, btoa, can_run_remotely, copy, deserialize,
-        in_a_browser, in_a_WebWorker, is_closed, is_online, is_Function,
-        is_RegExp, jobs, lib, load_data, load_script, map, mothership, origin,
-        ply, puts, read, recent, reduce, run_remotely, serialize, state,
-        submit, update_local, update_remote, volunteer, when, write;
+    var ajax, atob, AVar, avar, btoa, can_run_remotely, convert_to_js, copy,
+        deserialize, in_a_browser, in_a_WebWorker, is_closed, is_online,
+        is_Function, is_RegExp, is_String, jobs, lib, load_data, load_script,
+        map, mapreduce, mothership, origin, ply, puts, read, recent, reduce,
+        run_remotely, serialize, state, submit, update_local, update_remote,
+        volunteer, when, write;
 
  // Definitions
 
@@ -247,6 +249,39 @@
                 (is_closed(task, state.exemptions[task.x.key]) === false));
     };
 
+    convert_to_js = function (x) {
+     // This function converts a function or string into an avar with a `val`
+     // property that is a JavaScript function. This isn't quite the same as an
+     // `eval`, however, because the string is expected to be used only when it
+     // represents CoffeeScript code.
+        var y = avar();
+        y.Q(function (evt) {
+         // This function needs documentation.
+            if (is_Function(x)) {
+                y.val = x;
+                return evt.exit();
+            }
+            if (is_String(x) === false) {
+                return evt.fail('Cannot convert argument to a function');
+            }
+            if (global.hasOwnProperty('CoffeeScript')) {
+                y.val = global.CoffeeScript.eval(x);
+                return evt.exit();
+            }
+            lib('QM_WWW_URL/coffeescript.js').Q(function (lib_evt) {
+             // This function needs documentation.
+                y.val = global.CoffeeScript.eval(x);
+                lib_evt.exit();
+                return evt.exit();
+            }).on('error', function (message) {
+             // This function needs documentation.
+                return evt.fail(message);
+            });
+            return;
+        });
+        return y;
+    };
+
     copy = function (x, y) {
      // This function copies the properties of `x` to `y`, specifying `y` as
      // object literal if it was not provided as an input argument. It does
@@ -292,7 +327,7 @@
             var f, re;
             re = /^\[(FUNCTION|REGEXP) ([A-z0-9\+\/\=]+) ([A-z0-9\+\/\=]+)\]$/;
          // Is the second condition even reachable in the line below?
-            if ((typeof val === 'string') || (val instanceof String)) {
+            if (is_String(val)) {
                 if (re.test(val)) {
                     val.replace(re, function ($0, type, code, props) {
                      // This function is provided to the String prototype's
@@ -471,6 +506,11 @@
      // regular expression. I haven't been able to break it yet, but perhaps
      // someone out there will let me know of a counterexample?
         return (Object.prototype.toString.call(x) === '[object RegExp]');
+    };
+
+    is_String = function (x) {
+     // This function needs documentation.
+        return ((typeof x === 'string') || (x instanceof String));
     };
 
     is_online = function () {
@@ -724,6 +764,54 @@
             return y;
         };
         return afunc;
+    };
+
+    mapreduce = function (x, mapf, redf) {
+     // This function needs documentation.
+        var y = avar();
+        when(x, y, mapf, redf).Q(function (evt) {
+         // This function runs locally.
+            var f, g;
+            f = ((mapf instanceof AVar) ? mapf.val : mapf);
+            g = ((redf instanceof AVar) ? redf.val : redf);
+            when(convert_to_js(f), convert_to_js(g)).Q(function (temp_evt) {
+             // This function needs documentation.
+                y.val = {
+                    mapf: this.val[0].val,
+                    redf: this.val[1].val,
+                    x: ((x instanceof AVar) ? x.val : x)
+                };
+                temp_evt.exit();
+                return evt.exit();
+            }).on('error', function (message) {
+             // This function needs documentation.
+                return evt.fail(message);
+            });
+            return;
+        });
+        y.Q(function (evt) {
+         // This function needs documentation.
+            /*global QM: false */
+            var o = y.val;
+            (o.x).Q(QM.map(o.mapf)).Q(QM.reduce(o.redf)).Q(function (o_evt) {
+             // This function needs documentation.
+                y.val = this.val;
+                o_evt.exit();
+                return evt.exit();
+            }).on('error', function (message) {
+             // This function needs documentation.
+                return evt.fail(message);
+            });
+            return;
+        });
+        return y;
+     /*
+        return submit(y, function (obj) {
+         // This version distributes the MapReduce job to a volunteer, which
+         // then distributes the individual tasks to other volunteers.
+            return (obj.x).Q(QM.map(obj.mapf)).Q(QM.reduce(obj.redf));
+        });
+     */
     };
 
     mothership = 'QM_API_URL';
@@ -1170,36 +1258,22 @@
             env = (arg_env instanceof AVar) ? arg_env.val : arg_env;
             f = (arg_f instanceof AVar) ? arg_f.val : arg_f;
             x = (arg_x instanceof AVar) ? arg_x.val : arg_x;
-            if (typeof box === 'string') {
+            if (is_String(box)) {
                 y.box = box;
             }
-            y.val = {
-                env: ((env instanceof Object) ? env : {}),
-                f: f,
-                x: x
-            };
-            if (is_Function(f) === false) {
-                if ((typeof f === 'string') || (f instanceof String)) {
-                 // Assume that the string represents CoffeeScript.
-                    if (global.hasOwnProperty('CoffeeScript')) {
-                        y.val.f = global.CoffeeScript.eval(y.val.f);
-                        return evt.exit();
-                    }
-                    lib('QM_WWW_URL/coffeescript.js').Q(function (lib_evt) {
-                     // This function needs documentation.
-                        y.val.f = global.CoffeeScript.eval(y.val.f);
-                        lib_evt.exit();
-                        return evt.exit();
-                    }).on('error', function (message) {
-                     // This function needs documentation.
-                        return evt.fail(message);
-                    });
-                } else {
-                    return evt.fail('No transformation specified.');
-                }
-            } else {
+            convert_to_js(f).Q(function (f_evt) {
+             // This function needs documentation.
+                y.val = {
+                    env: ((env instanceof Object) ? env : {}),
+                    f: this.val,
+                    x: x
+                };
+                f_evt.exit();
                 return evt.exit();
-            }
+            }).on('error', function (message) {
+             // This function needs documentation.
+                return evt.fail(message);
+            });
             return;
         });
         y.Q(function (evt) {
@@ -1538,7 +1612,7 @@
         },
         set: function (x) {
          // This function needs documentation.
-            if (typeof x !== 'string') {
+            if (is_String(x) === false) {
                 throw new TypeError('`box` property must be a string.');
             }
             if ((/^[\w\-]+$/).test(x) === false) {
@@ -1595,7 +1669,7 @@
         },
         set: function (x) {
          // This function needs documentation.
-            if (typeof x !== 'string') {
+            if (is_String(x) === false) {
                 throw new TypeError('`QM.box` must be a string.');
             }
             if ((/^[\w\-]+$/).test(x) === false) {
@@ -1617,6 +1691,7 @@
             load_data:      load_data,
             load_script:    load_script,
             map:            map,
+            mapreduce:      mapreduce,
             ply:            ply,
             puts:           puts,
             reduce:         reduce,
