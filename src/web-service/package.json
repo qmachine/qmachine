@@ -4,15 +4,15 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": ">= 0.3.0"
+        "qm": "0.4.2"
     },
     "engines": {
         "node": "0.8.x",
-        "npm":  "1.1.x"
+        "npm":  ">= 1.1.2"
     },
     "name": "MOTHERSHIP",
     "private": true,
     "readme": "(no documentation)",
     "scripts": {},
-    "version": "0.0.1"
+    "version": "0.4.2"
 }
