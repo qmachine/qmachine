@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 26 Jan 2013
+#                                                   ~~ last updated 28 Jan 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -138,7 +138,9 @@ browser-client:                                                             \
         giant-favicon.ico                                                   \
         homepage.js                                                         \
         html5shiv.js                                                        \
+        icon-128.png                                                        \
         index.html                                                          \
+        manifest.webapp                                                     \
         minimal.html                                                        \
         q.js                                                                \
         robots.txt                                                          \
@@ -226,6 +228,11 @@ $(BUILD_DIR)/browser-client/cache.manifest:                                 \
     $(SRC_DIR)/browser-client/cache.manifest                                \
     |   $(BUILD_DIR)/browser-client
 	@   $(call timestamp, $<, $@)
+
+$(BUILD_DIR)/browser-client/manifest.webapp:                                \
+    $(SRC_DIR)/browser-client/manifest.webapp                               \
+    |   $(BUILD_DIR)/browser-client
+	@   $(CP) $< $@
 
 $(BUILD_DIR)/browser-client/%.js:                                           \
     $(CACHE_DIR)/%.js                                                       \

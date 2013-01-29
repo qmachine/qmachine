@@ -5,7 +5,7 @@
 //  This is adapted from a previously unpublished NPM module I wrote.
 //
 //                                                      ~~ (c) SRW, 11 Dec 2012
-//                                                  ~~ last updated 27 Jan 2013
+//                                                  ~~ last updated 28 Jan 2013
 
 (function () {
     'use strict';
@@ -42,6 +42,7 @@
         '.manifest':    'text/cache-manifest',
         '.png':         'image/png',
         '.txt':         'text/plain',
+        '.webapp':      'application/x-web-app-manifest+json',
         '.xml':         'application/xml'
     };
 
