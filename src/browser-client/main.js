@@ -10,7 +10,7 @@
 //  script will be concatenated and/or minified with jQuery and Bootstrap to
 //  produce "homepage.js", which is loaded by the webpage using a script tag:
 //
-//      <script src="./homepage.js"></script>
+//      <script async defer src="./homepage.js"></script>
 //
 //  I will describe the rationale behind these design decisions here soon :-)
 //
@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 26 Jan 2013
+//                                                  ~~ last updated 29 Jan 2013
 
 (function () {
     'use strict';
