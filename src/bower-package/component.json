@@ -10,5 +10,5 @@
         "./src/browser-client/style.css"
     ],
     "name": "qm",
-    "version": "0.4.3"
+    "version": "0.4.4"
 }
