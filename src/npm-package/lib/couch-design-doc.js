@@ -2,7 +2,7 @@
 
 //- couch-design-doc.js ~~
 //                                                      ~~ (c) SRW, 23 Oct 2012
-//                                                  ~~ last updated 21 Dec 2012
+//                                                  ~~ last updated 31 Jan 2013
 
 (function () {
     'use strict';
@@ -76,7 +76,7 @@
                 headers: {
                     'Content-Type': 'text/plain'
                 },
-                body: 'Hooray!'
+                body: ''
             };
             if (doc === null) {
              // We are inserting a new document.

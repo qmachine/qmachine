@@ -286,7 +286,6 @@
                         response.writeHead(201, {
                             'Content-Type': 'text/plain'
                         });
-                        response.write('Hooray!');
                         response.end();
                         return;
                     };
