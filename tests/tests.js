@@ -9,7 +9,7 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 26 Jan 2013
+//                                                  ~~ last updated 31 Jan 2013
 
 (function () {
     'use strict';
@@ -225,7 +225,7 @@
              // This function needs documentation.
                 return x + 2;
             },
-            x: QM.avar({val: 4})
+            x: window.QM.avar({val: 4})
         }).Q(function (evt) {
          // This function needs documentation.
             console.log('Results:', this.val);
@@ -250,7 +250,7 @@
         window.QM.submit({
             box: 'sean',
             f: '(x) -> x + 3',
-            x: QM.avar({val: 4})
+            x: window.QM.avar({val: 4})
         }).Q(function (evt) {
          // This function needs documentation.
             console.log('Results:', this.val);
@@ -278,7 +278,7 @@
              // This function needs documentation.
                 return x * 2;
             },
-            x: QM.avar({box: 'booger', val: 4})
+            x: window.QM.avar({box: 'booger', val: 4})
         }).Q(function (evt) {
          // This function needs documentation.
             console.log('Results:', this.val);
