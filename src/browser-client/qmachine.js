@@ -795,52 +795,29 @@
     };
  */
 
-    mapreduce = function (x, mapf, redf) {
+    mapreduce = function (x, mapf, redf, box, env) {
      // This function needs documentation.
         var y = avar();
-        when(x, y, mapf, redf).Q(function (evt) {
-         // This function runs locally.
-            var f, g;
-            f = ((mapf instanceof AVar) ? mapf.val : mapf);
-            g = ((redf instanceof AVar) ? redf.val : redf);
-            when(convert_to_js(f), convert_to_js(g)).Q(function (temp_evt) {
-             // This function needs documentation.
-                y.val = {
-                    mapf: this.val[0].val,
-                    redf: this.val[1].val,
-                    x: ((x instanceof AVar) ? x.val : x)
-                };
-                temp_evt.exit();
-                return evt.exit();
-            }).on('error', function (message) {
-             // This function needs documentation.
-                return evt.fail(message);
-            });
-            return;
-        });
         y.Q(function (evt) {
          // This function needs documentation.
-            /*global QM: false */
-            var o = y.val;
-            (o.x).Q(QM.map(o.mapf)).Q(QM.reduce(o.redf)).Q(function (o_evt) {
+            map(x, mapf, box, env).Q(function (temp_evt) {
              // This function needs documentation.
                 y.val = this.val;
-                o_evt.exit();
+                temp_evt.exit();
                 return evt.exit();
-            }).on('error', function (message) {
+            }).on('error', evt.fail);
+            return;
+        }).Q(function (evt) {
+         // This function needs documentation.
+            reduce(y.val, redf, box, env).Q(function (temp_evt) {
              // This function needs documentation.
-                return evt.fail(message);
-            });
+                y.val = this.val;
+                temp_evt.exit();
+                return evt.exit();
+            }).on('error', evt.fail);
             return;
         });
         return y;
-     /*
-        return submit(y, function (obj) {
-         // This version distributes the MapReduce job to a volunteer, which
-         // then distributes the individual tasks to other volunteers.
-            return (obj.x).Q(QM.map(obj.mapf)).Q(QM.reduce(obj.redf));
-        });
-     */
     };
 
     mothership = 'QM_API_URL';
