@@ -1,8 +1,14 @@
 //- JavaScript source code
 
 //- service.js ~~
+//
+//  NOTE: I would like to add ETag stuff, perhaps by computing a last-modified
+//  date from
+//
+//      Math.floor(Date.now() / 1000) - process.uptime() // ?
+//
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 23 Dec 2012
+//                                                  ~~ last updated 31 Jan 2013
 
 (function () {
     'use strict';
