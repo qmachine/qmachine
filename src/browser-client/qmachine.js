@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 28 Jan 2013
+//                                                  ~~ last updated 01 Feb 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -13,9 +13,9 @@
 
     /*properties
         ActiveXObject, CoffeeScript, JSLINT, Q, QM, XDomainRequest,
-        XMLHttpRequest, addEventListener, adsafe, anon, appendChild, apply,
-        atob, attachEvent, avar, bitwise, body, box, browser, btoa, by, call,
-        can_run_remotely, cap, charAt, charCodeAt, comm, compile, concat,
+        XMLHttpRequest, a, addEventListener, adsafe, anon, appendChild, apply,
+        atob, attachEvent, avar, b, bitwise, body, box, browser, btoa, by,
+        call, can_run_remotely, cap, charAt, charCodeAt, comm, compile, concat,
         configurable, console, constructor, contentWindow, continue,
         createElement, css, data, debug, def, defineProperty, detachEvent,
         devel, diagnostics, display, document, done, enumerable, env, epitaph,
@@ -717,6 +717,34 @@
         });
     };
 
+    map = function (x, f, box, env) {
+     // This function needs documentation.
+        var y = x.Q(function (evt) {
+         // This function needs documentation.
+            var i, n, temp;
+            n = this.val.length;
+            temp = [];
+            for (i = 0; i < n; i += 1) {
+                temp[i] = submit(this.val[i], f, box, env);
+                temp[i].on('error', evt.fail);
+            }
+            when.apply(this, temp).Q(function (temp_evt) {
+             // This function needs documentation.
+                var i, n;
+                n = temp.length;
+                y.val = [];
+                for (i = 0; i < n; i += 1) {
+                    y.val[i] = temp[i].val;
+                }
+                temp_evt.exit();
+                return evt.exit();
+            });
+            return;
+        });
+        return y;
+    };
+
+ /*
     map = function (f) {
      // This function needs documentation.
         var afunc, x;
@@ -765,6 +793,7 @@
         };
         return afunc;
     };
+ */
 
     mapreduce = function (x, mapf, redf) {
      // This function needs documentation.
@@ -956,6 +985,55 @@
         return flag;
     };
 
+    reduce = function (x, redf, box, env) {
+     // This function needs documentation.
+        var f, y;
+        f = convert_to_js(redf);
+        y = x.Q(function (evt) {
+         // This function needs documentation.
+            if (is_Function(f.val) === false) {
+                f.on('error', evt.fail);
+                return evt.stay('Awaiting function translation ...');
+            }
+            if (this.val.length < 2) {
+                this.val = this.val[0];
+                return evt.exit();
+            }
+            var g, i, n, obj, temp, that, x;
+            g = function (obj) {
+             // This function needs documentation.
+                return obj.f(obj.a, obj.b);
+            };
+            temp = [];
+            that = this;
+            x = that.val;
+         // This line is easier to read than modulo junk ...
+            n = 2 * Math.floor(x.length / 2);
+            for (i = 0; i < n; i += 2) {
+                obj = {f: f.val, a: x[i], b: x[i + 1]};
+                temp.push(submit(obj, g, box, env).on('error', evt.fail));
+            }
+            if (n !== x.length) {
+                temp.push(avar({val: x[x.length - 1]}).on('error', evt.fail));
+            }
+            when.apply(this, temp).Q(function (temp_evt) {
+             // This function needs documentation.
+                var i, n, x;
+                n = temp.length;
+                x = [];
+                for (i = 0; i < n; i += 1) {
+                    x[i] = temp[i].val;
+                }
+                that.val = x;
+                temp_evt.exit();
+                return evt.stay('asynchronous loop');
+            }).on('error', evt.fail);
+            return;
+        });
+        return y;
+    };
+
+ /*
     reduce = function (f) {
      // This function needs to be recursive, but ... how best to do it?
         var afunc, x;
@@ -1013,6 +1091,7 @@
         };
         return afunc;
     };
+ */
 
     run_remotely = function (obj) {
      // This function distributes computations to remote execution nodes by
