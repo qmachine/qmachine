@@ -15,28 +15,25 @@
         ActiveXObject, CoffeeScript, JSLINT, Q, QM, XDomainRequest,
         XMLHttpRequest, a, addEventListener, adsafe, anon, appendChild, apply,
         atob, attachEvent, avar, b, bitwise, body, box, browser, btoa, by,
-        call, can_run_remotely, cap, charAt, charCodeAt, comm, compile, concat,
-        configurable, console, constructor, contentWindow, continue,
-        createElement, css, data, debug, def, defineProperty, detachEvent,
-        devel, diagnostics, display, document, done, enumerable, env, epitaph,
-        eqeq, errors, es5, eval, evil, exemptions, exit, f, fail, floor, forin,
-        fragment, fromCharCode, get, getElementsByTagName, global,
-        hasOwnProperty, head, host, ignoreCase, importScripts, indexOf, join,
-        key, length, lib, load_data, load_script, location, log, map, mapf,
-        mapreduce, method, multiline, navigator, newcap, node, nomen, now, on,
-        onLine, onload, onreadystatechange, open, parentElement, parse,
-        passfail, plusplus, ply, postMessage, predef, properties, protocol,
-        prototype, push, puts, query, random, readyState, reason, recent, redf,
-        reduce, regexp, removeChild, removeEventListener, replace,
-        responseText, result, results, revive, rhino, run_remotely, safe, send,
-        set, setTimeout, shelf, shift, slice, sloppy, source, src, status,
-        stay, stringify, stupid, style, sub, submit, test, time, toJSON,
-        toSource, toString, todo, undef, unparam, url, using, val, value,
-        valueOf, vars, via, visibility, volunteer, when, white, window,
-        windows, withCredentials, writable, x, y
+        call, can_run_remotely, cap, charAt, charCodeAt, comm, configurable,
+        console, constructor, contentWindow, continue, createElement, css,
+        data, debug, def, defineProperty, detachEvent, devel, diagnostics,
+        display, document, done, enumerable, env, epitaph, eqeq, errors, es5,
+        eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
+        fromCharCode, get, getElementsByTagName, global, hasOwnProperty, head,
+        host, ignoreCase, importScripts, indexOf, join, key, length, lib,
+        load_data, load_script, location, log, map, mapreduce, method,
+        multiline, navigator, newcap, node, nomen, now, on, onLine, onload,
+        onreadystatechange, open, parentElement, parse, passfail, plusplus,
+        ply, postMessage, predef, properties, protocol, prototype, push, puts,
+        query, random, readyState, reason, recent, reduce, regexp, removeChild,
+        removeEventListener, replace, responseText, result, results, revive,
+        rhino, run_remotely, safe, send, set, setTimeout, shelf, shift, slice,
+        sloppy, source, src, status, stay, stringify, stupid, style, sub,
+        submit, test, time, toJSON, toSource, toString, todo, undef, unparam,
+        url, val, value, valueOf, vars, via, visibility, volunteer, when,
+        white, window, windows, withCredentials, writable, x, y
     */
-
- // Prerequisites
 
     if (global.hasOwnProperty('QM')) {
      // Exit early if QMachine is already present.
@@ -273,10 +270,7 @@
                 y.val = global.CoffeeScript.eval(x);
                 lib_evt.exit();
                 return evt.exit();
-            }).on('error', function (message) {
-             // This function needs documentation.
-                return evt.fail(message);
-            });
+            }).on('error', evt.fail);
             return;
         });
         return y;
@@ -668,10 +662,7 @@
                 'USE "http://wilkinson.github.com/qmachine/qm.proxy.xml";' +
                 'SELECT * FROM qm.proxy WHERE url="' + y.val.url + '";';
             temp = lib(base + [callback, diag, format, query].join('&'));
-            temp.on('error', function (message) {
-             // This function needs documentation.
-                return evt.fail(message);
-            });
+            temp.on('error', evt.fail);
             return;
         };
         y.on('error', function (message) {
@@ -1326,10 +1317,7 @@
                 };
                 f_evt.exit();
                 return evt.exit();
-            }).on('error', function (message) {
-             // This function needs documentation.
-                return evt.fail(message);
-            });
+            }).on('error', evt.fail);
             return;
         });
         y.Q(function (evt) {
@@ -1362,17 +1350,13 @@
             temp.Q(function (evt) {
              // This function runs remotely on a volunteer machine.
                 /*global QM: false */
-                var env, f, handler, temp, x;
+                var env, f, temp, x;
                 env = QM.avar({val: this.val.env});
                 f = this.val.f;
-                handler = function (message) {
-                 // This function needs documentation.
-                    return evt.fail(message);
-                };
                 temp = this;
                 x = QM.avar({val: this.val.x});
-                env.on('error', handler);
-                x.on('error', handler);
+                env.on('error', evt.fail);
+                x.on('error', evt.fail);
                 QM.when(env, x).Q(function (evt) {
                  // This function ensures that the task will not execute until
                  // the prerequisite scripts have finished loading.
