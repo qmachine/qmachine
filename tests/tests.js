@@ -9,7 +9,7 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 01 Feb 2013
+//                                                  ~~ last updated 02 Feb 2013
 
 (function () {
     'use strict';
@@ -20,9 +20,11 @@
 
  // Declarations
 
-    var exit, mothership, n, queue, register_test, run_test;
+    var Q, exit, mothership, n, queue, register_test, run_test;
 
  // Definitions
+
+    Q = require('../cache/quanah');
 
     exit = function (code) {
      // This function needs documentation.
@@ -53,21 +55,21 @@
         var homepage = require('webpage').create();
         homepage.onConsoleMessage = function (message) {
          // This function needs documentation.
+            homepage.close();
             console.log(message);
             if (message === y) {
-                homepage.close();
-                exit(0);
+                return exit(0);
             }
-            if (message.slice(6) === 'Error:') {
-                exit(1);
+            if (message.slice(0, 6) === 'Error:') {
+                return exit(1);
             }
-            return;
+            console.log('Incorrect answer!');
+            return exit(2);
         };
         homepage.onError = function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
-            exit(1);
-            return;
+            console.error('Error:', JSON.stringify(message, undefined, 4));
+            return exit(1);
         };
         homepage.onResourceReceived = function (response) {
          // This function needs documentation.
@@ -301,6 +303,48 @@
         return;
     });
 
+    register_test('Results: 3,6,9,12,15', function f() {
+     // This function needs documentation.
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
+        var mapf, x;
+        mapf = '(x) -> 3 * x';
+        x = [1, 2, 3, 4, 5];
+        QM.map(x, mapf, 'sean').Q(function (evt) {
+         // This function needs documentation.
+            console.log('Results:', this.val);
+            return evt.exit();
+        }).on('error', function (message) {
+         // This function needs documentation.
+            console.error('Error:', message);
+            return;
+        });
+        return;
+    });
+
+    register_test('Results: 15', function f() {
+     // This function needs documentation.
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
+        var redf, x;
+        redf = '(a, b) -> a + b';
+        x = [1, 2, 3, 4, 5];
+        QM.reduce(x, redf, 'sean').Q(function (evt) {
+         // This function needs documentation.
+            console.log('Results:', this.val);
+            return evt.exit();
+        }).on('error', function (message) {
+         // This function needs documentation.
+            console.error('Error:', message);
+            return;
+        });
+        return;
+    });
+
     register_test('Results: 45', function f() {
      // This function needs documentation.
         if (window.hasOwnProperty('QM') === false) {
@@ -325,14 +369,19 @@
 
  // Invocations
 
-    n = queue.length;
+    (function () {
 
-    queue.forEach(function (test, key) {
-     // This function needs documentation.
-        console.log(key + ':', test.y);
-        run_test(test.y, test.f);
+        var i;
+
+        n = queue.length;
+
+        for (i = 0; i < n; i += 1) {
+            run_test(queue[i].y, queue[i].f);
+        }
+
         return;
-    });
+
+    }());
 
  // That's all, folks!
 
