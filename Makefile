@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 28 Jan 2013
+#                                                   ~~ last updated 02 Feb 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -79,7 +79,7 @@ QM_WWW_URL  :=  $(MOTHERSHIP)
 
 all: $(shell $(LS) $(SRC_DIR))
 
-check: local-sandbox
+check: $(CACHE_DIR)/quanah.js local-sandbox
 	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json $(TEST_DIR)/tests.js
 
 clean: reset
