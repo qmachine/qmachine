@@ -312,7 +312,7 @@
         var mapf, x;
         mapf = '(x) -> 3 * x';
         x = [1, 2, 3, 4, 5];
-        QM.map(x, mapf, 'sean').Q(function (evt) {
+        window.QM.map(x, mapf, 'sean').Q(function (evt) {
          // This function needs documentation.
             console.log('Results:', this.val);
             return evt.exit();
@@ -333,7 +333,7 @@
         var redf, x;
         redf = '(a, b) -> a + b';
         x = [1, 2, 3, 4, 5];
-        QM.reduce(x, redf, 'sean').Q(function (evt) {
+        window.QM.reduce(x, redf, 'sean').Q(function (evt) {
          // This function needs documentation.
             console.log('Results:', this.val);
             return evt.exit();
@@ -355,7 +355,7 @@
         mapf = '(x) -> 3 * x';
         redf = '(a, b) -> a + b';
         x = [1, 2, 3, 4, 5];
-        QM.mapreduce(x, mapf, redf, 'sean').Q(function (evt) {
+        window.QM.mapreduce(x, mapf, redf, 'sean').Q(function (evt) {
          // This function needs documentation.
             console.log('Results:', this.val);
             return evt.exit();
