@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 01 Feb 2013
+//                                                  ~~ last updated 02 Feb 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -668,7 +668,7 @@
         y.on('error', function (message) {
          // This function needs documentation.
             if (is_Function(callback)) {
-                callback(message, y.val);
+                y.val = callback(message, y.val);
             }
             return;
         }).Q(function (evt) {
@@ -683,7 +683,7 @@
         }).Q(function (evt) {
          // This function needs documentation.
             if (is_Function(callback)) {
-                callback(null, y.val);
+                y.val = callback(null, y.val);
             }
             return evt.exit();
         });
