@@ -18,8 +18,8 @@
         call, can_run_remotely, cap, charAt, charCodeAt, comm, configurable,
         console, constructor, contentWindow, continue, createElement, css,
         data, debug, def, defineProperty, detachEvent, devel, diagnostics,
-        display, document, done, enumerable, env, epitaph, eqeq, errors, es5,
-        eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
+        display, document, done, enumerable, env, epitaph, eqeq, error, errors,
+        es5, eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
         fromCharCode, get, getElementsByTagName, global, hasOwnProperty, head,
         host, ignoreCase, importScripts, indexOf, join, key, length, lib,
         load_data, load_script, location, log, map, mapreduce, method,
@@ -909,7 +909,14 @@
                 global.console.log(this.val.join(' '));
                 return evt.exit();
             }
-            return evt.fail('The `console.log` method is available.');
+            return evt.fail('The `console.log` method is not available.');
+        }).on('error', function (message) {
+         // This function needs documentation.
+            if ((global.hasOwnProperty('console')) &&
+                    (is_Function(global.console.error))) {
+                global.console.error('Error:', this.val.join(' '));
+            }
+            return;
         });
     };
 
