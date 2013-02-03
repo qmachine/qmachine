@@ -17,7 +17,7 @@
 //      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
 //
 //                                                      ~~ (c) SRW, 19 Sep 2012
-//                                                  ~~ last updated 10 Jan 2013
+//                                                  ~~ last updated 02 Feb 2013
 
 (function (global) {
     'use strict';
@@ -56,19 +56,39 @@
         height: size[1]
     };
 
-    page.open(address, function (status) {
-     // This function needs documentation.
+    page.onConsoleMessage = function (message) {
+     // This function ignores the console message and instead uses the event
+     // itself as a trigger to render the page as a rasterized image.
+        global.console.log('Rasterizing to "' + output + '" ...');
+        page.render(output);
+        global.console.log('Done.');
+        return phantom.exit();
+    };
+
+    page.onError = function (message) {
+     // This function just helps me debug if/when things go awry.
+        global.console.error('Error:', message);
+        return phantom.exit(1);
+    };
+
+    page.open(address, function f(status) {
+     // This function will be executed by PhantomJS.
         if (status !== 'success') {
             global.console.log('Unable to load "' + address + '".');
             return phantom.exit(1);
         }
-        global.window.setTimeout(function () {
-         // This function needs documentation.
-            global.console.log('Rasterizing to "' + output + '" ...');
-            page.render(output);
-            global.console.log('Done.');
-            return phantom.exit();
-        }, 200);
+        global.console.log('Page has loaded ...');
+        page.evaluate(function f() {
+         // This function will be executed by the webpage, not by PhantomJS.
+            /*jslint browser: true */
+            if (window.hasOwnProperty('QM') === false) {
+                window.setTimeout(f, 0);
+                return;
+            }
+            window.QM.box = 'hi-mom';
+            window.console.log('`QM.box` === ' + window.QM.box + ' :-)');
+            return;
+        });
         return;
     });
 
