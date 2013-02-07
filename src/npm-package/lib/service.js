@@ -8,7 +8,7 @@
 //      Math.floor(Date.now() / 1000) - process.uptime() // ?
 //
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 31 Jan 2013
+//                                                  ~~ last updated 06 Feb 2013
 
 (function () {
     'use strict';
@@ -129,7 +129,7 @@
         };
         rules = [];
         if (config.enable_CORS === true) {
-            enable_cors = require('corser').create({});
+            enable_cors = corser.create({});
             server = http.createServer(function (request, response) {
              // This function needs documentation.
                 enable_cors(request, response, function () {
