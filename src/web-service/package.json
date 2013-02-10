@@ -4,13 +4,13 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": ">= 0.4"
+        "qm": "0.4.4"
     },
     "engines": {
         "node": "0.8.x",
         "npm":  ">= 1.1.2"
     },
-    "name": "MOTHERSHIP",
+    "name": "web-service",
     "private": true,
     "readme": "(no documentation)",
     "scripts": {},
