@@ -1547,7 +1547,7 @@
      // the task so that the underlying system (QM, in this case) can control
      // system resources itself. Examples will be included in the distribution
      // that will accompany the upcoming publication(s).
-        if (box === undefined) {
+        if (is_String(box) === false) {
             box = global.QM.box;
         }
         var task = avar({box: box});
@@ -1755,10 +1755,12 @@
  // Out-of-scope definitions
 
     defineProperty(global, 'QM', {
-     // This creates the "namespace" for QMachine.
-        configurable: false,
+     // This creates the "namespace" for QMachine as a global `QM` object.
+     // NOTE: I commented out two of the next three lines because their values
+     // match the ES5.1 default values.
+        //configurable: false,
         enumerable: true,
-        writable: false,
+        //writable: false,
         value: {}
     });
 
