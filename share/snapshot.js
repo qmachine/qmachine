@@ -6,18 +6,17 @@
 //  particular file with a particular resolution. PhantomJS has changed its API
 //  pretty drastically over the last few months, and that worries me a little
 //  about the long-term usefulness of this particular program, but it was easy
-//  to write, it's not needed that often, and it can be replaced if necessary
-//  but similar tools like Selenium and Watir (to name a few).
+//  to write, it's not needed that often, and it can be replaced if necessary.
 //
-//  NOTE: QMachine uses the HTML5 Application Cache, and PhantomJS seems to
-//  have trouble understanding it correctly. The "phantomjs-config.json" file
-//  helps keep things from being cached, but if you find yourself needing to
-//  clear the cache, you can find it in Mac OS X under
+//  NOTE: QMachine formerly used the HTML5 Application Cache, and PhantomJS
+//  seems to have trouble understanding it correctly. A "phantomjs-config.json"
+//  file helps keep things from being cached, but if you find yourself needing
+//  to clear the cache, you can find it in Mac OS X under
 //
 //      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
 //
 //                                                      ~~ (c) SRW, 19 Sep 2012
-//                                                  ~~ last updated 02 Feb 2013
+//                                                  ~~ last updated 10 Feb 2013
 
 (function (global) {
     'use strict';
