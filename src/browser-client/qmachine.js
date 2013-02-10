@@ -52,8 +52,8 @@
         deserialize, defineProperty, in_a_browser, in_a_WebWorker, is_closed,
         is_online, is_Function, is_RegExp, is_String, jobs, lib, load_data,
         load_script, map, mapreduce, mothership, origin, ply, puts, read,
-        recent, reduce, run_remotely, serialize, state, submit, update_local,
-        update_remote, volunteer, when, write;
+        recent, reduce, revive, run_remotely, serialize, state, submit,
+        update_local, update_remote, volunteer, when, write;
 
  // Definitions
 
@@ -998,7 +998,7 @@
                 method: method,
                 time:   time
             };
-            global.setTimeout(avar().revive, dt + 1);
+            revive(dt + 1);
         }
         return flag;
     };
@@ -1110,6 +1110,21 @@
         return afunc;
     };
  */
+
+    revive = function (ms) {
+     // This function restarting Quanah's event loop asynchronously using the
+     // browser's own event loop if possible. It accepts an optional argument
+     // specifying the number of milliseconds to wait before restarting.
+        var dt, x;
+        dt = parseInt(ms);
+        x = avar();
+        if (is_Function(global.setTimeout)) {
+            global.setTimeout(x.revive, isNaN(dt) ? 0 : dt);
+        } else {
+            x.revive();
+        }
+        return;
+    };
 
     run_remotely = function (obj) {
      // This function distributes computations to remote execution nodes by
@@ -1785,7 +1800,7 @@
             ply:            ply,
             puts:           puts,
             reduce:         reduce,
-            revive:         avar().revive,
+            revive:         revive,
             shelf:          {},
             submit:         submit,
             volunteer:      volunteer,
