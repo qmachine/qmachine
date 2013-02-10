@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 02 Feb 2013
+//                                                  ~~ last updated 10 Feb 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -13,26 +13,27 @@
 
     /*properties
         ActiveXObject, CoffeeScript, JSLINT, Q, QM, XDomainRequest,
-        XMLHttpRequest, a, addEventListener, adsafe, anon, appendChild, apply,
-        atob, attachEvent, avar, b, bitwise, body, box, browser, btoa, by,
-        call, can_run_remotely, cap, charAt, charCodeAt, comm, configurable,
-        console, constructor, contentWindow, continue, createElement, css,
-        data, debug, def, defineProperty, detachEvent, devel, diagnostics,
-        display, document, done, enumerable, env, epitaph, eqeq, error, errors,
-        es5, eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
-        fromCharCode, get, getElementsByTagName, global, hasOwnProperty, head,
-        host, ignoreCase, importScripts, indexOf, join, key, length, lib,
-        load_data, load_script, location, log, map, mapreduce, method,
-        multiline, navigator, newcap, node, nomen, now, on, onLine, onload,
-        onreadystatechange, open, parentElement, parse, passfail, plusplus,
-        ply, postMessage, predef, properties, protocol, prototype, push, puts,
-        query, random, readyState, reason, recent, reduce, regexp, removeChild,
-        removeEventListener, replace, responseText, result, results, revive,
-        rhino, run_remotely, safe, send, set, setTimeout, shelf, shift, slice,
-        sloppy, source, src, status, stay, stringify, stupid, style, sub,
-        submit, test, time, toJSON, toSource, toString, todo, undef, unparam,
-        url, val, value, valueOf, vars, via, visibility, volunteer, when,
-        white, window, windows, withCredentials, writable, x, y
+        XMLHttpRequest, '__defineGetter__', '__defineSetter__', a,
+        addEventListener, adsafe, anon, appendChild, apply, atob, attachEvent,
+        avar, b, bitwise, body, box, browser, btoa, by, call, can_run_remotely,
+        cap, charAt, charCodeAt, comm, configurable, console, constructor,
+        contentWindow, continue, createElement, css, data, debug, def,
+        defineProperty, detachEvent, devel, diagnostics, display, document,
+        done, enumerable, env, epitaph, eqeq, error, errors, es5, eval, evil,
+        exemptions, exit, f, fail, floor, forin, fragment, fromCharCode, get,
+        getElementsByTagName, global, hasOwnProperty, head, host, ignoreCase,
+        importScripts, indexOf, join, key, length, lib, load_data, load_script,
+        location, log, map, mapreduce, method, multiline, navigator, newcap,
+        node, nomen, now, on, onLine, onload, onreadystatechange, open,
+        parentElement, parse, passfail, plusplus, ply, postMessage, predef,
+        properties, protocol, prototype, push, puts, query, random, readyState,
+        reason, recent, reduce, regexp, removeChild, removeEventListener,
+        replace, responseText, result, results, revive, rhino, run_remotely,
+        safe, send, set, setTimeout, shelf, shift, slice, sloppy, source, src,
+        status, stay, stringify, stupid, style, sub, submit, test, time,
+        toJSON, toSource, toString, todo, undef, unparam, url, val, value,
+        valueOf, vars, via, visibility, volunteer, when, white, window,
+        windows, withCredentials, writable, x, y
     */
 
     if (global.hasOwnProperty('QM')) {
@@ -48,11 +49,11 @@
  // Declarations
 
     var ajax, atob, AVar, avar, btoa, can_run_remotely, convert_to_js, copy,
-        deserialize, in_a_browser, in_a_WebWorker, is_closed, is_online,
-        is_Function, is_RegExp, is_String, jobs, lib, load_data, load_script,
-        map, mapreduce, mothership, origin, ply, puts, read, recent, reduce,
-        run_remotely, serialize, state, submit, update_local, update_remote,
-        volunteer, when, write;
+        deserialize, defineProperty, in_a_browser, in_a_WebWorker, is_closed,
+        is_online, is_Function, is_RegExp, is_String, jobs, lib, load_data,
+        load_script, map, mapreduce, mothership, origin, ply, puts, read,
+        recent, reduce, run_remotely, serialize, state, submit, update_local,
+        update_remote, volunteer, when, write;
 
  // Definitions
 
@@ -152,8 +153,7 @@
                      // Surprisingly, my own tests have shown that it is faster
                      // to use the `charAt` method than to use array indices,
                      // as of 19 Aug 2012. I _do_ know that `charAt` has better
-                     // support in old browsers, but that doesn't matter much
-                     // because Quanah currently requires ES5 support anyway.
+                     // support in old browsers, but the speed surprised me.
                         en1 = a.indexOf(x.charAt(i));
                         en2 = a.indexOf(x.charAt(i + 1));
                         en3 = a.indexOf(x.charAt(i + 2));
@@ -304,6 +304,49 @@
             y.comm = comm;
         }
         return y;
+    };
+
+    defineProperty = function (obj, name, params) {
+     // This function wraps the ES5 `Object.defineProperty` function so that
+     // it degrades gracefully in crusty old browsers. I would like to improve
+     // my implementation eventually so that the fallback definition will more
+     // closely simulate the ES5 specification, but for now, this works well.
+     // For more information, see the documentation at http://goo.gl/xXHKr.
+        if (Object.hasOwnProperty('defineProperty')) {
+            defineProperty = Object.defineProperty;
+        } else if (Object.prototype.hasOwnProperty('__defineGetter__')) {
+            defineProperty = function (obj, name, params) {
+             // This function needs documentation.
+                /*jslint nomen: true */
+                params = (params instanceof Object) ? params : {};
+                ply(params).by(function (key, val) {
+                 // This has a "forEach" pattern ==> `ply` is justified.
+                    switch (key) {
+                    case 'get':
+                        obj.__defineGetter__(name, val);
+                        break;
+                    case 'set':
+                        obj.__defineSetter__(name, val);
+                        break;
+                    case 'value':
+                     // NOTE: This may fail if the property's "configurable"
+                     // attribute was set to `false`, but if such an error
+                     // could occur, that JS implementation would have had a
+                     // native `Object.defineProperty` method anyway :-P
+                        delete obj[name];
+                        obj[name] = val;
+                        break;
+                    default:
+                     // (placeholder)
+                    }
+                    return;
+                });
+                return obj;
+            };
+        } else {
+            throw new Error('Platform lacks support for getters and setters.');
+        }
+        return defineProperty(obj, name, params);
     };
 
     deserialize = function ($x) {
@@ -1647,7 +1690,7 @@
 
  // Prototype definitions
 
-    Object.defineProperty(AVar.prototype, 'box', {
+    defineProperty(AVar.prototype, 'box', {
      // This definition adds a `box` property to Quanah's avars as a means to
      // enable QMachine's per-instance queueing system. The other necessary
      // component is the `QM.box` definition a little further down.
@@ -1665,7 +1708,7 @@
             if ((/^[\w\-]+$/).test(x) === false) {
                 throw new Error('Invalid assignment to `box`: "' + x + '"');
             }
-            Object.defineProperty(this, 'box', {
+            defineProperty(this, 'box', {
                 configurable: true,
                 enumerable: true,
                 writable: true,
@@ -1675,7 +1718,7 @@
         }
     });
 
-    Object.defineProperty(AVar.prototype, 'toJSON', {
+    defineProperty(AVar.prototype, 'toJSON', {
      // NOTE: I commented two of the next three lines out because their values
      // are the default ones specified by the ES5.1 standard.
         //configurable: false,
@@ -1696,7 +1739,7 @@
 
  // Out-of-scope definitions
 
-    Object.defineProperty(global, 'QM', {
+    defineProperty(global, 'QM', {
      // This creates the "namespace" for QMachine.
         configurable: false,
         enumerable: true,
@@ -1704,7 +1747,7 @@
         value: {}
     });
 
-    Object.defineProperty(global.QM, 'box', {
+    defineProperty(global.QM, 'box', {
      // Here, we enable users to send jobs to different "boxes" by labeling
      // the avars on a per-case basis, rather than on a session-level basis.
      // More explanation will be included in the upcoming paper :-)
@@ -1751,7 +1794,7 @@
         ply(template).by(function (key, val) {
          // This function needs documentation.
             if (global.QM.hasOwnProperty(key) === false) {
-                Object.defineProperty(global.QM, key, {
+                defineProperty(global.QM, key, {
                  // NOTE: I commented out two of the next three lines
                  // because their values match the ES5.1 default values.
                     //configurable: false,
