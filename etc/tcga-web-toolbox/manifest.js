@@ -2,10 +2,10 @@
 
 //- manifest.js ~~
 //                                                      ~~ (c) SRW, 11 Jul 2012
-//                                                  ~~ last updated 26 Jan 2013
+//                                                  ~~ last updated 10 Feb 2013
 
-/*jslint indent: 4, maxlen: 80 */
 /*global manifest: false */
+/*jslint indent: 4, maxlen: 80 */
 
 manifest([
     {
