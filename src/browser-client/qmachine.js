@@ -1116,7 +1116,7 @@
      // browser's own event loop if possible. It accepts an optional argument
      // specifying the number of milliseconds to wait before restarting.
         var dt, x;
-        dt = parseInt(ms);
+        dt = parseInt(ms, 10);
         x = avar();
         if (is_Function(global.setTimeout)) {
             global.setTimeout(x.revive, isNaN(dt) ? 0 : dt);
