@@ -88,13 +88,13 @@ clean: reset
                     $(LAUNCHCTL) unload -w $${each} >/dev/null 2>&1     ;   \
                 fi                                                      ;   \
             done                                                        ;   \
+            $(RM) $(BUILD_DIR)/browser-client/                          ;   \
+            $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
+            $(RM) $(BUILD_DIR)/web-service/                             ;   \
             $(RM) $(VAR_DIR)
 
 clobber: clean
-	@   $(RM) $(BUILD_DIR)/browser-client/                          ;   \
-            $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
-            $(RM) $(BUILD_DIR)/web-service/                             ;   \
-            $(RM) $(CACHE_DIR)
+	@   $(RM) $(CACHE_DIR)
 
 distclean: clobber
 	@   $(RM) $(BUILD_DIR) $(PROJ_ROOT)/.*_history                  ;   \
