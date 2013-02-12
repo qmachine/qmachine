@@ -32,9 +32,9 @@
 #   because it's more convenient. I also prefer Heroku's "Postgres.app"
 #   (http://postgresapp.com) over the version that ships with Mountain Lion.
 #   I use Heroku's platform-as-a-service (PaaS) for deployment, and this
-#   workflow does use the "Heroku Toolbelt" to build some of its targets.
-#   Please note that I have no disclosures; I'm just documenting my tools for
-#   the sake of scientific reproducibility.
+#   workflow does use the "Heroku Toolbelt" to build some of its targets, but
+#   I have also deployed QMachine on AppFog, App Harbor, and Cloud Foundry. I
+#   have no disclosures; I'm just documenting my tools for reproducibility.
 #
 #   Of course, if you are reading this and you represent a company interested
 #   in donating resources that will help me take QMachine to that proverbial
@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 02 Feb 2013
+#                                                   ~~ last updated 12 Feb 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -131,6 +131,7 @@ browser-client:                                                             \
         apple-touch-startup-image-748x1024.png                              \
         apple-touch-startup-image-1536x2008.png                             \
         apple-touch-startup-image-1496x2048.png                             \
+        barebones.html                                                      \
         cache.manifest                                                      \
         coffeescript.js                                                     \
         favicon.ico                                                         \
@@ -141,7 +142,6 @@ browser-client:                                                             \
         icon-128.png                                                        \
         index.html                                                          \
         manifest.webapp                                                     \
-        minimal.html                                                        \
         q.js                                                                \
         robots.txt                                                          \
         sitemap.xml                                                         \
@@ -312,17 +312,9 @@ $(BUILD_DIR)/web-service/%: $(SRC_DIR)/web-service/% | $(BUILD_DIR)/web-service
 $(CACHE_DIR):
 	@   $(call make-directory, $@)
 
-$(CACHE_DIR)/homepage.js:                                                   \
-    $(CACHE_DIR)/jquery-172.js                                              \
-    $(CACHE_DIR)/bootstrap.js                                               \
-    $(CACHE_DIR)/main.js                                                    \
+$(CACHE_DIR)/barebones.html:                                                \
+    $(SRC_DIR)/browser-client/barebones.html                                \
     |   $(CACHE_DIR)
-	@   $(call replace-url-macros, $^, $@)
-
-$(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
-	@   $(call replace-url-macros, $<, $@)
-
-$(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
@@ -337,10 +329,20 @@ $(CACHE_DIR)/bootstrap-responsive.css: | $(CACHE_DIR)
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/2OUH7Q")
 
+$(CACHE_DIR)/homepage.js:                                                   \
+    $(CACHE_DIR)/jquery-172.js                                              \
+    $(CACHE_DIR)/bootstrap.js                                               \
+    $(CACHE_DIR)/main.js                                                    \
+    |   $(CACHE_DIR)
+	@   $(call replace-url-macros, $^, $@)
+
 $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/4p5Is")
 
-$(CACHE_DIR)/minimal.html: $(SRC_DIR)/browser-client/minimal.html | $(CACHE_DIR)
+$(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
+	@   $(call replace-url-macros, $<, $@)
+
+$(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/jquery-172.js: | $(CACHE_DIR)
