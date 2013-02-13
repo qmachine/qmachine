@@ -1,5 +1,8 @@
 {
-    "author": "Sean Wilkinson",
+    "author": {
+        "name": "Sean Wilkinson",
+        "email": "sean@mathbiol.org"
+    },
     "dependencies": {
         "corser": ">= 1.2.0",
         "hiredis": ">= 0.1.14",
@@ -26,5 +29,5 @@
         {"type": "git", "url": "https://github.com/wilkinson/qmachine.git"}
     ],
     "scripts": {},
-    "version": "0.4.4"
+    "version": "0.4.5"
 }
