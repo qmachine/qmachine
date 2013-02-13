@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 10 Feb 2013
+//                                                  ~~ last updated 12 Feb 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -1115,13 +1115,11 @@
      // This function restarting Quanah's event loop asynchronously using the
      // browser's own event loop if possible. It accepts an optional argument
      // specifying the number of milliseconds to wait before restarting.
-        var dt, x;
-        dt = parseInt(ms, 10);
-        x = avar();
+        var dt = parseInt(ms, 10);
         if (is_Function(global.setTimeout)) {
-            global.setTimeout(x.revive, isNaN(dt) ? 0 : dt);
+            global.setTimeout(AVar.prototype.revive, isNaN(dt) ? 0 : dt);
         } else {
-            x.revive();
+            AVar.prototype.revive();
         }
         return;
     };
