@@ -16,7 +16,7 @@
 //      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
 //
 //                                                      ~~ (c) SRW, 19 Sep 2012
-//                                                  ~~ last updated 10 Feb 2013
+//                                                  ~~ last updated 13 Feb 2013
 
 (function (global) {
     'use strict';
@@ -60,6 +60,7 @@
      // itself as a trigger to render the page as a rasterized image.
         global.console.log('Rasterizing to "' + output + '" ...');
         page.render(output);
+        global.console.log(message);
         global.console.log('Done.');
         return phantom.exit();
     };
@@ -73,7 +74,7 @@
     page.open(address, function f(status) {
      // This function will be executed by PhantomJS.
         if (status !== 'success') {
-            global.console.log('Unable to load "' + address + '".');
+            //global.console.log('Unable to load "' + address + '".');
             return phantom.exit(1);
         }
         global.console.log('Page has loaded ...');
@@ -85,7 +86,11 @@
                 return;
             }
             window.QM.box = 'hi-mom';
-            window.console.log('`QM.box` === ' + window.QM.box + ' :-)');
+            window.setTimeout(function () {
+             // I was having timing issues, so I added this function ...
+                window.console.log('`QM.box` === ' + window.QM.box + ' :-)');
+                return;
+            }, 1000);
             return;
         });
         return;
