@@ -5,7 +5,7 @@
 //  This is adapted from a previously unpublished NPM module I wrote.
 //
 //                                                      ~~ (c) SRW, 11 Dec 2012
-//                                                  ~~ last updated 28 Jan 2013
+//                                                  ~~ last updated 14 Feb 2013
 
 (function () {
     'use strict';
@@ -135,18 +135,13 @@
                             }
                             var temp = {
                                 buffer:     file,
+                                last_modified: (new Date()).toGMTString(),
                                 mime_type:  mime_types[path.extname(name)]
                             };
                             if (temp.mime_type === undefined) {
                                 temp.mime_type = 'application/octet-stream';
                             }
                             y.val['/' + name] = temp;
-                            if (name === 'index.html') {
-                                y.val['/'] = {
-                                    buffer:     file,
-                                    mime_type:  mime_types['.html']
-                                };
-                            }
                             return count();
                         });
                         return;
@@ -202,7 +197,9 @@
         for (key in x) {
             if (x.hasOwnProperty(key)) {
                 y[key] = {
-                    buffer:     new Buffer(x[key].base64, 'base64'),
+                    buffer: new Buffer(x[key].base64, 'base64'),
+                    last_modified: x[key].last_modified,
+                    last_mod_date: new Date(x[key].last_modified),
                     mime_type:  x[key].mime_type
                 };
             }

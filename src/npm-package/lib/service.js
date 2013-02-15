@@ -1,14 +1,8 @@
 //- JavaScript source code
 
 //- service.js ~~
-//
-//  NOTE: I would like to add ETag stuff, perhaps by computing a last-modified
-//  date from
-//
-//      Math.floor(Date.now() / 1000) - process.uptime() // ?
-//
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 06 Feb 2013
+//                                                  ~~ last updated 14 Feb 2013
 
 (function () {
     'use strict';
@@ -341,14 +335,33 @@
                 pattern: /^(\/[\w\-\.]*)/,
                 handler: function (request, response, params) {
                  // This function needs documentation.
-                    var name = (params[0] === '/') ? '/index.html' : params[0];
+                    var headers, name, resource, temp;
+                    headers = request.headers;
+                    name = (params[0] === '/') ? '/index.html' : params[0];
                     if (static_content.hasOwnProperty(name) === false) {
                         return go_away(response);
                     }
+                    resource = static_content[name];
+                    if (headers.hasOwnProperty('if-modified-since')) {
+                        try {
+                            temp = new Date(headers['if-modified-since']);
+                        } catch (err) {
+                            return go_away(response);
+                        }
+                        if (resource.last_mod_date <= temp) {
+                            response.writeHead(304, {
+                                'Date': (new Date()).toGMTString()
+                            });
+                            response.end();
+                            return;
+                        }
+                    }
                     response.writeHead(200, {
-                        'Content-Type': static_content[name].mime_type
+                        'Content-Type': resource.mime_type,
+                        'Date': (new Date()).toGMTString(),
+                        'Last-Modified': resource.last_modified
                     });
-                    response.end(static_content[name].buffer);
+                    response.end(resource.buffer);
                     return;
                 }
             });
