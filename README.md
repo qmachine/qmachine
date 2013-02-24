@@ -33,6 +33,7 @@ I have done some preliminary investigation into app integration for
 
 -   [Google Chrome](https://chrome.google.com/webstore/detail/meagomakeegjimdibmlodmilfhplkjgp?utm_source=chrome-ntp-icon)
 -   [Facebook](http://apps.facebook.com/qmachine/)
+-   [Firefox Marketplace](https://marketplace.firefox.com/app/qmachine/)
 -   [Twitter](https://dev.twitter.com/apps/1755018/)
 
 I am currently preparing several academic publications that explain some of the
