@@ -20,7 +20,8 @@ client for the QM API, and its implementation as static content written in
 performance and used by ordinary web browsers for high portability. Parts of
 the browser client are installable via Twitter's
 [Bower](http://twitter.github.com/bower/) package manager, but I have only
-recently experimented with that.
+recently experimented with that. The analytical layer can also be used from
+[MinervaJS](http://minervajs.org/site/index.html#!/view/qm).
 
 There are several project "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),
@@ -33,6 +34,7 @@ I have done some preliminary investigation into app integration for
 
 -   [Google Chrome](https://chrome.google.com/webstore/detail/meagomakeegjimdibmlodmilfhplkjgp?utm_source=chrome-ntp-icon)
 -   [Facebook](http://apps.facebook.com/qmachine/)
+-   [Firefox Marketplace](https://marketplace.firefox.com/app/qmachine/)
 -   [Twitter](https://dev.twitter.com/apps/1755018/)
 
 I am currently preparing several academic publications that explain some of the
