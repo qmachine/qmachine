@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 12 Feb 2013
+//                                                  ~~ last updated 28 Feb 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -957,7 +957,7 @@
          // This function needs documentation.
             if ((global.hasOwnProperty('console')) &&
                     (is_Function(global.console.error))) {
-                global.console.error('Error:', this.val.join(' '));
+                global.console.error('Error:', message);
             }
             return;
         });
