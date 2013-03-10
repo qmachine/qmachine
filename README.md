@@ -37,10 +37,10 @@ I have done some preliminary investigation into app integration for
 -   [Firefox Marketplace](https://marketplace.firefox.com/app/qmachine/)
 -   [Twitter](https://dev.twitter.com/apps/1755018/)
 
-I am currently preparing several academic publications that explain some of the
+I am currently preparing several academic manuscripts that explain some of the
 design decisions behind QM, demonstrate the use of QM in a scientific workflow,
 and elaborate on the future directions of QM. As in all my projects, the best
 documentation is contained inline as comments within the source code. I have
-written some tutorials recently, but I probably won't get around to releasing
-them until early 2013.
+also recently published a few screencasts to
+[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg).
 
