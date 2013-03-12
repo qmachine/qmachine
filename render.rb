@@ -2,7 +2,7 @@
 
 #-  render.rb ~~
 #                                                       ~~ (c) SRW, 19 Sep 2012
-#                                                   ~~ last updated 15 Nov 2012
+#                                                   ~~ last updated 12 Mar 2013
 
 require "date"
 require "redcarpet"
@@ -30,8 +30,8 @@ File::open(filename, "w") do |f|
     <meta charset="utf-8"/>
     <meta name="author" content="Sean Wilkinson"/>
     <title>Project Description: QMachine</title>
-    <link rel="stylesheet" href="./print.css" media="print"/>
-    <link rel="stylesheet" href="./screen.css" media="screen"/>
+    <link rel="stylesheet" href="../print.css" media="print"/>
+    <link rel="stylesheet" href="../screen.css" media="screen"/>
     <link rel="shortcut icon" href="https://www.qmachine.org/favicon.ico"/>
   </head>
   <body>
