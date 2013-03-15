@@ -37,7 +37,7 @@ I have done some preliminary investigation into app integration for
 -   [Firefox Marketplace](https://marketplace.firefox.com/app/qmachine/)
 -   [Twitter](https://dev.twitter.com/apps/1755018/)
 
-I have now submitted the first of several manuscripts I am preparing for
+I have now submitted the first of several manuscripts I have been preparing for
 peer-reviewed academic journals. These reports will explain some of the design
 decisions behind QM, demonstrate the use of QM in scientific workflows, and
 elaborate on the future directions of QM. As in all my projects, the best
