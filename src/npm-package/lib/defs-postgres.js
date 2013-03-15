@@ -5,7 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 23 Dec 2012
+//                                                  ~~ last updated 14 Mar 2013
 
 (function () {
     'use strict';
@@ -155,7 +155,7 @@
                     '   box_key TEXT NOT NULL,',
                     '   box_status TEXT,',
                     '   exp_date INTEGER NOT NULL,',
-                    '   key TEXT,',
+                    '   key TEXT,',     //- should this also be "NOT NULL"?
                     '   PRIMARY KEY (box_key)',
                     ');',
                     'CREATE OR REPLACE FUNCTION upsert_avar' +
