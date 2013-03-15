@@ -1,5 +1,5 @@
 QMachine
-=========
+========
 
 [QMachine](https://www.qmachine.org) (QM) is a web service that uses
 [Quanah](http://wilkinson.github.com/quanah) to create a distributed computer
@@ -32,15 +32,16 @@ available on [GitHub](https://github.com/wilkinson/qmachine/graphs) and
 
 I have done some preliminary investigation into app integration for
 
--   [Google Chrome](https://chrome.google.com/webstore/detail/meagomakeegjimdibmlodmilfhplkjgp?utm_source=chrome-ntp-icon)
+-   [Google Chrome](https://chrome.google.com/webstore/detail/meagomakeegjimdibmlodmilfhplkjgp)
 -   [Facebook](http://apps.facebook.com/qmachine/)
 -   [Firefox Marketplace](https://marketplace.firefox.com/app/qmachine/)
 -   [Twitter](https://dev.twitter.com/apps/1755018/)
 
-I am currently preparing several academic manuscripts that explain some of the
-design decisions behind QM, demonstrate the use of QM in a scientific workflow,
-and elaborate on the future directions of QM. As in all my projects, the best
-documentation is contained inline as comments within the source code. I have
-also recently published a few screencasts to
-[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg).
+I have now submitted the first of several manuscripts I am preparing for
+peer-reviewed academic journals. These reports will explain some of the design
+decisions behind QM, demonstrate the use of QM in scientific workflows, and
+elaborate on the future directions of QM. As in all my projects, the best
+documentation is contained within the source code as comments. I have also
+recently published a few screencasts [YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg), one of which has been featured on the
+[insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/) news site.
 
