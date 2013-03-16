@@ -13,33 +13,48 @@
 #
 #       ... Node Package Manager (NPM) using directions from https://npmjs.org.
 #
-#   Then, to launch QM on localhost using SQLite for persistent storage, run
+#   To run QM on localhost, run
 #
 #           $ make local-sandbox
 #
-#   QMachine also supports CouchDB, MongoDB, PostgreSQL, and Redis for storage,
-#   but I'm not providing workflow targets for those variants right now because
-#   SQLite, as an embedded database, is much more convenient. I am leaving the
-#   "local-couch" target as-is rather than deleting it, but it is deprecated at
-#   the moment because I am mad at CouchDB. Some optional targets may require
-#   extra packages to be installed by Homebrew, including
+#   Unfortunately, there are some caveats. The recent release of Node.js
+#   v0.10.0 has caused troubles with the default persistence layer, SQLite3.
+#   I use that for the default because it is so darn convenient -- you don't
+#   have to turn on any other programs because SQLite3 is an embedded database.
+#   Immediately after I submitted my first manuscript about QM for peer-review,
+#   of course, Node.js v0.10.0 was released, and the NPM module for SQLite3
+#   won't build. If you are still using Node.js v0.8.x, you'll be fine, but if
+#   not, you'll want to use one of QM's other options for persistence, which
+#   include Apache CouchDB, MongoDB, PostgreSQL, and Redis. To do this, you'll
+#   need to launch the database separately and then run one of the following:
+#
+#           $ make local-sandbox DB=couch
+#           $ make local-sandbox DB=mongo
+#           $ make local-sandbox DB=postgres
+#           $ make local-sandbox DB=redis
+#
+#   I prefer the standalone "Apache CouchDB.app" available from the CouchDB
+#   website (http://couchdb.apache.org/) over the Homebrew-installed version
+#   because it's more convenient. I also prefer Heroku's "Postgres.app"
+#   (http://postgresapp.com) over the version that ships with Mountain Lion. I
+#   don't know of any nice launchers for MongoDB or Redis, but Homebrew can
+#   install them for you, and it includes directions for launching them.
+#   
+#   Some optional targets may require extra packages to be installed by
+#   Homebrew, including
 #
 #           $ brew install closure-compiler jsmin mongodb qrencode \
 #               phantomjs redis yuicompressor
 #
-#   I prefer the standalone "CouchDB Server.app" available from the CouchDB
-#   website (http://couchdb.apache.org/) over the Homebrew-installed version
-#   because it's more convenient. I also prefer Heroku's "Postgres.app"
-#   (http://postgresapp.com) over the version that ships with Mountain Lion.
 #   I use Heroku's platform-as-a-service (PaaS) for deployment, and this
 #   workflow does use the "Heroku Toolbelt" to build some of its targets, but
-#   I have also deployed QMachine on AppFog, App Harbor, and Cloud Foundry. I
+#   I have also deployed QMachine to AppFog, App Harbor, and Cloud Foundry. I
 #   have no disclosures; I'm just documenting my tools for reproducibility.
 #
 #   Of course, if you are reading this and you represent a company interested
-#   in donating resources that will help me take QMachine to that proverbial
-#   "next level", then by all means contact me! I will consider all such offers
-#   and acknowledge your generosity in all ways tasteful and appropriate.
+#   in donating resources that will help me take QM to that proverbial "next
+#   level", then by all means contact me! I will consider all such offers and
+#   acknowledge your generosity in all ways tasteful and appropriate.
 #
 #   For a long time, icon generation from LaTeX source code was included as an
 #   extra touch, but folks complained too much about the extra dependency on
@@ -50,7 +65,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 12 Feb 2013
+#                                                   ~~ last updated 16 Mar 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -68,9 +83,26 @@ HEROKU_APP  :=  qmachine
 LOCAL_COUCH :=  http://localhost:5984
 LOCAL_NODE  :=  http://localhost:8177
 MOTHERSHIP  :=  https://$(strip $(HEROKU_APP)).herokuapp.com
-PLISTS      :=  $(addprefix $(VAR_DIR)/com.QM., couchdb.plist nodejs.plist)
+PLISTS      :=  $(addprefix $(VAR_DIR)/com.QM., nodejs.plist)
+QM_API_LOC  :=  '{"sqlite":"qm.db"}'
 QM_API_URL  :=  $(MOTHERSHIP)
 QM_WWW_URL  :=  $(MOTHERSHIP)
+
+ifeq ("$(strip $(DB))", "couch")
+    QM_API_LOC  :=  '{"couch":"http://127.0.0.1:5984/db"}'
+endif
+
+ifeq ("$(strip $(DB))", "mongo")
+    QM_API_LOC  :=  '{"mongo":"mongodb://localhost:27017/qm"}'
+endif
+
+ifeq ("$(strip $(DB))", "postgres")
+    QM_API_LOC  :=  '{"postgres":"postgres://localhost:5432/$(USER)"}'
+endif
+
+ifeq ("$(strip $(DB))", "redis")
+    QM_API_LOC  :=  '{"redis":"redis://:@127.0.0.1:6379"}'
+endif
 
 .PHONY: all check clean clobber distclean help reset
 .SILENT: ;
@@ -157,34 +189,10 @@ chrome-hosted-app:                                                          \
     )
 	@   $(call hilite, 'Created $@.')
 
-local-couch:
-	@   API_STR='{"couch":"$(strip $(LOCAL_COUCH))/'                ;   \
-            $(MAKE)                                                         \
-                COUCHDB_URL="$(strip $(LOCAL_COUCH))"                       \
-                MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
-                QM_API_STRING=$${API_STR}'db/_design/app"}'                 \
-                QM_WWW_STRING='$(VAR_DIR)/nodejs/katamari.json'             \
-                    $(PLISTS)                                               \
-                    $(VAR_DIR)/couchdb.ini                                  \
-                    $(VAR_DIR)/nodejs/katamari.json                         \
-                    $(VAR_DIR)/nodejs/node_modules                          \
-                    $(VAR_DIR)/nodejs/server.js                             \
-                    web-service                                         ;   \
-            for each in $(PLISTS); do                                       \
-                $(LAUNCHCTL) load -w $${each}                           ;   \
-            done                                                        ;   \
-            $(CD) $(BUILD_DIR)/web-service                              ;   \
-            if [ $$? -eq 0 ]; then                                          \
-                $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
-                $(call open-in-browser, $(strip $(LOCAL_NODE)))         ;   \
-            else                                                            \
-                $(call alert, 'Service is not running.')                ;   \
-            fi
-
 local-sandbox:
 	@   $(MAKE)                                                         \
                 MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
-                QM_API_STRING='{"sqlite":"qm.db"}'                          \
+                QM_API_STRING=$(strip $(QM_API_LOC))                        \
                 QM_WWW_STRING='$(VAR_DIR)/nodejs/katamari.json'             \
                     browser-client                                          \
                     $(VAR_DIR)/com.QM.nodejs.plist                          \
@@ -547,21 +555,6 @@ $(ICONS_DIR)/qr.png: | $(ICONS_DIR)
 
 $(VAR_DIR):
 	@   $(call make-directory, $@)
-
-$(VAR_DIR)/couchdb: | $(VAR_DIR)
-	@   $(call make-directory, $@)
-
-$(VAR_DIR)/couchdb.ini: $(SHARE_DIR)/config.sh | $(VAR_DIR)
-	@   COUCHDB_INI="$(strip $@)"                                       \
-            PROJ_ROOT="$(strip $(PROJ_ROOT))"                               \
-                $(SHELL) $<
-
-$(VAR_DIR)/com.QM.couchdb.plist: $(SHARE_DIR)/config.sh | $(VAR_DIR)
-	@   COUCHDB="$(strip $(COUCHDB))"                                   \
-            COUCHDB_PLIST="$(strip $@)"                                     \
-            PROJ_ROOT="$(strip $(PROJ_ROOT))"                               \
-            USERNAME="$(strip $(USERNAME))"                                 \
-                $(SHELL) $<
 
 $(VAR_DIR)/com.QM.nodejs.plist: $(SHARE_DIR)/config.sh | $(VAR_DIR)/
 	@   NODEJS="$(strip $(NODEJS))"                                     \
