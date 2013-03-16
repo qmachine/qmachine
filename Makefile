@@ -28,10 +28,10 @@
 #   include Apache CouchDB, MongoDB, PostgreSQL, and Redis. To do this, you'll
 #   need to launch the database separately and then run one of the following:
 #
-#           $ make local-sandbox DB=couch
-#           $ make local-sandbox DB=mongo
-#           $ make local-sandbox DB=postgres
-#           $ make local-sandbox DB=redis
+#           $ make local-sandbox db=couch
+#           $ make local-sandbox db=mongo
+#           $ make local-sandbox db=postgres
+#           $ make local-sandbox db=redis
 #
 #   I prefer the standalone "Apache CouchDB.app" available from the CouchDB
 #   website (http://couchdb.apache.org/) over the Homebrew-installed version
@@ -88,19 +88,19 @@ QM_API_LOC  :=  '{"sqlite":"qm.db"}'
 QM_API_URL  :=  $(MOTHERSHIP)
 QM_WWW_URL  :=  $(MOTHERSHIP)
 
-ifeq ("$(strip $(DB))", "couch")
+ifeq ("$(strip $(db))", "couch")
     QM_API_LOC  :=  '{"couch":"http://127.0.0.1:5984/db"}'
 endif
 
-ifeq ("$(strip $(DB))", "mongo")
+ifeq ("$(strip $(db))", "mongo")
     QM_API_LOC  :=  '{"mongo":"mongodb://localhost:27017/qm"}'
 endif
 
-ifeq ("$(strip $(DB))", "postgres")
+ifeq ("$(strip $(db))", "postgres")
     QM_API_LOC  :=  '{"postgres":"postgres://localhost:5432/$(USER)"}'
 endif
 
-ifeq ("$(strip $(DB))", "redis")
+ifeq ("$(strip $(db))", "redis")
     QM_API_LOC  :=  '{"redis":"redis://:@127.0.0.1:6379"}'
 endif
 
