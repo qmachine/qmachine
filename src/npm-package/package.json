@@ -5,12 +5,7 @@
     },
     "dependencies": {
         "corser": ">= 1.2.0",
-        "hiredis": ">= 0.1.14",
-        "mongodb": ">= 1.2.0",
-        "pg": ">= 0.8.7",
-        "quanah": ">= 0.0.14",
-        "redis": ">= 0.8.2",
-        "sqlite3": ">= 2.1.5"
+        "quanah": ">= 0.0.14"
     },
     "description": "The World's Most Relaxed Supercomputer",
     "devDependencies": {},
@@ -21,7 +16,13 @@
     "homepage": "http://wilkinson.github.com/qmachine/",
     "main": "lib/main.js",
     "name": "qm",
-    "optionalDependencies": {},
+    "optionalDependencies": {
+        "hiredis": ">= 0.1.14",
+        "mongodb": ">= 1.2.0",
+        "pg": ">= 0.8.7",
+        "redis": ">= 0.8.2",
+        "sqlite3": ">= 2.1.5"
+    },
     "private": false,
     "repositories": [
         {"type": "git", "url": "https://bitbucket.org/wilkinson/qmachine.git"},
@@ -29,5 +30,5 @@
         {"type": "git", "url": "https://github.com/wilkinson/qmachine.git"}
     ],
     "scripts": {},
-    "version": "0.9.0"
+    "version": "0.9.1"
 }
