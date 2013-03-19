@@ -4,15 +4,15 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": "0.9.1"
+        "qm": "0.9.2"
     },
     "engines": {
         "node": "0.8.x",
-        "npm":  ">= 1.1.2"
+        "npm":  "1.2.x"
     },
     "name": "web-service",
     "private": true,
     "readme": "(no documentation)",
     "scripts": {},
-    "version": "0.9.1"
+    "version": "0.9.2"
 }
