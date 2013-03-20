@@ -22,11 +22,11 @@
 #   I use that for the default because it is so darn convenient -- you don't
 #   have to turn on any other programs because SQLite3 is an embedded database.
 #   Immediately after I submitted my first manuscript about QM for peer-review,
-#   of course, Node.js v0.10.0 was released, and the NPM module for SQLite3
-#   won't build. If you are still using Node.js v0.8.x, you'll be fine, but if
-#   not, you'll want to use one of QM's other options for persistence, which
-#   include Apache CouchDB, MongoDB, PostgreSQL, and Redis. To do this, you'll
-#   need to launch the database separately and then run one of the following:
+#   of course, Node.js v0.10.0 was released, and the NPM module for SQLite3 is
+#   fussing. If you are still using Node.js v0.8.x, you'll be fine, but if not,
+#   you'll want to use one of QM's other options for persistence, which include
+#   Apache CouchDB, MongoDB, PostgreSQL, and Redis. To do this, you'll need to
+#   launch the database separately and then run one of the following:
 #
 #           $ make local-sandbox db=couch
 #           $ make local-sandbox db=mongo
@@ -65,7 +65,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 16 Mar 2013
+#                                                   ~~ last updated 19 Mar 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
