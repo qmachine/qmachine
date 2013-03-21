@@ -6,19 +6,20 @@
  *  client's graphical user interface (GUI) -- the webpage, "index.html". This
  *  file will be concatenated and/or minified along with Twitter Bootstrap as
  *  part of "style-min.css", which means that some or all of these settings may
- *  be overridden by Twitter Bootstrap's defaults.
+ *  be overridden by Twitter Bootstrap's defaults. Consequently, I have removed
+ *  some of my original rules simply to reduce the file size.
  *
  *  NOTE: I truly hate "slashstar" comments because I have never found a way to
  *  write them that doesn't make me want to claw my eyes out. If you have any
  *  ideas, let me know :-)
  *
  *                                                      ~~ (c) SRW, 29 Oct 2012
- *                                                  ~~ last updated 26 Jan 2013
+ *                                                  ~~ last updated 21 Mar 2013
  */
 
 @media all {
  /* These rules will be applied for to the page for all devices, but they can
-  * be overridden by other device-specific settings I have included below. */
+  * be overridden by other device-specific settings I may have specified. */
     body {
      /* This extends the container all the way to the bottom of the topbar. */
         padding-top: 60px;
@@ -34,20 +35,6 @@
     }
     .centered {
         text-align: center;
-    }
-}
-
-@media print {
- /* These rules will only be applied if a user wants to print out a hard copy
-  * of the webpage. */
-    a:after {
-        content: ")[" attr(href) "]";
-    }
-    a:before {
-        content: "(";
-    }
-    body {
-        background-color: white;
     }
 }
 
