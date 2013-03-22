@@ -17,6 +17,7 @@ wApps.manifest.apps.push({
         /*jslint browser: true, indent: 4, maxlen: 80 */
         var $ = window.jQuery;
         this.require('https://v1.qmachine.org/q.js', function () {
+         // If you are pasting text into Minerva, start below this line.
             $('#' + id).html([
                 '<form>',
                 '  <fieldset>',
@@ -145,6 +146,7 @@ wApps.manifest.apps.push({
                 });
                 return;
             });
+         // If you are pasting text into Minerva, stop above this line.
             return;
         });
         return;
