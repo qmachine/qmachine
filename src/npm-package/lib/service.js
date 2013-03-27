@@ -14,7 +14,7 @@
  // Declarations
 
     var cluster, collect_garbage, configure, corser, http, is_Function,
-        katamari, spawn_workers, url, warn;
+        katamari, log, spawn_workers, url, warn;
 
  // Definitions
 
@@ -26,7 +26,7 @@
             return;
         }
         if (options.hasOwnProperty('gc_interval') === false) {
-            throw new Error("WTF");
+            throw new Error('WTF');
         }
         setInterval(f, options.gc_interval * 1000);
         return;
@@ -45,6 +45,12 @@
 
     katamari = require('./katamari');
 
+    log = function () {
+     // This function needs documentation.
+        console.log.apply(console.log, arguments);
+        return;
+    };
+
     spawn_workers = function (n) {
      // This function needs documentation.
         var spawn_worker;
@@ -58,7 +64,7 @@
             });
             worker.on('message', function (message) {
              // This function needs documentation.
-                console.log(worker.pid + ':', message.cmd);
+                log(worker.pid + ':', message.cmd);
                 return;
             });
             return worker;
@@ -68,7 +74,7 @@
              // This function needs documentation.
                 var next_worker, output;
                 next_worker = spawn_worker();
-                console.log(prev_worker.pid + ':', 'RIP', next_worker.pid);
+                log(prev_worker.pid + ':', 'RIP', next_worker.pid);
                 return;
             });
             while (n > 0) {
@@ -378,7 +384,7 @@
             return;
         });
         server.listen(config.port, config.hostname);
-        console.log('QM up -> http://%s:%d ...', config.hostname, config.port);
+        log('QM up -> http://%s:%d ...', config.hostname, config.port);
         return;
     };
 
