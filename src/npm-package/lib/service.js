@@ -105,6 +105,7 @@
             enable_CORS:        false,
             enable_www_server:  false,
             hostname:           '0.0.0.0',
+            //log_server: {},
             max_http_sockets:   500,
             max_upload_size:    1048576,    //- 1024 * 1024 = 1 Megabyte
             persistent_storage: {
@@ -132,6 +133,13 @@
             enable_cors = corser.create({});
             server = http.createServer(function (request, response) {
              // This function needs documentation.
+                log({
+                    headers: request.headers,
+                    ip: request.connection.remoteAddress,
+                    method: request.method,
+                    timestamp: new Date(),
+                    url: request.url
+                });
                 enable_cors(request, response, function () {
                  // This function needs documentation.
                     var flag, i, n, params, rule, url;
@@ -167,6 +175,13 @@
         } else {
             server = http.createServer(function (request, response) {
              // This function needs documentation.
+                log({
+                    headers: request.headers,
+                    ip: request.connection.remoteAddress,
+                    method: request.method,
+                    timestamp: new Date(),
+                    url: request.url
+                });
                 var flag, i, n, params, rule, url;
                 flag = false;
                 n = rules.length;
