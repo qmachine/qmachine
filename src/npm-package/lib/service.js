@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 14 Feb 2013
+//                                                  ~~ last updated 26 Mar 2013
 
 (function () {
     'use strict';
@@ -112,7 +112,7 @@
         if ((config.enable_api_server === false) &&
                 (config.enable_www_server === false)) {
          // Exit early if the configuration is underspecified.
-            console.warn('No servers were specified.');
+            warn(['No servers specified.']);
             return;
         }
         go_away = function (response) {
