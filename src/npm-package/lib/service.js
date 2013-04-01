@@ -128,15 +128,6 @@
             trafficlog_storage: {},
             worker_procs:       0
         });
-        if (config.trafficlog_storage.hasOwnProperty('couch')) {
-            log = require('./defs-couch').log(config.trafficlog_storage);
-        } else {
-            log = function () {
-             // This function needs documentation.
-                console.log.apply(console.log, arguments);
-                return;
-            };
-        }
         if ((config.enable_api_server === false) &&
                 (config.enable_www_server === false)) {
          // Exit early if the configuration is underspecified.
@@ -156,6 +147,15 @@
             response.end();
             return;
         };
+        if (config.trafficlog_storage.hasOwnProperty('couch')) {
+            log = require('./defs-couch').log(config.trafficlog_storage);
+        } else {
+            log = function () {
+             // This function needs documentation.
+                console.log.apply(console.log, arguments);
+                return;
+            };
+        }
         rules = [];
         if (config.enable_CORS === true) {
             enable_cors = corser.create({});
