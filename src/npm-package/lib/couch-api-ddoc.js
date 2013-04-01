@@ -1,8 +1,8 @@
 //- JavaScript source code
 
-//- couch-design-doc.js ~~
+//- couch-api-ddoc.js ~~
 //                                                      ~~ (c) SRW, 23 Oct 2012
-//                                                  ~~ last updated 31 Jan 2013
+//                                                  ~~ last updated 31 Mar 2013
 
 (function () {
     'use strict';

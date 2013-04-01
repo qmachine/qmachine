@@ -5,7 +5,7 @@
 //  NOTE: I need to experiment with `require('https').globalAgent.maxSockets`!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 23 Dec 2012
+//                                                  ~~ last updated 31 Mar 2013
 
 (function () {
     'use strict';
@@ -16,11 +16,36 @@
 
  // Declarations
 
-    var cluster, http, https, stringify, url;
+    var cluster, create_db, http, https, stringify, upload_ddoc, url;
 
  // Definitions
 
     cluster = require('cluster');
+
+    create_db = function (conn, callback) {
+     // This function needs documentation.
+        var options, protocol, req;
+        options = Object.create(conn);
+        options.method = 'PUT';
+        protocol = (conn.protocol === 'http:') ? http : https;
+        req = protocol.request(options, function (response) {
+         // This function needs documentation.
+            var temp = [];
+            response.on('data', function (chunk) {
+             // This function needs documentation.
+                temp.push(chunk.toString());
+                return;
+            });
+            response.on('end', function () {
+             // This function needs documentation.
+                return callback(null, temp.join(''));
+            });
+            return;
+        });
+        req.on('error', callback);
+        req.end();
+        return;
+    };
 
     http = require('http');
 
@@ -46,16 +71,75 @@
         });
     };
 
+    upload_ddoc = function (file, app_url, callback) {
+     // This function needs documentation.
+        var opts, protocol, req;
+        opts = url.parse(app_url);
+        opts.method = 'GET';
+        protocol = (opts.protocol === 'http:') ? http : https;
+        req = protocol.request(opts, function (response) {
+         // This function needs documentation.
+            var temp = [];
+            response.on('data', function (chunk) {
+             // This function needs documentation.
+                temp.push(chunk.toString());
+                return;
+            });
+            response.on('end', function () {
+             // This function needs documentation.
+                var new_dd, $new_dd, old_dd, $old_dd, opts2, req2;
+                new_dd = require(file);
+                $old_dd = temp.join('');
+                if (response.statusCode === 200) {
+                    old_dd = JSON.parse($old_dd);
+                    new_dd = require(file);
+                    new_dd._id = old_dd._id;
+                    new_dd._rev = old_dd._rev;
+                    $new_dd = stringify(new_dd, Object.keys(old_dd));
+                    $old_dd = stringify(old_dd, Object.keys(old_dd));
+                    if ($new_dd === $old_dd) {
+                        return callback(null, 'Design document unchanged.');
+                    }
+                } else {
+                    $new_dd = stringify(new_dd, Object.keys(new_dd));
+                }
+                console.log('Uploading a new design document ...');
+                opts2 = Object.create(opts);
+                opts2.method = 'PUT';
+                req2 = protocol.request(opts2, function (response) {
+                 // This function needs documentation.
+                    var temp = [];
+                    response.on('data', function (chunk) {
+                     // This function needs documentation.
+                        temp.push(chunk.toString());
+                        return;
+                    });
+                    response.on('end', function () {
+                     // This function needs documentation.
+                        return callback(null, temp.join(''));
+                    });
+                    return;
+                });
+                req2.on('error', callback);
+                req2.end($new_dd);
+                return;
+            });
+            return;
+        });
+        req.on('error', callback);
+        req.end();
+        return;
+    };
+
     url = require('url');
 
  // Out-of-scope definitions
 
-    module.exports = function (options) {
+    exports.api = function (options) {
      // This function needs documentation.
 
-        var app_url, collect_garbage, conn, create_database, exp_date,
-            get_box_key, get_box_status, protocol, post_box_key,
-            upload_design_doc;
+        var app_url, collect_garbage, conn, exp_date, get_box_key,
+            get_box_status, protocol, post_box_key;
 
         app_url = options.couch + '/_design/app/';
 
@@ -112,30 +196,6 @@
         };
 
         conn = url.parse(options.couch);
-
-        create_database = function (callback) {
-         // This function needs documentation.
-            var options, req;
-            options = Object.create(conn);
-            options.method = 'PUT';
-            req = protocol.request(options, function (response) {
-             // This function needs documentation.
-                var temp = [];
-                response.on('data', function (chunk) {
-                 // This function needs documentation.
-                    temp.push(chunk.toString());
-                    return;
-                });
-                response.on('end', function () {
-                 // This function needs documentation.
-                    return callback(null, temp.join(''));
-                });
-                return;
-            });
-            req.on('error', callback);
-            req.end();
-            return;
-        };
 
         exp_date = function () {
          // This function needs documentation.
@@ -233,72 +293,13 @@
             return;
         };
 
-        upload_design_doc = function (callback) {
-         // This function needs documentation.
-            var opts, req;
-            opts = url.parse(options.couch + '/_design/app');
-            opts.method = 'GET';
-            req = protocol.request(opts, function (response) {
-             // This function needs documentation.
-                var temp = [];
-                response.on('data', function (chunk) {
-                 // This function needs documentation.
-                    temp.push(chunk.toString());
-                    return;
-                });
-                response.on('end', function () {
-                 // This function needs documentation.
-                    var new_dd, $new_dd, old_dd, $old_dd, opts2, req2;
-                    new_dd = require('./couch-design-doc');
-                    $old_dd = temp.join('');
-                    if (response.statusCode === 200) {
-                        old_dd = JSON.parse($old_dd);
-                        new_dd = require('./couch-design-doc');
-                        new_dd._id = old_dd._id;
-                        new_dd._rev = old_dd._rev;
-                        $new_dd = stringify(new_dd, Object.keys(old_dd));
-                        $old_dd = stringify(old_dd, Object.keys(old_dd));
-                        if ($new_dd === $old_dd) {
-                            return callback(null, 'Design document unchanged.');
-                        }
-                    } else {
-                        $new_dd = stringify(new_dd, Object.keys(new_dd));
-                    }
-                    console.log('Uploading a new design document ...');
-                    opts2 = Object.create(opts);
-                    opts2.method = 'PUT';
-                    req2 = protocol.request(opts2, function (response) {
-                     // This function needs documentation.
-                        var temp = [];
-                        response.on('data', function (chunk) {
-                         // This function needs documentation.
-                            temp.push(chunk.toString());
-                            return;
-                        });
-                        response.on('end', function () {
-                         // This function needs documentation.
-                            return callback(null, temp.join(''));
-                        });
-                        return;
-                    });
-                    req2.on('error', callback);
-                    req2.end($new_dd);
-                    return;
-                });
-                return;
-            });
-            req.on('error', callback);
-            req.end();
-            return;
-        };
-
         if (cluster.isMaster) {
-            create_database(function (err, response) {
+            create_db(conn, function (err, response) {
              // This function needs documentation.
                 if (err !== null) {
                     console.error('Error:', err);
                 }
-                upload_design_doc(function (err, response) {
+                upload_ddoc('./couch-api-ddoc', app_url, function (err, res) {
                  // This function needs documentation.
                     if (err !== null) {
                         console.error('Error:', err);
@@ -310,12 +311,40 @@
                 return;
             });
         }
-
         return {
             collect_garbage: collect_garbage,
             get_box_key: get_box_key,
             get_box_status: get_box_status,
             post_box_key: post_box_key
+        };
+    };
+
+    exports.log = function (options) {
+     // This function needs documentation.
+        var app_url, conn, protocol;
+        app_url = options.couch + '/_design/app/';
+        conn = url.parse(options.couch);
+        protocol = (conn.protocol === 'http:') ? http : https;
+        if (cluster.isMaster) {
+            create_db(conn, function (err, response) {
+             // This function needs documentation.
+                if (err !== null) {
+                    console.error('Error:', err);
+                }
+                upload_ddoc('./couch-log-ddoc', app_url, function (err, res) {
+                 // This function needs documentation.
+                    if (err !== null) {
+                        console.error('Error:', err);
+                    }
+                    console.log(response.trim());
+                    console.log('LOG: CouchDB storage is ready.');
+                    return;
+                });
+                return;
+            });
+        }
+        return {
+         // (placeholder)
         };
     };
 

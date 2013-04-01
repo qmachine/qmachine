@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 26 Mar 2013
+//                                                  ~~ last updated 31 Mar 2013
 
 (function () {
     'use strict';
@@ -105,7 +105,6 @@
             enable_CORS:        false,
             enable_www_server:  false,
             hostname:           '0.0.0.0',
-            //log_server: {},
             max_http_sockets:   500,
             max_upload_size:    1048576,    //- 1024 * 1024 = 1 Megabyte
             persistent_storage: {
@@ -114,6 +113,7 @@
             },
             port:               8177,
             static_content:     'katamari.json',
+            trafficlog_storage: {},
             worker_procs:       0
         });
         if ((config.enable_api_server === false) &&
@@ -204,7 +204,7 @@
         if (config.enable_api_server === true) {
          // This part makes my eyes bleed, but it works really well.
             if (config.persistent_storage.hasOwnProperty('couch')) {
-                defs = require('./defs-couch')(config.persistent_storage);
+                defs = require('./defs-couch').api(config.persistent_storage);
             } else if (config.persistent_storage.hasOwnProperty('mongo')) {
                 if ((config.max_upload_size > 4194304) && (cluster.isMaster)) {
                     warn([
