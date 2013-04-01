@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 10 Feb 2013
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
@@ -40,6 +40,11 @@
         options.enable_api_server = true;
         options.enable_CORS = true;
         options.persistent_storage = JSON.parse(process.env.QM_API_STRING);
+    }
+
+    if (process.env.QM_LOG_STRING !== undefined) {
+     // This is a custom environment variable I define prior to deployment.
+        options.trafficlog_storage = JSON.parse(process.env.QM_LOG_STRING);
     }
 
     if (process.env.QM_WWW_STRING !== undefined) {
