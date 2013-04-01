@@ -12,7 +12,17 @@
 
  // Pragmas
 
+    /*jshint maxparams: 3, quotmark: single, strict: true */
+
     /*jslint indent: 4, maxlen: 80, node: true, nomen: true */
+
+    /*properties
+        api, avar_ttl, body, box_status, ceil, collect_garbage, 'Content-Type',
+        couch, create, end, error, exp_date, get_box_key, get_box_status,
+        headers, _id, isMaster, join, key, keys, length, log, method, now, on,
+        parse, post_box_key, protocol, push, request, _rev, statusCode,
+        stringify, toString, trim
+    */
 
  // Declarations
 
@@ -348,7 +358,6 @@
                 return;
             });
         }
-        var count = 0;
         return function (obj) {
          // This function needs documentation.
             var req;
@@ -356,13 +365,8 @@
             conn.method = 'POST';
             req = protocol.request(conn, function (res) {
              // This function needs documentation.
-                count += 1;
                 res.on('data', function () {});
-                res.on('end', function () {
-                 // This function needs documentation.
-                    console.log('logged: %d (%d)', res.statusCode, count);
-                    return;
-                });
+                res.on('end', function () {});
                 return;
             });
             req.on('error', function (message) {

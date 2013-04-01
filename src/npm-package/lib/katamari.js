@@ -5,12 +5,14 @@
 //  This is adapted from a previously unpublished NPM module I wrote.
 //
 //                                                      ~~ (c) SRW, 11 Dec 2012
-//                                                  ~~ last updated 14 Feb 2013
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
 
  // Pragmas
+
+    /*jshint maxparams: 2, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, node: true */
 

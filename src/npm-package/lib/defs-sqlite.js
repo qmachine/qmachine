@@ -5,12 +5,14 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 14 Mar 2013
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
 
  // Pragmas
+
+    /*jshint maxparams: 2, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, node: true */
 

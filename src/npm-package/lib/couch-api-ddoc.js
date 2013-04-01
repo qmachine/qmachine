@@ -2,7 +2,7 @@
 
 //- couch-api-ddoc.js ~~
 //                                                      ~~ (c) SRW, 23 Oct 2012
-//                                                  ~~ last updated 31 Mar 2013
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
@@ -10,6 +10,8 @@
  // Pragmas
 
     /*global exports: false, emit: false, getRow: false, send: false */
+
+    /*jshint maxparams: 2, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, nomen: true */
 

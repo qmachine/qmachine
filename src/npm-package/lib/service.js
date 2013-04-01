@@ -9,7 +9,24 @@
 
  // Pragmas
 
+    /*jshint maxparams: 3, quotmark: single, strict: true */
+
     /*jslint indent: 4, maxlen: 80, node: true */
+
+    /*properties
+        api, apply, avar_ttl, box, buffer, cmd, collect_garbage, connection,
+        'Content-Type', 'content-length', create, createServer, Date,
+        enable_api_server, enable_CORS, enable_www_server, end, error, fork,
+        gc_interval, get_box_key, get_box_status, globalAgent, handler,
+        hasOwnProperty, headers, hostname, 'if-modified-since', ip, isMaster,
+        isWorker, join, key, last_mod_date, 'Last-Modified', last_modified,
+        launch, length, listen, log, match, max_fu_size, max_http_sockets,
+        maxSockets, max_upload_size, method, mime_type, on, parse, pattern,
+        persistent_storage, pid, port, post_box_key, push, remoteAddress,
+        replace, slice, sqlite, static_content, status, stringify, test,
+        timestamp, toGMTString, toString, trafficlog_storage, unroll, url,
+        warn, worker_procs, writeHead, 'x-forwarded-for'
+    */
 
  // Declarations
 
@@ -84,7 +101,7 @@
     warn = function (lines) {
      // This function needs documentation.
         var text;
-        text = lines.join(' ').replace(/([\w\-\:\,\.\s]{65,79})\s/g, "$1\n");
+        text = lines.join(' ').replace(/([\w\-\:\,\.\s]{65,79})\s/g, '$1\n');
         console.warn('\n%s\n', text);
         return;
     };
@@ -93,7 +110,7 @@
 
     exports.launch = function (obj) {
      // This function needs documentation.
-        var config, defs, enable_cors, go_away, log, rules, server,
+        var config, defs, enable_cors, get_ip, go_away, log, rules, server,
             static_content;
         config = configure(obj, {
             enable_api_server:  false,
@@ -126,6 +143,13 @@
             warn(['No servers specified.']);
             return;
         }
+        get_ip = function (request) {
+         // This function needs documentation.
+            if (request.headers.hasOwnProperty('x-forwarded-for')) {
+                return request.headers['x-forwarded-for'];
+            }
+            return request.connection.remoteAddress;
+        };
         go_away = function (response) {
          // This function needs documentation.
             response.writeHead(444);
@@ -243,7 +267,7 @@
                  // This function needs documentation.
                     log({
                         //headers: request.headers,
-                        ip: request.connection.remoteAddress,
+                        ip: get_ip(request),
                         method: request.method,
                         timestamp: new Date(),
                         url: request.url
@@ -273,7 +297,7 @@
                  // This function needs documentation.
                     log({
                         //headers: request.headers,
-                        ip: request.connection.remoteAddress,
+                        ip: get_ip(request),
                         method: request.method,
                         timestamp: new Date(),
                         url: request.url
@@ -303,7 +327,7 @@
                  // This function needs documentation.
                     log({
                         //headers: request.headers,
-                        ip: request.connection.remoteAddress,
+                        ip: get_ip(request),
                         method: request.method,
                         timestamp: new Date(),
                         url: request.url

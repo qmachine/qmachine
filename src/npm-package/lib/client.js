@@ -2,14 +2,18 @@
 
 //- client.js ~~
 //                                                      ~~ (c) SRW, 25 Aug 2012
-//                                                  ~~ last updated 18 Dec 2012
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
 
  // Pragmas
 
+    /*jshint maxparams: 1, quotmark: single, strict: true */
+
     /*jslint indent: 4, maxlen: 80, node: true */
+
+    /*properties launch */
 
  // Out-of-scope definitions
 

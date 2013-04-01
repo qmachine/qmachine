@@ -2,12 +2,14 @@
 
 //- main.js ~~
 //                                                      ~~ (c) SRW, 16 Jul 2012
-//                                                  ~~ last updated 18 Dec 2012
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
 
  // Pragmas
+
+    /*jshint maxparams: 1, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
