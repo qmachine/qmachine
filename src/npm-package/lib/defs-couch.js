@@ -5,7 +5,7 @@
 //  NOTE: I need to experiment with `require('https').globalAgent.maxSockets`!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 31 Mar 2013
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
@@ -279,14 +279,19 @@
             opts.method = 'POST';
             req = protocol.request(opts, function (res) {
              // This function needs documentation.
-                if ((res.statusCode !== 201) && (res.statusCode !== 202)) {
-                 // Ordinarily, we want a 201, but batch mode returns an
-                 // "HTTP 202: Accepted" response, and Cloudant's BigCouch
-                 // seems to use batch mode sometimes. All other status codes
-                 // indicate an error.
-                    return callback(res.statusCode);
-                }
-                return callback(null);
+                res.on('data', function () {});
+                res.on('end', function () {
+                 // This function needs documentation.
+                    if ((res.statusCode !== 201) && (res.statusCode !== 202)) {
+                     // Ordinarily, we want a 201, but batch mode returns an
+                     // "HTTP 202: Accepted" response, and Cloudant's BigCouch
+                     // seems to use batch mode sometimes. All other status
+                     // codes indicate an error.
+                        return callback(res.statusCode);
+                    }
+                    return callback(null);
+                });
+                return;
             });
             req.on('error', callback);
             req.end(JSON.stringify(obj));
@@ -343,8 +348,30 @@
                 return;
             });
         }
-        return {
-         // (placeholder)
+        var count = 0;
+        return function (obj) {
+         // This function needs documentation.
+            var req;
+            conn.headers = {'Content-Type': 'application/json'};
+            conn.method = 'POST';
+            req = protocol.request(conn, function (res) {
+             // This function needs documentation.
+                count += 1;
+                res.on('data', function () {});
+                res.on('end', function () {
+                 // This function needs documentation.
+                    console.log('logged: %d (%d)', res.statusCode, count);
+                    return;
+                });
+                return;
+            });
+            req.on('error', function (message) {
+             // This function needs documentation.
+                console.error('Error:', message);
+                return;
+            });
+            req.end(JSON.stringify(obj));
+            return;
         };
     };
 

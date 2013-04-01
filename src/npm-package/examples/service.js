@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 26 Sep 2012
-//                                                  ~~ last updated 23 Dec 2012
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
@@ -18,15 +18,20 @@
  // Definitions
 
     examples = {
+        max_http_sockets:   1000,
         persistent_storage: {
             avar_ttl:       60,
-            gc_interval:    1,
             couch:          'http://127.0.0.1:5984/db',
+            gc_interval:    1,
             mongo:          'mongodb://localhost:27017/qm',
             postgres:       'postgres://localhost:5432/' + process.env.USER,
             redis:          'redis://:@127.0.0.1:6379',
             sqlite:         'qm.db'
-        }
+        },
+        trafficlog_storage: {
+            couch:          'http://127.0.0.1:5984/traffic'
+        },
+        worker_procs:       require('os').cpus().length
     };
 
     qm = require('lib/main');
@@ -41,7 +46,8 @@
             avar_ttl:       60,
             sqlite:         examples.persistent_storage.sqlite
         },
-        worker_procs:       require('os').cpus().length
+        trafficlog_storage: examples.trafficlog_storage,
+        worker_procs:       0
     });
 
  // That's all, folks!

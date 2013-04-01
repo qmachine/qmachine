@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 31 Mar 2013
+//                                                  ~~ last updated 01 Apr 2013
 
 (function () {
     'use strict';
@@ -14,7 +14,7 @@
  // Declarations
 
     var cluster, collect_garbage, configure, corser, http, is_Function,
-        katamari, log, spawn_workers, url, warn;
+        katamari, spawn_workers, url, warn;
 
  // Definitions
 
@@ -45,12 +45,6 @@
 
     katamari = require('./katamari');
 
-    log = function () {
-     // This function needs documentation.
-        console.log.apply(console.log, arguments);
-        return;
-    };
-
     spawn_workers = function (n) {
      // This function needs documentation.
         var spawn_worker;
@@ -64,7 +58,7 @@
             });
             worker.on('message', function (message) {
              // This function needs documentation.
-                log(worker.pid + ':', message.cmd);
+                console.log(worker.pid + ':', message.cmd);
                 return;
             });
             return worker;
@@ -74,7 +68,7 @@
              // This function needs documentation.
                 var next_worker, output;
                 next_worker = spawn_worker();
-                log(prev_worker.pid + ':', 'RIP', next_worker.pid);
+                console.log(prev_worker.pid + ':', 'RIP', next_worker.pid);
                 return;
             });
             while (n > 0) {
@@ -99,7 +93,8 @@
 
     exports.launch = function (obj) {
      // This function needs documentation.
-        var config, defs, enable_cors, go_away, rules, server, static_content;
+        var config, defs, enable_cors, go_away, log, rules, server,
+            static_content;
         config = configure(obj, {
             enable_api_server:  false,
             enable_CORS:        false,
@@ -116,6 +111,15 @@
             trafficlog_storage: {},
             worker_procs:       0
         });
+        if (config.trafficlog_storage.hasOwnProperty('couch')) {
+            log = require('./defs-couch').log(config.trafficlog_storage);
+        } else {
+            log = function () {
+             // This function needs documentation.
+                console.log.apply(console.log, arguments);
+                return;
+            };
+        }
         if ((config.enable_api_server === false) &&
                 (config.enable_www_server === false)) {
          // Exit early if the configuration is underspecified.
@@ -133,13 +137,6 @@
             enable_cors = corser.create({});
             server = http.createServer(function (request, response) {
              // This function needs documentation.
-                log({
-                    headers: request.headers,
-                    ip: request.connection.remoteAddress,
-                    method: request.method,
-                    timestamp: new Date(),
-                    url: request.url
-                });
                 enable_cors(request, response, function () {
                  // This function needs documentation.
                     var flag, i, n, params, rule, url;
@@ -175,13 +172,6 @@
         } else {
             server = http.createServer(function (request, response) {
              // This function needs documentation.
-                log({
-                    headers: request.headers,
-                    ip: request.connection.remoteAddress,
-                    method: request.method,
-                    timestamp: new Date(),
-                    url: request.url
-                });
                 var flag, i, n, params, rule, url;
                 flag = false;
                 n = rules.length;
@@ -251,6 +241,13 @@
                 pattern: /^\/box\/([\w\-]+)\?key=([A-z0-9]+)$/,
                 handler: function (request, response, params) {
                  // This function needs documentation.
+                    log({
+                        //headers: request.headers,
+                        ip: request.connection.remoteAddress,
+                        method: request.method,
+                        timestamp: new Date(),
+                        url: request.url
+                    });
                     var callback;
                     callback = function (err, results) {
                      // This function needs documentation.
@@ -274,6 +271,13 @@
                 pattern: /^\/box\/([\w\-]+)\?status=([A-z0-9]+)$/,
                 handler: function (request, response, params) {
                  // This function needs documentation.
+                    log({
+                        //headers: request.headers,
+                        ip: request.connection.remoteAddress,
+                        method: request.method,
+                        timestamp: new Date(),
+                        url: request.url
+                    });
                     var callback;
                     callback = function (err, results) {
                      // This function needs documentation.
@@ -297,6 +301,13 @@
                 pattern: /^\/box\/([\w\-]+)\?key=([A-z0-9]+)$/,
                 handler: function (request, response, params) {
                  // This function needs documentation.
+                    log({
+                        //headers: request.headers,
+                        ip: request.connection.remoteAddress,
+                        method: request.method,
+                        timestamp: new Date(),
+                        url: request.url
+                    });
                     var callback, headers, temp;
                     callback = function (err) {
                      // This function needs documentation.
@@ -399,7 +410,7 @@
             return;
         });
         server.listen(config.port, config.hostname);
-        log('QM up -> http://%s:%d ...', config.hostname, config.port);
+        console.log('QM up -> http://%s:%d ...', config.hostname, config.port);
         return;
     };
 
