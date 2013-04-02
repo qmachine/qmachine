@@ -65,7 +65,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 19 Mar 2013
+#                                                   ~~ last updated 02 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -552,6 +552,16 @@ $(ICONS_DIR)/logo.png: | $(ICONS_DIR)
 
 $(ICONS_DIR)/qr.png: | $(ICONS_DIR)
 	@   $(QRENCODE) --margin=1 --size=10 --output=$@ $(QM_WWW_URL)
+
+$(ICONS_DIR)/stashboard-logo.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, , $<,                               \
+                -density 96                                                 \
+                -background none                                            \
+                -resize 182x182                                             \
+                -quality 100                                                \
+                -gravity center                                             \
+                -extent 246x182                                             \
+            )
 
 $(VAR_DIR):
 	@   $(call make-directory, $@)
