@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 01 Apr 2013
+//                                                  ~~ last updated 03 Apr 2013
 
 (function () {
     'use strict';
@@ -137,7 +137,7 @@
         get_ip = function (request) {
          // This function needs documentation.
             if (request.headers.hasOwnProperty('x-forwarded-for')) {
-                return request.headers['x-forwarded-for'];
+                return request.headers['x-forwarded-for'].split(',')[0];
             }
             return request.connection.remoteAddress;
         };
