@@ -19,7 +19,7 @@
     "optionalDependencies": {
         "hiredis": ">= 0.1.14",
         "mongodb": ">= 1.2.0",
-        "pg": ">= 0.8.7",
+        "pg": ">= 1.0.0",
         "redis": ">= 0.8.2",
         "sqlite3": ">= 2.1.5"
     },
@@ -30,5 +30,5 @@
         {"type": "git", "url": "https://github.com/wilkinson/qmachine.git"}
     ],
     "scripts": {},
-    "version": "0.9.7"
+    "version": "0.9.8"
 }
