@@ -17,16 +17,11 @@
 #
 #           $ make local-sandbox
 #
-#   Unfortunately, there are some caveats. The recent release of Node.js
-#   v0.10.0 has caused troubles with the default persistence layer, SQLite3.
-#   I use that for the default because it is so darn convenient -- you don't
-#   have to turn on any other programs because SQLite3 is an embedded database.
-#   Immediately after I submitted my first manuscript about QM for peer-review,
-#   of course, Node.js v0.10.0 was released, and the NPM module for SQLite3 is
-#   fussing. If you are still using Node.js v0.8.x, you'll be fine, but if not,
-#   you'll want to use one of QM's other options for persistence, which include
-#   Apache CouchDB, MongoDB, PostgreSQL, and Redis. To do this, you'll need to
-#   launch the database separately and then run one of the following:
+#   QM uses the SQLite bindings by default for convenience because you don't
+#   have to turn on any other programs, configure internal ports, etc. If you
+#   can't get SQLite to work on your platform, or if you just prefer another
+#   database, the current choices are Apache CouchDB, MongoDB, PostgreSQL, and
+#   Redis. Then, you can run one of the following:
 #
 #           $ make local-sandbox db=couch
 #           $ make local-sandbox db=mongo
