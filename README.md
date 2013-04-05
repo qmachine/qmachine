@@ -2,7 +2,7 @@ QMachine
 ========
 
 [QMachine](https://www.qmachine.org) (QM) is a web service that uses
-[Quanah](http://wilkinson.github.com/quanah) to create a distributed computer
+[Quanah](http://wilkinson.github.io/quanah) to create a distributed computer
 that can use ordinary web browsers as ephemeral nodes. It contains three main
 components: an API server, a web server, and a website. The API server and the
 web server are both implemented in [Node.js](http://nodejs.org) and available
@@ -19,10 +19,10 @@ client for the QM API, and its implementation as static content written in
 [JavaScript](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf) allows it to be served out of memory by the web server for high
 performance and used by ordinary web browsers for high portability. Parts of
 the browser client are installable via Twitter's
-[Bower](http://twitter.github.com/bower/) package manager, but I have only
+[Bower](http://twitter.github.io/bower/) package manager, but I have only
 recently experimented with that. The analytical layer can also be used from
 [MinervaJS](http://minervajs.org/site/index.html#!/view/qm) and the
-[TCGA Toolbox](http://tcga.github.com/).
+[TCGA Toolbox](http://tcga.github.io/).
 
 There are several project "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),
