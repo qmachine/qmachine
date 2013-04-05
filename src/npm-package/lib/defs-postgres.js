@@ -5,14 +5,14 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 01 Apr 2013
+//                                                  ~~ last updated 05 Apr 2013
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*jshint maxparams: 2, quotmark: single, strict: true */
+    /*jshint maxparams: 3, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
@@ -36,10 +36,11 @@
 
         collect_garbage = function () {
          // This function needs documentation.
-            pg.connect(connection_string, function (err, client) {
+            pg.connect(connection_string, function (err, client, done) {
              // This function needs documentation.
                 if (err !== null) {
                     console.error('Error:', err);
+                    done();
                     return;
                 }
                 var now, sql;
@@ -49,9 +50,10 @@
                  // This function n needs documentation.
                     if (err !== null) {
                         console.error('Error:', err);
-                        return;
+                    } else {
+                        console.log('Finished collecting garbage.');
                     }
-                    console.log('Finished collecting garbage.');
+                    done();
                     return;
                 });
                 return;
@@ -68,14 +70,16 @@
 
         get_box_key = function (params, callback) {
          // This function needs documentation.
-            pg.connect(connection_string, function (err, client) {
+            pg.connect(connection_string, function (err, client, done) {
              // This function needs documentation.
                 if (err !== null) {
+                    done();
                     return callback(err, undefined);
                 }
                 var x = 'SELECT body FROM avars WHERE box_key = $1';
                 client.query(x, [params.join('&')], function (err, results) {
                  // This function needs documentation.
+                    done();
                     if (err !== null) {
                         return callback(err, undefined);
                     }
@@ -91,14 +95,16 @@
 
         get_box_status = function (params, callback) {
          // This function needs documentation.
-            pg.connect(connection_string, function (err, client) {
+            pg.connect(connection_string, function (err, client, done) {
              // This function needs documentation.
                 if (err !== null) {
+                    done();
                     return callback(err, undefined);
                 }
                 var x = 'SELECT key FROM avars WHERE box_status = $1';
                 client.query(x, [params.join('&')], function (err, results) {
                  // This function needs documentation.
+                    done();
                     if (err !== null) {
                         return callback(err, undefined);
                     }
@@ -115,9 +121,10 @@
 
         post_box_key = function (params, callback) {
          // This function needs documentation.
-            pg.connect(connection_string, function (err, client) {
+            pg.connect(connection_string, function (err, client, done) {
              // This function needs documentation.
                 if (err !== null) {
+                    done();
                     return callback(err, undefined);
                 }
                 var args, sql;
@@ -138,16 +145,21 @@
                     ];
                     sql = 'SELECT upsert_avar($1, $2, $3)';
                 }
-                client.query(sql, args, callback);
+                client.query(sql, args, function (err, results) {
+                 // This function needs documentation.
+                    done();
+                    return callback(err, results);
+                });
                 return;
             });
             return;
         };
 
         if (cluster.isMaster) {
-            pg.connect(connection_string, function (err, client) {
+            pg.connect(connection_string, function (err, client, done) {
              // This function needs documentation.
                 if (err !== null) {
+                    done();
                     throw err;
                 }
                 var lines;
@@ -213,6 +225,7 @@
                 ];
                 client.query(lines.join('\n'), function (err, results) {
                  // This function needs documentation.
+                    done();
                     if (err !== null) {
                         throw err;
                     }

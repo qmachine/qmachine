@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 03 Apr 2013
+//                                                  ~~ last updated 05 Apr 2013
 
 (function () {
     'use strict';
@@ -23,7 +23,7 @@
         launch, length, listen, log, match, max_fu_size, max_http_sockets,
         maxSockets, max_upload_size, method, mime_type, on, parse, pattern,
         persistent_storage, pid, port, post_box_key, push, remoteAddress,
-        replace, slice, sqlite, static_content, status, stringify, test,
+        replace, slice, split, sqlite, static_content, status, stringify, test,
         timestamp, toGMTString, toString, trafficlog_storage, unroll, url,
         warn, worker_procs, writeHead, 'x-forwarded-for'
     */
