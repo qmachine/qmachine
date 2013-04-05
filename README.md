@@ -41,8 +41,14 @@ I have done some preliminary investigation into app integration for
 I have now submitted the first of several manuscripts I have been preparing for
 peer-reviewed academic journals. These reports will explain some of the design
 decisions behind QM, demonstrate the use of QM in scientific workflows, and
-elaborate on the future directions of QM. As in all my projects, the best
-documentation is contained within the source code as comments. I have also
-recently published a few screencasts on [YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg), one of which has been featured on
-the [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/) and [HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html) news sites.
+elaborate on the future directions of QM. My labmates have finally convinced me
+that my "documentation as comments in the source code" approach is inadequate,
+and thus I have begun a [wiki](https://github.com/wilkinson/qmachine/wiki). I
+have also recently published a few screencasts on
+[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg),
+one of which has been featured on the
+[insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
+and
+[HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html)
+news sites.
 
