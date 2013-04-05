@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 28 Feb 2013
+//                                                  ~~ last updated 05 Apr 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -702,7 +702,7 @@
             callback = 'callback=QM.shelf.temp' + y.key;
             format = 'format=json';
             query = 'q=' +
-                'USE "http://wilkinson.github.com/qmachine/qm.proxy.xml";' +
+                'USE "http://wilkinson.github.io/qmachine/qm.proxy.xml";' +
                 'SELECT * FROM qm.proxy WHERE url="' + y.val.url + '";';
             temp = lib(base + [callback, diag, format, query].join('&'));
             temp.on('error', evt.fail);

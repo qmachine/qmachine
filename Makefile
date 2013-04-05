@@ -6,7 +6,7 @@
 #   on Mac OS X 10.8 "Mountain Lion" with your own local sandbox, you will need
 #   to install ...
 #
-#       ... Homebrew using directions from http://mxcl.github.com/homebrew/.
+#       ... Homebrew using directions from http://mxcl.github.io/homebrew/.
 #
 #       ... a minimal set of native dependencies by typing
 #           $ brew install imagemagick node
@@ -65,7 +65,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 02 Apr 2013
+#                                                   ~~ last updated 05 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
