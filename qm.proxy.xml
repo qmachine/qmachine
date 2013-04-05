@@ -5,15 +5,15 @@
     <description>Returns plain-text resources from URIs</description>
     <sampleQuery description="Bitbucket"><![CDATA[
       USE "https://bitbucket.org/wilkinson/qmachine/raw/gh-pages/qm.proxy.xml";
-      SELECT * FROM qm.proxy WHERE url="https://qmachine.org/q.js";
+      SELECT * FROM qm.proxy WHERE url="https://www.qmachine.org/q.js";
     ]]></sampleQuery>
     <sampleQuery description="GitHub"><![CDATA[
-      USE "http://wilkinson.github.com/qmachine/qm.proxy.xml" AS qm.proxy;
-      SELECT * FROM qm.proxy WHERE url="https://qmachine.org/q.js";
+      USE "http://wilkinson.github.io/qmachine/qm.proxy.xml" AS qm.proxy;
+      SELECT * FROM qm.proxy WHERE url="https://www.qmachine.org/q.js";
     ]]></sampleQuery>
     <sampleQuery description="Google Code"><![CDATA[
       USE "https://qmachine.googlecode.com/git-history/gh-pages/qm.proxy.xml";
-      SELECT * FROM qm.proxy WHERE url="https://qmachine.org/q.js";
+      SELECT * FROM qm.proxy WHERE url="https://www.qmachine.org/q.js";
     ]]></sampleQuery>
   </meta>
   <bindings>
