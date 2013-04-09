@@ -2,23 +2,23 @@
 
 //- couch-api-ddoc.js ~~
 //                                                      ~~ (c) SRW, 23 Oct 2012
-//                                                  ~~ last updated 01 Apr 2013
+//                                                  ~~ last updated 09 Apr 2013
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*global exports: false, emit: false, getRow: false, send: false */
+    /*global exports: false, getRow: false, send: false */
 
     /*jshint maxparams: 2, quotmark: single, strict: true */
 
-    /*jslint indent: 4, maxlen: 80, nomen: true */
+    /*jslint couch: true, indent: 4, maxlen: 80, nomen: true */
 
     /*properties
-        'Content-Type', _deleted, _id, _rev, 'as-array', body, box_status,
-        data, exp_date, hasOwnProperty, headers, jobs, key, lists, map,
-        outdated, parse, shows, split, stringify, updates, upsert, value, views
+        'as-array', body, box_status, 'Content-Type', data, _deleted, exp_date,
+        hasOwnProperty, headers, _id, jobs, key, lists, map, outdated, parse,
+        _rev, shows, split, stringify, updates, upsert, value, views
     */
 
  // Out-of-scope definitions
