@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 05 Apr 2013
+#                                                   ~~ last updated 09 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -321,26 +321,26 @@ $(CACHE_DIR)/barebones.html:                                                \
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/i9Q5y")
+	@   $(call download-url, "http://goo.gl/PtIx8")
 
 $(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/nJdWx")
+	@   $(call download-url, "http://goo.gl/cqWhu")
 
 $(CACHE_DIR)/bootstrap-responsive.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/ScCCo")
+	@   $(call download-url, "http://goo.gl/u9uys")
 
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://git.io/2OUH7Q")
+	@   $(call download-url, "http://goo.gl/2RqIb")
 
 $(CACHE_DIR)/homepage.js:                                                   \
-    $(CACHE_DIR)/jquery-172.js                                              \
+    $(CACHE_DIR)/jquery-191.js                                              \
     $(CACHE_DIR)/bootstrap.js                                               \
     $(CACHE_DIR)/main.js                                                    \
     |   $(CACHE_DIR)
 	@   $(call replace-url-macros, $^, $@)
 
 $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/4p5Is")
+	@   $(call download-url, "http://goo.gl/9g5f4")
 
 $(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
@@ -350,6 +350,9 @@ $(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 
 $(CACHE_DIR)/jquery-172.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/rvrUK")
+
+$(CACHE_DIR)/jquery-191.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/tiSzW")
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/6pCWog")
