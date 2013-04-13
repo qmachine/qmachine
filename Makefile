@@ -168,6 +168,7 @@ browser-client:                                                             \
         homepage.js                                                         \
         html5shiv.js                                                        \
         icon-128.png                                                        \
+        icon-135.png                                                        \
         index.html                                                          \
         manifest.webapp                                                     \
         q.js                                                                \
