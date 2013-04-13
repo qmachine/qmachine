@@ -4,16 +4,32 @@
 #                                                       ~~ (c) SRW, 12 Apr 2013
 #                                                   ~~ last updated 13 Apr 2013
 
-Gem::Specification.new do |s|
-    s.name          =   %q{qm}
-    s.version       =   %q{0.9.9}
-    s.date          =   %q{2013-04-13}
-    s.authors       =   %q{Sean Wilkinson}
-    s.email         =   %q{sean@mathbiol.org}
-    s.summary       =   %q{The World's Most Relaxed Supercomputer}
-    s.homepage      =   %q{https://www.qmachine.org}
-    s.description   =   %q{This is a [buggy?] port of QMachine from Node.js.}
-    s.files         =   %q{lib/qm.rb}
+Gem::Specification.new do |spec|
+
+    spec.author = 'Sean Wilkinson'
+
+    spec.date = Time.now
+
+    spec.description = 'This is a *very incomplete* port of QMachine.'
+
+    spec.email = 'sean@mathbiol.org'
+
+    spec.extra_rdoc_files = [
+        'README.md'
+    ]
+
+    spec.files = [
+        'lib/qm.rb'
+    ]
+
+    spec.homepage = 'https://www.qmachine.org'
+
+    spec.name = 'qm'
+
+    spec.summary = %q{The World's Most Relaxed Supercomputer}
+
+    spec.version = '0.9.9'
+
 end
 
 #-  vim:set syntax=ruby:

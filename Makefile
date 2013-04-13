@@ -209,7 +209,7 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
             $(NPM) shrinkwrap                                           ;   \
             $(call hilite, 'Created $@.')
 
-ruby-gem: $(BUILD_DIR)/ruby-gem/
+ruby-gem: $(BUILD_DIR)/ruby-gem/README.md
 	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(GEM) build qm.gemspec
 
@@ -298,6 +298,9 @@ $(BUILD_DIR)/npm-package/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-package
 
 $(BUILD_DIR)/ruby-gem: | $(BUILD_DIR)
 	@   $(CP) $(SRC_DIR)/ruby-gem/ $@
+
+$(BUILD_DIR)/ruby-gem/README.md: | $(BUILD_DIR)/ruby-gem/
+	@   $(CP) $(PROJ_ROOT)/README.md $@
 
 $(BUILD_DIR)/web-service: | $(BUILD_DIR)
 	@   $(call make-directory, $@)
