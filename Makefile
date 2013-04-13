@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 09 Apr 2013
+#                                                   ~~ last updated 13 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -143,7 +143,8 @@ reset:
 
 ###
 
-.PHONY: browser-client chrome-hosted-app local-sandbox npm-package web-service
+.PHONY: browser-client chrome-hosted-app local-sandbox npm-package ruby-gem
+.PHONY: web-service
 
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
@@ -207,6 +208,10 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
             $(NPM) install                                              ;   \
             $(NPM) shrinkwrap                                           ;   \
             $(call hilite, 'Created $@.')
+
+ruby-gem: $(BUILD_DIR)/ruby-gem/
+	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \
+            $(GEM) build qm.gemspec
 
 web-service:                                                                \
     $(addprefix $(BUILD_DIR)/web-service/,                                  \
@@ -290,6 +295,9 @@ $(BUILD_DIR)/npm-package: $(SRC_DIR)/npm-package | $(BUILD_DIR)
 
 $(BUILD_DIR)/npm-package/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-package
 	@   $(CP) $< $@
+
+$(BUILD_DIR)/ruby-gem: | $(BUILD_DIR)
+	@   $(CP) $(SRC_DIR)/ruby-gem/ $@
 
 $(BUILD_DIR)/web-service: | $(BUILD_DIR)
 	@   $(call make-directory, $@)
