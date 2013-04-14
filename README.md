@@ -43,8 +43,8 @@ peer-reviewed academic journals. These reports will explain some of the design
 decisions behind QM, demonstrate the use of QM in scientific workflows, and
 elaborate on the future directions of QM. My labmates have finally convinced me
 that my "documentation as comments in the source code" approach is inadequate,
-and thus I have begun a [wiki](https://github.com/wilkinson/qmachine/wiki). I
-have also recently published a few screencasts on
+and thus I have begun a [wiki](https://wiki.qmachine.org). I have also recently
+published a few screencasts on
 [YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg),
 one of which has been featured on the
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
