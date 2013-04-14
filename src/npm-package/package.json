@@ -13,7 +13,7 @@
         "node": ">= 0.8.x",
         "npm": ">= 1.1.2"
     },
-    "homepage": "http://wilkinson.github.io/qmachine/",
+    "homepage": "https://www.qmachine.org/",
     "main": "lib/main.js",
     "name": "qm",
     "optionalDependencies": {
