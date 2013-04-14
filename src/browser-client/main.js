@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 29 Jan 2013
+//                                                  ~~ last updated 14 Apr 2013
 
 (function () {
     'use strict';
@@ -200,27 +200,6 @@
         });
         return;
     });
-
- // NOTE: This snippet successfully adds a <link> element to <head> so that
- // the splash screens work correctly for iOS. I'm still debating about the
- // advantages and disadvantages to doing it dynamically with JS vs. static
- // in the HTML itself. Either way, there's some good information about the
- // topic available online at
- //
- //     https://gist.github.com/472519
- //     https://gist.github.com/2222823
- //
-
- /*
-    (function () {
-        var link = document.createElement('link');
-        link.href = 'apple-touch-startup-image-640x920.png';
-        link.rel = 'apple-touch-startup-image';
-        document.head.appendChild(link);
-        link = null;
-        return;
-    }());
- */
 
  // That's all, folks!
 
