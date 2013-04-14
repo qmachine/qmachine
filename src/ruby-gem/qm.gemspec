@@ -2,7 +2,7 @@
 
 #-  qm.gemspec ~~
 #                                                       ~~ (c) SRW, 12 Apr 2013
-#                                                   ~~ last updated 13 Apr 2013
+#                                                   ~~ last updated 14 Apr 2013
 
 Gem::Specification.new do |spec|
 
@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
 
     spec.summary = %q{The World's Most Relaxed Supercomputer}
 
-    spec.version = '0.9.9'
+    spec.version = '0.9.10'
 
 end
 
