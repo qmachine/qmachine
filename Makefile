@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 13 Apr 2013
+#                                                   ~~ last updated 17 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -117,6 +117,7 @@ clean: reset
             done                                                        ;   \
             $(RM) $(BUILD_DIR)/browser-client/                          ;   \
             $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
+            $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
             $(RM) $(VAR_DIR)
 
