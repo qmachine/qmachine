@@ -2,7 +2,7 @@
 
 #-  qm.rb ~~
 #                                                       ~~ (c) SRW, 12 Apr 2013
-#                                                   ~~ last updated 15 Apr 2013
+#                                                   ~~ last updated 17 Apr 2013
 
 module QM
 
@@ -18,11 +18,9 @@ module QM
         return;
     end
 
-    def self::roll_up(public_html, json_file)
-      # This function needs documentation.
-        puts '(placeholder: `roll_up`)';
-        return;
-    end
+    require './lib/katamari';
+
+    self::KATAMARI = KATAMARI;
 
 end
 

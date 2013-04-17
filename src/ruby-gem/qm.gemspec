@@ -19,7 +19,8 @@ Gem::Specification.new do |spec|
     ]
 
     spec.files = [
-        'lib/qm.rb'
+        'lib/qm.rb',
+        'lib/katamari.rb'
     ]
 
     spec.homepage = 'https://www.qmachine.org'
