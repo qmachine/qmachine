@@ -18,16 +18,18 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 14 Apr 2013
+//                                                  ~~ last updated 19 Apr 2013
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*jslint browser: true, indent: 4, maxlen: 80 */
-
     /*global jQuery: false */
+
+    /*jshint maxparams: 1, quotmark: single, strict: true */
+
+    /*jslint browser: true, indent: 4, maxlen: 80 */
 
     /*properties Q, QM, activeElement, alert, ajax, avar, blur, box, cache,
         call, clearTimeout, console, dataType, document, error, exit, focus,

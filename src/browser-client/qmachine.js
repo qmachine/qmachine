@@ -2,12 +2,14 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 05 Apr 2013
+//                                                  ~~ last updated 19 Apr 2013
 
 (function (global, sandbox) {
     'use strict';
 
  // Pragmas
+
+    /*jshint maxparams: 5, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80 */
 

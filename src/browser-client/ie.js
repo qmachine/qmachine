@@ -11,12 +11,14 @@
 //  _why_. The <script> tags don't even support the `onload` attribute! Argh.
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 17 Jan 2013
+//                                                  ~~ last updated 19 Apr 2013
 
 (function () {
     'use strict';
 
  // Pragmas
+
+    /*jshint maxparams: 1, quotmark: single, strict: true */
 
     /*jslint browser: true, indent: 4, maxlen: 80 */
 
