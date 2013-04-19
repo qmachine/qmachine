@@ -4,7 +4,7 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": "0.9.10"
+        "qm": "0.9.11"
     },
     "engines": {
         "node": "0.8.x",
