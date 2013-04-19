@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 17 Apr 2013
+#                                                   ~~ last updated 18 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -191,7 +191,7 @@ local-sandbox:
 	@   $(MAKE)                                                         \
                 MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
                 QM_API_STRING=$(strip $(QM_API_LOC))                        \
-                QM_WWW_STRING='$(VAR_DIR)/nodejs/katamari.json'             \
+                QM_WWW_STRING='"$(strip $(VAR_DIR)/nodejs/katamari.json)"'  \
                     browser-client                                          \
                     $(VAR_DIR)/com.QM.nodejs.plist                          \
                     $(VAR_DIR)/nodejs/katamari.json                         \
