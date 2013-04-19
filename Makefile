@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 18 Apr 2013
+#                                                   ~~ last updated 19 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -559,6 +559,16 @@ $(ICONS_DIR)/logo.png: | $(ICONS_DIR)
                 -transparent white                                          \
                 -transparent-color '#929292'                                \
                 -quality 100                                                \
+            )
+
+$(ICONS_DIR)/programmable-web.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, , $<,                               \
+                -density 96                                                 \
+                -background none                                            \
+                -resize 250x250                                             \
+                -quality 100                                                \
+                -gravity center                                             \
+                -extent 300x250                                             \
             )
 
 $(ICONS_DIR)/qr.png: | $(ICONS_DIR)
