@@ -255,7 +255,13 @@
     create_iframe = function (url) {
      // This function needs documentation.
         var y = avar();
-        // ...
+        y.Q(function (evt) {
+         // This function needs documentation.
+            $('<iframe />', {
+                src: url
+            }).appendTo('body');
+            return evt.exit();
+        });
         return y;
     };
 
@@ -505,7 +511,7 @@
 
     jobs = function (box) {
      // This function retrieves a list of tasks that need to be executed.
-        var y = avar();
+        var y = avar({val: []});
         // ...
         return y;
     };

@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 19 Apr 2013
+#                                                   ~~ last updated 24 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -149,6 +149,8 @@ reset:
 
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
+        ajax.html                                                           \
+        ajax.js                                                             \
         apple-touch-icon-57x57.png                                          \
         apple-touch-icon-72x72.png                                          \
         apple-touch-icon-114x114.png                                        \
@@ -165,6 +167,8 @@ browser-client:                                                             \
         coffeescript.js                                                     \
         favicon.ico                                                         \
         fluidicon.png                                                       \
+        gft.html                                                            \
+        gft.js                                                              \
         giant-favicon.ico                                                   \
         homepage.js                                                         \
         html5shiv.js                                                        \
@@ -328,9 +332,7 @@ $(BUILD_DIR)/web-service/%: $(SRC_DIR)/web-service/% | $(BUILD_DIR)/web-service
 $(CACHE_DIR):
 	@   $(call make-directory, $@)
 
-$(CACHE_DIR)/barebones.html:                                                \
-    $(SRC_DIR)/browser-client/barebones.html                                \
-    |   $(CACHE_DIR)
+$(CACHE_DIR)/ajax.js: $(SRC_DIR)/browser-client/ajax.js | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
@@ -345,6 +347,9 @@ $(CACHE_DIR)/bootstrap-responsive.css: | $(CACHE_DIR)
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/2RqIb")
 
+$(CACHE_DIR)/gft.js: $(SRC_DIR)/browser-client/gft.js | $(CACHE_DIR)
+	@   $(call replace-url-macros, $<, $@)
+
 $(CACHE_DIR)/homepage.js:                                                   \
     $(CACHE_DIR)/jquery-191.js                                              \
     $(CACHE_DIR)/bootstrap.js                                               \
@@ -356,9 +361,6 @@ $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/9g5f4")
 
 $(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
-	@   $(call replace-url-macros, $<, $@)
-
-$(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/jquery-172.js: | $(CACHE_DIR)
@@ -407,6 +409,9 @@ $(CACHE_DIR)/style-min.css:                                                 \
     $(CACHE_DIR)/bootstrap-responsive.css                                   \
     | $(CACHE_DIR)
 	@   $(call minify-css, $^, $@)
+
+$(CACHE_DIR)/%.html: $(SRC_DIR)/browser-client/%.html | $(CACHE_DIR)
+	@   $(call replace-url-macros, $<, $@)
 
 $(ICONS_DIR):
 	@   $(call make-directory, $@)
