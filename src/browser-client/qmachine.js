@@ -22,20 +22,21 @@
         XMLHttpRequest, '__defineGetter__', '__defineSetter__', a,
         addEventListener, adsafe, anon, appendChild, apply, atob, attachEvent,
         avar, b, bitwise, body, box, browser, btoa, by, call, can_run_remotely,
-        cap, charAt, charCodeAt, comm, configurable, console, constructor,
-        contentWindow, continue, createElement, css, data, debug, def,
-        defineProperty, detachEvent, devel, diagnostics, display, document,
-        done, enumerable, env, epitaph, eqeq, error, errors, es5, eval, evil,
-        exemptions, exit, f, fail, floor, forin, fragment, fromCharCode, get,
-        getElementsByTagName, global, hasOwnProperty, head, host, ignoreCase,
-        importScripts, indexOf, join, key, length, lib, load_data, load_script,
-        location, log, map, mapreduce, method, multiline, navigator, newcap,
-        node, nomen, now, on, onLine, onload, onreadystatechange, open,
-        parentElement, parse, passfail, plusplus, ply, postMessage, predef,
-        properties, protocol, prototype, push, puts, query, random, readyState,
-        reason, recent, reduce, regexp, removeChild, removeEventListener,
-        replace, responseText, result, results, revive, rhino, run_remotely,
-        safe, send, set, setTimeout, shelf, shift, slice, sloppy, source, src,
+        cap, charAt, charCodeAt, client_id, comm, configurable, console,
+        constructor, contentWindow, continue, createElement, css, data, debug,
+        def, defineProperty, detachEvent, devel, diagnostics, display,
+        document, done, enumerable, env, epitaph, eqeq, error, errors, es5,
+        eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
+        fromCharCode, get, getElementsByTagName, global, hasOwnProperty, head,
+        host, ignoreCase, importScripts, indexOf, join, key, length, lib,
+        load_data, load_script, location, log, map, mapreduce, method,
+        multiline, navigator, newcap, node, nomen, now, on, onLine, onload,
+        onreadystatechange, open, parentElement, parse, passfail, plusplus,
+        ply, postMessage, predef, properties, protocol, prototype, push, puts,
+        query, random, readyState, reason, recent, redirect_uri, reduce,
+        regexp, removeChild, removeEventListener, replace, responseText,
+        response_type, result, results, revive, rhino, run_remotely, safe,
+        scope, send, set, setTimeout, shelf, shift, slice, sloppy, source, src,
         status, stay, stringify, stupid, style, sub, submit, test, time,
         toJSON, toSource, toString, todo, undef, unparam, url, val, value,
         valueOf, vars, via, visibility, volunteer, when, white, window,
@@ -57,11 +58,11 @@
  // Declarations
 
     var ajax, atob, AVar, avar, btoa, can_run_remotely, convert_to_js, copy,
-        deserialize, defineProperty, in_a_browser, in_a_WebWorker, is_closed,
-        is_Function, is_RegExp, is_String, jobs, lib, load_data, load_script,
-        map, mapreduce, ply, puts, read, recent, reduce, revive, run_remotely,
-        serialize, state, submit, update_local, update_remote, volunteer, when,
-        write;
+        create_iframe, deserialize, defineProperty, in_a_browser,
+        in_a_WebWorker, is_closed, is_Function, is_RegExp, is_String, jobs,
+        json2form, lib, load_data, load_script, map, mapreduce, ply, puts,
+        read, recent, reduce, revive, run_remotely, serialize, state, submit,
+        update_local, update_remote, volunteer, when, write;
 
  // Definitions
 
@@ -248,6 +249,13 @@
         if (is_Function(comm)) {
             y.comm = comm;
         }
+        return y;
+    };
+
+    create_iframe = function (url) {
+     // This function needs documentation.
+        var y = avar();
+        // ...
         return y;
     };
 
@@ -500,6 +508,18 @@
         var y = avar();
         // ...
         return y;
+    };
+
+    json2form = function (obj) {
+     // This function needs documentation.
+        var key, y;
+        y = [];
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                y.push(key + '=' + obj[key]);
+            }
+        }
+        return y.join('&');
     };
 
     lib = function (url) {
@@ -1749,9 +1769,23 @@
 
  // Invocations
 
-    Object.prototype.Q.def({
-        can_run_remotely:   can_run_remotely,
-        run_remotely:       run_remotely
+    create_iframe('https://accounts.google.com/o/oauth2/auth?' + json2form({
+        client_id: '780123144915-9edrbl92r7c7of47f4umg7kkjbba3tu0.' +
+            'apps.googleusercontent.com',
+        redirect_uri: 'QM_WWW_URL/gft.html',
+        scope: 'https://www.googleapis.com/auth/fusiontables',
+        response_type: 'token'
+    })).Q(function (evt) {
+     // This function needs documentation.
+        Object.prototype.Q.def({
+            can_run_remotely:   can_run_remotely,
+            run_remotely:       run_remotely
+        });
+        return evt.exit();
+    }).on('error', function (message) {
+     // This function needs documentation.
+        puts('Error:', message);
+        return;
     });
 
  // That's all, folks!
