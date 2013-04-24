@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 19 Apr 2013
+//                                                  ~~ last updated 23 Apr 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -37,6 +37,8 @@
         valueOf, vars, via, visibility, volunteer, when, white, window,
         windows, withCredentials, writable, x, y
     */
+
+ // Prerequisites
 
     if (global.hasOwnProperty('QM')) {
      // Exit early if QMachine is already present.
