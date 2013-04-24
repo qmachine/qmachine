@@ -1,9 +1,9 @@
 //- JavaScript source code
 
-//- xdoc.js ~~
+//- ajax.js ~~
 //
-//  This version of QMachine will embed the communications layer in an iframe
-//  using Cross-Document Messaging.
+//  This is an AJAX communications layer for QMachine's API (version 1), as
+//  designed for cross-document messaging.
 //
 //                                                      ~~ (c) SRW, 24 Apr 2013
 //                                                  ~~ last updated 24 Apr 2013

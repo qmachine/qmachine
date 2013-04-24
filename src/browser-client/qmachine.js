@@ -1,8 +1,12 @@
 //- JavaScript source code
 
 //- qmachine.js ~~
+//
+//  This version of QMachine will embed the communications layer in an iframe
+//  using Cross-Document Messaging.
+//
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 23 Apr 2013
+//                                                  ~~ last updated 24 Apr 2013
 
 (function (global, sandbox) {
     'use strict';
