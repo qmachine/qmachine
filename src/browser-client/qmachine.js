@@ -58,79 +58,17 @@
 
     var ajax, atob, AVar, avar, btoa, can_run_remotely, convert_to_js, copy,
         deserialize, defineProperty, in_a_browser, in_a_WebWorker, is_closed,
-        is_online, is_Function, is_RegExp, is_String, jobs, lib, load_data,
-        load_script, map, mapreduce, mothership, origin, ply, puts, read,
-        recent, reduce, revive, run_remotely, serialize, state, submit,
-        update_local, update_remote, volunteer, when, write;
+        is_Function, is_RegExp, is_String, jobs, lib, load_data, load_script,
+        map, mapreduce, ply, puts, read, recent, reduce, revive, run_remotely,
+        serialize, state, submit, update_local, update_remote, volunteer, when,
+        write;
 
  // Definitions
 
     ajax = function (method, url, body) {
      // This function needs documentation.
         var y = avar();
-        y.Q(function (evt) {
-         // This function needs documentation of a more general form ...
-            if ((body !== undefined) && (body.length > 1048576)) {
-             // If it's certain to fail, why not just fail preemptively?
-                return evt.fail('Upload size is too large.');
-            }
-            if (recent(method, url)) {
-             // If we have already issued this request recently, we need to
-             // wait a minute before doing it again to avoid hammering the
-             // server needlessly.
-                return evt.stay('Enforcing refractory period ...');
-            }
-            var request;
-         // As of Chrome 21 (and maybe sooner than that), Web Workers do have
-         // the `XMLHttpRequest` constructor, but it isn't one of `global`'s
-         // own properties as it is in Firefox 15.01 or Safari 6. In Safari 6,
-         // however, `XMLHttpRequest` has type 'object' rather than 'function',
-         // which makes _zero_ sense to me right now. Thus, my test is _not_
-         // intuitive in the slightest ...
-            if (global.XMLHttpRequest instanceof Object) {
-                request = new global.XMLHttpRequest();
-                if (origin() !== mothership) {
-                 // This is a slightly weaker test than using `hasOwnProperty`,
-                 // but it may work better with Firefox. I'll test in a minute.
-                    if (request.withCredentials === undefined) {
-                        if (global.hasOwnProperty('XDomainRequest')) {
-                            request = new global.XDomainRequest();
-                        } else {
-                            return evt.fail('Browser does not support CORS.');
-                        }
-                    }
-                }
-            } else if (global.hasOwnProperty('ActiveXObject')) {
-                request = new global.ActiveXObject('Microsoft.XMLHTTP');
-            } else {
-                return evt.fail('Browser does not support AJAX.');
-            }
-            request.onreadystatechange = function () {
-             // This function needs documentation.
-                if (request.readyState === 4) {
-                    if (request.status >= 500) {
-                     // These are internal server errors that were occurring
-                     // in early "full-stack" versions of QMachine due to a
-                     // small error in a Monit script. I've left this arm in
-                     // here just in case something silly like that happens
-                     // again so that the client keeps trying to connect if
-                     // the error is due to a temporary snag on the server.
-                        return evt.stay('Internal server error?');
-                    }
-                    y.val = request.responseText;
-                    if (((method === 'GET') && (request.status !== 200)) ||
-                            ((method === 'POST') && (request.status !== 201))) {
-                     // Something else went wrong, and we can't ignore it.
-                        return evt.fail(request.status);
-                    }
-                    return evt.exit();
-                }
-                return;
-            };
-            request.open(method, url, true);
-            request.send(body);
-            return;
-        });
+        // ...
         return y;
     };
 
@@ -250,7 +188,6 @@
                 (task.hasOwnProperty('x'))          &&
                 (is_Function(task.f))               &&
                 (task.x instanceof AVar)            &&
-                (is_online())                       &&
                 (is_closed(task, state.exemptions[task.x.key]) === false));
     };
 
@@ -558,21 +495,11 @@
         return ((typeof x === 'string') || (x instanceof String));
     };
 
-    is_online = function () {
-     // This function returns a boolean. It is not currently necessary, but I
-     // have future plans that will require this function, so I have already
-     // generalized QM in preparation.
-        return (mothership === 'LOCAL_NODE') || global.navigator.onLine;
-    };
-
     jobs = function (box) {
      // This function retrieves a list of tasks that need to be executed.
-        var y = ajax('GET', mothership + '/box/' + box + '?status=waiting');
-        return y.Q(function (evt) {
-         // This function needs documentation.
-            y.val = JSON.parse(y.val);
-            return evt.exit();
-        });
+        var y = avar();
+        // ...
+        return y;
     };
 
     lib = function (url) {
@@ -862,13 +789,6 @@
         return y;
     };
 
-    mothership = 'QM_API_URL';
-
-    origin = function () {
-     // This function needs documentation.
-        return global.location.protocol + '//' + global.location.host;
-    };
-
     ply = function (f) {
      // This function takes advantage of JavaScript's lack of a type system in
      // order to provide a single functional iterator for either synchronous
@@ -973,14 +893,9 @@
 
     read = function (x) {
      // This function needs documentation.
-        var y = ajax('GET', mothership + '/box/' + x.box + '?key=' + x.key);
-        return y.Q(function (evt) {
-         // This function deserializes the string returned as the `val` of
-         // `y` into a temporary variable and then copies its property values
-         // back onto `y`.
-            copy(deserialize(y.val), y);
-            return evt.exit();
-        });
+        var y = avar();
+        // ...
+        return y;
     };
 
     recent = function (method, url) {
@@ -1705,8 +1620,9 @@
      // about the return data because QMachine isn't going to return
      // any data -- the request will either succeed or fail, as
      // indicated by the HTTP status code returned. It returns an avar.
-        var url = mothership + '/box/' + x.box + '?key=' + x.key;
-        return ajax('POST', url, JSON.stringify(x));
+        var y = avar();
+        // ...
+        return y;
     };
 
  // Prototype definitions
