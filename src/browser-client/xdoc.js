@@ -13,6 +13,10 @@
 
  // Pragmas
 
+    /*jshint maxparams: 1, quotmark: single, strict: true */
+
+    /*jslint browser: true, devel: true, indent: 4, maxlen: 80 */
+
  // Prerequisites
 
  // Declarations
