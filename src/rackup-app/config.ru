@@ -32,10 +32,6 @@ get '/box/:box' do
             sql
         db.close
 
-        #puts "x: #{x}"
-        #puts "x.class: #{x.class}"
-        #puts "x[0]: #{x[0][0]}"
-
         [
             200,
             {'Content-Type' => 'application/json'},
@@ -43,8 +39,6 @@ get '/box/:box' do
         ]
 
     elsif params[:status] then
-
-        puts "#{params[:box]}&#{params[:status]}"
 
         db = SQLite3::Database.open 'qm.db'
         x = db.execute <<-sql
@@ -80,11 +74,7 @@ post '/box/:box' do
 
         db = SQLite3::Database.open 'qm.db'
 
-        puts y
-
         if y['status'] then
-
-            puts "key: #{y['key']}"
 
             db.execute <<-sql
                 INSERT OR REPLACE INTO avars
