@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 23 Apr 2013
+//                                                  ~~ last updated 24 Apr 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -543,9 +543,10 @@
     };
 
     is_RegExp = function (x) {
-     // This function returns `true` if and only if input argument `x` is a
-     // regular expression. I haven't been able to break it yet, but perhaps
-     // someone out there will let me know of a counterexample?
+     // This function *should* return `true` if and only if input argument `x`
+     // is a RegExp. Unfortunately, it returns `true` if and only if it is an
+     // instance of a constructor function named "RegExp", which is *not* the
+     // same thing. I'm not sure yet how to work around this problem ...
         return (Object.prototype.toString.call(x) === '[object RegExp]');
     };
 
