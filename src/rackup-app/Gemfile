@@ -1,0 +1,6 @@
+source 'http://rubygems.org'
+gem 'json'
+gem 'json_pure'
+gem 'sinatra'
+gem 'sqlite3'
+gem 'thin'

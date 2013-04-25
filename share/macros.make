@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 13 Apr 2013
+#                                                   ~~ last updated 25 Apr 2013
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -185,6 +185,7 @@ define timestamp
     printf '#-  %s\n' "`$(DATE)`" >> $(2)
 endef
 
+BUNDLE      :=  $(call contingent, bundle)
 CAT         :=  $(call contingent, gcat cat)
 CD          :=  $(call contingent, cd)
 CLOSURE     :=  $(call contingent, closure-compiler)

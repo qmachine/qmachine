@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 19 Apr 2013
+#                                                   ~~ last updated 25 Apr 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -117,6 +117,7 @@ clean: reset
             done                                                        ;   \
             $(RM) $(BUILD_DIR)/browser-client/                          ;   \
             $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
+            $(RM) $(BUILD_DIR)/rackup-app/                              ;   \
             $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
             $(RM) $(VAR_DIR)
@@ -144,8 +145,8 @@ reset:
 
 ###
 
-.PHONY: browser-client chrome-hosted-app local-sandbox npm-package ruby-gem
-.PHONY: web-service
+.PHONY: browser-client chrome-hosted-app local-sandbox npm-package rackup-app
+.PHONY: ruby-gem web-service
 
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
@@ -210,6 +211,13 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
             $(NPM) install                                              ;   \
             $(NPM) shrinkwrap                                           ;   \
             $(call hilite, 'Created $@.')
+
+rackup-app: | $(BUILD_DIR)/rackup-app/
+	@   $(MAKE) MOTHERSHIP="$(strip $(LOCAL_NODE))" browser-client  ;   \
+            $(CD) $(BUILD_DIR)                                          ;   \
+            $(CP) browser-client rackup-app/public                      ;   \
+            $(CD) rackup-app                                            ;   \
+            $(BUNDLE) exec rackup -s thin
 
 ruby-gem: $(BUILD_DIR)/ruby-gem/README.md
 	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \
@@ -297,6 +305,12 @@ $(BUILD_DIR)/npm-package: $(SRC_DIR)/npm-package | $(BUILD_DIR)
 
 $(BUILD_DIR)/npm-package/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-package
 	@   $(CP) $< $@
+
+$(BUILD_DIR)/rackup-app/: $(SRC_DIR)/rackup-app/ | $(BUILD_DIR)
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/rackup-app/public/: | $(BUILD_DIR)/rackup-app/
+	@   $(call make-directory, $@)
 
 $(BUILD_DIR)/ruby-gem: | $(BUILD_DIR)
 	@   $(CP) $(SRC_DIR)/ruby-gem/ $@
