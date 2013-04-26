@@ -120,6 +120,9 @@ clean: reset
             $(RM) $(BUILD_DIR)/rackup-app/                              ;   \
             $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
+            if [ ! "$$($(LS) -A $(BUILD_DIR))" ]; then                      \
+                $(RM) $(BUILD_DIR)                                      ;   \
+            fi                                                          ;   \
             $(RM) $(VAR_DIR)
 
 clobber: clean
@@ -217,7 +220,8 @@ rackup-app: | $(BUILD_DIR)/rackup-app/
             $(CD) $(BUILD_DIR)                                          ;   \
             $(CP) browser-client rackup-app/public                      ;   \
             $(CD) rackup-app                                            ;   \
-            $(BUNDLE) exec rackup -s thin
+            $(BUNDLE) package                                           ;   \
+            $(BUNDLE) exec rackup
 
 ruby-gem: $(BUILD_DIR)/ruby-gem/README.md
 	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \

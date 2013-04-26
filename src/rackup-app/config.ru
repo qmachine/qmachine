@@ -5,9 +5,10 @@
 #                                                       ~~ (c) SRW, 24 Apr 2013
 #                                                   ~~ last updated 25 Apr 2013
 
-require 'json'
-require 'sqlite3'
-require 'sinatra'
+require 'rubygems'
+require 'bundler'
+
+Bundler.require
 
 configure do
     set :show_exceptions, false
