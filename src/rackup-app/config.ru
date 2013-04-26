@@ -63,7 +63,7 @@ get '/box/:box' do
 end
 
 get '/' do
-    IO.readlines(File.dirname(__FILE__) + '/public/index.html')
+    IO.readlines(File.join(File.dirname(__FILE__), 'public', 'index.html'))
 end
 
 post '/box/:box' do
