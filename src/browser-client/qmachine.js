@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 24 Apr 2013
+//                                                  ~~ last updated 26 Apr 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -31,11 +31,11 @@
         properties, protocol, prototype, push, puts, query, random, readyState,
         reason, recent, reduce, regexp, removeChild, removeEventListener,
         replace, responseText, result, results, revive, rhino, run_remotely,
-        safe, send, set, setTimeout, shelf, shift, slice, sloppy, source, src,
-        status, stay, stringify, stupid, style, sub, submit, test, time,
-        toJSON, toSource, toString, todo, undef, unparam, url, val, value,
-        valueOf, vars, via, visibility, volunteer, when, white, window,
-        windows, withCredentials, writable, x, y
+        safe, send, set, setRequestHeader, setTimeout, shelf, shift, slice,
+        sloppy, source, src, status, stay, stringify, stupid, style, sub,
+        submit, test, time, toJSON, toSource, toString, todo, undef, unparam,
+        url, val, value, valueOf, vars, via, visibility, volunteer, when,
+        white, window, windows, withCredentials, writable, x, y
     */
 
  // Prerequisites
@@ -124,6 +124,15 @@
                 return;
             };
             request.open(method, url, true);
+            if (method === 'POST') {
+             // This code only ever runs as part of an API call. As of v0.9.11,
+             // my Node.js server does not check for this header, but some
+             // frameworks like Express (http://expressjs.com) that parse the
+             // body of the incoming request automatically *do* care. In my
+             // testing, it hasn't messed up CORS or anything, but if things
+             // suddenly stop working, this is going to be my first suspect!
+                request.setRequestHeader('Content-Type', 'application/json');
+            }
             request.send(body);
             return;
         });
