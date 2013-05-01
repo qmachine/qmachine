@@ -5,7 +5,7 @@
     },
     "dependencies": {
         "corser": ">= 1.2.0",
-        "quanah": ">= 0.0.14"
+        "quanah": ">= 0.1.5"
     },
     "description": "The World's Most Relaxed Supercomputer",
     "devDependencies": {},
@@ -24,11 +24,10 @@
         "sqlite3": ">= 2.1.5"
     },
     "private": false,
-    "repositories": [
-        {"type": "git", "url": "https://bitbucket.org/wilkinson/qmachine.git"},
-        {"type": "git", "url": "https://code.google.com/p/qmachine/"},
-        {"type": "git", "url": "https://github.com/wilkinson/qmachine.git"}
-    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wilkinson/qmachine.git"
+    },
     "scripts": {},
-    "version": "0.9.11"
+    "version": "0.9.12"
 }

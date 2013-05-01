@@ -4,7 +4,7 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": "0.9.11"
+        "qm": "0.9.12"
     },
     "engines": {
         "node": "0.8.x",
@@ -14,5 +14,5 @@
     "private": true,
     "readme": "See https://wiki.qmachine.org for more information.",
     "scripts": {},
-    "version": "0.9.11"
+    "version": "0.9.12"
 }
