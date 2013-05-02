@@ -16,7 +16,7 @@
 
  // Pragmas
 
-    /*jshint maxparams: 5, quotmark: single, strict: true */
+    /*jshint maxparams: 2, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
