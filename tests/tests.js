@@ -9,22 +9,26 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 02 Feb 2013
+//                                                  ~~ last updated 02 May 2013
 
 (function () {
     'use strict';
 
  // Pragmas
 
+    /*jshint maxparams: 5, quotmark: single, strict: true */
+
     /*jslint indent: 4, maxlen: 80, node: true */
+
+ // Prerequisites
+
+    require('../cache/quanah');
 
  // Declarations
 
-    var Q, exit, mothership, n, queue, register_test, run_test;
+    var exit, mothership, n, queue, register_test, run_test;
 
  // Definitions
-
-    Q = require('../cache/quanah');
 
     exit = function (code) {
      // This function needs documentation.
@@ -71,11 +75,11 @@
             console.error('Error:', JSON.stringify(message, undefined, 4));
             return exit(1);
         };
-        homepage.onResourceReceived = function (response) {
+        homepage.onResourceReceived = function () {
          // This function needs documentation.
             return;
         };
-        homepage.onResourceRequested = function (request) {
+        homepage.onResourceRequested = function () {
          // This function needs documentation.
             //console.log(request.method, request.url);
             return;
