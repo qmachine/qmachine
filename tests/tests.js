@@ -26,7 +26,7 @@
 
  // Declarations
 
-    var exit, mothership, n, queue, register_test, run_test;
+    var exit, mothership, n, queue, register_test, submit, volunteer;
 
  // Definitions
 
@@ -50,10 +50,10 @@
         return;
     };
 
-    run_test = function (y, f) {
+    submit = function (y, f) {
      // This function needs documentation.
         if (n === undefined) {
-            console.log('Running ' + queue.length + ' tests ...');
+            console.log('Submitting ' + queue.length + ' tests ...');
             n = queue.length;
         }
         var homepage = require('webpage').create();
@@ -72,7 +72,8 @@
         };
         homepage.onError = function (message) {
          // This function needs documentation.
-            console.error('Error:', JSON.stringify(message, undefined, 4));
+            var y = JSON.stringify(message, undefined, 4);
+            console.error('Submitter Error:', y);
             return exit(1);
         };
         homepage.onResourceReceived = function () {
@@ -91,6 +92,41 @@
                 return exit(1);
             }
             console.log('Running test ...');
+            homepage.evaluate(f);
+            return;
+        });
+        return;
+    };
+
+    volunteer = function (f) {
+     // This function needs documentation.
+        var homepage = require('webpage').create();
+        homepage.onConsoleMessage = function (message) {
+         // This function needs documentation.
+            console.log(message);
+            return;
+        };
+        homepage.onError = function (message) {
+         // This function needs documentation.
+            var y = JSON.stringify(message, undefined, 4);
+            console.error('Volunteer Error:', y);
+            return;
+        };
+        homepage.onResourceReceived = function () {
+         // This function needs documentation.
+            return;
+        };
+        homepage.onResourceRequested = function () {
+         // This function needs documentation.
+            //console.log(request.method, request.url);
+            return;
+        };
+        homepage.open(mothership, function (status) {
+         // This function needs documentation.
+            if (status !== 'success') {
+                console.error('Something went wrong:', status);
+                return exit(1);
+            }
             homepage.evaluate(f);
             return;
         });
@@ -374,17 +410,33 @@
  // Invocations
 
     (function () {
-
+     // This function configures a submitter.
         var i;
-
-        n = queue.length;
-
-        for (i = 0; i < n; i += 1) {
-            run_test(queue[i].y, queue[i].f);
+        for (i = 0, n = queue.length; i < n; i += 1) {
+            submit(queue[i].y, queue[i].f);
         }
-
         return;
+    }());
 
+    (function () {
+     // This function configures a volunteer.
+        volunteer(function f() {
+         // This function runs inside the volunteer context :-)
+            if (window.hasOwnProperty('jQuery') === false) {
+             // We will assume that jQuery will eventually load.
+                setTimeout(f, 100);
+                return;
+            }
+            if (window.hasOwnProperty('QM') === false) {
+             // We will also assume that QMachine will eventually load.
+                setTimeout(f, 100);
+                return;
+            }
+            window.QM.box = 'sean';
+            window.$('#QM-volunteer-input').click();
+            return;
+        });
+        return;
     }());
 
  // That's all, folks!
