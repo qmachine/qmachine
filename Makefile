@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 25 Apr 2013
+#                                                   ~~ last updated 04 May 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -117,7 +117,7 @@ clean: reset
             done                                                        ;   \
             $(RM) $(BUILD_DIR)/browser-client/                          ;   \
             $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
-            $(RM) $(BUILD_DIR)/rackup-app/                              ;   \
+            $(RM) $(BUILD_DIR)/rack-app/                                ;   \
             $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
             if [ ! "$$($(LS) -A $(BUILD_DIR))" ]; then                      \
@@ -148,7 +148,7 @@ reset:
 
 ###
 
-.PHONY: browser-client chrome-hosted-app local-sandbox npm-package rackup-app
+.PHONY: browser-client chrome-hosted-app local-sandbox npm-package rack-app
 .PHONY: ruby-gem web-service
 
 browser-client:                                                             \
@@ -215,11 +215,11 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
             $(NPM) shrinkwrap                                           ;   \
             $(call hilite, 'Created $@.')
 
-rackup-app: | $(BUILD_DIR)/rackup-app/
+rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) MOTHERSHIP="$(strip $(LOCAL_NODE))" browser-client  ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
-            $(CP) browser-client rackup-app/public                      ;   \
-            $(CD) rackup-app                                            ;   \
+            $(CP) browser-client rack-app/public                        ;   \
+            $(CD) rack-app                                              ;   \
             $(BUNDLE) package                                           ;   \
             $(BUNDLE) exec rackup
 
@@ -310,10 +310,10 @@ $(BUILD_DIR)/npm-package: $(SRC_DIR)/npm-package | $(BUILD_DIR)
 $(BUILD_DIR)/npm-package/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-package
 	@   $(CP) $< $@
 
-$(BUILD_DIR)/rackup-app/: $(SRC_DIR)/rackup-app/ | $(BUILD_DIR)
+$(BUILD_DIR)/rack-app/: $(SRC_DIR)/rack-app/ | $(BUILD_DIR)
 	@   $(CP) $< $@
 
-$(BUILD_DIR)/rackup-app/public/: | $(BUILD_DIR)/rackup-app/
+$(BUILD_DIR)/rack-app/public/: | $(BUILD_DIR)/rack-app/
 	@   $(call make-directory, $@)
 
 $(BUILD_DIR)/ruby-gem: | $(BUILD_DIR)
