@@ -1,6 +1,14 @@
-source 'http://rubygems.org'
+#-  Ruby dependency management file
+
+#-  Gemfile ~~
+#                                                       ~~ (c) SRW, 25 Apr 2013
+#                                                   ~~ last updated 04 May 2013
+
+source 'https://rubygems.org'
 gem 'json'
 gem 'json_pure'
 gem 'sinatra'
 gem 'sqlite3'
 gem 'thin'
+
+#-  vim:set syntax=ruby:
