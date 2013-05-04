@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 26 Apr 2013
+//                                                  ~~ last updated 04 May 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -568,7 +568,7 @@
      // This function returns a boolean. It is not currently necessary, but I
      // have future plans that will require this function, so I have already
      // generalized QM in preparation.
-        return (mothership === 'LOCAL_NODE') || global.navigator.onLine;
+        return (mothership === 'LOCAL_ADDR') || global.navigator.onLine;
     };
 
     jobs = function (box) {

@@ -75,8 +75,7 @@ TEST_DIR    :=  $(PROJ_ROOT)/tests
 VAR_DIR     :=  $(PROJ_ROOT)/var
 
 HEROKU_APP  :=  qmachine
-LOCAL_COUCH :=  http://localhost:5984
-LOCAL_NODE  :=  http://localhost:8177
+LOCAL_ADDR  :=  http://localhost:8177
 MOTHERSHIP  :=  https://$(strip $(HEROKU_APP)).herokuapp.com
 PLISTS      :=  $(addprefix $(VAR_DIR)/com.QM., nodejs.plist)
 QM_API_LOC  :=  '{"sqlite":"qm.db"}'
@@ -193,7 +192,7 @@ chrome-hosted-app:                                                          \
 
 local-sandbox:
 	@   $(MAKE)                                                         \
-                MOTHERSHIP="$(strip $(LOCAL_NODE))"                         \
+                MOTHERSHIP="$(strip $(LOCAL_ADDR))"                         \
                 QM_API_STRING=$(strip $(QM_API_LOC))                        \
                 QM_WWW_STRING='"$(strip $(VAR_DIR)/nodejs/katamari.json)"'  \
                     browser-client                                          \
@@ -203,8 +202,8 @@ local-sandbox:
                     $(VAR_DIR)/nodejs/server.js                         ;   \
             $(LAUNCHCTL) load -w $(VAR_DIR)/com.QM.nodejs.plist         ;   \
             if [ $$? -eq 0 ]; then                                          \
-                $(call hilite, 'Running on $(strip $(LOCAL_NODE)) ...') ;   \
-                $(call open-in-browser, $(strip $(LOCAL_NODE)))         ;   \
+                $(call hilite, 'Running on $(strip $(LOCAL_ADDR)) ...') ;   \
+                $(call open-in-browser, $(strip $(LOCAL_ADDR)))         ;   \
             else                                                            \
                 $(call alert, 'Service is not running.')                ;   \
             fi
@@ -216,7 +215,7 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
             $(call hilite, 'Created $@.')
 
 rack-app: | $(BUILD_DIR)/rack-app/
-	@   $(MAKE) MOTHERSHIP="$(strip $(LOCAL_NODE))" browser-client  ;   \
+	@   $(MAKE) MOTHERSHIP="$(strip $(LOCAL_ADDR))" browser-client  ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
             $(CP) browser-client rack-app/public                        ;   \
             $(CD) rack-app                                              ;   \
