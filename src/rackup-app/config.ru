@@ -3,7 +3,7 @@
 
 #-  config.ru ~~
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 25 Apr 2013
+#                                                   ~~ last updated 04 May 2013
 
 require 'rubygems'
 require 'bundler'
@@ -51,7 +51,7 @@ get '/box/:box' do
         [
             200,
             {'Content-Type' => 'application/json'},
-            [(x.length == 0) ? '[]' : (x.map {|x|x[0]}).to_json]
+            [(x.length == 0) ? '[]' : (x.map { |x| x[0] }).to_json]
         ]
 
     else
@@ -63,7 +63,7 @@ get '/box/:box' do
 end
 
 get '/' do
-    IO.readlines(File.join(File.dirname(__FILE__), 'public', 'index.html'))
+    send_file(File.join(File.dirname(__FILE__), 'public', 'index.html'))
 end
 
 post '/box/:box' do
