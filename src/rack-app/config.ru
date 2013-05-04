@@ -1,5 +1,5 @@
 #\ -p 8177
-#-  Rackup configuration file
+#-  Rack configuration file
 
 #-  config.ru ~~
 #                                                       ~~ (c) SRW, 24 Apr 2013
@@ -15,50 +15,44 @@ configure do
 end
 
 error do
-    [444, {'Content-Type' => 'text/plain'}, ['']]
+    return [444, {'Content-Type' => 'text/plain'}, ['']]
 end
 
 not_found do
-    [444, {'Content-Type' => 'text/plain'}, ['']]
+    return [444, {'Content-Type' => 'text/plain'}, ['']]
 end
 
 get '/box/:box' do
 
+    if (not params[:key]) and (not params[:status]) then
+        return [444, {'Content-Type' => 'text/plain'}, ['']]
+    end
+
+    db = SQLite3::Database.open 'qm.db'
+
     if params[:key] then
 
-        db = SQLite3::Database.open 'qm.db'
         x = db.execute <<-sql
             SELECT body FROM avars
                 WHERE box_key = '#{params[:box]}&#{params[:key]}'
             sql
-        db.close
 
-        [
-            200,
-            {'Content-Type' => 'application/json'},
-            [(x.length == 0) ? '{}' : x[0][0]]
-        ]
+        y = (x.length == 0) ? '{}' : x[0][0]
 
     elsif params[:status] then
 
-        db = SQLite3::Database.open 'qm.db'
         x = db.execute <<-sql
             SELECT key FROM avars
                 WHERE box_status = '#{params[:box]}&#{params[:status]}'
             sql
-        db.close
 
-        [
-            200,
-            {'Content-Type' => 'application/json'},
-            [(x.length == 0) ? '[]' : (x.map { |x| x[0] }).to_json]
-        ]
-
-    else
-
-        [444, {'Content-Type' => 'text/plain'}, ['']]
+        y = (x.length == 0) ? '[]' : (x.map { |x| x[0] }).to_json
 
     end
+
+    db.close
+
+    return [200, {'Content-Type' => 'application/json'}, [y]]
 
 end
 
@@ -122,8 +116,8 @@ begin
             PRIMARY KEY (box_key)
         )
         sql
-rescue SQLite3::Exception => e
-    puts "Exception occured: #{e}"
+rescue SQLite3::Exception => err
+    puts "Exception occured: #{err}"
 ensure
     db.close if db
 end
