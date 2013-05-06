@@ -18,7 +18,7 @@
 #   though, it serves its purpose -- with only 100 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 04 May 2013
+#                                                   ~~ last updated 06 May 2013
 
 require 'rubygems'
 require 'bundler'
@@ -173,6 +173,6 @@ else
 
 end
 
-Sinatra::Application.run!
+Sinatra::Application.run! unless __FILE__ == $0
 
 #-  vim:set syntax=ruby:
