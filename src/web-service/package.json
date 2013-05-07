@@ -13,6 +13,7 @@
     "name": "web-service",
     "private": true,
     "readme": "See https://wiki.qmachine.org for more information.",
+    "repository": [],
     "scripts": {},
     "version": "0.9.12"
 }
