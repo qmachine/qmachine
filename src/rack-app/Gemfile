@@ -1,14 +1,26 @@
 #-  Ruby dependency management file
 
 #-  Gemfile ~~
+#
+#   Currently, this Rack app is being developed with Ruby 2.0.0-p0 (MRI), and
+#   it doesn't work in JRuby because of the dependence on the 'sqlite3' gem.
+#   There are certainly ways to rectify this "problem", but I don't want to
+#   clutter up the code because it's only meant to be a teaching tool anyway.
+#   JRuby support is certainly on my wishlist, though :-)
+#
+#   For future reference, however, in case I change my mind:
+#
+#       -   http://goo.gl/ImCtC
+#       -   https://github.com/janko-m/sinatra-activerecord
+#
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 04 May 2013
+#                                                   ~~ last updated 08 May 2013
 
 source 'https://rubygems.org'
-gem 'json'
-gem 'json_pure'
+
+gem 'json',     :platform => :ruby
 gem 'sinatra'
-gem 'sqlite3'
-gem 'thin'
+gem 'sqlite3',  :platform => :ruby
+gem 'thin',     :platform => :ruby
 
 #-  vim:set syntax=ruby:
