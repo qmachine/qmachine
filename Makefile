@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 04 May 2013
+#                                                   ~~ last updated 10 May 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -474,17 +474,8 @@ $(ICONS_DIR)/apple-touch-icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -alpha off                                                  \
             )
 
-$(ICONS_DIR)/apple-touch-startup-image-%.png:                               \
-    $(ICONS_DIR)/logo.png                                                   \
-    | $(ICONS_DIR)
-	@   $(call generate-image-from, $<,                                 \
-                    -fill '#EEEEEE'                                         \
-                    -draw 'color 0,0 reset'                                 \
-                    -extent "$*"                                            \
-                    -background '#EEEEEE'                                   \
-                    -alpha remove                                           \
-                    -alpha off                                              \
-            )
+$(ICONS_DIR)/apple-touch-startup-image-%.png: | $(ICONS_DIR)
+	@   $(call generate-image-from, , -size "$*" canvas:'#EEEEEE')
 
 $(ICONS_DIR)/bitbucket.jpg: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, $<,                                 \
