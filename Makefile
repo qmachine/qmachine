@@ -463,14 +463,14 @@ $(ICONS_DIR)/apple-touch-icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 \( +clone                                                   \
                     -channel A -morphology EdgeOut Diamond:10 +channel      \
                     +level-colors white                                     \
-                \) -compose DstOver                                         \
+                \) -compose DstOver -composite                              \
+                canvas:'#929292'                                            \
                 -background none                                            \
                 -density 96                                                 \
                 -resize "$*"                                                \
                 -quality 100                                                \
                 -composite                                                  \
                 -background '#929292'                                       \
-                -alpha remove                                               \
                 -alpha off                                                  \
             )
 
