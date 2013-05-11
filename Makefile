@@ -195,18 +195,16 @@ local-sandbox:
 	@   $(MAKE)                                                         \
                 MOTHERSHIP="$(strip $(LOCAL_ADDR))"                         \
                 QM_API_STRING=$(strip $(QM_API_LOC))                        \
-                QM_WWW_STRING='"$(strip $(VAR_DIR)/nodejs/katamari.json)"'  \
                     web-service                                         ;   \
-            $(CD) $(BUILD_DIR)/                                         ;   \
+            $(CD) $(BUILD_DIR)                                          ;   \
             if [ ! -d local-sandbox/ ]; then                                \
-                $(CP) ./web-service/ ./local-sandbox/                   ;   \
+                $(CP) web-service local-sandbox                         ;   \
             fi                                                          ;   \
-            $(CD) ./local-sandbox/                                      ;   \
+            $(CD) local-sandbox/                                        ;   \
             $(NPM) install                                              ;   \
-            QM_API_STRING=$(QM_API_LOC)                                 ;   \
-            QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  ;   \
-            QM_API_STRING=$${QM_API_STRING} QM_WWW_STRING=$${QM_WWW_STRING} \
-                $(NPM) start
+            QM_API_STRING=$(QM_API_LOC)                                     \
+                QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  \
+                    $(NPM) start
 
 npm-package: $(BUILD_DIR)/npm-package/README.md
 	@   $(CD) $(dir $<)                                             ;   \
@@ -217,7 +215,9 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
 rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) MOTHERSHIP="$(strip $(LOCAL_ADDR))" browser-client  ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
-            $(CP) browser-client rack-app/public                        ;   \
+            if [ ! -d rack-app/public/ ]; then                              \
+                $(CP) browser-client rack-app/public                    ;   \
+            fi                                                          ;   \
             $(CD) rack-app                                              ;   \
             $(BUNDLE) package                                           ;   \
             $(BUNDLE) exec rackup
