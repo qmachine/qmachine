@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 04 May 2013
+#                                                   ~~ last updated 11 May 2013
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -147,7 +147,7 @@ endef
 define open-in-browser
     $(strip $(foreach page, $(1),                                           \
         browser="$(call contingent,                                         \
-            gnome-www-browser gnome-open x-www-browser open)"           ;   \
+            gnome-www-browser gnome-open xdg-open x-www-browser open)"  ;   \
         $(if $(filter http%,$(page)),                                       \
             $${browser} $(page),                                            \
             if [ -f $(page) ]; then                                         \

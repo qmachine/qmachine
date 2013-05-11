@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 10 May 2013
+#                                                   ~~ last updated 11 May 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -477,7 +477,6 @@ $(ICONS_DIR)/apple-touch-startup-image-%.png: | $(ICONS_DIR)
 $(ICONS_DIR)/bitbucket.jpg: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, $<,                                 \
                 -background white                                           \
-                -alpha remove                                               \
                 -alpha off                                                  \
                 -density 96                                                 \
                 -resize 112x112                                             \
@@ -485,7 +484,6 @@ $(ICONS_DIR)/bitbucket.jpg: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -gravity center                                             \
                 -extent 128x128                                             \
                 -background white                                           \
-                -alpha remove                                               \
                 -alpha off                                                  \
             )
 
@@ -495,7 +493,6 @@ $(ICONS_DIR)/dropbox-%.png: $(ICONS_DIR)/icon-%.png | $(ICONS_DIR)
 $(ICONS_DIR)/facebook-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, $<,                                 \
                 -background white                                           \
-                -alpha remove                                               \
                 -alpha off                                                  \
                 -density 96                                                 \
                 -resize "$*"                                                \
@@ -527,7 +524,7 @@ $(ICONS_DIR)/google-apps-header.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -gravity center                                             \
                 -extent 143x59                                              \
                 -background white                                           \
-                -alpha remove                                               \
+                -flatten                                                    \
                 -alpha off                                                  \
             )
 
