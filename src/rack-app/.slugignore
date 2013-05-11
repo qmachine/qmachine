@@ -1,0 +1,11 @@
+#-  Heroku "slug compiler" configuration file
+
+#-  .slugignore ~~
+#
+#   See Heroku's documentation online at
+#       https://devcenter.heroku.com/articles/slug-compiler
+#
+#                                                       ~~ (c) SRW, 11 May 2013
+#                                                   ~~ last updated 11 May 2013
+
+#-  vim:set syntax=gitconfig:
