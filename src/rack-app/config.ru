@@ -15,10 +15,10 @@
 #   think too hard about it. Just enjoy it.
 #
 #   I do plan to merge this program with the Ruby gem in the future. For now,
-#   though, it serves its purpose -- with only 100 lines of source code ;-)
+#   though, it serves its purpose -- with just 97 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 06 May 2013
+#                                                   ~~ last updated 10 May 2013
 
 require 'rubygems'
 require 'bundler'
@@ -29,17 +29,21 @@ configure do
 
   # QMachine options
 
-    set :avar_ttl,              86400
-    set :enable_api_server,     true
-    set :enable_web_server,     true
-    set :persistent_storage,    'qm.db'
-    set :port,                  8177
-    set :public_folder,         'public'
+    set :avar_ttl =>            86400,
+        :enable_api_server =>   true,
+        :enable_web_server =>   true,
+        :hostname =>            'localhost',
+        :persistent_storage =>  'qm.db',
+        :port =>                8177,
+        :public_folder =>       'public'
 
-  # Sinatra options needed by QMachine
+  # Sinatra mappings and options needed by QMachine -- leave these alone ;-)
 
+    set :bind => :hostname, :static => :enable_web_server
     mime_type :appcache, 'text/cache-manifest'
     mime_type :webapp, 'application/x-web-app-manifest+json'
+
+  # See also: http://www.sinatrarb.com/configuration.html
 
 end
 
@@ -153,24 +157,10 @@ if settings.enable_api_server? then
 
 end
 
-if settings.enable_web_server? then
-
-    get '/' do
-      # This route enables a static index page to be served from the public
-      # directory.
-        send_file(File.join(settings.public_folder, 'index.html'))
-    end
-
-else
-
-    get '/*' do
-      # This route terminates all incoming requests with extreme prejudice.
-      # It does not interfere with the API server's routes, even though it's
-      # greedy, because it has been defined later and therefore has lower
-      # precedence.
-        hang_up
-    end
-
+get '/' do
+  # This route enables a static index page to be served from the public folder.
+    hang_up if settings.enable_web_server == false
+    send_file(File.join(settings.public_folder, 'index.html'))
 end
 
 Sinatra::Application.run! unless __FILE__ == $0
