@@ -9,13 +9,14 @@
 #
 #   Of course, there are some caveats. This version succeeds in abbreviating
 #   the original codebase, but it doesn't support all of the original options
-#   yet. The code can also be hard to modify if you're unfamiliar with Sinatra,
-#   because Ruby's scoping rules are very different from JavaScript's, and
-#   Sinatra's DSL makes things even "worse", to be honest. My advice here is,
-#   don't think too hard about it. Just enjoy it.
+#   yet, and it may or may not be vulnerable to SQL injection attacks. The
+#   code can also be hard to modify if you're unfamiliar with Sinatra, because
+#   Ruby's scoping rules are very different from JavaScript's, and Sinatra's
+#   DSL makes things even "worse", to be honest. My advice here is, don't think
+#   too hard about it. Just enjoy it.
 #
 #   I do plan to merge this program with the Ruby gem in the future. For now,
-#   though, it serves its purpose -- with just 99 lines of source code ;-)
+#   though, it serves its purpose -- with just 100 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
 #                                                   ~~ last updated 11 May 2013
@@ -92,7 +93,6 @@ if settings.enable_api_server? then
     get '/box/:box' do
       # This route responds to API calls that "read" from persistent storage,
       # such as when checking for new tasks to run or downloading results.
-        #hang_up unless params.respond_to?(:key) or params.respond_to?(:status)
         hang_up unless (params[:key] or params[:status])
         cross_origin if settings.enable_CORS == true
         box, key, status = params[:box], params[:key], params[:status]
@@ -160,11 +160,14 @@ if settings.enable_api_server? then
 
 end
 
-get '/' do
-  # This route enables a static index page to be served from the public folder,
-  # if and only if QM's web server has been enabled.
-    hang_up if settings.enable_web_server == false
-    send_file(File.join(settings.public_folder, 'index.html'))
+if settings.enable_web_server? then
+
+    get '/' do
+      # This route enables a static index page to be served from the public
+      # folder, if and only if QM's web server has been enabled.
+        send_file(File.join(settings.public_folder, 'index.html'))
+    end
+
 end
 
 Sinatra::Application.run!
