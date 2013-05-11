@@ -116,6 +116,7 @@ clean: reset
             done                                                        ;   \
             $(RM) $(BUILD_DIR)/browser-client/                          ;   \
             $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
+            $(RM) $(BUILD_DIR)/local-sandbox/                           ;   \
             $(RM) $(BUILD_DIR)/rack-app/                                ;   \
             $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
@@ -195,18 +196,16 @@ local-sandbox:
                 MOTHERSHIP="$(strip $(LOCAL_ADDR))"                         \
                 QM_API_STRING=$(strip $(QM_API_LOC))                        \
                 QM_WWW_STRING='"$(strip $(VAR_DIR)/nodejs/katamari.json)"'  \
-                    browser-client                                          \
-                    $(VAR_DIR)/com.QM.nodejs.plist                          \
-                    $(VAR_DIR)/nodejs/katamari.json                         \
-                    $(VAR_DIR)/nodejs/node_modules                          \
-                    $(VAR_DIR)/nodejs/server.js                         ;   \
-            $(LAUNCHCTL) load -w $(VAR_DIR)/com.QM.nodejs.plist         ;   \
-            if [ $$? -eq 0 ]; then                                          \
-                $(call hilite, 'Running on $(strip $(LOCAL_ADDR)) ...') ;   \
-                $(call open-in-browser, $(strip $(LOCAL_ADDR)))         ;   \
-            else                                                            \
-                $(call alert, 'Service is not running.')                ;   \
-            fi
+                    web-service                                         ;   \
+            $(CD) $(BUILD_DIR)/                                         ;   \
+            if [ ! -d local-sandbox/ ]; then                                \
+                $(CP) ./web-service/ ./local-sandbox/                   ;   \
+            fi                                                          ;   \
+            $(CD) ./local-sandbox/                                      ;   \
+            $(NPM) install                                              ;   \
+            QM_API_STRING='{"sqlite":"qm.db"}' \
+                QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  \
+                    $(NPM) start
 
 npm-package: $(BUILD_DIR)/npm-package/README.md
 	@   $(CD) $(dir $<)                                             ;   \
