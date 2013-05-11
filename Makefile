@@ -191,6 +191,12 @@ local-sandbox:
             if [ ! -d local-sandbox/ ]; then                                \
                 $(CP) web-service local-sandbox                         ;   \
             fi                                                          ;   \
+            if [ ! -d local-sandbox/node_modules/ ]; then                   \
+                $(call make-directory, local-sandbox/node_modules/)     ;   \
+            fi                                                          ;   \
+            if [ ! -d local-sandbox/node_modules/qm ]; then                 \
+                $(CP) npm-package local-sandbox/node_modules/qm         ;   \
+            fi                                                          ;   \
             $(CD) local-sandbox/                                        ;   \
             $(NPM) install                                              ;   \
             QM_API_STRING=$(QM_API_LOC)                                     \
