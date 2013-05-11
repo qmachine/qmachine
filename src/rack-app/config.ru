@@ -8,14 +8,14 @@
 #   codebase into a single file that reads like pseudo-code.
 #
 #   Of course, there are some caveats. This version succeeds in abbreviating
-#   the original codebase, but it lacks a few features such as CORS support.
-#   The code can also be hard to modify if you're unfamiliar with Sinatra's
-#   DSL, because Ruby's scoping rules are very different from JavaScript's, and
-#   Sinatra makes things even "worse", to be honest. My advice here is, don't
-#   think too hard about it. Just enjoy it.
+#   the original codebase, but it doesn't support all of the original options
+#   yet. The code can also be hard to modify if you're unfamiliar with Sinatra,
+#   because Ruby's scoping rules are very different from JavaScript's, and
+#   Sinatra's DSL makes things even "worse", to be honest. My advice here is,
+#   don't think too hard about it. Just enjoy it.
 #
 #   I do plan to merge this program with the Ruby gem in the future. For now,
-#   though, it serves its purpose -- with just 97 lines of source code ;-)
+#   though, it serves its purpose -- with just 100 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
 #                                                   ~~ last updated 10 May 2013
@@ -31,6 +31,7 @@ configure do
 
     set :avar_ttl =>            86400,
         :enable_api_server =>   true,
+        :enable_CORS =>         true,
         :enable_web_server =>   true,
         :hostname =>            'localhost',
         :persistent_storage =>  'qm.db',
@@ -39,7 +40,7 @@ configure do
 
   # Sinatra mappings and options needed by QMachine -- leave these alone ;-)
 
-    set :bind => :hostname, :static => :enable_web_server
+    set :bind => :hostname, :run => false, :static => :enable_web_server
     mime_type :appcache, 'text/cache-manifest'
     mime_type :webapp, 'application/x-web-app-manifest+json'
 
@@ -92,6 +93,7 @@ if settings.enable_api_server? then
       # This route responds to API calls that "read" from persistent storage,
       # such as when checking for new tasks to run or downloading results.
         hang_up unless (params[:key] or params[:status])
+        cross_origin if settings.enable_CORS == true
         if params[:key] then
           # This arm runs when a client requests the value of a specific avar.
             x = db_query <<-sql
@@ -114,6 +116,7 @@ if settings.enable_api_server? then
       # This route responds to API calls that "write" to persistent storage,
       # such as when uploading results or submitting new tasks.
         hang_up unless params[:key]
+        cross_origin if settings.enable_CORS == true
         body, ed = [request.body.read, nowplus(settings.avar_ttl)]
         x = JSON.parse(body)
         hang_up unless params[:key] == x['key']
@@ -163,6 +166,6 @@ get '/' do
     send_file(File.join(settings.public_folder, 'index.html'))
 end
 
-Sinatra::Application.run! unless __FILE__ == $0
+Sinatra::Application.run!
 
 #-  vim:set syntax=ruby:

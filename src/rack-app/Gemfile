@@ -14,12 +14,13 @@
 #       -   https://github.com/janko-m/sinatra-activerecord
 #
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 08 May 2013
+#                                                   ~~ last updated 10 May 2013
 
 source 'https://rubygems.org'
 
 gem 'json',     :platform => :ruby
 gem 'sinatra'
+gem 'sinatra-cross_origin'
 gem 'sqlite3',  :platform => :ruby
 gem 'thin',     :platform => :ruby
 
