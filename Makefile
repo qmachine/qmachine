@@ -72,12 +72,10 @@ ICONS_DIR   :=  $(PROJ_ROOT)/icons
 SHARE_DIR   :=  $(PROJ_ROOT)/share
 SRC_DIR     :=  $(PROJ_ROOT)/src
 TEST_DIR    :=  $(PROJ_ROOT)/tests
-VAR_DIR     :=  $(PROJ_ROOT)/var
 
 HEROKU_APP  :=  qmachine
 LOCAL_ADDR  :=  http://localhost:8177
 MOTHERSHIP  :=  https://$(strip $(HEROKU_APP)).herokuapp.com
-PLISTS      :=  $(addprefix $(VAR_DIR)/com.QM., nodejs.plist)
 QM_API_LOC  :=  '{"sqlite":"qm.db"}'
 QM_API_URL  :=  $(MOTHERSHIP)
 QM_WWW_URL  :=  $(MOTHERSHIP)
@@ -109,12 +107,7 @@ check: $(CACHE_DIR)/quanah.js local-sandbox
 	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json $(TEST_DIR)/tests.js
 
 clean: reset
-	@   for each in $(PLISTS); do                                       \
-                if [ -f "$${each}" ]; then                                  \
-                    $(LAUNCHCTL) unload -w $${each} >/dev/null 2>&1     ;   \
-                fi                                                      ;   \
-            done                                                        ;   \
-            $(RM) $(BUILD_DIR)/browser-client/                          ;   \
+	@   $(RM) $(BUILD_DIR)/browser-client/                          ;   \
             $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
             $(RM) $(BUILD_DIR)/local-sandbox/                           ;   \
             $(RM) $(BUILD_DIR)/rack-app/                                ;   \
@@ -122,8 +115,7 @@ clean: reset
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
             if [ ! "$$($(LS) -A $(BUILD_DIR))" ]; then                      \
                 $(RM) $(BUILD_DIR)                                      ;   \
-            fi                                                          ;   \
-            $(RM) $(VAR_DIR)
+            fi
 
 clobber: clean
 	@   $(RM) $(CACHE_DIR)
@@ -591,31 +583,6 @@ $(ICONS_DIR)/stashboard-logo.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -gravity center                                             \
                 -extent 246x182                                             \
             )
-
-$(VAR_DIR):
-	@   $(call make-directory, $@)
-
-$(VAR_DIR)/com.QM.nodejs.plist: $(SHARE_DIR)/config.sh | $(VAR_DIR)/
-	@   NODEJS="$(strip $(NODEJS))"                                     \
-            NODEJS_PLIST="$(strip $@)"                                      \
-            PROJ_ROOT="$(strip $(PROJ_ROOT))"                               \
-            USERNAME="$(strip $(USERNAME))"                                 \
-                $(SHELL) $<
-
-$(VAR_DIR)/nodejs: | $(VAR_DIR)
-	@   $(call make-directory, $@)
-
-$(VAR_DIR)/nodejs/node_modules:                                             \
-    npm-package                                                             \
-    $(VAR_DIR)/nodejs/package.json                                          \
-    | $(VAR_DIR)/nodejs
-	@   $(call make-directory, $@)                                  ;   \
-            $(LN) $(BUILD_DIR)/npm-package $@/qm                        ;   \
-            $(CD) $(VAR_DIR)/nodejs                                     ;   \
-            $(NPM) install
-
-$(VAR_DIR)/nodejs/%: $(BUILD_DIR)/web-service/% | $(VAR_DIR)/nodejs
-	@   $(CP) $< $@
 
 ###
 
