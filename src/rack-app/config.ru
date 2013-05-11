@@ -161,7 +161,8 @@ if settings.enable_api_server? then
 end
 
 get '/' do
-  # This route enables a static index page to be served from the public folder.
+  # This route enables a static index page to be served from the public folder,
+  # if and only if QM's web server has been enabled.
     hang_up if settings.enable_web_server == false
     send_file(File.join(settings.public_folder, 'index.html'))
 end
