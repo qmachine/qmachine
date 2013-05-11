@@ -203,9 +203,10 @@ local-sandbox:
             fi                                                          ;   \
             $(CD) ./local-sandbox/                                      ;   \
             $(NPM) install                                              ;   \
-            QM_API_STRING='{"sqlite":"qm.db"}' \
-                QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  \
-                    $(NPM) start
+            QM_API_STRING=$(QM_API_LOC)                                 ;   \
+            QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  ;   \
+            QM_API_STRING=$${QM_API_STRING} QM_WWW_STRING=$${QM_WWW_STRING} \
+                $(NPM) start
 
 npm-package: $(BUILD_DIR)/npm-package/README.md
 	@   $(CD) $(dir $<)                                             ;   \
