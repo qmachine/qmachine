@@ -15,10 +15,10 @@
 #   don't think too hard about it. Just enjoy it.
 #
 #   I do plan to merge this program with the Ruby gem in the future. For now,
-#   though, it serves its purpose -- with just 100 lines of source code ;-)
+#   though, it serves its purpose -- with just 99 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 10 May 2013
+#                                                   ~~ last updated 11 May 2013
 
 require 'rubygems'
 require 'bundler'
@@ -92,20 +92,20 @@ if settings.enable_api_server? then
     get '/box/:box' do
       # This route responds to API calls that "read" from persistent storage,
       # such as when checking for new tasks to run or downloading results.
+        #hang_up unless params.respond_to?(:key) or params.respond_to?(:status)
         hang_up unless (params[:key] or params[:status])
         cross_origin if settings.enable_CORS == true
+        box, key, status = params[:box], params[:key], params[:status]
         if params[:key] then
           # This arm runs when a client requests the value of a specific avar.
             x = db_query <<-sql
-                SELECT body FROM avars
-                    WHERE box_key = '#{params[:box]}&#{params[:key]}'
+                SELECT body FROM avars WHERE box_key = '#{box}&#{key}'
                 sql
             y = (x.length == 0) ? '{}' : x[0][0]
         elsif params[:status] then
           # This arm runs when a client requests a task queue.
             x = db_query <<-sql
-                SELECT key FROM avars
-                    WHERE box_status = '#{params[:box]}&#{params[:status]}'
+                SELECT key FROM avars WHERE box_status = '#{box}&#{status}'
                 sql
             y = (x.length == 0) ? '[]' : (x.map {|x| x[0]}).to_json
         end
@@ -127,13 +127,13 @@ if settings.enable_api_server? then
                 INSERT OR REPLACE INTO avars
                     (body, box_key, box_status, exp_date, key)
                 VALUES ('#{body}', '#{bk}', '#{bs}', #{ed}, '#{x['key']}')
-            sql
+                sql
         else
           # This arm runs when a client is writing a "regular avar".
             db_query <<-sql
                 INSERT OR REPLACE INTO avars (body, box_key, exp_date)
                 VALUES ('#{body}', '#{bk}', #{ed})
-            sql
+                sql
         end
         [201, {'Content-Type' => 'text/plain'}, ['']]
     end
