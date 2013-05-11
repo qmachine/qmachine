@@ -103,7 +103,7 @@ endif
 
 all: $(shell $(LS) $(SRC_DIR))
 
-check: $(CACHE_DIR)/quanah.js local-sandbox
+check: $(CACHE_DIR)/quanah.js
 	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json $(TEST_DIR)/tests.js
 
 clean: reset
