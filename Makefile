@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 04 May 2013
+#                                                   ~~ last updated 11 May 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -72,12 +72,10 @@ ICONS_DIR   :=  $(PROJ_ROOT)/icons
 SHARE_DIR   :=  $(PROJ_ROOT)/share
 SRC_DIR     :=  $(PROJ_ROOT)/src
 TEST_DIR    :=  $(PROJ_ROOT)/tests
-VAR_DIR     :=  $(PROJ_ROOT)/var
 
 HEROKU_APP  :=  qmachine
 LOCAL_ADDR  :=  http://localhost:8177
 MOTHERSHIP  :=  https://$(strip $(HEROKU_APP)).herokuapp.com
-PLISTS      :=  $(addprefix $(VAR_DIR)/com.QM., nodejs.plist)
 QM_API_LOC  :=  '{"sqlite":"qm.db"}'
 QM_API_URL  :=  $(MOTHERSHIP)
 QM_WWW_URL  :=  $(MOTHERSHIP)
@@ -105,24 +103,19 @@ endif
 
 all: $(shell $(LS) $(SRC_DIR))
 
-check: $(CACHE_DIR)/quanah.js local-sandbox
+check: $(CACHE_DIR)/quanah.js
 	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json $(TEST_DIR)/tests.js
 
 clean: reset
-	@   for each in $(PLISTS); do                                       \
-                if [ -f "$${each}" ]; then                                  \
-                    $(LAUNCHCTL) unload -w $${each} >/dev/null 2>&1     ;   \
-                fi                                                      ;   \
-            done                                                        ;   \
-            $(RM) $(BUILD_DIR)/browser-client/                          ;   \
+	@   $(RM) $(BUILD_DIR)/browser-client/                          ;   \
             $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
+            $(RM) $(BUILD_DIR)/local-sandbox/                           ;   \
             $(RM) $(BUILD_DIR)/rack-app/                                ;   \
             $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
             if [ ! "$$($(LS) -A $(BUILD_DIR))" ]; then                      \
                 $(RM) $(BUILD_DIR)                                      ;   \
-            fi                                                          ;   \
-            $(RM) $(VAR_DIR)
+            fi
 
 clobber: clean
 	@   $(RM) $(CACHE_DIR)
@@ -172,7 +165,6 @@ browser-client:                                                             \
         homepage.js                                                         \
         html5shiv.js                                                        \
         icon-128.png                                                        \
-        icon-135.png                                                        \
         index.html                                                          \
         manifest.webapp                                                     \
         q.js                                                                \
@@ -194,19 +186,22 @@ local-sandbox:
 	@   $(MAKE)                                                         \
                 MOTHERSHIP="$(strip $(LOCAL_ADDR))"                         \
                 QM_API_STRING=$(strip $(QM_API_LOC))                        \
-                QM_WWW_STRING='"$(strip $(VAR_DIR)/nodejs/katamari.json)"'  \
-                    browser-client                                          \
-                    $(VAR_DIR)/com.QM.nodejs.plist                          \
-                    $(VAR_DIR)/nodejs/katamari.json                         \
-                    $(VAR_DIR)/nodejs/node_modules                          \
-                    $(VAR_DIR)/nodejs/server.js                         ;   \
-            $(LAUNCHCTL) load -w $(VAR_DIR)/com.QM.nodejs.plist         ;   \
-            if [ $$? -eq 0 ]; then                                          \
-                $(call hilite, 'Running on $(strip $(LOCAL_ADDR)) ...') ;   \
-                $(call open-in-browser, $(strip $(LOCAL_ADDR)))         ;   \
-            else                                                            \
-                $(call alert, 'Service is not running.')                ;   \
-            fi
+                    web-service                                         ;   \
+            $(CD) $(BUILD_DIR)                                          ;   \
+            if [ ! -d local-sandbox/ ]; then                                \
+                $(CP) web-service local-sandbox                         ;   \
+            fi                                                          ;   \
+            if [ ! -d local-sandbox/node_modules/ ]; then                   \
+                $(call make-directory, local-sandbox/node_modules/)     ;   \
+            fi                                                          ;   \
+            if [ ! -d local-sandbox/node_modules/qm ]; then                 \
+                $(CP) npm-package local-sandbox/node_modules/qm         ;   \
+            fi                                                          ;   \
+            $(CD) local-sandbox/                                        ;   \
+            $(NPM) install                                              ;   \
+            QM_API_STRING=$(QM_API_LOC)                                     \
+                QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  \
+                    $(NPM) start
 
 npm-package: $(BUILD_DIR)/npm-package/README.md
 	@   $(CD) $(dir $<)                                             ;   \
@@ -217,7 +212,9 @@ npm-package: $(BUILD_DIR)/npm-package/README.md
 rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) MOTHERSHIP="$(strip $(LOCAL_ADDR))" browser-client  ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
-            $(CP) browser-client rack-app/public                        ;   \
+            if [ ! -d rack-app/public/ ]; then                              \
+                $(CP) browser-client rack-app/public                    ;   \
+            fi                                                          ;   \
             $(CD) rack-app                                              ;   \
             $(BUNDLE) package                                           ;   \
             $(BUNDLE) exec rackup
@@ -463,33 +460,23 @@ $(ICONS_DIR)/apple-touch-icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 \( +clone                                                   \
                     -channel A -morphology EdgeOut Diamond:10 +channel      \
                     +level-colors white                                     \
-                \) -compose DstOver                                         \
+                \) -compose DstOver -composite                              \
+                canvas:'#929292'                                            \
                 -background none                                            \
                 -density 96                                                 \
                 -resize "$*"                                                \
                 -quality 100                                                \
                 -composite                                                  \
                 -background '#929292'                                       \
-                -alpha remove                                               \
                 -alpha off                                                  \
             )
 
-$(ICONS_DIR)/apple-touch-startup-image-%.png:                               \
-    $(ICONS_DIR)/logo.png                                                   \
-    | $(ICONS_DIR)
-	@   $(call generate-image-from, $<,                                 \
-                    -fill '#EEEEEE'                                         \
-                    -draw 'color 0,0 reset'                                 \
-                    -extent "$*"                                            \
-                    -background '#EEEEEE'                                   \
-                    -alpha remove                                           \
-                    -alpha off                                              \
-            )
+$(ICONS_DIR)/apple-touch-startup-image-%.png: | $(ICONS_DIR)
+	@   $(call generate-image-from, , -size "$*" canvas:'#EEEEEE')
 
 $(ICONS_DIR)/bitbucket.jpg: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, $<,                                 \
                 -background white                                           \
-                -alpha remove                                               \
                 -alpha off                                                  \
                 -density 96                                                 \
                 -resize 112x112                                             \
@@ -497,7 +484,6 @@ $(ICONS_DIR)/bitbucket.jpg: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -gravity center                                             \
                 -extent 128x128                                             \
                 -background white                                           \
-                -alpha remove                                               \
                 -alpha off                                                  \
             )
 
@@ -507,7 +493,6 @@ $(ICONS_DIR)/dropbox-%.png: $(ICONS_DIR)/icon-%.png | $(ICONS_DIR)
 $(ICONS_DIR)/facebook-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, $<,                                 \
                 -background white                                           \
-                -alpha remove                                               \
                 -alpha off                                                  \
                 -density 96                                                 \
                 -resize "$*"                                                \
@@ -539,7 +524,7 @@ $(ICONS_DIR)/google-apps-header.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -gravity center                                             \
                 -extent 143x59                                              \
                 -background white                                           \
-                -alpha remove                                               \
+                -flatten                                                    \
                 -alpha off                                                  \
             )
 
@@ -600,31 +585,6 @@ $(ICONS_DIR)/stashboard-logo.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -gravity center                                             \
                 -extent 246x182                                             \
             )
-
-$(VAR_DIR):
-	@   $(call make-directory, $@)
-
-$(VAR_DIR)/com.QM.nodejs.plist: $(SHARE_DIR)/config.sh | $(VAR_DIR)/
-	@   NODEJS="$(strip $(NODEJS))"                                     \
-            NODEJS_PLIST="$(strip $@)"                                      \
-            PROJ_ROOT="$(strip $(PROJ_ROOT))"                               \
-            USERNAME="$(strip $(USERNAME))"                                 \
-                $(SHELL) $<
-
-$(VAR_DIR)/nodejs: | $(VAR_DIR)
-	@   $(call make-directory, $@)
-
-$(VAR_DIR)/nodejs/node_modules:                                             \
-    npm-package                                                             \
-    $(VAR_DIR)/nodejs/package.json                                          \
-    | $(VAR_DIR)/nodejs
-	@   $(call make-directory, $@)                                  ;   \
-            $(LN) $(BUILD_DIR)/npm-package $@/qm                        ;   \
-            $(CD) $(VAR_DIR)/nodejs                                     ;   \
-            $(NPM) install
-
-$(VAR_DIR)/nodejs/%: $(BUILD_DIR)/web-service/% | $(VAR_DIR)/nodejs
-	@   $(CP) $< $@
 
 ###
 
