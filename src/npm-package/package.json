@@ -5,12 +5,12 @@
     },
     "dependencies": {
         "corser": ">= 1.2.0",
-        "quanah": ">= 0.1.5"
+        "quanah": ">= 0.1.6"
     },
     "description": "The World's Most Relaxed Supercomputer",
     "devDependencies": {},
     "engines": {
-        "node": ">= 0.8.x",
+        "node": ">= 0.8.0",
         "npm": ">= 1.1.2"
     },
     "homepage": "https://www.qmachine.org/",
@@ -29,5 +29,5 @@
         "url": "https://github.com/wilkinson/qmachine.git"
     },
     "scripts": {},
-    "version": "0.9.13"
+    "version": "0.9.14"
 }
