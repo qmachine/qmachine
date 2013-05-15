@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 11 May 2013
+#                                                   ~~ last updated 15 May 2013
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -190,14 +190,12 @@ CAT         :=  $(call contingent, gcat cat)
 CD          :=  $(call contingent, cd)
 CLOSURE     :=  $(call contingent, closure-compiler)
 CONVERT     :=  $(call contingent, convert)
-COUCHDB     :=  $(call contingent, couchdb)
 CP          :=  $(call contingent, gcp cp) -rf
 CURL        :=  $(call contingent, curl) -L
 DATE        :=  $(call contingent, gdate date)
 GEM         :=  $(call contingent, gem)
 HEROKU      :=  $(call contingent, heroku)
 JSMIN       :=  $(call contingent, jsmin)
-LAUNCHCTL   :=  $(call contingent, launchctl)
 LN          :=  $(call contingent, gln ln) -fs
 LS          :=  $(call contingent, gls ls) 2>/dev/null
 MKDIR       :=  $(call contingent, gmkdir mkdir)
