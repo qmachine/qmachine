@@ -139,6 +139,30 @@
         };
     };
 
+    exports.log = function (options) {
+     // This function needs documentation.
+        var db;
+        mongo.connect(options.mongo, function (err, db_handle) {
+         // This function needs documentation.
+            if (err !== null) {
+                throw err;
+            }
+            db = db_handle;
+            return;
+        });
+        return function (obj) {
+         // This function needs documentation.
+            db.collection('traffic').save(obj, function (err) {
+             // This function needs documentation.
+                if (err !== null) {
+                    console.error('Error:', err);
+                }
+                return;
+            });
+            return;
+        };
+    };
+
  // That's all, folks!
 
     return;

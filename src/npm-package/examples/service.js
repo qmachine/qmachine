@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 26 Sep 2012
-//                                                  ~~ last updated 01 Apr 2013
+//                                                  ~~ last updated 15 May 2013
 
 (function () {
     'use strict';
@@ -29,7 +29,8 @@
             sqlite:         'qm.db'
         },
         trafficlog_storage: {
-            couch:          'http://127.0.0.1:5984/traffic'
+            couch:          'http://127.0.0.1:5984/traffic',
+            mongo:          'mongodb://localhost:27017/qm'
         },
         worker_procs:       require('os').cpus().length
     };
@@ -44,9 +45,11 @@
         enable_www_server:  true,
         persistent_storage: {
             avar_ttl:       60,
-            sqlite:         examples.persistent_storage.sqlite
+            mongo:          examples.persistent_storage.mongo
         },
-        trafficlog_storage: examples.trafficlog_storage,
+        trafficlog_storage: {
+            mongo:          examples.trafficlog_storage.mongo
+        },
         worker_procs:       0
     });
 

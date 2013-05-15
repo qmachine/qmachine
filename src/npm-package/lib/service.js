@@ -146,6 +146,8 @@
         };
         if (config.trafficlog_storage.hasOwnProperty('couch')) {
             log = require('./defs-couch').log(config.trafficlog_storage);
+        } else if (config.trafficlog_storage.hasOwnProperty('mongo')) {
+            log = require('./defs-mongo').log(config.trafficlog_storage);
         } else {
             log = function () {
              // This function needs documentation.
