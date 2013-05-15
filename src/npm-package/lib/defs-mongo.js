@@ -12,7 +12,7 @@
 //  the `collect_garbage` method and/or eliminate the need for it altogether.
 //
 //                                                      ~~ (c) SRW, 05 Nov 2012
-//                                                  ~~ last updated 01 Apr 2013
+//                                                  ~~ last updated 15 May 2013
 
 (function () {
     'use strict';
@@ -25,7 +25,7 @@
 
  // Declarations
 
-    var cluster, mongo, url;
+    var cluster, mongo;
 
  // Definitions
 
@@ -33,11 +33,9 @@
 
     mongo = require('mongodb').MongoClient;
 
-    url = require('url');
-
  // Out-of-scope definitions
 
-    module.exports = function (options) {
+    exports.api = function (options) {
      // This function needs documentation.
 
         var collect_garbage, db, exp_date, get_box_key, get_box_status,

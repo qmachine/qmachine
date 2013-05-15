@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 05 Apr 2013
+//                                                  ~~ last updated 15 May 2013
 
 (function () {
     'use strict';
@@ -31,7 +31,7 @@
  // Declarations
 
     var cluster, collect_garbage, configure, corser, http, is_Function,
-        katamari, spawn_workers, url, warn;
+        katamari, spawn_workers, warn;
 
  // Definitions
 
@@ -83,8 +83,7 @@
         if ((cluster.isMaster) && (n > 0)) {
             cluster.on('exit', function (prev_worker) {
              // This function needs documentation.
-                var next_worker, output;
-                next_worker = spawn_worker();
+                var next_worker = spawn_worker();
                 console.log(prev_worker.pid + ':', 'RIP', next_worker.pid);
                 return;
             });
@@ -95,8 +94,6 @@
         }
         return;
     };
-
-    url = require('url');
 
     warn = function (lines) {
      // This function needs documentation.
@@ -227,7 +224,7 @@
                         'Consider setting a smaller "max_upload_size".'
                     ]);
                 }
-                defs = require('./defs-mongo')(config.persistent_storage);
+                defs = require('./defs-mongo').api(config.persistent_storage);
             } else if (config.persistent_storage.hasOwnProperty('postgres')) {
                 defs = require('./defs-postgres')(config.persistent_storage);
             } else if (config.persistent_storage.hasOwnProperty('redis')) {
