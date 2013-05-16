@@ -2,14 +2,7 @@
 
 //- defs-mongo.js ~~
 //
-//  If you were to ask me which database definitions are _not_ recommended for
-//  production, I would pick this set, because I don't know very much about
-//  MongoDB yet. It's a great project and it's easy to use, but I haven't spent
-//  with it, and that's why I am least confident in this set of definitions.
-//
-//  NOTE: I also want to use the new TTL collection feature that was added in
-//  MongoDB v2.2 (http://goo.gl/KtiQw) in order to improve the efficiency of
-//  the `collect_garbage` method and/or eliminate the need for it altogether.
+//  These definitions are getting a lot more attention now :-)
 //
 //                                                      ~~ (c) SRW, 05 Nov 2012
 //                                                  ~~ last updated 15 May 2013
@@ -22,6 +15,14 @@
     /*jshint maxparams: 2, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, node: true, nomen: true */
+
+    /*properties
+        _id, api, avar_ttl, body, box_status, collect_garbage, collection,
+        connect, ensureIndex, error, exp_date, expireAfterSeconds, find,
+        findOne, get_box_key, get_box_status, isWorker, key, length, log,
+        mongo, MongoClient, on, post_box_key, push, safe, save, stream, update,
+        upsert
+    */
 
  // Declarations
 
@@ -38,27 +39,13 @@
     exports.api = function (options) {
      // This function needs documentation.
 
-        var collect_garbage, db, exp_date, get_box_key, get_box_status,
-            post_box_key;
+        var collect_garbage, db, get_box_key, get_box_status, post_box_key;
 
         collect_garbage = function () {
-         // This function needs documentation.
-            var pattern = {exp_date: {$lte: Math.ceil(Date.now() / 1000)}};
-            db.collection('avars').remove(pattern, function (err) {
-             // This function needs documentation.
-                if (err !== null) {
-                    console.error('Error:', err);
-                    return;
-                }
-                console.log('Finished collecting garbage.');
-                return;
-            });
+         // This function isn't even needed anymore, because these definitions
+         // are now taking advantage of TTL collections :-)
+            console.log('(fake garbage collection)');
             return;
-        };
-
-        exp_date = function () {
-         // This function needs documentation.
-            return Math.ceil((Date.now() / 1000) + options.avar_ttl);
         };
 
         get_box_key = function (params, callback) {
@@ -101,14 +88,14 @@
                     _id:        params[0] + '&' + params[1],
                     body:       params[3],
                     box_status: params[0] + '&' + params[2],
-                    exp_date:   exp_date(),
+                    exp_date:   new Date(),
                     key:        params[1]
                 };
             } else {
                 obj = {
                     _id:        params[0] + '&' + params[1],
                     body:       params[2],
-                    exp_date:   exp_date(),
+                    exp_date:   new Date(),
                     key:        params[1]
                 };
             }
@@ -127,7 +114,16 @@
             if (cluster.isWorker) {
                 return;
             }
-            console.log('API: MongoDB storage is ready.');
+            db.collection('avars').ensureIndex('exp_date', {
+                expireAfterSeconds: options.avar_ttl
+            }, function (err) {
+             // This function needs documentation.
+                if (err !== null) {
+                    throw err;
+                }
+                console.log('API: MongoDB storage is ready.');
+                return;
+            });
             return;
         });
 
