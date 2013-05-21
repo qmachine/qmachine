@@ -1,6 +1,6 @@
 {
     "directory": "./build/components",
     "endpoint": "https://bower.herokuapp.com",
-    "json": "./src/bower-package/component.json",
+    "json": "./src/bower-package/bower.json",
     "searchpath": []
 }
