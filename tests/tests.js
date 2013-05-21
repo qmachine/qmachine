@@ -9,7 +9,7 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 20 May 2013
+//                                                  ~~ last updated 21 May 2013
 
 (function () {
     'use strict';
@@ -46,7 +46,11 @@
         /*global phantom: false */
         n -= 1;
         if (n === 0) {
-            console.log('Success! All tests passed :-)');
+            if (code === 0) {
+                console.log('Success! All tests passed :-)');
+            } else {
+                console.error('Exiting due to error ...');
+            }
             setTimeout(phantom.exit, 0, code);
         }
         return;
