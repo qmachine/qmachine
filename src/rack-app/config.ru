@@ -19,7 +19,7 @@
 #   though, it serves its purpose -- with just 100 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 11 May 2013
+#                                                   ~~ last updated 21 May 2013
 
 require 'rubygems'
 require 'bundler'
@@ -41,9 +41,9 @@ configure do
 
   # Sinatra mappings and options needed by QMachine -- leave these alone ;-)
 
-    set :bind => :hostname, :run => false, :static => :enable_web_server
     mime_type :appcache, 'text/cache-manifest'
     mime_type :webapp, 'application/x-web-app-manifest+json'
+    set :bind => :hostname, :run => false, :static => :enable_web_server
 
   # See also: http://www.sinatrarb.com/configuration.html
 
