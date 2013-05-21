@@ -9,20 +9,31 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 02 May 2013
+//                                                  ~~ last updated 20 May 2013
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*jshint maxparams: 2, quotmark: single, strict: true */
+    /*jshint quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
  // Prerequisites
 
-    require('../cache/quanah');
+    (function () {
+     // Loading "Method Q" is a pain in Ubuntu 12.04 LTS because the version of
+     // PhantomJS is 1.4.0; the ability to reference your own modules was not
+     // added until version 1.7.0. Thus, we have to load our code the hard way.
+        /*jslint evil: true */
+        var fs, src, txt;
+        fs = require('fs');
+        src = [fs.workingDirectory, 'cache', 'quanah.js'].join(fs.separator);
+        txt = fs.read(src);
+        eval(txt);
+        return;
+    }());
 
  // Declarations
 
@@ -35,6 +46,7 @@
         /*global phantom: false */
         n -= 1;
         if (n === 0) {
+            console.log('Success! All tests passed :-)');
             setTimeout(phantom.exit, 0, code);
         }
         return;
@@ -59,7 +71,10 @@
         var homepage = require('webpage').create();
         homepage.onConsoleMessage = function (message) {
          // This function needs documentation.
-            homepage.close();
+            if (homepage.hasOwnProperty('close')) {
+             // This method didn't appear until PhantomJS 1.7.0 ...
+                homepage.close();
+            }
             console.log(message);
             if (message === y) {
                 return exit(0);
@@ -67,7 +82,7 @@
             if (message.slice(0, 6) === 'Error:') {
                 return exit(1);
             }
-            console.log('Incorrect answer!');
+            console.log('Incorrect answer! (' + message + ' !== ' + y + ')');
             return exit(2);
         };
         homepage.onError = function (message) {
@@ -152,7 +167,7 @@
             return evt.exit();
         }).Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -179,7 +194,7 @@
             return evt.exit();
         }).Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -206,7 +221,7 @@
             x: 1
         }).Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -229,7 +244,7 @@
             return x + 2;
         }, 'sean').Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -253,7 +268,7 @@
             x: 3
         }).Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -280,7 +295,7 @@
             x: window.QM.avar({val: 4})
         }).Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -305,7 +320,7 @@
             x: window.QM.avar({val: 4})
         }).Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -333,7 +348,7 @@
             x: window.QM.avar({box: 'booger', val: 4})
         }).Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -354,7 +369,7 @@
         x = [1, 2, 3, 4, 5];
         window.QM.map(x, mapf, 'sean').Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -375,7 +390,7 @@
         x = [1, 2, 3, 4, 5];
         window.QM.reduce(x, redf, 'sean').Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
@@ -397,7 +412,7 @@
         x = [1, 2, 3, 4, 5];
         window.QM.mapreduce(x, mapf, redf, 'sean').Q(function (evt) {
          // This function needs documentation.
-            console.log('Results:', this.val);
+            console.log('Results: ' + this.val);
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
