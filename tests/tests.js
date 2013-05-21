@@ -45,12 +45,13 @@
      // This function needs documentation.
         /*global phantom: false */
         n -= 1;
+        if (code !== 0) {
+            console.error('Exiting due to error ...');
+            phantom.exit(code);
+            return;
+        }
         if (n === 0) {
-            if (code === 0) {
-                console.log('Success! All tests passed :-)');
-            } else {
-                console.error('Exiting due to error ...');
-            }
+            console.log('Success! All tests passed :-)');
             setTimeout(phantom.exit, 0, code);
         }
         return;
@@ -175,7 +176,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error: ' + JSON.stringify(message));
             return;
         });
         return;
