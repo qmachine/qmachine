@@ -5,7 +5,7 @@
 //  NOTE: SQL is _not_ a particular strength of mine, and I appreciate input!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 25 Apr 2013
+//                                                  ~~ last updated 20 May 2013
 
 (function () {
     'use strict';
@@ -223,8 +223,10 @@
                     '$$',
                     'LANGUAGE plpgsql;'
                 ];
-                client.query(lines.join('\n'), function (err, results) {
-                 // This function needs documentation.
+                client.query(lines.join('\n'), function (err) {
+                 // This function also accepts a second argument that contains
+                 // the "results" of the query, but because I don't use it, I
+                 // have omitted it to avoid irritating JSLint et al.
                     done();
                     if (err !== null) {
                         throw err;

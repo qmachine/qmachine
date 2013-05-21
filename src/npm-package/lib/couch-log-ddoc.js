@@ -2,7 +2,7 @@
 
 //- couch-log-ddoc.js ~~
 //                                                      ~~ (c) SRW, 31 Mar 2013
-//                                                  ~~ last updated 23 Apr 2013
+//                                                  ~~ last updated 20 May 2013
 
 (function () {
     'use strict';
@@ -13,7 +13,7 @@
 
     /*jshint maxparams: 2, quotmark: single, strict: true */
 
-    /*jslint couch: true, indent: 4, maxlen: 80, nomen: true */
+    /*jslint couch: true, indent: 4, maxlen: 80, nomen: true, unparam: true */
 
     /*properties
         'as-array', box_frequency, hasOwnProperty, _id, identity, ip,
@@ -35,14 +35,16 @@
          //
             var first, row;
             first = true;
+            row = getRow();
             send('[');
-            while ((row = getRow()) !== null) {
+            while (row !== null) {
                 if (first === true) {
                     first = false;
                     send(JSON.stringify(row.value));
                 } else {
                     send(',' + JSON.stringify(row.value));
                 }
+                row = getRow();
             }
             send(']');
             return;

@@ -2,7 +2,7 @@
 
 //- couch-api-ddoc.js ~~
 //                                                      ~~ (c) SRW, 23 Oct 2012
-//                                                  ~~ last updated 09 Apr 2013
+//                                                  ~~ last updated 20 May 2013
 
 (function () {
     'use strict';
@@ -13,7 +13,7 @@
 
     /*jshint maxparams: 2, quotmark: single, strict: true */
 
-    /*jslint couch: true, indent: 4, maxlen: 80, nomen: true */
+    /*jslint couch: true, indent: 4, maxlen: 80, nomen: true, unparam: true */
 
     /*properties
         'as-array', body, box_status, 'Content-Type', data, _deleted, exp_date,
@@ -30,14 +30,16 @@
          // This function needs documentation.
             var first, row;
             first = true;
+            row = getRow();
             send('[');
-            while ((row = getRow()) !== null) {
+            while (row !== null) {
                 if (first === true) {
                     first = false;
                     send(JSON.stringify(row.value));
                 } else {
                     send(',' + JSON.stringify(row.value));
                 }
+                row = getRow();
             }
             send(']');
             return;

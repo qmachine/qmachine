@@ -8,7 +8,7 @@
 //  like Node.js + Redis and then squander cycles needlessly ...
 //
 //                                                      ~~ (c) SRW, 23 Nov 2012
-//                                                  ~~ last updated 01 Apr 2013
+//                                                  ~~ last updated 20 May 2013
 
 (function () {
     'use strict';
@@ -50,7 +50,7 @@
                         console.error('Error:', err);
                         return;
                     }
-                    var callback, keys, n;
+                    var callback, n;
                     callback = function () {
                      // This function needs documentation.
                         n -= 1;
@@ -71,8 +71,10 @@
                                 console.error('Error:', err);
                             }
                             if (response === 0) {
-                                db.srem(queue, key, function (err, res) {
-                                 // This function needs documentation.
+                                db.srem(queue, key, function (err) {
+                                 // This function accepts a second argument,
+                                 // but I have omitted it because it irritates
+                                 // JSLint et al. otherwise.
                                     if (err !== null) {
                                         console.error('Error:', err);
                                     }

@@ -5,7 +5,7 @@
 //  NOTE: I need to experiment with `require('https').globalAgent.maxSockets`!
 //
 //                                                      ~~ (c) SRW, 25 Sep 2012
-//                                                  ~~ last updated 01 Apr 2013
+//                                                  ~~ last updated 20 May 2013
 
 (function () {
     'use strict';
@@ -66,6 +66,7 @@
      // doesn't demand the level of sophistication that the browser client's
      // `serialize` method does because we know that this function will run in
      // Node.js and that all functions will be serializable :-)
+        /*jslint unparam: true */
         var i, n, temp;
         temp = {};
         n = keys.length;
@@ -190,8 +191,9 @@
                     opts2 = url.parse(options.couch + '/_bulk_docs');
                     opts2.headers = {'Content-Type': 'application/json'};
                     opts2.method = 'POST';
-                    req2 = protocol.request(opts2, function (res2) {
-                     // This function needs documentation.
+                    req2 = protocol.request(opts2, function () {
+                     // This function omits named parameters because it omits
+                     // them anyway.
                         return callback(null);
                     });
                     req2.on('error', callback);
@@ -289,7 +291,12 @@
             opts.method = 'POST';
             req = protocol.request(opts, function (res) {
              // This function needs documentation.
-                res.on('data', function () {});
+                res.on('data', function () {
+                 // This function is empty, but it is necessary due to changes
+                 // in the way that the streaming API works in Node.js, as of
+                 // version 0.10 and later.
+                    return;
+                });
                 res.on('end', function () {
                  // This function needs documentation.
                     if ((res.statusCode !== 201) && (res.statusCode !== 202)) {
@@ -314,8 +321,10 @@
                 if (err !== null) {
                     console.error('Error:', err);
                 }
-                upload_ddoc('./couch-api-ddoc', app_url, function (err, res) {
-                 // This function needs documentation.
+                upload_ddoc('./couch-api-ddoc', app_url, function (err) {
+                 // This function also accepts a second argument that contains
+                 // the "results" of the query, but because I don't use it, I
+                 // have omitted it to avoid irritating JSLint et al.
                     if (err !== null) {
                         console.error('Error:', err);
                     }
@@ -346,8 +355,10 @@
                 if (err !== null) {
                     console.error('Error:', err);
                 }
-                upload_ddoc('./couch-log-ddoc', app_url, function (err, res) {
-                 // This function needs documentation.
+                upload_ddoc('./couch-log-ddoc', app_url, function (err) {
+                 // This function also accepts a second argument that contains
+                 // the "results" of the query, but because I don't use it, I
+                 // have omitted it to avoid irritating JSLint et al.
                     if (err !== null) {
                         console.error('Error:', err);
                     }
@@ -365,8 +376,16 @@
             conn.method = 'POST';
             req = protocol.request(conn, function (res) {
              // This function needs documentation.
-                res.on('data', function () {});
-                res.on('end', function () {});
+                res.on('data', function () {
+                 // This function is empty, but it is necessary due to changes
+                 // in the way that the streaming API works in Node.js, as of
+                 // version 0.10 and later.
+                    return;
+                });
+                res.on('end', function () {
+                 // See the explanation given above.
+                    return;
+                });
                 return;
             });
             req.on('error', function (message) {

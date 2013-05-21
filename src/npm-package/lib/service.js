@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 15 May 2013
+//                                                  ~~ last updated 20 May 2013
 
 (function () {
     'use strict';
@@ -107,6 +107,7 @@
 
     exports.launch = function (obj) {
      // This function needs documentation.
+        /*jslint unparam: true */
         var config, defs, enable_cors, get_ip, go_away, log, rules, server,
             static_content;
         config = configure(obj, {
