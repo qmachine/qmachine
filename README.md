@@ -27,9 +27,9 @@ recently experimented with that. The analytical layer can also be used from
 There are several project "mirrors" available on
 [Bitbucket](https://bitbucket.org/wilkinson/qmachine),
 [GitHub](https://github.com/wilkinson/qmachine), and
-[Google Code](https://qmachine.googlecode.com). Various project statistics are
-available on [GitHub](https://github.com/wilkinson/qmachine/graphs) and
-[Ohloh](https://www.ohloh.net/p/qm), too.
+[Google Code](https://qmachine.googlecode.com). Links to various statistics
+regarding QM can be found on the
+[wiki](https://wiki.qmachine.org/index.php/Metrics).
 
 I have done some preliminary investigation into app integration for
 
