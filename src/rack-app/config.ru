@@ -15,11 +15,13 @@
 #   DSL makes things even "worse", to be honest. My advice here is, don't think
 #   too hard about it. Just enjoy it.
 #
-#   I do plan to merge this program with the Ruby gem in the future. For now,
-#   though, it serves its purpose -- with just 100 lines of source code ;-)
+#   I do plan to merge this program with the Ruby gem in the future, which is
+#   why the database schema matches the Node.js implementation's, which is not
+#   as straight-forward as it could be. For now, though, it serves its purpose,
+#   and it does so in just 100 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 21 May 2013
+#                                                   ~~ last updated 24 May 2013
 
 require 'rubygems'
 require 'bundler'
@@ -59,7 +61,9 @@ helpers do
 
     def db_query(sql)
       # This helper method helps DRY out the code for database queries, and it
-      # also ensures that expired rows are always evicted from the database.
+      # also ensures that expired rows are always evicted from the database. I
+      # am well aware that evicting expired rows before every single query is
+      # inefficient, but ... haven't I warned you that this is for teaching?
         db = SQLite3::Database.open(settings.persistent_storage)
         db.execute("DELETE FROM avars WHERE (exp_date < #{nowplus(0)})")
         x = db.execute(sql)
