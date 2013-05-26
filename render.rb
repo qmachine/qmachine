@@ -2,7 +2,7 @@
 
 #-  render.rb ~~
 #                                                       ~~ (c) SRW, 19 Sep 2012
-#                                                   ~~ last updated 28 Mar 2013
+#                                                   ~~ last updated 26 May 2013
 
 require "date"
 require "redcarpet"
@@ -43,7 +43,7 @@ File::open(filename, "w") do |f|
     <p>
       Note that this page embeds QM's analytical layer, too, which means that
       you can open your browser's developer console and experiment without even
-      leaving this page :-)
+      leaving this page!
     </p>
     <script async src="https://www.qmachine.org/q.js"></script>
   </body>
