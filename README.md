@@ -26,5 +26,6 @@ and
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
 news sites.
 
-For more information, see the [project wiki](https://wiki.qmachine.org) :-)
+For more information, see
+[https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
 
