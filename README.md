@@ -12,7 +12,7 @@ Currently, there are two implementations of the server-side components. The
 original version is written in [Node.js](http://nodejs.org) and is available
 for deployment to server environments via [NPM](https://npmjs.org/package/qm).
 A new "teaching version" written in [Ruby](http://www.ruby-lang.org) is also
-available, and it will eventually be installable as a
+available, and it will eventually be installable via
 [Gem](https://rubygems.org/gems/qm).
 
 I am now revising the first of several manuscripts I have been preparing for
