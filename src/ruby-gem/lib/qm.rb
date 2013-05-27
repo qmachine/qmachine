@@ -6,6 +6,19 @@
 
 module QM
 
+  private
+
+    class QM_Client
+
+        def initialize
+          # This function needs documentation.
+            # ...
+        end
+
+    end
+
+  public
+
     def self::launch_client()
       # This function needs documentation.
         puts '(placeholder: `launch_client`)';
@@ -17,10 +30,6 @@ module QM
         puts '(placeholder: `launch_service`)';
         return;
     end
-
-    require './lib/katamari';
-
-    self::KATAMARI = KATAMARI;
 
 end
 
