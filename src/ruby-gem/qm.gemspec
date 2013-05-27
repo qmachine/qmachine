@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
 
     spec.summary = %q{The World's Most Relaxed Supercomputer}
 
-    spec.version = '0.9.14'
+    spec.version = '0.9.15'
 
 end
 
