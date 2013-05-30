@@ -13,8 +13,11 @@
 #       -   http://goo.gl/ImCtC
 #       -   https://github.com/janko-m/sinatra-activerecord
 #
+#   NOTE: I wasn't able to deploy this app as-is to Heroku until I disabled the
+#   API server *and* commented out the "sqlite3" dependency.
+#
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 10 May 2013
+#                                                   ~~ last updated 30 May 2013
 
 source 'https://rubygems.org'
 

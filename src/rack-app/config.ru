@@ -21,7 +21,7 @@
 #   and it does so in just 100 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 24 May 2013
+#                                                   ~~ last updated 30 May 2013
 
 require 'rubygems'
 require 'bundler'
@@ -36,9 +36,9 @@ configure do
         :enable_api_server =>   true,
         :enable_CORS =>         true,
         :enable_web_server =>   true,
-        :hostname =>            'localhost',
+        :hostname =>            '0.0.0.0',
         :persistent_storage =>  'qm.db',
-        :port =>                8177,
+        :port =>                ENV['PORT'] || 8177,
         :public_folder =>       'public'
 
   # Sinatra mappings and options needed by QMachine -- leave these alone ;-)
