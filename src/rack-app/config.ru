@@ -21,7 +21,7 @@
 #   and it does so in just 100 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 30 May 2013
+#                                                   ~~ last updated 31 May 2013
 
 require 'rubygems'
 require 'bundler'
@@ -32,20 +32,20 @@ configure do
 
   # QMachine options
 
-    set :avar_ttl =>            86400,
-        :enable_api_server =>   true,
-        :enable_CORS =>         true,
-        :enable_web_server =>   true,
-        :hostname =>            '0.0.0.0',
-        :persistent_storage =>  'qm.db',
-        :port =>                ENV['PORT'] || 8177,
-        :public_folder =>       'public'
+    set avar_ttl:               86400,
+        enable_api_server:      true,
+        enable_CORS:            true,
+        enable_web_server:      true,
+        hostname:               '0.0.0.0',
+        persistent_storage:     'qm.db',
+        port:                   ENV['PORT'] || 8177,
+        public_folder:          'public'
 
   # Sinatra mappings and options needed by QMachine -- leave these alone ;-)
 
-    mime_type :appcache, 'text/cache-manifest'
-    mime_type :webapp, 'application/x-web-app-manifest+json'
-    set :bind => :hostname, :run => false, :static => :enable_web_server
+    mime_type appcache: 'text/cache-manifest'
+    mime_type webapp: 'application/x-web-app-manifest+json'
+    set bind: :hostname, run: false, static: :enable_web_server
 
   # See also: http://www.sinatrarb.com/configuration.html
 
