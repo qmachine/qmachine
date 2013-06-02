@@ -32,7 +32,7 @@ configure do
 
   # QMachine options
 
-    set avar_ttl:               86400,
+    set avar_ttl:               60,
         enable_api_server:      true,
         enable_CORS:            true,
         enable_web_server:      true,
@@ -65,7 +65,7 @@ helpers do
       # table and evicting expired rows before every single query.
         begin
             db = SQLite3::Database.open(settings.persistent_storage)
-            db.execute <<-sql
+            db.execute_batch <<-sql
                 CREATE TABLE IF NOT EXISTS avars (
                     body TEXT NOT NULL,
                     box_key TEXT NOT NULL,
@@ -73,9 +73,12 @@ helpers do
                     exp_date INTEGER NOT NULL,
                     key TEXT,
                     PRIMARY KEY (box_key)
-                )
+                );
+                DELETE FROM avars WHERE (exp_date < #{nowplus(0)})
                 sql
-            db.execute "DELETE FROM avars WHERE (exp_date < #{nowplus(0)})"
+          # We have to execute the query code `sql` separately because the
+          # `db.execute_batch` function always returns `nil`, which prevents
+          # us from being able to retrieve the results of the query.
             x = db.execute(sql)
         rescue SQLite3::Exception => err
             puts "Exception occured: #{err}"
