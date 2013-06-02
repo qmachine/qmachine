@@ -18,10 +18,10 @@
 #   I do plan to merge this program with the Ruby gem in the future, which is
 #   why the database schema matches the Node.js implementation's, which is not
 #   as straight-forward as it could be. For now, though, it serves its purpose,
-#   and it does so in just 100 lines of source code ;-)
+#   and it does so in just 98 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 31 May 2013
+#                                                   ~~ last updated 01 Jun 2013
 
 require 'rubygems'
 require 'bundler'
@@ -61,13 +61,27 @@ helpers do
 
     def db_query(sql)
       # This helper method helps DRY out the code for database queries, and it
-      # also ensures that expired rows are always evicted from the database. I
-      # am well aware that evicting expired rows before every single query is
-      # inefficient, but ... haven't I warned you that this is for teaching?
-        db = SQLite3::Database.open(settings.persistent_storage)
-        db.execute("DELETE FROM avars WHERE (exp_date < #{nowplus(0)})")
-        x = db.execute(sql)
-        db.close
+      # does so in an incredibly robust and inefficient way -- by creating the
+      # table and evicting expired rows before every single query.
+        begin
+            db = SQLite3::Database.open(settings.persistent_storage)
+            db.execute <<-sql
+                CREATE TABLE IF NOT EXISTS avars (
+                    body TEXT NOT NULL,
+                    box_key TEXT NOT NULL,
+                    box_status TEXT,
+                    exp_date INTEGER NOT NULL,
+                    key TEXT,
+                    PRIMARY KEY (box_key)
+                )
+                sql
+            db.execute "DELETE FROM avars WHERE (exp_date < #{nowplus(0)})"
+            x = db.execute(sql)
+        rescue SQLite3::Exception => err
+            puts "Exception occured: #{err}"
+        ensure
+            db.close if db
+        end
         return x
     end
 
@@ -140,26 +154,6 @@ if settings.enable_api_server? then
                 sql
         end
         [201, {'Content-Type' => 'text/plain'}, ['']]
-    end
-
-  # Then, we make sure that the database is ready.
-
-    begin
-        db = SQLite3::Database.open(settings.persistent_storage)
-        db.execute <<-sql
-            CREATE TABLE IF NOT EXISTS avars (
-                body TEXT NOT NULL,
-                box_key TEXT NOT NULL,
-                box_status TEXT,
-                exp_date INTEGER NOT NULL,
-                key TEXT,
-                PRIMARY KEY (box_key)
-            )
-            sql
-    rescue SQLite3::Exception => err
-        puts "Exception occured: #{err}"
-    ensure
-        db.close if db
     end
 
 end
