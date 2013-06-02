@@ -18,7 +18,7 @@
 #   I do plan to merge this program with the Ruby gem in the future, which is
 #   why the database schema matches the Node.js implementation's, which is not
 #   as straight-forward as it could be. For now, though, it serves its purpose,
-#   and it does so in just 98 lines of source code ;-)
+#   and it does so in just 95 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
 #                                                   ~~ last updated 01 Jun 2013
@@ -32,7 +32,7 @@ configure do
 
   # QMachine options
 
-    set avar_ttl:               60,
+    set avar_ttl:               86400,
         enable_api_server:      true,
         enable_CORS:            true,
         enable_web_server:      true,
@@ -74,7 +74,7 @@ helpers do
                     key TEXT,
                     PRIMARY KEY (box_key)
                 );
-                DELETE FROM avars WHERE (exp_date < #{nowplus(0)})
+                DELETE FROM avars WHERE (exp_date < #{now_plus(0)})
                 sql
           # We have to execute the query code `sql` separately because the
           # `db.execute_batch` function always returns `nil`, which prevents
@@ -94,7 +94,7 @@ helpers do
         halt [444, {'Content-Type' => 'text/plain'}, ['']]
     end
 
-    def nowplus(dt)
+    def now_plus(dt)
       # This helper method computes a date, in milliseconds, which is `dt`
       # seconds in the future.
         (1000 * (Time.now.to_f + dt)).to_i
@@ -109,25 +109,22 @@ end
 
 if settings.enable_api_server? then
 
-  # First, we set up "routes" to handle incoming GET and POST requests.
+  # Here, we set up "routes" to handle incoming GET and POST requests.
 
     get '/box/:box' do
       # This route responds to API calls that "read" from persistent storage,
       # such as when checking for new tasks to run or downloading results.
         hang_up unless (params[:key] or params[:status])
         cross_origin if settings.enable_CORS == true
-        box, key, status = params[:box], params[:key], params[:status]
         if params[:key] then
           # This arm runs when a client requests the value of a specific avar.
-            x = db_query <<-sql
-                SELECT body FROM avars WHERE box_key = '#{box}&#{key}'
-                sql
+            bk = "#{params[:box]}&#{params[:key]}"
+            x = db_query("SELECT body FROM avars WHERE box_key = '#{bk}'")
             y = (x.length == 0) ? '{}' : x[0][0]
         elsif params[:status] then
           # This arm runs when a client requests a task queue.
-            x = db_query <<-sql
-                SELECT key FROM avars WHERE box_status = '#{box}&#{status}'
-                sql
+            bs = "#{params[:box]}&#{params[:status]}"
+            x = db_query("SELECT key FROM avars WHERE box_status = '#{bs}'")
             y = (x.length == 0) ? '[]' : (x.map {|x| x[0]}).to_json
         end
         [200, {'Content-Type' => 'application/json'}, [y]]
@@ -138,7 +135,7 @@ if settings.enable_api_server? then
       # such as when uploading results or submitting new tasks.
         hang_up unless params[:key]
         cross_origin if settings.enable_CORS == true
-        body, ed = [request.body.read, nowplus(settings.avar_ttl)]
+        body, ed = [request.body.read, now_plus(settings.avar_ttl)]
         x = JSON.parse(body)
         hang_up unless params[:key] == x['key']
         bk, bs = "#{x['box']}&#{x['key']}", "#{x['box']}&#{x['status']}"
