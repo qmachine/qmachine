@@ -18,10 +18,10 @@
 #   I do plan to merge this program with the Ruby gem in the future, which is
 #   why the database schema matches the Node.js implementation's, which is not
 #   as straight-forward as it could be. For now, though, it serves its purpose,
-#   and it does so in just 95 lines of source code ;-)
+#   and it does so in just 94 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 01 Jun 2013
+#                                                   ~~ last updated 07 Jun 2013
 
 require 'rubygems'
 require 'bundler'
@@ -68,11 +68,10 @@ helpers do
             db.execute_batch <<-sql
                 CREATE TABLE IF NOT EXISTS avars (
                     body TEXT NOT NULL,
-                    box_key TEXT NOT NULL,
+                    box_key TEXT NOT NULL PRIMARY KEY,
                     box_status TEXT,
                     exp_date INTEGER NOT NULL,
-                    key TEXT,
-                    PRIMARY KEY (box_key)
+                    key TEXT
                 );
                 DELETE FROM avars WHERE (exp_date < #{now_plus(0)})
                 sql
