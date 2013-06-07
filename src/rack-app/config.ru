@@ -94,8 +94,8 @@ helpers do
     end
 
     def now_plus(dt)
-      # This helper method computes a date, in milliseconds, which is `dt`
-      # seconds in the future.
+      # This helper method computes a date (in milliseconds) that is specified
+      # by an offset `dt` (in seconds).
         (1000 * (Time.now.to_f + dt)).to_i
     end
 
