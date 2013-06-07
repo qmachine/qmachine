@@ -2,7 +2,7 @@
 
 //- service.js ~~
 //                                                      ~~ (c) SRW, 24 Nov 2012
-//                                                  ~~ last updated 20 May 2013
+//                                                  ~~ last updated 07 Jun 2013
 
 (function () {
     'use strict';
@@ -108,7 +108,7 @@
     exports.launch = function (obj) {
      // This function needs documentation.
         /*jslint unparam: true */
-        var config, defs, enable_cors, get_ip, go_away, log, rules, server,
+        var config, defs, enable_cors, get_ip, hang_up, log, rules, server,
             static_content;
         config = configure(obj, {
             enable_api_server:  false,
@@ -139,7 +139,7 @@
             }
             return request.connection.remoteAddress;
         };
-        go_away = function (response) {
+        hang_up = function (response) {
          // This function needs documentation.
             response.writeHead(444);
             response.end();
@@ -177,7 +177,7 @@
                         }
                     }
                     if (flag === false) {
-                        go_away(response);
+                        hang_up(response);
                     }
                     return;
                 });
@@ -210,7 +210,7 @@
                     }
                 }
                 if (flag === false) {
-                    go_away(response);
+                    hang_up(response);
                 }
                 return;
             });
@@ -337,7 +337,7 @@
                      // This function needs documentation.
                         if (err !== null) {
                             console.error(err);
-                            return go_away(response);
+                            return hang_up(response);
                         }
                         response.writeHead(201, {
                             'Content-Type': 'text/plain'
@@ -395,14 +395,14 @@
                     headers = request.headers;
                     name = (params[0] === '/') ? '/index.html' : params[0];
                     if (static_content.hasOwnProperty(name) === false) {
-                        return go_away(response);
+                        return hang_up(response);
                     }
                     resource = static_content[name];
                     if (headers.hasOwnProperty('if-modified-since')) {
                         try {
                             temp = new Date(headers['if-modified-since']);
                         } catch (err) {
-                            return go_away(response);
+                            return hang_up(response);
                         }
                         if (resource.last_mod_date <= temp) {
                             response.writeHead(304, {
