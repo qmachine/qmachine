@@ -21,7 +21,7 @@
 #   and it does so in just 94 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 07 Jun 2013
+#                                                   ~~ last updated 10 Jun 2013
 
 require 'rubygems'
 require 'bundler'
@@ -125,7 +125,7 @@ if settings.enable_api_server? then
           # This arm runs when a client requests a task queue.
             bs = "#{params[:box]}&#{params[:status]}"
             x = db_query("SELECT key FROM avars WHERE box_status = '#{bs}'")
-            y = (x.length == 0) ? '[]' : (x.map {|x| x[0]}).to_json
+            y = (x.length == 0) ? '[]' : (x.map {|row| row[0]}).to_json
         end
         [200, {'Content-Type' => 'application/json'}, [y]]
     end
