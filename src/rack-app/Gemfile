@@ -17,11 +17,11 @@
 #   API server *and* commented out the "sqlite3" dependency.
 #
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 30 May 2013
+#                                                   ~~ last updated 13 Jun 2013
 
 source 'https://rubygems.org'
 
-gem 'json',     :platform => :ruby
+gem 'json'
 gem 'sinatra'
 gem 'sinatra-cross_origin'
 gem 'sqlite3',  :platform => :ruby
