@@ -14,7 +14,7 @@
  *  ideas, let me know :-)
  *
  *                                                      ~~ (c) SRW, 29 Oct 2012
- *                                                  ~~ last updated 24 Mar 2013
+ *                                                  ~~ last updated 13 Jun 2013
  */
 
 @media all {
@@ -25,7 +25,9 @@
         padding-top: 60px;
     }
     html {
-     /* This snippet makes text look nicer (source: http://goo.gl/fr85e). */
+     /* This snippet makes text look nicer (source: http://goo.gl/fr85e) for
+      * light text on dark backgrounds (http://goo.gl/SrFQ7). I'm not using
+      * anything like that right now, but I just like it better ... argh. */
         -webkit-font-smoothing: antialiased;
     }
     noscript {
