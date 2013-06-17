@@ -3,9 +3,9 @@
 #-  config.ru ~~
 #
 #   This is a self-contained Rack app that uses Sinatra's domain-specific
-#   language in tandem with SQLite to implement a teaching version of QMachine.
-#   The idea here is to pack most of the functionality of the original Node.js
-#   codebase into a single file that reads like pseudo-code.
+#   language (DSL) in tandem with SQLite to implement a teaching version of
+#   QMachine. The idea here is to pack most of the functionality of the
+#   original Node.js codebase into a single file that reads like pseudo-code.
 #
 #   Of course, there are some caveats. This version succeeds in abbreviating
 #   the original codebase, but it doesn't support all of the original options
@@ -21,7 +21,7 @@
 #   and it does so in just 94 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 10 Jun 2013
+#                                                   ~~ last updated 16 Jun 2013
 
 require 'rubygems'
 require 'bundler'
@@ -79,6 +79,10 @@ helpers do
           # We have to execute the query code `sql` separately because the
           # `db.execute_batch` function always returns `nil`, which prevents
           # us from being able to retrieve the results of the query.
+          #
+          # NOTE: Even though we're evaluating a string that was assembled from
+          # unvalidated user input, `db.execute` only runs the first command
+          # given; this makes SQL injection harder but not impossible.
             x = db.execute(sql)
         rescue SQLite3::Exception => err
             puts "Exception occured: #{err}"
