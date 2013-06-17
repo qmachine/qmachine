@@ -16,12 +16,12 @@
 #   too hard about it. Just enjoy it.
 #
 #   I do plan to merge this program with the Ruby gem in the future, which is
-#   why the database schema matches the Node.js implementation's, which is not
-#   as straight-forward as it could be. For now, though, it serves its purpose,
-#   and it does so in just 94 lines of source code ;-)
+#   why the database schema matches the Node.js implementation's (which is not
+#   as straight-forward as it could be). For now, it serves its purpose, and it
+#   does so in just 94 lines of source code ;-)
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 16 Jun 2013
+#                                                   ~~ last updated 17 Jun 2013
 
 require 'rubygems'
 require 'bundler'
