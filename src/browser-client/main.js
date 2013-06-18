@@ -161,9 +161,8 @@
 
     $(window.document).ready(function () {
      // This function runs when jQuery decides that the webpage has loaded.
-        jsout('NOTE: This version is experimental.');
-        state.argv = form2json(location.hash.slice(1));
 
+        state.argv = form2json(location.hash.slice(1));
 
         $('#login-button')[0].href = [
             'https://accounts.google.com/o/oauth2/auth?',
@@ -292,8 +291,15 @@
                 });
                 return;
             });
+
+        } else {
+
+            jsout('NOTE: The `QM` will not be available until you log in.');
+
         }
+
         return;
+
     });
 
  // That's all, folks!
