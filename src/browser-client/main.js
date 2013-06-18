@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 19 Apr 2013
+//                                                  ~~ last updated 18 Jun 2013
 
 (function () {
     'use strict';
@@ -33,8 +33,8 @@
 
     /*properties Q, QM, activeElement, alert, ajax, avar, blur, box, cache,
         call, clearTimeout, console, dataType, document, error, exit, focus,
-        getItem, hasOwnProperty, id, is, join, jQuery, key, localStorage, log,
-        on, preventDefault, prototype, ready, revive, setItem, setTimeout,
+        getItem, hasOwnProperty, html, id, is, join, jQuery, key, localStorage,
+        log, on, preventDefault, prototype, ready, revive, setItem, setTimeout,
         success, stay, url, val, value, vol_timer, volunteer, which
     */
 
@@ -117,6 +117,16 @@
                     }
                 }
                 $(window).on('blur focus', QM.revive);
+                $('#login-button').on('click', function (evt) {
+                 // This function will trigger the consent process.
+                    evt.preventDefault();
+                    if ($(this).html() === 'Login') {
+                        $(this).html('Logout');
+                    } else {
+                        $(this).html('Login');
+                    }
+                    return;
+                });
                 $('#QM-box-input').on('blur', function () {
                  // This function doesn't work well in web workers due to the
                  // `alert`, but they aren't a priority right now. The idea

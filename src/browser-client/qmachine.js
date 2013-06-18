@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 04 May 2013
+//                                                  ~~ last updated 18 Jun 2013
 
 (function (global, sandbox) {
     'use strict';
