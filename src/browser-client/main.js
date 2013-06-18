@@ -32,8 +32,8 @@
     /*jslint browser: true, indent: 4, maxlen: 80 */
 
     /*properties
-        Q, QM, activeElement, alert, ajax, argv, audience, avar, blur, box,
-        cache, call, clearTimeout, click, client_id, console, dataType,
+        Q, QM, activeElement, alert, ajax, argv, attr, audience, avar, blur,
+        box, cache, call, clearTimeout, click, client_id, console, dataType,
         document, error, exit, focus, getItem, hash, hasOwnProperty, href,
         html, id, is, join, jQuery, key, length, localStorage, location, log,
         on, preventDefault, prototype, push, ready, redirect_uri,
@@ -225,7 +225,7 @@
                             }
                             QM.revive();
                             return;
-                        });
+                        }).attr('disabled', false);
                         QM.avar().Q(function (evt) {
                          // This function synchronizes the jQuery object that
                          // represents the input element directly with QM's
@@ -252,7 +252,8 @@
                         $('#QM-volunteer-input').click(function volunteer() {
                          // This function runs every time the checkbox is
                          // clicked.
-                            if (!$('#QM-volunteer-input').is(':checked')) {
+                            var that = $('#QM-volunteer-input');
+                            if (that.is(':checked') === false) {
                              // Yes, you're right, it _does_ look inefficient
                              // to ask jQuery to do separate queries, but
                              // because `volunteer` calls itself recursively
@@ -285,7 +286,7 @@
                                 return evt.exit();
                             });
                             return;
-                        });
+                        }).attr('disabled', false);
                         return;
                     }
                 });
