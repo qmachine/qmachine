@@ -20,6 +20,12 @@
 #   as straight-forward as it could be). For now, it serves its purpose, and it
 #   does so in just 94 lines of source code ;-)
 #
+#   NOTE: Using a "%" character incorrectly in a URL will cause you great
+#   anguish, and there isn't a good way for me to handle this problem "softly"
+#   because it is the expected behavior (http://git.io/bmKr2w). Thus, you will
+#   tend to see "Bad Request" on your screen if you insist on using "%" as part
+#   of a 'box', 'key', or 'status' value.
+#
 #                                                       ~~ (c) SRW, 24 Apr 2013
 #                                                   ~~ last updated 17 Jun 2013
 
@@ -119,31 +125,30 @@ if settings.enable_api_server? then
       # This route responds to API calls that "read" from persistent storage,
       # such as when checking for new tasks to run or downloading results.
         hang_up unless (params[:key] or params[:status])
-        cross_origin if settings.enable_CORS == true
-        if params[:key] then
+        if (params[:key]) then
           # This arm runs when a client requests the value of a specific avar.
             bk = "#{params[:box]}&#{params[:key]}"
             x = db_query("SELECT body FROM avars WHERE box_key = '#{bk}'")
             y = (x.length == 0) ? '{}' : x[0][0]
-        elsif params[:status] then
+        elsif (params[:status]) then
           # This arm runs when a client requests a task queue.
             bs = "#{params[:box]}&#{params[:status]}"
             x = db_query("SELECT key FROM avars WHERE box_status = '#{bs}'")
             y = (x.length == 0) ? '[]' : (x.map {|row| row[0]}).to_json
         end
+        cross_origin if (settings.enable_CORS == true)
         [200, {'Content-Type' => 'application/json'}, [y]]
     end
 
     post '/box/:box' do
       # This route responds to API calls that "write" to persistent storage,
       # such as when uploading results or submitting new tasks.
-        hang_up unless params[:key]
-        cross_origin if settings.enable_CORS == true
+        hang_up unless (params[:key])
         body, ed = [request.body.read, now_plus(settings.avar_ttl)]
         x = JSON.parse(body)
-        hang_up unless params[:key] == x['key']
+        hang_up unless (params[:key] == x['key'])
         bk, bs = "#{x['box']}&#{x['key']}", "#{x['box']}&#{x['status']}"
-        if x['status'] then
+        if (x['status']) then
           # This arm runs only when a client writes a task description.
             db_query <<-sql
                 INSERT OR REPLACE INTO avars
@@ -157,6 +162,7 @@ if settings.enable_api_server? then
                 VALUES ('#{body}', '#{bk}', #{ed})
                 sql
         end
+        cross_origin if (settings.enable_CORS == true)
         [201, {'Content-Type' => 'text/plain'}, ['']]
     end
 
