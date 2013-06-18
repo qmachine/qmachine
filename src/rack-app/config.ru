@@ -69,7 +69,8 @@ helpers do
       # This helper method helps DRY out the code for database queries, and it
       # does so in an incredibly robust and inefficient way -- by creating the
       # table and evicting expired rows before every single query. A caveat, of
-      # course, is that the special ":memory:" database doesn't work correctly.
+      # course, is that the special ":memory:" database doesn't work correctly,
+      # but ":memory:" isn't *persistent* storage anyway.
         begin
             db = SQLite3::Database.open(settings.persistent_storage)
             db.execute_batch <<-sql
