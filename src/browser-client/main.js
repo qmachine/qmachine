@@ -160,6 +160,12 @@
 
  // Invocations
 
+    $(window).on('hashchange', function () {
+     // This function needs documentation.
+        window.location.reload();
+        return;
+    });
+
     $(window.document).ready(function () {
      // This function runs when jQuery decides that the webpage has loaded.
         /*jslint unparam: true */
