@@ -288,7 +288,9 @@
 
             $('p').each(function (key, val) {
              // This function needs documentation.
-                val.innerHTML = val.innerHTML.replace('Log in, then', '');
+                var text;
+                text = val.innerHTML.replace('Log in, then ', '').trim();
+                val.innerHTML = text[0].toUpperCase() + text.slice(1);
                 return;
             });
 
