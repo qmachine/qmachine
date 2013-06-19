@@ -175,7 +175,7 @@
         ].join('');
 
         if (state.argv.hasOwnProperty('access_token')) {
-            $('#login-button').html('Logout');
+            $('#login-button').html('Logout');  //- NOTE: http://goo.gl/43C5j
             verify(client_id, function (err) {
              // This function needs documentation.
                 if (err !== null) {
