@@ -1732,9 +1732,11 @@
             if (is_String(x) === false) {
                 throw new TypeError('`box` property must be a string.');
             }
+         /*
             if ((/^[\w\-]+$/).test(x) === false) {
                 throw new Error('Invalid assignment to `box`: "' + x + '"');
             }
+         */
             defineProperty(this, 'box', {
                 configurable: true,
                 enumerable: true,
@@ -1791,9 +1793,11 @@
             if (is_String(x) === false) {
                 throw new TypeError('`QM.box` must be a string.');
             }
+         /*
             if ((/^[\w\-]+$/).test(x) === false) {
                 throw new Error('Invalid assignment to `QM.box`: "' + x + '"');
             }
+         */
             state.box = x;
             global.QM.revive();
             return;
