@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 18 Jun 2013
+//                                                  ~~ last updated 19 Jun 2013
 
 (function () {
     'use strict';
@@ -34,11 +34,12 @@
     /*properties
         Q, QM, activeElement, alert, ajax, argv, attr, audience, avar, blur,
         box, cache, call, clearTimeout, click, client_id, console, dataType,
-        document, error, exit, focus, getItem, hash, hasOwnProperty, href,
-        html, id, is, join, jQuery, key, length, localStorage, location, log,
-        on, preventDefault, prototype, push, ready, redirect_uri,
-        response_type, revive, scope, setItem, setTimeout, slice, split,
-        success, stay, type, url, val, value, vol_timer, volunteer, which
+        document, each, error, exit, focus, getItem, hash, hasOwnProperty,
+        href, html, id, innerHTML, is, join, jQuery, key, length, localStorage,
+        location, log, on, preventDefault, prototype, push, ready,
+        redirect_uri, replace, response_type, revive, scope, setItem,
+        setTimeout, slice, split, success, stay, type, url, val, value,
+        vol_timer, volunteer, which
     */
 
  // Prerequisites
@@ -161,21 +162,14 @@
 
     $(window.document).ready(function () {
      // This function runs when jQuery decides that the webpage has loaded.
+        /*jslint unparam: true */
 
         state.argv = form2json(location.hash.slice(1));
 
-        $('#login-button')[0].href = [
-            'https://accounts.google.com/o/oauth2/auth?',
-            json2form({
-                client_id: client_id,
-                redirect_uri: location.href,
-                scope: 'https://www.googleapis.com/auth/fusiontables',
-                response_type: 'token'
-            })
-        ].join('');
-
         if (state.argv.hasOwnProperty('access_token')) {
-            $('#login-button').html('Logout');  //- NOTE: http://goo.gl/43C5j
+
+            $('#QM-login-button').html('');
+
             verify(client_id, function (err) {
              // This function needs documentation.
                 if (err !== null) {
@@ -292,9 +286,27 @@
                 return;
             });
 
+            $('p').each(function (key, val) {
+             // This function needs documentation.
+                val.innerHTML = val.innerHTML.replace('Log in, then', '');
+                return;
+            });
+
         } else {
 
-            jsout('NOTE: The `QM` will not be available until you log in.');
+         // The user has not authenticated with Google yet.
+
+            $('#QM-login-button').html('Login').attr('href', [
+                'https://accounts.google.com/o/oauth2/auth?',
+                json2form({
+                    client_id: client_id,
+                    redirect_uri: location.href,
+                    scope: 'https://www.googleapis.com/auth/fusiontables',
+                    response_type: 'token'
+                })
+            ].join(''));
+
+            jsout('NOTE: The `QM` object is not available until you log in.');
 
         }
 
