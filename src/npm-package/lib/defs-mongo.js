@@ -5,7 +5,7 @@
 //  These definitions are getting a lot more attention now :-)
 //
 //                                                      ~~ (c) SRW, 05 Nov 2012
-//                                                  ~~ last updated 15 May 2013
+//                                                  ~~ last updated 22 Jun 2013
 
 (function () {
     'use strict';
@@ -37,7 +37,9 @@
  // Out-of-scope definitions
 
     exports.api = function (options) {
-     // This function needs documentation.
+     // This function needs documentation, but as far as connection pooling is
+     // concerned, my strategy is justified by the post on Stack Overflow at
+     // http://stackoverflow.com/a/14464750.
 
         var collect_garbage, db, get_box_key, get_box_status, post_box_key;
 
