@@ -9,16 +9,15 @@
 #
 #   Of course, there are some caveats. This version succeeds in abbreviating
 #   the original codebase, but it doesn't support all of the original options
-#   yet, and it may or may not be vulnerable to SQL injection attacks. The
-#   code can also be hard to modify if you're unfamiliar with Sinatra, because
-#   Ruby's scoping rules are very different from JavaScript's, and Sinatra's
-#   DSL makes things even "worse", to be honest. My advice here is, don't think
-#   too hard about it. Just enjoy it.
+#   yet. The code can also be hard to modify if you're unfamiliar with Sinatra,
+#   because Ruby's scoping rules are very different from JavaScript's, and
+#   Sinatra's DSL makes things even "worse", to be honest. My advice here is,
+#   don't think too hard about it. Just enjoy it.
 #
 #   I do plan to merge this program with the Ruby gem in the future, which is
 #   why the database schema matches the Node.js implementation's (which is not
 #   as straight-forward as it could be). For now, it serves its purpose, and it
-#   does so in just 95 lines of source code ;-)
+#   does so with just 98 lines of source code ;-)
 #
 #   NOTE: Using a "%" character incorrectly in a URL will cause you great
 #   anguish, and there isn't a good way for me to handle this problem "softly"
@@ -27,7 +26,7 @@
 #   of a 'box', 'key', or 'status' value.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 22 Jun 2013
+#                                                   ~~ last updated 25 Jun 2013
 
 require 'rubygems'
 require 'bundler'
@@ -86,10 +85,6 @@ helpers do
           # We have to execute the query code `sql` separately because the
           # `db.execute_batch` function always returns `nil`, which prevents
           # us from being able to retrieve the results of the query.
-          #
-          # NOTE: Even though we're evaluating a string that was assembled from
-          # unvalidated user input, `db.execute` only runs the first command
-          # given; this makes SQL injection harder but not impossible.
             x = db.execute(sql)
         rescue SQLite3::Exception => err
             puts "Exception occured: #{err}"
@@ -108,7 +103,7 @@ helpers do
     def now_plus(dt)
       # This helper method computes a date (in milliseconds) that is specified
       # by an offset `dt` (in seconds).
-        (1000 * (Time.now.to_f + dt)).to_i
+        return (1000 * (Time.now.to_f + dt)).to_i
     end
 
 end
@@ -122,36 +117,42 @@ if settings.enable_api_server? then
 
   # Here, we set up "routes" to handle incoming GET and POST requests.
 
+    before '/box/:box' do
+      # This block needs documentation.
+        @box, @key, @status = params[:box], params[:key], params[:status]
+        hang_up unless (@box.match(/^[\w\-]+$/)) and
+                ((@key.is_a?(String) and @key.match(/^[A-Za-z0-9]+$/)) or
+                (@status.is_a?(String) and @status.match(/^[A-Za-z0-9]+$/)))
+        cross_origin if (settings.enable_CORS == true)
+    end
+
     get '/box/:box' do
       # This route responds to API calls that "read" from persistent storage,
       # such as when checking for new tasks to run or downloading results.
-        if (params[:key].is_a?(String)) then
+        bk, bs = "#{@box}&#{@key}", "#{@box}&#{@status}"
+        if (@key.is_a?(String)) then
           # This arm runs when a client requests the value of a specific avar.
-            bk = "#{params[:box]}&#{params[:key]}"
             x = db_query("SELECT body FROM avars WHERE box_key = '#{bk}'")
             y = (x.length == 0) ? '{}' : x[0][0]
-        elsif (params[:status].is_a?(String)) then
+        else
           # This arm runs when a client requests a task queue.
-            bs = "#{params[:box]}&#{params[:status]}"
             x = db_query("SELECT key FROM avars WHERE box_status = '#{bs}'")
             y = (x.length == 0) ? '[]' : (x.map {|row| row[0]}).to_json
-        else
-            hang_up
         end
-        cross_origin if (settings.enable_CORS == true)
-        [200, {'Content-Type' => 'application/json'}, [y]]
+        return [200, {'Content-Type' => 'application/json'}, [y]]
     end
 
     post '/box/:box' do
       # This route responds to API calls that "write" to persistent storage,
       # such as when uploading results or submitting new tasks.
-        hang_up unless (params[:key].is_a?(String))
-        body, ed = [request.body.read, now_plus(settings.avar_ttl)]
+        hang_up unless (@key.is_a?(String))
+        body, ed = request.body.read, now_plus(settings.avar_ttl)
         x = JSON.parse(body)
-        hang_up unless (params[:key] == x['key'])
-        bk, bs = "#{x['box']}&#{x['key']}", "#{x['box']}&#{x['status']}"
+        hang_up unless (@box == x['box']) and (@key == x['key'])
+        bk, bs = "#{@box}&#{@key}", "#{@box}&#{x['status']}"
         if (x['status'].is_a?(String)) then
           # This arm runs only when a client writes a task description.
+            hang_up if (x['status'].match(/^[A-Za-z0-9]+$/) == nil)
             db_query <<-sql
                 INSERT OR REPLACE INTO avars
                     (body, box_key, box_status, exp_date, key)
@@ -164,8 +165,7 @@ if settings.enable_api_server? then
                 VALUES ('#{body}', '#{bk}', #{ed})
                 sql
         end
-        cross_origin if (settings.enable_CORS == true)
-        [201, {'Content-Type' => 'text/plain'}, ['']]
+        return [201, {'Content-Type' => 'text/plain'}, ['']]
     end
 
 end
