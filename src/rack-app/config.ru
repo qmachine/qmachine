@@ -64,7 +64,7 @@ end
 helpers do
   # This block defines subfunctions for use inside the route definitions.
 
-    def db_query(sql)
+    def query(sql)
       # This helper method helps DRY out the code for database queries, and it
       # does so in an incredibly robust and inefficient way -- by creating the
       # table and evicting expired rows before every single query. A caveat, of
@@ -132,11 +132,11 @@ if settings.enable_api_server? then
         bk, bs = "#{@box}&#{@key}", "#{@box}&#{@status}"
         if (@key.is_a?(String)) then
           # This arm runs when a client requests the value of a specific avar.
-            x = db_query("SELECT body FROM avars WHERE box_key = '#{bk}'")
+            x = query("SELECT body FROM avars WHERE box_key = '#{bk}'")
             y = (x.length == 0) ? '{}' : x[0][0]
         else
           # This arm runs when a client requests a task queue.
-            x = db_query("SELECT key FROM avars WHERE box_status = '#{bs}'")
+            x = query("SELECT key FROM avars WHERE box_status = '#{bs}'")
             y = (x.length == 0) ? '[]' : (x.map {|row| row[0]}).to_json
         end
         return [200, {'Content-Type' => 'application/json'}, [y]]
@@ -153,14 +153,14 @@ if settings.enable_api_server? then
         if (x['status'].is_a?(String)) then
           # This arm runs only when a client writes a task description.
             hang_up if (x['status'].match(/^[A-Za-z0-9]+$/) == nil)
-            db_query <<-sql
+            query <<-sql
                 INSERT OR REPLACE INTO avars
                     (body, box_key, box_status, exp_date, key)
                 VALUES ('#{body}', '#{bk}', '#{bs}', #{ed}, '#{x['key']}')
                 sql
         else
           # This arm runs when a client is writing a "regular avar".
-            db_query <<-sql
+            query <<-sql
                 INSERT OR REPLACE INTO avars (body, box_key, exp_date)
                 VALUES ('#{body}', '#{bk}', #{ed})
                 sql
