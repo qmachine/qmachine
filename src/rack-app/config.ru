@@ -26,7 +26,7 @@
 #   of a 'box', 'key', or 'status' value.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 25 Jun 2013
+#                                                   ~~ last updated 27 Jun 2013
 
 require 'rubygems'
 require 'bundler'
@@ -118,7 +118,10 @@ if settings.enable_api_server? then
   # Here, we set up "routes" to handle incoming GET and POST requests.
 
     before '/box/:box' do
-      # This block needs documentation.
+      # When any request matches the pattern given, this block will execute
+      # before the route that corresponds to its HTTP method (verb). The code
+      # here will validate the request's parameters and store them as instance
+      # variables that will be available to the corresponding route's code.
         @box, @key, @status = params[:box], params[:key], params[:status]
         hang_up unless (@box.match(/^[\w\-]+$/)) and
                 ((@key.is_a?(String) and @key.match(/^[A-Za-z0-9]+$/)) or
