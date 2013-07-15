@@ -1,0 +1,10 @@
+#-  Travis CI configuration file
+
+#-  .travis.yml ~~
+#                                                       ~~ (c) SRW, 15 Jul 2013
+#                                                   ~~ last updated 15 Jul 2013
+
+node_js:
+    -   "0.10"
+
+#-  vim:set syntax=yaml:
