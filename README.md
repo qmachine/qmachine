@@ -26,6 +26,8 @@ and
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
 news sites.
 
+[![Build Status](https://travis-ci.org/wilkinson/qmachine.png)](https://travis-ci.org/wilkinson/qmachine)
+
 For more information, see
 [https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
 
