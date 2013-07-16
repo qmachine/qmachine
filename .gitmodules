@@ -1,0 +1,3 @@
+[submodule "src/npm-package"]
+	path = src/npm-package
+	url = https://github.com/qmachine/qm-nodejs.git
