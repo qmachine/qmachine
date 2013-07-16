@@ -1,3 +1,6 @@
 [submodule "src/npm-package"]
 	path = src/npm-package
 	url = https://github.com/qmachine/qm-nodejs.git
+[submodule "src/ruby-gem"]
+	path = src/ruby-gem
+	url = https://github.com/qmachine/qm-ruby.git
