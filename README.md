@@ -29,3 +29,5 @@ news sites.
 For more information, see
 [https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
 
+[![Build Status](https://travis-ci.org/wilkinson/qmachine.png)](https://travis-ci.org/wilkinson/qmachine)
+
