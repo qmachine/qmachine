@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 11 May 2013
+#                                                   ~~ last updated 16 Jul 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -454,6 +454,9 @@ $(ICONS_DIR):
         large-app-icon.png                                                  \
         qr.png                                                              \
     )
+
+$(ICONS_DIR)/amazon-logo.png: $(ICONS_DIR)/icon-150.png | $(ICONS_DIR)
+	@   $(CP) $< $@
 
 $(ICONS_DIR)/apple-touch-icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, , $<,                               \
