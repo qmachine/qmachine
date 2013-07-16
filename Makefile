@@ -203,8 +203,8 @@ local-sandbox:
                 QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  \
                     $(NPM) start
 
-npm-package: $(BUILD_DIR)/npm-package/README.md
-	@   $(CD) $(dir $<)                                             ;   \
+npm-package: | $(BUILD_DIR)/npm-package/
+	@   $(CD) $(BUILD_DIR)/npm-package/                             ;   \
             $(NPM) install                                              ;   \
             $(NPM) shrinkwrap                                           ;   \
             $(call hilite, 'Created $@.')
@@ -219,7 +219,7 @@ rack-app: | $(BUILD_DIR)/rack-app/
             $(BUNDLE) package                                           ;   \
             $(BUNDLE) exec rackup
 
-ruby-gem: $(BUILD_DIR)/ruby-gem/README.md
+ruby-gem: | $(BUILD_DIR)/ruby-gem/
 	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(GEM) build qm.gemspec
 
