@@ -11,6 +11,6 @@ before_install:
 node_js:
     -   "0.10"
 
-script: "make browser-client"
+script: "make web-service"
 
 #-  vim:set syntax=yaml:
