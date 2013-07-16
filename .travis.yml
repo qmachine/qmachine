@@ -6,7 +6,7 @@
 
 before_install:
     -   sudo apt-get update -qq
-    -   sudo apt-get install -qq curl imagemagick libsqlite3-dev
+    -   sudo apt-get install -qq curl git imagemagick libsqlite3-dev make
 
 node_js:
     -   "0.10"
