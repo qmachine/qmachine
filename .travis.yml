@@ -4,9 +4,13 @@
 #                                                       ~~ (c) SRW, 15 Jul 2013
 #                                                   ~~ last updated 15 Jul 2013
 
+before_install:
+    -   sudo apt-get update -qq
+    -   sudo apt-get install -qq curl imagemagick libsqlite3-dev
+
 node_js:
     -   "0.10"
 
-script: "make"
+script: "make browser-client"
 
 #-  vim:set syntax=yaml:
