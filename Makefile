@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 16 Jul 2013
+#                                                   ~~ last updated 17 Jul 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -141,7 +141,7 @@ reset:
 ###
 
 .PHONY: browser-client chrome-hosted-app local-sandbox npm-package rack-app
-.PHONY: ruby-gem web-service
+.PHONY: ruby-gem update web-service
 
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
@@ -222,6 +222,10 @@ rack-app: | $(BUILD_DIR)/rack-app/
 ruby-gem: | $(BUILD_DIR)/ruby-gem/
 	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(GEM) build qm.gemspec
+
+update:
+	@   $(GIT) submodule init                                       ;   \
+            $(GIT) submodule update
 
 web-service:                                                                \
     $(addprefix $(BUILD_DIR)/web-service/,                                  \
