@@ -24,7 +24,8 @@ recently, one of which has been featured on the
 [HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html)
 and
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
-news sites.
+news sites. QM has also graced the front page of
+[Hacker News](https://news.ycombinator.com/item?id=6095595).
 
 For more information, see
 [https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
