@@ -33,3 +33,5 @@ For more information, see
 
 [![Build Status](https://drone.io/github.com/wilkinson/qmachine/status.png)](https://drone.io/github.com/wilkinson/qmachine/latest)
 
+[![NPM version](https://badge.fury.io/js/qm.png)](http://badge.fury.io/js/qm)
+
