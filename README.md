@@ -1,5 +1,4 @@
-QMachine
-========
+# QMachine [![Build Status](https://travis-ci.org/wilkinson/qmachine.png)](https://travis-ci.org/wilkinson/qmachine) [![Build Status](https://drone.io/github.com/wilkinson/qmachine/status.png)](https://drone.io/github.com/wilkinson/qmachine/latest)
 
 [QMachine (QM)](https://www.qmachine.org) is a web service that uses
 [Quanah](http://wilkinson.github.io/quanah) to create a distributed computer
@@ -29,8 +28,4 @@ news sites. QM has also graced the front page of
 
 For more information, see
 [https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
-
-[![Build Status](https://travis-ci.org/wilkinson/qmachine.png)](https://travis-ci.org/wilkinson/qmachine)
-
-[![Build Status](https://drone.io/github.com/wilkinson/qmachine/status.png)](https://drone.io/github.com/wilkinson/qmachine/latest)
 
