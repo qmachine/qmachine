@@ -1,7 +1,7 @@
 # QMachine [![Build Status](https://travis-ci.org/wilkinson/qmachine.png)](https://travis-ci.org/wilkinson/qmachine) [![Build Status](https://drone.io/github.com/wilkinson/qmachine/status.png)](https://drone.io/github.com/wilkinson/qmachine/latest)
 
 [QMachine](https://www.qmachine.org) (QM) is a web service that uses
-[Quanah](http://wilkinson.github.io/quanah) to create a distributed computer
+[Quanah](http://wilkinson.github.io/quanah/) to create a distributed computer
 powered by web browsers. QM contains three main components: an API server, a
 web server, and a website. The API server provides a message-passing interface
 between nodes using HTTP and JSON, and the web server exists only to serve the
