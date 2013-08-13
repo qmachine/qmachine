@@ -140,7 +140,7 @@ reset:
 
 ###
 
-.PHONY: browser-client chrome-hosted-app local-sandbox npm-package rack-app
+.PHONY: browser-client chrome-hosted-app local-sandbox npm-module rack-app
 .PHONY: ruby-gem update web-service
 
 browser-client:                                                             \
@@ -195,7 +195,7 @@ local-sandbox:
                 $(call make-directory, local-sandbox/node_modules/)     ;   \
             fi                                                          ;   \
             if [ ! -d local-sandbox/node_modules/qm ]; then                 \
-                $(CP) npm-package local-sandbox/node_modules/qm         ;   \
+                $(CP) npm-module local-sandbox/node_modules/qm          ;   \
             fi                                                          ;   \
             $(CD) local-sandbox/                                        ;   \
             $(NPM) install                                              ;   \
@@ -203,8 +203,8 @@ local-sandbox:
                 QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  \
                     $(NPM) start
 
-npm-package: | $(BUILD_DIR)/npm-package/
-	@   $(CD) $(BUILD_DIR)/npm-package/                             ;   \
+npm-module: | $(BUILD_DIR)/npm-module/
+	@   $(CD) $(BUILD_DIR)/npm-module/                              ;   \
             $(NPM) install                                              ;   \
             $(NPM) shrinkwrap                                           ;   \
             $(call hilite, 'Created $@.')
@@ -304,10 +304,10 @@ $(BUILD_DIR)/chrome-hosted-app/snapshot-%.png:                              \
                 $(RM) $(@:%.png=%)-*.png                                ;   \
             fi
 
-$(BUILD_DIR)/npm-package: $(SRC_DIR)/npm-package | $(BUILD_DIR)
+$(BUILD_DIR)/npm-module: $(SRC_DIR)/npm-module | $(BUILD_DIR)
 	@   $(CP) $< $@
 
-$(BUILD_DIR)/npm-package/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-package
+$(BUILD_DIR)/npm-module/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-module
 	@   $(CP) $< $@
 
 $(BUILD_DIR)/rack-app/: $(SRC_DIR)/rack-app/ | $(BUILD_DIR)
@@ -332,9 +332,9 @@ $(BUILD_DIR)/web-service/.gitignore:                                        \
 
 $(BUILD_DIR)/web-service/katamari.json:                                     \
     browser-client                                                          \
-    npm-package                                                             \
+    npm-module                                                              \
     | $(BUILD_DIR)/web-service
-	@   $(NODEJS) $(BUILD_DIR)/npm-package/examples/roll-up.js          \
+	@   $(NODEJS) $(BUILD_DIR)/npm-module/examples/roll-up.js           \
                 $(BUILD_DIR)/browser-client $@
 
 $(BUILD_DIR)/web-service/%: $(SHARE_DIR)/% | $(BUILD_DIR)/web-service
