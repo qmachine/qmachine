@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 04 May 2013
+//                                                  ~~ last updated 13 Aug 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -560,7 +560,8 @@
     };
 
     is_String = function (x) {
-     // This function needs documentation.
+     // This function returns a boolean that indicates whether the given
+     // argument `x` can be safely assumed to have `String.prototype` methods.
         return ((typeof x === 'string') || (x instanceof String));
     };
 
