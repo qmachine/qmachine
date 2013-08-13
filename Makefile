@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 17 Jul 2013
+#                                                   ~~ last updated 12 Aug 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -386,7 +386,7 @@ $(CACHE_DIR)/jquery-191.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/tiSzW")
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://git.io/6pCWog")
+	@   $(call download-url, "http://git.io/idKqIQ")
 
 $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/1MnPH")
