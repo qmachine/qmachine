@@ -2,14 +2,14 @@
 
 //- test-16.js ~~
 //                                                      ~~ (c) SRW, 21 Sep 2012
-//                                                  ~~ last updated 27 Dec 2012
+//                                                  ~~ last updated 13 Aug 2013
 
 (function () {
     'use strict';
 
     /*global avar, identity, oops, ply, puts, run_next_test, when */
 
-    /*jslint indent: 4, maxlen: 80 */
+    /*jslint indent: 4, maxlen: 80, unparam: true */
 
     var n, x, y;
 

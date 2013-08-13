@@ -2,7 +2,7 @@
 
 //- volunteer.js ~~
 //                                                      ~~ (c) SRW, 15 Oct 2012
-//                                                  ~~ last updated 28 Dec 2012
+//                                                  ~~ last updated 13 Aug 2013
 
 (function (global) {
     'use strict';
@@ -23,15 +23,13 @@
 
  // Declarations
 
-    var QM, avar, load_script, oops, puts;
+    var QM, avar, oops, puts;
 
  // Definitions
 
     QM = global.QM;
 
     avar = Object.prototype.Q.avar;
-
-    load_script = QM.lib;
 
     oops = function () {
      // This function needs documentation.
