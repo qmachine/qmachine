@@ -26,7 +26,7 @@
 #   of a 'box', 'key', or 'status' value.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 27 Jun 2013
+#                                                   ~~ last updated 15 Aug 2013
 
 require 'rubygems'
 require 'bundler'
@@ -37,7 +37,7 @@ configure do
 
   # QMachine options
 
-    set avar_ttl:               86400,
+    set avar_ttl:               86400, # seconds
         enable_api_server:      true,
         enable_CORS:            true,
         enable_web_server:      true,
