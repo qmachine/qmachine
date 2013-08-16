@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 12 Aug 2013
+#                                                   ~~ last updated 16 Aug 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -372,9 +372,6 @@ $(CACHE_DIR)/homepage.js:                                                   \
 
 $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/9g5f4")
-
-$(CACHE_DIR)/ie.js: $(SRC_DIR)/browser-client/ie.js | $(CACHE_DIR)
-	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
