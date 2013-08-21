@@ -85,7 +85,7 @@ ifeq ("$(strip $(db))", "couch")
 endif
 
 ifeq ("$(strip $(db))", "mongo")
-    QM_API_LOC  :=  '{"mongo":"mongodb://localhost:27017/qm"}'
+    QM_API_LOC  :=  '{"mongo":"mongodb://localhost:27017/test"}'
 endif
 
 ifeq ("$(strip $(db))", "postgres")
