@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 17 Jul 2013
+#                                                   ~~ last updated 27 Aug 2013
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -159,6 +159,12 @@ endef
 
 define red-printf
     printf '\033[1;31m'$(strip $(1))'\033[1;0m' $(strip $(2))
+endef
+
+define remove-source-maps
+    $(SED) -e '/\/\/\@ sourceMappingURL=/d' $(1) > $(1).bak             ;   \
+    $(CP) $(1).bak $(1)                                                 ;   \
+    $(RM) $(1).bak
 endef
 
 define replace-iso-date
