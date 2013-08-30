@@ -26,7 +26,7 @@
 #   of a 'box', 'key', or 'status' value.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 15 Aug 2013
+#                                                   ~~ last updated 30 Aug 2013
 
 require 'rubygems'
 require 'bundler'
@@ -69,7 +69,8 @@ helpers do
       # does so in an incredibly robust and inefficient way -- by creating the
       # table and evicting expired rows before every single query. A caveat, of
       # course, is that the special ":memory:" database doesn't work correctly,
-      # but ":memory:" isn't *persistent* storage anyway.
+      # but ":memory:" isn't *persistent* storage anyway. Also, I have omitted
+      # indexing on `box_status` for obvious reasons :-P
         begin
             db = SQLite3::Database.open(settings.persistent_storage)
             db.execute_batch <<-sql
