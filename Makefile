@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 27 Aug 2013
+#                                                   ~~ last updated 31 Aug 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -96,15 +96,18 @@ ifeq ("$(strip $(db))", "redis")
     QM_API_LOC  :=  '{"redis":"redis://:@127.0.0.1:6379"}'
 endif
 
-.PHONY: all check clean clobber distclean help reset
+.PHONY: all check check-versions clean clobber distclean help reset
 .SILENT: ;
 
 '': help;
 
 all: $(shell $(LS) $(SRC_DIR))
 
-check: $(CACHE_DIR)/quanah.js
+check: $(CACHE_DIR)/quanah.js | check-versions
 	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json $(TEST_DIR)/tests.js
+
+check-versions:
+	@   $(NODEJS) $(SHARE_DIR)/check-versions.js
 
 clean: reset
 	@   $(RM) $(BUILD_DIR)/browser-client/                          ;   \
