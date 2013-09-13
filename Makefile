@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 31 Aug 2013
+#                                                   ~~ last updated 12 Sep 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -165,6 +165,7 @@ browser-client:                                                             \
         favicon.ico                                                         \
         fluidicon.png                                                       \
         giant-favicon.ico                                                   \
+        hits-by-country.json                                                \
         homepage.js                                                         \
         html5shiv.js                                                        \
         icon-128.png                                                        \
@@ -366,10 +367,16 @@ $(CACHE_DIR)/bootstrap-responsive.css: | $(CACHE_DIR)
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/2RqIb")
 
+$(CACHE_DIR)/hits-by-country.json:                                          \
+    $(SRC_DIR)/browser-client/hits-by-country.json                          \
+    | $(CACHE_DIR)
+	@   $(CP) $< $@
+
 $(CACHE_DIR)/homepage.js:                                                   \
     $(CACHE_DIR)/jquery-191.js                                              \
     $(CACHE_DIR)/bootstrap.js                                               \
     $(CACHE_DIR)/main.js                                                    \
+    $(CACHE_DIR)/world-map.js                                               \
     |   $(CACHE_DIR)
 	@   $(call replace-url-macros, $^, $@)                          ;   \
             $(call remove-source-maps, $@)
@@ -426,6 +433,9 @@ $(CACHE_DIR)/style-min.css:                                                 \
     $(CACHE_DIR)/bootstrap-responsive.css                                   \
     | $(CACHE_DIR)
 	@   $(call minify-css, $^, $@)
+
+$(CACHE_DIR)/world-map.js: $(SRC_DIR)/browser-client/world-map.js | $(CACHE_DIR)
+	@   $(CP) $< $@
 
 $(ICONS_DIR):
 	@   $(call make-directory, $@)
