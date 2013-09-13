@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 12 Sep 2013
+#                                                   ~~ last updated 13 Sep 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -355,14 +355,11 @@ $(CACHE_DIR)/barebones.html:                                                \
     |   $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
-$(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/PtIx8")
-
 $(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/cqWhu")
+	@   $(call download-url, "http://goo.gl/IQG9fJ")
 
-$(CACHE_DIR)/bootstrap-responsive.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/u9uys")
+$(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/Brc6pW")
 
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/2RqIb")
@@ -430,7 +427,6 @@ $(CACHE_DIR)/style.css: $(SRC_DIR)/browser-client/style.css | $(CACHE_DIR)
 $(CACHE_DIR)/style-min.css:                                                 \
     $(CACHE_DIR)/style.css                                                  \
     $(CACHE_DIR)/bootstrap.css                                              \
-    $(CACHE_DIR)/bootstrap-responsive.css                                   \
     | $(CACHE_DIR)
 	@   $(call minify-css, $^, $@)
 
