@@ -361,6 +361,9 @@ $(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
 $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/Brc6pW")
 
+$(CACHE_DIR)/bootstrap-theme.css: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/qlEB6G")
+
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/2RqIb")
 
@@ -425,8 +428,9 @@ $(CACHE_DIR)/style.css: $(SRC_DIR)/browser-client/style.css | $(CACHE_DIR)
 	@   $(CP) $< $@
 
 $(CACHE_DIR)/style-min.css:                                                 \
-    $(CACHE_DIR)/style.css                                                  \
     $(CACHE_DIR)/bootstrap.css                                              \
+    $(CACHE_DIR)/bootstrap-theme.css                                        \
+    $(CACHE_DIR)/style.css                                                  \
     | $(CACHE_DIR)
 	@   $(call minify-css, $^, $@)
 

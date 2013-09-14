@@ -5,9 +5,7 @@
  *  This file declares some of the presentation-layer settings for the browser
  *  client's graphical user interface (GUI) -- the webpage, "index.html". This
  *  file will be concatenated and/or minified along with Twitter Bootstrap as
- *  part of "style-min.css", which means that some or all of these settings may
- *  be overridden by Twitter Bootstrap's defaults. Consequently, I have removed
- *  some of my original rules simply to reduce the file size.
+ *  part of "style-min.css".
  *
  *  NOTE: I truly hate "slashstar" comments because I have never found a way to
  *  write them that doesn't make me want to claw my eyes out. If you have any
@@ -18,15 +16,57 @@
  */
 
 @media all {
- /* These rules will be applied for to the page for all devices, but they can
-  * be overridden by other device-specific settings I may have specified. */
+
+ /* Twitter Bootstrap's fixed navbar overlays other content unless you add
+  * padding to the top of the body, and by default the navbar is 50px high. */
+
+    body {
+        padding-bottom: 10px;
+        padding-top: 70px;
+    }
+
+ /* The next two rules are what happens when your upstream author removes a
+  * feature you like -- you paste it back in and disparage them for it, haha.
+  * In this case, support for ":invalid" pseudo-selectors was removed from
+  * Twitter Bootstrap 3.x by this commit: http://git.io/1AHLzg). */
+
+    input:focus:invalid,
+    textarea:focus:invalid,
+    select:focus:invalid {
+        color: #b94a48;
+        border-color: #ee5f5b;
+    }
+
+    input:focus:invalid:focus,
+    textarea:focus:invalid:focus,
+    select:focus:invalid:focus {
+        border-color: #e9322d;
+        -webkit-box-shadow: 0 0 6px #f8b9b7;
+        box-shadow: 0 0 6px #f8b9b7;
+    }
+
+ /* The next rule has also been carried over manually from Bootstrap 2.3.1. */
+
+    code {
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+    }
+
+ /* Heaven forbid that someone thinks QMachine isn't working because they have
+  * actually turned JavaScript off, but just in case ... */
+
     noscript {
         color: red;
         font-size: 200%;
     }
-    .centered {
-        text-align: center;
+
+ /* Finally, we supplement the ".lead" class by padding its top to match its
+  * bottom's padding. */
+
+    .lead {
+        margin-top: 20px;
     }
+
 }
 
 /*- vim:set syntax=css: */
