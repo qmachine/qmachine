@@ -2,7 +2,7 @@
 
 //- world-map.js ~~
 //                                                      ~~ (c) SRW, 11 Sep 2013
-//                                                  ~~ last updated 12 Sep 2013
+//                                                  ~~ last updated 15 Sep 2013
 
 (function () {
     'use strict';
@@ -21,10 +21,8 @@
 
     convert_to_rank = function (x) {
      // This function sorts the input data from greatest to least by hits and
-     // assigns a rank to each row as that row's index in the sorted dataset.
-     // Currently, this function does not attempt to note ties, but I plan to
-     // add that at the same time that I begin providing country codes for the
-     // countries that have not recorded any hits yet.
+     // assigns a rank to each row as that row's index in the sorted dataset,
+     // ties having been taken into account.
         var i, n, ranks, temp, y;
         ranks = {};
         temp = x.slice(1).sort(function (a, b) {
@@ -37,7 +35,7 @@
                 ranks[temp[i][1]] = i + 1;
             }
         }
-        y = [['Country', 'Rank', 'Hits']];
+        y = [['Country', 'Rank', 'API calls']];
         for (i = 0; i < n; i += 1) {
             y[i + 1] = [temp[i][0], ranks[temp[i][1]], temp[i][1]];
         }
