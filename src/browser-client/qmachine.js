@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 13 Aug 2013
+//                                                  ~~ last updated 17 Sep 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -1864,7 +1864,7 @@
  // in sandboxed contexts, and using identifiers like `global` carelessly ...
 
     /*jslint indent: 4, maxlen: 80 */
-    /*global global: true */
+    /*global global: false */
     /*properties global */
 
     if (this === null) {
