@@ -2,7 +2,7 @@
 
 //- world-map.js ~~
 //                                                      ~~ (c) SRW, 11 Sep 2013
-//                                                  ~~ last updated 15 Sep 2013
+//                                                  ~~ last updated 19 Sep 2013
 
 (function () {
     'use strict';
@@ -15,7 +15,8 @@
 
  // Declarations
 
-    var convert_to_rank, get_data, main, options, sync_country_names;
+    var convert_to_rank, get_data, main, options, sync_country_names,
+        update_html_spans;
 
  // Definitions
 
@@ -66,6 +67,9 @@
 
     main = function () {
      // This function needs documentation.
+        if (google.visualization === undefined) {
+            return;
+        }
         var geochart = new google.visualization.GeoChart($('#world-map')[0]);
         get_data(function (err, data) {
          // This function needs documentation.
@@ -133,10 +137,18 @@
         return;
     };
 
+    update_html_spans = function (obj) {
+     // This function updates the content of HTML span elements that share ids
+     // with property names of the input argument `obj`.
+        // ...
+        return;
+    };
+
  // Invocations
 
-    //google.load('visualization', '1', {'packages': ['geochart']});
-    google.setOnLoadCallback(main);
+    if ((window.hasOwnProperty('google')) && (google instanceof Object)) {
+        google.setOnLoadCallback(main);
+    }
 
  // That's all, folks!
 

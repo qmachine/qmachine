@@ -24,7 +24,9 @@
   <!-- Le Google Visualization API -->
     <script src="https://www.google.com/jsapi"></script>
     <script>
-        google.load('visualization', '1', {'packages': ['geochart']});
+        if (window.hasOwnProperty('google')) {
+          google.load('visualization', '1', {'packages': ['geochart']});
+        }
     </script>
 
   <!--[if IE]>
