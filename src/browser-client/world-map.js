@@ -179,9 +179,16 @@
 
  // Invocations
 
-    if ((window.hasOwnProperty('google')) && (google instanceof Object)) {
-        google.setOnLoadCallback(main);
-    }
+    $(document).ready(function () {
+     // This function will fix the asynchronous loading issues, I hope ...
+        if (window.hasOwnProperty('google')) {
+            google.load('visualization', '1', {
+                'callback': main,
+                'packages': ['geochart']
+            });
+        }
+        return;
+    });
 
  // That's all, folks!
 
