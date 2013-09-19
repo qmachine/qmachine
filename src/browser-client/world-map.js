@@ -16,7 +16,7 @@
  // Declarations
 
     var convert_to_rank, get_data, main, options, sync_country_names,
-        update_html_spans;
+        update_html_spans, update_summary;
 
  // Definitions
 
@@ -82,6 +82,7 @@
             table = google.visualization.arrayToDataTable(sorted);
             sync_country_names(data, table);
             geochart.draw(table, options);
+            update_summary(data);
          /*
             if (location.search !== '?stale_ok=false') {
                 $('#big-container')
@@ -140,7 +141,39 @@
     update_html_spans = function (obj) {
      // This function updates the content of HTML span elements that share ids
      // with property names of the input argument `obj`.
-        // ...
+        var key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                $('#' + key).text(obj[key]);
+            }
+        }
+        return;
+    };
+
+    update_summary = function (data) {
+     // This function needs documentation.
+        var add_commas, i, n, total;
+        add_commas = function (n) {
+         // This function adds numbers to make things pretty.
+            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        };
+        n = data.length - 1;
+        total = {
+            calls: 0,
+            countries: 0
+        };
+        for (i = 0; i < n; i += 1) {
+            if (data[i][1] > 0) {
+                total.calls += data[i][1];
+                total.countries += 1;
+            }
+        }
+        update_html_spans({
+            'qm-total-calls': add_commas(total.calls) +
+                    ((total.calls === 1) ? ' call' : ' calls'),
+            'qm-total-countries': add_commas(total.countries) +
+                    ((total.countries === 1) ? ' country' : ' countries')
+        });
         return;
     };
 
