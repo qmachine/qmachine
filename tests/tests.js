@@ -9,7 +9,7 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 21 May 2013
+//                                                  ~~ last updated 21 Sep 2013
 
 (function () {
     'use strict';
@@ -155,7 +155,7 @@
 
  // Test definitions
 
-    console.log('NOTE: Remember to launch a worker for "sean"!');
+    console.log('NOTE: Remember to launch a worker for "make-check"!');
 
     register_test('Results: 1', function f() {
      // This function tests "Method Q" for the case when all parameters for
@@ -165,7 +165,7 @@
             setTimeout(f, 0);
             return;
         }
-        var x = window.QM.avar({box: 'sean', val: 0});
+        var x = window.QM.avar({box: 'make-check', val: 0});
         x.Q(function (evt) {
          // This function needs documentation.
             this.val += 1;
@@ -191,7 +191,7 @@
             return;
         }
         var x = window.QM.avar();
-        x.box = 'sean';
+        x.box = 'make-check';
         x.val = 0;
         x.Q(function (evt) {
          // This function needs documentation.
@@ -218,7 +218,7 @@
             return;
         }
         window.QM.submit({
-            box: 'sean',
+            box: 'make-check',
             f: function (x) {
              // This function needs documentation.
                 return x + 2;
@@ -247,7 +247,7 @@
         window.QM.submit(2, function (x) {
          // This function needs documentation.
             return x + 2;
-        }, 'sean').Q(function (evt) {
+        }, 'make-check').Q(function (evt) {
          // This function needs documentation.
             console.log('Results: ' + this.val);
             return evt.exit();
@@ -268,7 +268,7 @@
             return;
         }
         window.QM.submit({
-            box: 'sean',
+            box: 'make-check',
             f: '(x) -> x + 2',
             x: 3
         }).Q(function (evt) {
@@ -292,7 +292,7 @@
             return;
         }
         window.QM.submit({
-            box: 'sean',
+            box: 'make-check',
             f: function (x) {
              // This function needs documentation.
                 return x + 2;
@@ -320,7 +320,7 @@
             return;
         }
         window.QM.submit({
-            box: 'sean',
+            box: 'make-check',
             f: '(x) -> x + 3',
             x: window.QM.avar({val: 4})
         }).Q(function (evt) {
@@ -338,14 +338,15 @@
     register_test('Results: 8', function f() {
      // This function tests `QM.submit` for the case when the input argument is
      // an object and the data `x` are represented by an avar with an explicit
-     // `box` value. The expected behavior here is to use "sean", not "booger".
+     // `box` value. The expected behavior here is to use "make-check", not
+     // "booger".
         /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
             return;
         }
         window.QM.submit({
-            box: 'sean',
+            box: 'make-check',
             f: function (x) {
              // This function needs documentation.
                 return x * 2;
@@ -372,7 +373,7 @@
         var mapf, x;
         mapf = '(x) -> 3 * x';
         x = [1, 2, 3, 4, 5];
-        window.QM.map(x, mapf, 'sean').Q(function (evt) {
+        window.QM.map(x, mapf, 'make-check').Q(function (evt) {
          // This function needs documentation.
             console.log('Results: ' + this.val);
             return evt.exit();
@@ -393,7 +394,7 @@
         var redf, x;
         redf = '(a, b) -> a + b';
         x = [1, 2, 3, 4, 5];
-        window.QM.reduce(x, redf, 'sean').Q(function (evt) {
+        window.QM.reduce(x, redf, 'make-check').Q(function (evt) {
          // This function needs documentation.
             console.log('Results: ' + this.val);
             return evt.exit();
@@ -415,7 +416,7 @@
         mapf = '(x) -> 3 * x';
         redf = '(a, b) -> a + b';
         x = [1, 2, 3, 4, 5];
-        window.QM.mapreduce(x, mapf, redf, 'sean').Q(function (evt) {
+        window.QM.mapreduce(x, mapf, redf, 'make-check').Q(function (evt) {
          // This function needs documentation.
             console.log('Results: ' + this.val);
             return evt.exit();
@@ -452,7 +453,7 @@
                 setTimeout(f, 100);
                 return;
             }
-            window.QM.box = 'sean';
+            window.QM.box = 'make-check';
             window.$('#QM-volunteer-input').click();
             return;
         });
