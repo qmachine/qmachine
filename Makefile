@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 13 Sep 2013
+#                                                   ~~ last updated 22 Sep 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -96,7 +96,7 @@ ifeq ("$(strip $(db))", "redis")
     QM_API_LOC  :=  '{"redis":"redis://:@127.0.0.1:6379"}'
 endif
 
-.PHONY: all check check-versions clean clobber distclean help reset
+.PHONY: all check check-versions clean clobber distclean help reset update
 .SILENT: ;
 
 '': help;
@@ -141,10 +141,13 @@ help:
 reset:
 	@   $(call contingent, clear)
 
+update:
+	@   $(GIT) submodule init                                       ;   \
+            $(GIT) submodule update
+
 ###
 
-.PHONY: browser-client chrome-hosted-app local-sandbox npm-module rack-app
-.PHONY: ruby-gem update web-service
+.PHONY: browser-client chrome-hosted-app npm-module ruby-gem web-service
 
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
@@ -186,6 +189,31 @@ chrome-hosted-app:                                                          \
     )
 	@   $(call hilite, 'Created $@.')
 
+npm-module: | $(BUILD_DIR)/npm-module/
+	@   $(CD) $(BUILD_DIR)/npm-module/                              ;   \
+            $(NPM) install                                              ;   \
+            $(NPM) shrinkwrap                                           ;   \
+            $(call hilite, 'Created $@.')
+
+ruby-gem: | $(BUILD_DIR)/ruby-gem/
+	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \
+            $(GEM) build qm.gemspec
+
+web-service:                                                                \
+    $(addprefix $(BUILD_DIR)/web-service/,                                  \
+        .gitignore                                                          \
+        katamari.json                                                       \
+        package.json                                                        \
+        Procfile                                                            \
+        server.js                                                           \
+        .slugignore                                                         \
+    )
+	@   $(call hilite, 'Created $@.')
+
+###
+
+.PHONY: local-sandbox rack-app
+
 local-sandbox:
 	@   $(MAKE)                                                         \
                 MOTHERSHIP="$(strip $(LOCAL_ADDR))"                         \
@@ -207,12 +235,6 @@ local-sandbox:
                 QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  \
                     $(NPM) start
 
-npm-module: | $(BUILD_DIR)/npm-module/
-	@   $(CD) $(BUILD_DIR)/npm-module/                              ;   \
-            $(NPM) install                                              ;   \
-            $(NPM) shrinkwrap                                           ;   \
-            $(call hilite, 'Created $@.')
-
 rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) MOTHERSHIP="$(strip $(LOCAL_ADDR))" browser-client  ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
@@ -222,25 +244,6 @@ rack-app: | $(BUILD_DIR)/rack-app/
             $(CD) rack-app                                              ;   \
             $(BUNDLE) package                                           ;   \
             $(BUNDLE) exec rackup
-
-ruby-gem: | $(BUILD_DIR)/ruby-gem/
-	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \
-            $(GEM) build qm.gemspec
-
-update:
-	@   $(GIT) submodule init                                       ;   \
-            $(GIT) submodule update
-
-web-service:                                                                \
-    $(addprefix $(BUILD_DIR)/web-service/,                                  \
-        .gitignore                                                          \
-        katamari.json                                                       \
-        package.json                                                        \
-        Procfile                                                            \
-        server.js                                                           \
-        .slugignore                                                         \
-    )
-	@   $(call hilite, 'Created $@.')
 
 ###
 
