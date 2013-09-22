@@ -1,6 +1,6 @@
 {
     "dependencies": {
-        "bootstrap": "2.3.1",
+        "bootstrap": "3.0.0",
         "coffee-script": "1.6.2",
         "jquery": "1.9.1",
         "quanah": "0.1.7"
@@ -10,5 +10,5 @@
         "./src/browser-client/style.css"
     ],
     "name": "qm",
-    "version": "1.0.3"
+    "version": "1.0.4"
 }
