@@ -2,7 +2,7 @@
 
 //- world-map.js ~~
 //                                                      ~~ (c) SRW, 11 Sep 2013
-//                                                  ~~ last updated 19 Sep 2013
+//                                                  ~~ last updated 22 Sep 2013
 
 (function () {
     'use strict';
@@ -15,10 +15,15 @@
 
  // Declarations
 
-    var convert_to_rank, get_data, main, options, sync_country_names,
-        update_html_spans, update_summary;
+    var add_commas, convert_to_rank, get_data, main, options,
+        sync_country_names, update_html_spans, update_summary;
 
  // Definitions
+
+    add_commas = function (n) {
+     // This function adds commas to numbers to make things pretty.
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
 
     convert_to_rank = function (x) {
      // This function sorts the input data from greatest to least by hits and
@@ -83,12 +88,6 @@
             sync_country_names(data, table);
             geochart.draw(table, options);
             update_summary(data);
-         /*
-            if (location.search !== '?stale_ok=false') {
-                $('#big-container')
-                    .append('<a href="?stale_ok=false">view latest</a>');
-            }
-         */
             return;
         });
         return;
@@ -132,6 +131,7 @@
              // appear to stand for "format" and "value" ...
                 if (x[i].c[0].v === data[j][0]) {
                     x[i].c[0].f = data[j][2];
+                    x[i].c[2].f = add_commas(x[i].c[2].v);
                 }
             }
         }
@@ -152,11 +152,7 @@
 
     update_summary = function (data) {
      // This function needs documentation.
-        var add_commas, i, n, total;
-        add_commas = function (n) {
-         // This function adds numbers to make things pretty.
-            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        };
+        var i, n, total;
         n = data.length - 1;
         total = {
             calls: 0,
