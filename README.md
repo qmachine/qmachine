@@ -7,7 +7,7 @@ web server, and a website. The API server provides a message-passing interface
 between nodes using HTTP and JSON, and the web server exists only to serve the
 website, which functions as the browser client application.
 
-[![Homepage thumbnail](https://safeweb.norton.com/thumb/?url=qmachine.org)](https://safeweb.norton.com/thumb/?url=qmachine.org)
+[![Homepage thumbnail](https://safeweb.norton.com/thumb/?url=qmachine.org)](https://www.qmachine.org)
 
 Currently, there are two implementations of the server-side components. The
 original version is written in [Node.js](http://nodejs.org) and is available
