@@ -8,7 +8,7 @@
             "https://*.qmachine.org/"
         ]
     },
-    "description": "The World's Most Relaxed Supercomputer",
+    "description": "A platform for World Wide Computing",
     "icons": {
         "16": "favicon.ico",
         "128": "icon-128.png"
