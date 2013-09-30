@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 28 Sep 2013
+//                                                  ~~ last updated 29 Sep 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -1743,6 +1743,19 @@
                 value: x
             });
             return;
+        }
+    });
+
+    defineProperty(AVar.prototype, 'print', {
+     // NOTE: I commented two of the next three lines out because their values
+     // are the default ones specified by the ES5.1 standard.
+        //configurable: false,
+        enumerable: true,
+        //writable: false,
+        value: function () {
+         // This function is syntactic sugar for logging output.
+            QM.puts(this);
+            return this;
         }
     });
 
