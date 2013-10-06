@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 29 Sep 2013
+//                                                  ~~ last updated 06 Oct 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -14,28 +14,29 @@
     /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        ActiveXObject, CoffeeScript, JSLINT, Q, QM, XDomainRequest,
-        XMLHttpRequest, '__defineGetter__', '__defineSetter__', a,
-        addEventListener, adsafe, anon, appendChild, apply, atob, attachEvent,
-        avar, b, bitwise, body, box, browser, btoa, by, call, can_run_remotely,
-        cap, charAt, charCodeAt, comm, configurable, console, constructor,
-        contentWindow, continue, createElement, css, data, debug, def,
-        defineProperty, detachEvent, devel, diagnostics, display, document,
-        done, enumerable, env, epitaph, eqeq, error, errors, es5, eval, evil,
-        exemptions, exit, f, fail, floor, forin, fragment, fromCharCode, get,
-        getElementsByTagName, global, hasOwnProperty, head, host, ignoreCase,
-        importScripts, indexOf, join, key, length, lib, load_data, load_script,
-        location, log, map, mapreduce, method, multiline, navigator, newcap,
-        node, nomen, now, on, onLine, onload, onreadystatechange, open,
-        parentElement, parse, passfail, plusplus, ply, postMessage, predef,
-        properties, protocol, prototype, push, puts, query, random, readyState,
-        reason, recent, reduce, regexp, removeChild, removeEventListener,
-        replace, responseText, result, results, revive, rhino, run_remotely,
-        safe, send, set, setRequestHeader, setTimeout, shelf, shift, slice,
-        sloppy, source, src, status, stay, stringify, stupid, style, sub,
-        submit, test, time, toJSON, toSource, toString, todo, undef, unparam,
-        url, val, value, valueOf, vars, via, visibility, volunteer, when,
-        white, window, windows, withCredentials, writable, x, y
+        a, ActiveXObject, addEventListener, adsafe, anon, appendChild, apply,
+        atob, attachEvent, avar, b, bitwise, body, box, browser, btoa, by,
+        call, can_run_remotely, cap, charAt, charCodeAt, CoffeeScript, comm,
+        configurable, console, constructor, contentWindow, continue,
+        createElement, css, data, debug, def, '__defineGetter__',
+        defineProperty, '__defineSetter__', detachEvent, devel, diagnostics,
+        display, document, done, enumerable, env, epitaph, eqeq, error, errors,
+        es5, eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
+        fromCharCode, get, getElementsByTagName, global, hasOwnProperty, head,
+        host, ignoreCase, importScripts, indexOf, join, JSLINT, key, length,
+        lib, load_data, load_script, location, log, map, mapreduce, method,
+        multiline, navigator, newcap, node, nomen, now, on, onLine, onload,
+        onreadystatechange, open, parentElement, parse, passfail, plusplus,
+        ply, postMessage, predef, properties, protocol, prototype, push, puts,
+        Q, QM, query, random, readyState, reason, recent, reduce, regexp,
+        removeChild, removeEventListener, replace, responseText, result,
+        results, revive, rhino, run_remotely, safe, send, set,
+        setRequestHeader, setTimeout, shelf, shift, slice, sloppy, source, src,
+        status, stay, stringify, stupid, style, sub, submit, test, time,
+        toJSON, toSource, toString, todo, undef, unparam, url, val, value,
+        valueOf, vars, via, visibility, volunteer, when, white, window,
+        windows, withCredentials, writable, x, XDomainRequest, XMLHttpRequest,
+        y
     */
 
  // Prerequisites
@@ -62,7 +63,7 @@
  // Definitions
 
     ajax = function (method, url, body) {
-     // This function needs documentation.
+     // This function returns an avar.
         var y = avar();
         y.Q(function (evt) {
          // This function needs documentation of a more general form ...
@@ -211,8 +212,8 @@
              // Unfortunately, it isn't available in Node.js, the Web Worker
              // contexts of Chrome 21 or Safari 6, or common server-side
              // developer shells like Spidermonkey, D8 / V8, or JavaScriptCore.
-             // Also, it throws an error in most (?) browsers if you feed
-             // it Unicode --> http://goo.gl/3fLFs.
+             // Also, it throws an error in most (?) browsers if you feed it
+             // Unicode (see http://goo.gl/3fLFs).
                 /*jslint bitwise: true */
                 var a, ch1, ch2, ch3, en1, en2, en3, en4, i, n, y;
                 n = x.length;
@@ -1357,8 +1358,9 @@
         if (arguments.length === 1) {
          // Assume here that the input argument is an object with properties
          // corresponding to the four variables. Although this is my preferred
-         // syntax, it is not the default because this function is not intended
-         // for advanced users -- it's the "training wheels" version of QM.
+         // syntax, it is not the default because the `submit` function is not
+         // intended for advanced users anyway -- it's the "training wheels"
+         // version of QM.
             arg_box = x.box;
             arg_env = x.env;
             arg_f = x.f;
