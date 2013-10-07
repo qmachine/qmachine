@@ -2,7 +2,7 @@
 
 //- world-map.js ~~
 //                                                      ~~ (c) SRW, 11 Sep 2013
-//                                                  ~~ last updated 22 Sep 2013
+//                                                  ~~ last updated 06 Oct 2013
 
 (function () {
     'use strict';
@@ -64,7 +64,7 @@
             }
             return;
         };
-        req.open('GET', '/hits-by-country.json' + location.search, true);
+        req.open('GET', './hits-by-country.json' + location.search, true);
         req.setRequestHeader('Content-Type', 'application/json');
         req.send(null);
         return;
