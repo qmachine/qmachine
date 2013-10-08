@@ -2,7 +2,7 @@
 
 //- world-map.js ~~
 //                                                      ~~ (c) SRW, 11 Sep 2013
-//                                                  ~~ last updated 06 Oct 2013
+//                                                  ~~ last updated 08 Oct 2013
 
 (function () {
     'use strict';
@@ -102,7 +102,14 @@
                 '#A1D99B', '#C7E9C0', 'white'
             ]
         },
-        legend: 'none'
+        datelessRegionColor: 'red', // so we'll notice problems immediately
+        keepAspectRatio: true,
+        legend: 'none',
+        projection: {
+            //name:'kavrayskiy-vii'
+        },
+        region: 'world',
+        width: '100%'
     };
 
     sync_country_names = function (data, table) {
