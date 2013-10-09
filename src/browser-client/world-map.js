@@ -160,12 +160,12 @@
     update_summary = function (data) {
      // This function needs documentation.
         var i, n, total;
-        n = data.length - 1;
+        n = data.length;
         total = {
             calls: 0,
             countries: 0
         };
-        for (i = 0; i < n; i += 1) {
+        for (i = 1; i < n; i += 1) {
             if (data[i][1] > 0) {
                 total.calls += data[i][1];
                 total.countries += 1;
