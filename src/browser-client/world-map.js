@@ -2,7 +2,7 @@
 
 //- world-map.js ~~
 //                                                      ~~ (c) SRW, 11 Sep 2013
-//                                                  ~~ last updated 08 Oct 2013
+//                                                  ~~ last updated 13 Oct 2013
 
 (function () {
     'use strict';
@@ -172,9 +172,9 @@
             }
         }
         update_html_spans({
-            'qm-total-calls': add_commas(total.calls) +
+            'QM-total-calls': add_commas(total.calls) +
                     ((total.calls === 1) ? ' call' : ' calls'),
-            'qm-total-countries': add_commas(total.countries) +
+            'QM-total-countries': add_commas(total.countries) +
                     ((total.countries === 1) ? ' country' : ' countries')
         });
         return;
