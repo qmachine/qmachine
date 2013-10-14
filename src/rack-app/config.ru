@@ -17,7 +17,7 @@
 #   I do plan to merge this program with the Ruby gem in the future, which is
 #   why the database schema matches the Node.js implementation's (which is not
 #   as straight-forward as it could be). For now, it serves its purpose, and it
-#   does so with just 98 lines of source code ;-)
+#   does so with just 97 lines of source code ;-)
 #
 #   NOTE: Using a "%" character incorrectly in a URL will cause you great
 #   anguish, and there isn't a good way for me to handle this problem "softly"
@@ -25,8 +25,10 @@
 #   tend to see "Bad Request" on your screen if you insist on using "%" as part
 #   of a 'box', 'key', or 'status' value.
 #
+#   NOTE: This doesn't support Version 1.1 of the API yet.
+#
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 30 Aug 2013
+#                                                   ~~ last updated 14 Oct 2013
 
 require 'rubygems'
 require 'bundler'
@@ -48,7 +50,7 @@ configure do
 
   # Sinatra mappings and options needed by QMachine -- leave these alone ;-)
 
-    mime_type appcache: 'text/cache-manifest'
+    #mime_type appcache: 'text/cache-manifest'
     mime_type webapp: 'application/x-web-app-manifest+json'
     set bind: :hostname, run: false, static: :enable_web_server
 
