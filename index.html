@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     index.html ~~
-                                                        ~~ (c) SRW, 23 Sep 2013
+                                                        ~~ (c) SRW, 17 Oct 2013
 -->
 <html lang="en">
   <head>
@@ -14,10 +14,28 @@
   </head>
   <body>
     <noscript>This page requires JavaScript.</noscript>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-33422899-2']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga, s;
+            ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            if (document.location.protocol === 'https:') {
+                ga.src = 'https://ssl.google-analytics.com/ga.js';
+            } else {
+                ga.src = 'http://www.google-analytics.com/ga.js';
+            }
+            s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
     <a id="github_ribbon" href="https://github.com/wilkinson/qmachine">
       <span>Fork me on GitHub!</span>
     </a>
-    <h1>QMachine <a href="https://travis-ci.org/wilkinson/qmachine"><img src="https://travis-ci.org/wilkinson/qmachine.png" alt="Build Status"></a> <a href="https://drone.io/github.com/wilkinson/qmachine/latest"><img src="https://drone.io/github.com/wilkinson/qmachine/status.png" alt="Build Status"></a></h1>
+    <h1>QMachine <a href="https://travis-ci.org/wilkinson/qmachine"><img src="https://travis-ci.org/wilkinson/qmachine.png" alt="Build Status"></a> <a href="https://drone.io/github.com/wilkinson/qmachine/latest"><img src="https://drone.io/github.com/wilkinson/qmachine/status.png" alt="Build Status"></a> <a href="https://bitdeli.com/free" title="Bitdeli Badge"><img src="https://d2weczhvl823v0.cloudfront.net/wilkinson/qmachine/trend.png" alt="Bitdeli Badge"></a></h1>
 
 <p><a href="https://www.qmachine.org">QMachine</a> (QM) is a web service that can incorporate
 ordinary web browsers into a World Wide Computer without installing anything.

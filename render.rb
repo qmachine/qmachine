@@ -36,6 +36,24 @@ File::open(filename, "w") do |f|
   </head>
   <body>
     <noscript>This page requires JavaScript.</noscript>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-33422899-2']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga, s;
+            ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            if (document.location.protocol === 'https:') {
+                ga.src = 'https://ssl.google-analytics.com/ga.js';
+            } else {
+                ga.src = 'http://www.google-analytics.com/ga.js';
+            }
+            s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
     <a id="github_ribbon" href="https://github.com/wilkinson/qmachine">
       <span>Fork me on GitHub!</span>
     </a>
