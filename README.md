@@ -13,7 +13,7 @@ original version is written in [Node.js](http://nodejs.org) and is available
 for deployment to server environments via [NPM](https://npmjs.org/package/qm).
 A "teaching version" written in [Ruby](http://www.ruby-lang.org) is also
 available, and eventually it will be packaged and installable as a
-[Gem](https://rubygems.org/gems/qm).
+[gem](https://rubygems.org/gems/qm).
 
 I am now revising the first of several manuscripts I have been preparing for
 peer-reviewed academic journals. These reports will explain some of the design
