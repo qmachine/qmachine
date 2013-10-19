@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 18 Oct 2013
+#                                                   ~~ last updated 19 Oct 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -551,6 +551,19 @@ $(ICONS_DIR)/googlecode.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -density 96                                                 \
                 -resize 55x55                                               \
                 -quality 100                                                \
+            )
+
+$(ICONS_DIR)/google-plus.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+	@   $(call generate-image-from, , $<,                               \
+                -density 96                                                 \
+                -background none                                            \
+                -resize 320x320                                             \
+                -quality 100                                                \
+                -gravity center                                             \
+                -extent 512x512                                             \
+                -background white                                           \
+                -flatten                                                    \
+                -alpha off                                                  \
             )
 
 $(ICONS_DIR)/icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
