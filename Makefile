@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 22 Sep 2013
+#                                                   ~~ last updated 18 Oct 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -379,7 +379,6 @@ $(CACHE_DIR)/homepage.js:                                                   \
     $(CACHE_DIR)/jquery-191.js                                              \
     $(CACHE_DIR)/bootstrap.js                                               \
     $(CACHE_DIR)/main.js                                                    \
-    $(CACHE_DIR)/world-map.js                                               \
     |   $(CACHE_DIR)
 	@   $(call replace-url-macros, $^, $@)                          ;   \
             $(call remove-source-maps, $@)
@@ -436,9 +435,6 @@ $(CACHE_DIR)/style-min.css:                                                 \
     $(CACHE_DIR)/style.css                                                  \
     | $(CACHE_DIR)
 	@   $(call minify-css, $^, $@)
-
-$(CACHE_DIR)/world-map.js: $(SRC_DIR)/browser-client/world-map.js | $(CACHE_DIR)
-	@   $(CP) $< $@
 
 $(ICONS_DIR):
 	@   $(call make-directory, $@)
