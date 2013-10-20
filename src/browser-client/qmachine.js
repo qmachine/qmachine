@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 06 Oct 2013
+//                                                  ~~ last updated 20 Oct 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -575,7 +575,7 @@
 
     jobs = function (box) {
      // This function retrieves a list of tasks that need to be executed.
-        var y = ajax('GET', mothership + '/v1/' + box + '?status=waiting');
+        var y = ajax('GET', mothership + '/box/' + box + '?status=waiting');
         return y.Q(function (evt) {
          // This function needs documentation.
             y.val = JSON.parse(y.val);
@@ -981,7 +981,7 @@
 
     read = function (x) {
      // This function needs documentation.
-        var y = ajax('GET', mothership + '/v1/' + x.box + '?key=' + x.key);
+        var y = ajax('GET', mothership + '/box/' + x.box + '?key=' + x.key);
         return y.Q(function (evt) {
          // This function deserializes the string returned as the `val` of
          // `y` into a temporary variable and then copies its property values
@@ -1714,7 +1714,7 @@
      // about the return data because QMachine isn't going to return
      // any data -- the request will either succeed or fail, as
      // indicated by the HTTP status code returned. It returns an avar.
-        var url = mothership + '/v1/' + x.box + '?key=' + x.key;
+        var url = mothership + '/box/' + x.box + '?key=' + x.key;
         return ajax('POST', url, JSON.stringify(x));
     };
 
