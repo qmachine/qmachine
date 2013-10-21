@@ -175,8 +175,7 @@
             update_summary(data);
             $('#world-map-caption').append([
                 '',
-                'The interactive map above uses darker shades of green',
-                'to indicate greater numbers of API calls.'
+                'Darker shades of green indicate greater numbers of API calls.'
             ].join(' '));
             return;
         });
