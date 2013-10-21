@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 18 Oct 2013
+//                                                  ~~ last updated 21 Oct 2013
 
 (function () {
     'use strict';
@@ -173,6 +173,11 @@
             sync_country_names(data, table);
             geochart.draw(table, options);
             update_summary(data);
+            $('#world-map-caption').append([
+                '',
+                'The interactive map above uses darker shades of green',
+                'to indicate greater numbers of API calls.'
+            ].join(' '));
             return;
         });
         return;
