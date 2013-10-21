@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 19 Oct 2013
+#                                                   ~~ last updated 21 Oct 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -162,7 +162,6 @@ browser-client:                                                             \
         apple-touch-startup-image-748x1024.png                              \
         apple-touch-startup-image-1536x2008.png                             \
         apple-touch-startup-image-1496x2048.png                             \
-        barebones.html                                                      \
         cache.manifest                                                      \
         coffeescript.js                                                     \
         favicon.ico                                                         \
@@ -352,11 +351,6 @@ $(BUILD_DIR)/web-service/%: $(SRC_DIR)/web-service/% | $(BUILD_DIR)/web-service
 
 $(CACHE_DIR):
 	@   $(call make-directory, $@)
-
-$(CACHE_DIR)/barebones.html:                                                \
-    $(SRC_DIR)/browser-client/barebones.html                                \
-    |   $(CACHE_DIR)
-	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/IQG9fJ")
