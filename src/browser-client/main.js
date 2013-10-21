@@ -174,9 +174,9 @@
             geochart.draw(table, options);
             update_summary(data);
             $('#world-map-caption').append([
-                '',
+                '<br>',
                 'Darker shades of green indicate greater numbers of API calls.'
-            ].join(' '));
+            ].join(''));
             return;
         });
         return;
