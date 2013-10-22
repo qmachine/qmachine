@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 20 Oct 2013
+//                                                  ~~ last updated 21 Oct 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -28,15 +28,14 @@
         multiline, navigator, newcap, node, nomen, now, on, onLine, onload,
         onreadystatechange, open, parentElement, parse, passfail, plusplus,
         ply, postMessage, predef, properties, protocol, prototype, push, puts,
-        Q, QM, query, random, readyState, reason, recent, reduce, regexp,
-        removeChild, removeEventListener, replace, responseText, result,
-        results, revive, rhino, run_remotely, safe, send, set,
+        Q, QM, QUANAH, query, random, readyState, reason, recent, reduce,
+        regexp, removeChild, removeEventListener, replace, responseText,
+        result, results, revive, rhino, run_remotely, safe, send, set,
         setRequestHeader, setTimeout, shelf, shift, slice, sloppy, source, src,
-        status, stay, stringify, stupid, style, sub, submit, test, time,
+        status, stay, stringify, stupid, style, sub, submit, sync, test, time,
         toJSON, toSource, toString, todo, undef, unparam, url, val, value,
-        valueOf, vars, via, visibility, volunteer, when, white, window,
-        windows, withCredentials, writable, x, XDomainRequest, XMLHttpRequest,
-        y
+        valueOf, vars, via, visibility, volunteer, white, window, windows,
+        withCredentials, writable, x, XDomainRequest, XMLHttpRequest, y
     */
 
  // Prerequisites
@@ -46,9 +45,9 @@
         return;
     }
 
-    if (Object.prototype.hasOwnProperty('Q') === false) {
-     // It is hard to imagine that `QM` would exist with "Method Q", but ...
-        throw new Error('Method Q is missing.');
+    if (global.hasOwnProperty('QUANAH') === false) {
+     // This checks to make sure that Quanah 0.2.0 or later has been loaded.
+        throw new Error('Quanah is missing.');
     }
 
  // Declarations
@@ -57,8 +56,8 @@
         deserialize, defineProperty, in_a_browser, in_a_WebWorker, is_closed,
         is_online, is_Function, is_RegExp, is_String, jobs, lib, load_data,
         load_script, map, mapreduce, mothership, origin, ply, puts, read,
-        recent, reduce, revive, run_remotely, serialize, state, submit,
-        update_local, update_remote, volunteer, when, write;
+        recent, reduce, revive, run_remotely, serialize, state, submit, sync,
+        update_local, update_remote, volunteer, write;
 
  // Definitions
 
@@ -196,9 +195,9 @@
         return atob(x);
     };
 
-    AVar = Object.prototype.Q.avar().constructor;
+    AVar = global.QUANAH.avar().constructor;
 
-    avar = Object.prototype.Q.avar;
+    avar = global.QUANAH.avar;
 
     btoa = function (x) {
      // This function redefines itself during its first invocation.
@@ -769,7 +768,7 @@
 
     map = function (x, f, box, env) {
      // This function needs documentation.
-        var y = x.Q(function (evt) {
+        var y = x.Q(function (evt) {                //- PROBLEM!!!
          // This function needs documentation.
             var i, n, temp;
             n = this.val.length;
@@ -778,7 +777,7 @@
                 temp[i] = submit(this.val[i], f, box, env);
                 temp[i].on('error', evt.fail);
             }
-            when.apply(this, temp).Q(function (temp_evt) {
+            sync.apply(this, temp).Q(function (temp_evt) {
              // This function needs documentation.
                 var i, n;
                 n = temp.length;
@@ -793,57 +792,6 @@
         });
         return y;
     };
-
- /*
-    map = function (f) {
-     // This function needs documentation.
-        var afunc, x;
-        x = f;
-        afunc = function (evt) {
-         // This function needs documentation.
-            var y;
-            if (this.hasOwnProperty('Q')) {
-             // This arm needs documentation.
-                y = map.apply(this, this.val).using(f);
-            } else {
-                y = map(this.val).using(f);
-            }
-            y.on('error', function (message) {
-             // This function needs documentation.
-                return evt.fail(message);
-            }).Q(function (y_evt) {
-             // This function needs documentation.
-                y_evt.exit();
-                return evt.exit();
-            });
-            return;
-        };
-        afunc.using = function (f) {
-         // This function needs documentation.
-            var y = avar({val: x});
-            y.Q(ply(function (key, val) {
-             // This function needs documentation.
-                y.val[key] = avar({val: {f: f, x: val}}).Q(function (evt) {
-                 // This function needs documentation.
-                    this.val = this.val.f(this.val.x);
-                    return evt.exit();
-                });
-                return;
-            }));
-            when.apply(null, [y].concat(y.val)).Q(function (evt) {
-             // This function needs documentation.
-                ply(y.val).by(function (key, val) {
-                 // This function needs documentation.
-                    y.val[key] = val.val;
-                    return;
-                });
-                return evt.exit();
-            });
-            return y;
-        };
-        return afunc;
-    };
- */
 
     mapreduce = function (x, mapf, redf, box, env) {
      // This function needs documentation.
@@ -961,7 +909,7 @@
 
     puts = function () {
      // This function needs documentation.
-        return when.apply(this, arguments).Q(function (evt) {
+        return sync.apply(this, arguments).Q(function (evt) {
          // This function needs documentation.
             if ((global.hasOwnProperty('console')) &&
                     (is_Function(global.console.log))) {
@@ -1050,7 +998,7 @@
             if (n !== x.length) {
                 temp.push(avar({val: x[x.length - 1]}).on('error', evt.fail));
             }
-            when.apply(this, temp).Q(function (temp_evt) {
+            sync.apply(this, temp).Q(function (temp_evt) {
              // This function needs documentation.
                 var i, n, x;
                 n = temp.length;
@@ -1066,66 +1014,6 @@
         });
         return y;
     };
-
- /*
-    reduce = function (f) {
-     // This function needs to be recursive, but ... how best to do it?
-        var afunc, x;
-        x = f;
-        afunc = function (evt) {
-         // This function needs documentation.
-            var x, y;
-            x = this;
-            if (x.hasOwnProperty('Q')) {
-             // This arm needs documentation.
-                y = reduce.apply(x, x.val).using(f);
-            } else {
-                y = reduce(x.val).using(f);
-            }
-            y.on('error', function (message) {
-             // This function needs documentation.
-                return evt.fail(message);
-            }).Q(function (y_evt) {
-             // This function needs documentation.
-                if (y.val.length <= 1) {
-                    x.val = y.val[0];
-                    y_evt.exit();
-                    return evt.exit();
-                }
-                x.val = y.val;
-                y_evt.exit();
-                return evt.stay('Re-reducing ...');
-            });
-            return;
-        };
-        afunc.using = function (f) {
-         // This function needs documentation.
-            var y = avar({val: x});
-            y.Q(function (evt) {
-             // This function runs locally because it closes over `x`.
-                var i, n, pairs;
-                n = x.length;
-                pairs = [];
-                if ((n % 2) === 1) {
-                    pairs.push({y: x[0]});
-                }
-                for (i = (n % 2); i < n; i += 2) {
-                    pairs.push({f: f, x: [x[i], x[i + 1]]});
-                }
-                y.val = pairs;
-                return evt.exit();
-            }).Q(map(function (each) {
-             // This function needs documentation.
-                if (each.hasOwnProperty('y')) {
-                    return each.y;
-                }
-                return each.f(each.x[0], each.x[1]);
-            }));
-            return y;
-        };
-        return afunc;
-    };
- */
 
     revive = function (ms) {
      // This function restarting Quanah's event loop asynchronously using the
@@ -1171,7 +1059,7 @@
         x.on('error', handler).Q(update_remote);
      // Step 2: Use a `when` statement to represent the remote computation and
      // track its execution status on whatever system is using Quanah.
-        when(f, x).Q(function (evt) {
+        sync(f, x).Q(function (evt) {
          // This function creates a `task` object to represent the computation
          // and monitors its status by "polling" the "filesystem" for changes.
          // It initializes using `avar`'s "copy constructor" idiom to enable
@@ -1228,7 +1116,7 @@
         x.Q(update_local);
      // Step 4: Use a `when` statement to wait for the updates in Step 3 to
      // finish before copying the new values into the original `obj` argument.
-        when(f, x).Q(function (evt) {
+        sync(f, x).Q(function (evt) {
          // This function copies the new values into the old object. Please
          // note that we cannot simply write `obj.foo = foo` because we would
          // lose the original avar's internal state!
@@ -1378,7 +1266,7 @@
          // computation to self-destruct in a really ugly horrible way :-P
             throw message;
         });
-        when(arg_box, arg_env, arg_f, arg_x, y).Q(function (evt) {
+        sync(arg_box, arg_env, arg_f, arg_x, y).Q(function (evt) {
          // This function runs locally.
             var box, env, f, x;
             box = (arg_box instanceof AVar) ? arg_box.val : arg_box;
@@ -1437,7 +1325,7 @@
                 x = QM.avar({val: this.val.x});
                 env.on('error', evt.fail);
                 x.on('error', evt.fail);
-                QM.when(env, x).Q(function (evt) {
+                QM.sync(env, x).Q(function (evt) {
                  // This function ensures that the task will not execute until
                  // the prerequisite scripts have finished loading.
                     var prereqs = [];
@@ -1474,7 +1362,7 @@
                     if (prereqs.length === 0) {
                         return evt.exit();
                     }
-                    QM.when.apply(null, prereqs).Q(function (w_evt) {
+                    QM.sync.apply(null, prereqs).Q(function (w_evt) {
                      // This function needs documentation.
                         w_evt.exit();
                         return evt.exit();
@@ -1517,6 +1405,8 @@
         });
         return y;
     };
+
+    sync = global.QUANAH.sync;
 
     update_local = function (evt) {
      // This function is used in the `run_remotely` and `volunteer` functions
@@ -1653,7 +1543,7 @@
                     task.status = 'failed';
                     temp_f = avar(f).Q(update_remote);
                     temp_x = avar(x).Q(update_remote);
-                    when(temp_f, temp_x).Q(function (temp_evt) {
+                    sync(temp_f, temp_x).Q(function (temp_evt) {
                      // This function runs only when the error messages have
                      // finished syncing to remote storage successfully.
                         temp_evt.exit();
@@ -1665,7 +1555,7 @@
             x = avar({box: box, key: task.val.x});
             f.Q(update_local).on('error', handler);
             x.Q(update_local).on('error', handler);
-            when(f, x).Q(function (evt) {
+            sync(f, x).Q(function (evt) {
              // This function contains the _actual_ execution. (Boring, huh?)
                 f.val.call(x, evt);
                 return;
@@ -1683,7 +1573,7 @@
          // invoking machine would then execute the "offending" task itself.
          // I have included a simple outline of such a function:
          //
-         //     when(f, x).Q(function (evt) {
+         //     sync(f, x).Q(function (evt) {
          //         if (is_closed(f.val) || is_closed(x.val)) {
          //             return evt.abort('Results will not be returned.');
          //         }
@@ -1692,7 +1582,7 @@
          //
             f.Q(update_remote);
             x.Q(update_remote);
-            when(f, x).Q(function (temp_evt) {
+            sync(f, x).Q(function (temp_evt) {
              // This function only executes when the task has successfully
              // executed and the transformed values of `f` and `x` are synced
              // back to remote storage. Thus, we are now free to send the
@@ -1706,8 +1596,6 @@
         }).Q(update_remote);
         return task;
     };
-
-    when = Object.prototype.Q.when;
 
     write = function (x) {
      // This function sends an HTTP POST to QMachine. It doesn't worry
@@ -1833,8 +1721,8 @@
             revive:         revive,
             shelf:          {},
             submit:         submit,
-            volunteer:      volunteer,
-            when:           when
+            sync:           sync,
+            volunteer:      volunteer
         };
         ply(template).by(function (key, val) {
          // This function needs documentation.
@@ -1855,7 +1743,7 @@
 
  // Invocations
 
-    Object.prototype.Q.def({
+    global.QUANAH.def({
         can_run_remotely:   can_run_remotely,
         run_remotely:       run_remotely
     });
