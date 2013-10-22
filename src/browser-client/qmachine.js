@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 21 Oct 2013
+//                                                  ~~ last updated 22 Oct 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -854,9 +854,11 @@
          //
             if (this.hasOwnProperty('Q')) {
              // The avar to which we assigned this function must have been
-             // created by the `when` function, which means that its `val`
+/* PROBLEM!!!
+             // created by the `sync` function, which means that its `val`
              // property is an array of avars designed to be used with the
              // Function prototype's `apply` method :-)
+*/
                 ply.apply(this, this.val).by(f);
             } else {
                 ply(this.val).by(f);
@@ -1057,7 +1059,7 @@
         x = avar({box: obj.x.box, key: obj.x.key, val: obj.x.val});
         f.on('error', handler).Q(update_remote);
         x.on('error', handler).Q(update_remote);
-     // Step 2: Use a `when` statement to represent the remote computation and
+     // Step 2: Use a `sync` statement to represent the remote computation and
      // track its execution status on whatever system is using Quanah.
         sync(f, x).Q(function (evt) {
          // This function creates a `task` object to represent the computation
@@ -1103,7 +1105,7 @@
                 });
                 return;
             }).Q(function (task_evt) {
-             // This function ends the enclosing `when` statement.
+             // This function ends the enclosing `sync` statement.
                 task_evt.exit();
                 return evt.exit();
             });
@@ -1114,7 +1116,7 @@
      // run concurrently.
         f.Q(update_local);
         x.Q(update_local);
-     // Step 4: Use a `when` statement to wait for the updates in Step 3 to
+     // Step 4: Use a `sync` statement to wait for the updates in Step 3 to
      // finish before copying the new values into the original `obj` argument.
         sync(f, x).Q(function (evt) {
          // This function copies the new values into the old object. Please
