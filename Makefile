@@ -410,7 +410,7 @@ $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://git.io/5rxl6Q")
+	@   $(call download-url, "http://git.io/oQNSrA")
 
 $(CACHE_DIR)/robots.txt: $(SRC_DIR)/browser-client/robots.txt | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
