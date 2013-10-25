@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 22 Oct 2013
+//                                                  ~~ last updated 25 Oct 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -768,7 +768,7 @@
 
     map = function (x, f, box, env) {
      // This function needs documentation.
-        var y = x.Q(function (evt) {                //- PROBLEM!!!
+        var y = ((x instanceof AVar) ? x : avar({val: x})).Q(function (evt) {
          // This function needs documentation.
             var i, n, temp;
             n = this.val.length;
@@ -911,11 +911,12 @@
 
     puts = function () {
      // This function needs documentation.
-        return sync.apply(this, arguments).Q(function (evt) {
+        var args = Array.prototype.slice.call(arguments);
+        return sync.apply(this, args).Q(function (evt) {
          // This function needs documentation.
             if ((global.hasOwnProperty('console')) &&
                     (is_Function(global.console.log))) {
-                global.console.log(this.val.join(' '));
+                global.console.log(args.join(' '));
                 return evt.exit();
             }
             return evt.fail('The `console.log` method is not available.');
@@ -973,7 +974,7 @@
      // This function needs documentation.
         var f, y;
         f = convert_to_js(redf);
-        y = x.Q(function (evt) {
+        y = ((x instanceof AVar) ? x : avar({val: x})).Q(function (evt) {
          // This function needs documentation.
             if (is_Function(f.val) === false) {
                 f.on('error', evt.fail);
