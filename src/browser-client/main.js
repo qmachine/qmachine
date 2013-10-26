@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 21 Oct 2013
+//                                                  ~~ last updated 25 Oct 2013
 
 (function () {
     'use strict';
@@ -32,17 +32,18 @@
     /*jslint browser: true, devel: true, indent: 4, maxlen: 80 */
 
     /*properties
-        activeElement, alert, ajax, arrayToDataTable, avar, backgroundColor,
-        blur, box, c, cache, call, callback, calls, clearTimeout, colorAxis,
-        colors, console, countries, dataType, datelessRegionColor, document,
-        draw, error, exit, f, focus, GeoChart, getItem, hasOwnProperty, id, is,
-        join, jQuery, keepAspectRatio, key, legend, length, load, localStorage,
-        log, on, onreadystatechange, open, packages, parse, projection,
-        preventDefault, prototype, Q, QM, 'QM-total-calls',
-        'QM-total-countries', ready, readyState, region, replace, responseText,
-        revive, search, send, setItem, setRequestHeader, setTimeout, slice,
-        sort, success, status, statusText, stay, text, toString, url, v, val,
-        value, visualization, vol_timer, volunteer, which, width
+        activeElement, alert, ajax, append, arrayToDataTable, avar,
+        backgroundColor, blur, box, c, cache, call, callback, calls,
+        clearTimeout, colorAxis, colors, console, countries, dataType,
+        datalessRegionColor, document, draw, error, exit, f, focus, GeoChart,
+        getItem, hasOwnProperty, id, is, join, jQuery, keepAspectRatio, key,
+        legend, length, load, localStorage, log, on, onreadystatechange, open,
+        packages, parse, projection, preventDefault, prototype, Q, QM,
+        'QM-total-calls', 'QM-total-countries', ready, readyState, region,
+        replace, responseText, revive, search, send, setItem, setRequestHeader,
+        setTimeout, slice, sort, success, status, statusText, stay, text,
+        toString, url, v, val, value, visualization, vol_timer, volunteer,
+        which, width
     */
 
  // Prerequisites
@@ -191,7 +192,10 @@
                 '#A1D99B', '#C7E9C0', 'white'
             ]
         },
-        datelessRegionColor: 'red', // so we'll notice problems immediately
+     // Political issues with Palestine (PS) cause quirks in the Google
+     // Visualization API that we sweep under the rug by simply whiting it out.
+     // Using "red" here helps you check your data, though.
+        datalessRegionColor: 'white',
         keepAspectRatio: true,
         legend: 'none',
         projection: {
