@@ -17,7 +17,7 @@
 #   I do plan to merge this program with the Ruby gem in the future, which is
 #   why the database schema matches the Node.js implementation's (which is not
 #   as straight-forward as it could be). For now, it serves its purpose, and it
-#   does so with just 97 lines of source code ;-)
+#   does so with just 98 lines of source code ;-)
 #
 #   NOTE: Using a "%" character incorrectly in a URL will cause you great
 #   anguish, and there isn't a good way for me to handle this problem "softly"
@@ -25,10 +25,8 @@
 #   tend to see "Bad Request" on your screen if you insist on using "%" as part
 #   of a 'box', 'key', or 'status' value.
 #
-#   NOTE: This doesn't support Version 1.1 of the API yet.
-#
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 14 Oct 2013
+#                                                   ~~ last updated 26 Oct 2013
 
 require 'rubygems'
 require 'bundler'
@@ -50,7 +48,6 @@ configure do
 
   # Sinatra mappings and options needed by QMachine -- leave these alone ;-)
 
-    #mime_type appcache: 'text/cache-manifest'
     mime_type webapp: 'application/x-web-app-manifest+json'
     set bind: :hostname, run: false, static: :enable_web_server
 
@@ -120,19 +117,20 @@ if settings.enable_api_server? then
 
   # Here, we set up "routes" to handle incoming GET and POST requests.
 
-    before '/box/:box' do
+    before '/*/*' do |version, box|
       # When any request matches the pattern given, this block will execute
       # before the route that corresponds to its HTTP method (verb). The code
       # here will validate the request's parameters and store them as instance
       # variables that will be available to the corresponding route's code.
-        @box, @key, @status = params[:box], params[:key], params[:status]
-        hang_up unless (@box.match(/^[\w\-]+$/)) and
+        @box, @key, @status = box, params[:key], params[:status]
+        hang_up unless ((version == 'box') or (version == 'v1')) and
+                (@box.match(/^[\w\-]+$/)) and
                 ((@key.is_a?(String) and @key.match(/^[A-Za-z0-9]+$/)) or
                 (@status.is_a?(String) and @status.match(/^[A-Za-z0-9]+$/)))
         cross_origin if (settings.enable_CORS == true)
     end
 
-    get '/box/:box' do
+    get '/:version/:box' do
       # This route responds to API calls that "read" from persistent storage,
       # such as when checking for new tasks to run or downloading results.
         bk, bs = "#{@box}&#{@key}", "#{@box}&#{@status}"
@@ -148,7 +146,7 @@ if settings.enable_api_server? then
         return [200, {'Content-Type' => 'application/json'}, [y]]
     end
 
-    post '/box/:box' do
+    post '/:version/:box' do
       # This route responds to API calls that "write" to persistent storage,
       # such as when uploading results or submitting new tasks.
         hang_up unless (@key.is_a?(String))
