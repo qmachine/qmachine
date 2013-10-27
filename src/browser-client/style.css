@@ -12,7 +12,7 @@
  *  ideas, let me know :-)
  *
  *                                                      ~~ (c) SRW, 29 Oct 2012
- *                                                  ~~ last updated 09 Oct 2013
+ *                                                  ~~ last updated 26 Oct 2013
  */
 
 @media all {
@@ -66,19 +66,6 @@
     svg {
         border-radius: 6px;
     }
-
- /* Somewhere lost in the CSS from the Google Visualization API and from
-  * Twitter Bootstrap, something is causing the country boundaries in the world
-  * map to disappear, and then the map looks ugly. The following rule makes a
-  * little progress to fix it, but then the `:hover` stuff doesn't look right,
-  * so for now, I'm including it only as comments ... */
-
- /*
-    svg path {
-        stroke: #dddddd;
-        stroke-width: 1px;
-    }
- */
 
  /* Finally, we supplement the ".lead" class by padding its top to match its
   * bottom's padding. */
