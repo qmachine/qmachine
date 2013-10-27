@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 25 Oct 2013
+//                                                  ~~ last updated 27 Oct 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -121,6 +121,7 @@
                     }
                     return evt.exit();
                 }
+             // NOTE: Should we `revive` here?
                 return;
             };
             request.open(method, url, true);
@@ -263,7 +264,10 @@
      // This function converts a function or string into an avar with a `val`
      // property that is a JavaScript function. This isn't quite the same as an
      // `eval`, however, because the string is expected to be used only when it
-     // represents CoffeeScript code.
+     // represents CoffeeScript code. Unfortunately, the mere use of the word
+     // so irritates JSLint that I must designate this function "evil" just to
+     // suppress its scary messages.
+        /*jslint evil: true */
         var y = avar();
         y.Q(function (evt) {
          // This function needs documentation.
@@ -275,12 +279,12 @@
                 return evt.fail('Cannot convert argument to a function');
             }
             if (global.hasOwnProperty('CoffeeScript')) {
-                y.val = global.CoffeeScript.eval(x);
+                y.val = global.CoffeeScript['eval'](x);
                 return evt.exit();
             }
             lib('QM_WWW_URL/coffeescript.js').Q(function (lib_evt) {
              // This function needs documentation.
-                y.val = global.CoffeeScript.eval(x);
+                y.val = global.CoffeeScript['eval'](x);
                 lib_evt.exit();
                 return evt.exit();
             }).on('error', evt.fail);
