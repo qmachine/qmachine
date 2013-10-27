@@ -858,11 +858,11 @@
          //
             if (this.hasOwnProperty('Q')) {
              // The avar to which we assigned this function must have been
-/* PROBLEM!!!
+         /* PROBLEM!!!
              // created by the `sync` function, which means that its `val`
              // property is an array of avars designed to be used with the
              // Function prototype's `apply` method :-)
-*/
+         */
                 ply.apply(this, this.val).by(f);
             } else {
                 ply(this.val).by(f);
