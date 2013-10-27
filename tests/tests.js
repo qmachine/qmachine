@@ -6,10 +6,12 @@
 //  out over and over in the Chrome console. It's close enough to using Node.js
 //  that I lied to JSLint about it, hehe.
 //
+//  Coming soon: tests that check the JSON return types of API calls.
+//
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 21 Sep 2013
+//                                                  ~~ last updated 27 Oct 2013
 
 (function () {
     'use strict';
@@ -23,7 +25,7 @@
  // Prerequisites
 
     (function () {
-     // Loading "Method Q" is a pain in Ubuntu 12.04 LTS because the version of
+     // Loading Quanah is a pain in Ubuntu 12.04 LTS because the version of
      // PhantomJS is 1.4.0; the ability to reference your own modules was not
      // added until version 1.7.0. Thus, we have to load our code the hard way.
         /*jslint evil: true */
@@ -57,7 +59,7 @@
         return;
     };
 
-    mothership = 'http://localhost:8177';
+    mothership = require('system').env['MOTHERSHIP'];
 
     queue = [];
 
