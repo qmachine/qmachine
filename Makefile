@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 27 Oct 2013
+#                                                   ~~ last updated 28 Oct 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -104,8 +104,8 @@ endif
 all: $(shell $(LS) $(SRC_DIR))
 
 check: $(CACHE_DIR)/quanah.js | check-versions
-	@   MOTHERSHIP=$(LOCAL_ADDR) $(PHANTOMJS) \
-                --config=$(TEST_DIR)/config.json $(TEST_DIR)/tests.js
+	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json \
+                $(TEST_DIR)/tests.js '$(LOCAL_ADDR)'
 
 check-versions:
 	@   $(NODEJS) $(SHARE_DIR)/check-versions.js
