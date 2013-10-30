@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 25 Oct 2013
+//                                                  ~~ last updated 29 Oct 2013
 
 (function () {
     'use strict';
@@ -184,7 +184,7 @@
     };
 
     options = {
-        backgroundColor: '#428BCA', // '#5592CC'
+        backgroundColor: '#66CCFF',
         colorAxis: {
             colors: [
              // These are "stolen" from the "rworldmap" package.
