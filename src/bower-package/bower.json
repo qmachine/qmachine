@@ -3,12 +3,12 @@
         "bootstrap": "3.0.0",
         "coffee-script": "1.6.2",
         "jquery": "1.9.1",
-        "quanah": "0.1.8"
+        "quanah": "0.2.0"
     },
     "main": [
         "./src/browser-client/qmachine.js",
         "./src/browser-client/style.css"
     ],
     "name": "qm",
-    "version": "1.1.0"
+    "version": "1.1.1"
 }
