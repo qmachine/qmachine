@@ -9,7 +9,7 @@
 //  NOTE: Should we also check Git tags in this script?
 //
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 31 Aug 2013
+//                                                  ~~ last updated 04 Nov 2013
 
 (function () {
     'use strict';
@@ -134,9 +134,11 @@
 
  // Out-of-scope definitions
 
-    process.on('exit', function () {
+    process.on('exit', function (code) {
      // This function will run just before the script exits.
-        console.log('Success: all versions match ' + current_version + '.');
+        if (code === 0) {
+            console.log('Success: all versions match ' + current_version + '.');
+        }
         return;
     });
 
