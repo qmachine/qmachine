@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 27 Oct 2013
+//                                                  ~~ last updated 06 Nov 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -829,88 +829,55 @@
         return global.location.protocol + '//' + global.location.host;
     };
 
-    ply = function (f) {
-     // This function takes advantage of JavaScript's lack of a type system in
-     // order to provide a single functional iterator for either synchronous
-     // (blocking) or asynchronous (non-blocking) use cases. Both cases use
-     // distinct English-inspired idioms to express their operations without
-     // requiring configuration flags or type inferences like most libraries
-     // would do. Natural languages often rely heavily on context, but they
-     // rarely, if ever, require preprocessing or configuration files full of
-     // Booleans -- why, then, should a programming language do so? Here, the
-     // idioms motivated by `ply` let JavaScript skip the elaborate inferences
-     // by taking advantage of the language's _lack_ of a type system, and the
-     // resulting code is more concise, expressive, and performant :-)
-        var args, y;
-        args = Array.prototype.slice.call(arguments);
-        y = function (evt) {
-         // This function acts as the "asynchronous definition" for the `ply`
-         // function, and it will only be invoked if it is used as an input
-         // argument to Method Q; otherwise, it simply takes the place of the
-         // object literal that would normally be used to enable `by`. If this
-         // definition is invoked, then `f` must have been a function, and if
-         // it isn't, Quanah's `evt.fail` function will be invoked :-)
-         //
-         // NOTE: Any time that we know `this` is an avar, we are justified in
-         // accessing the `val` property directly; otherwise, I recommend that
-         // you use `valueOf()` instead so that generic programming with arrays
-         // and objects will still work correctly.
-         //
-            if (this.hasOwnProperty('Q')) {
-             // The avar to which we assigned this function must have been
-         /* PROBLEM!!!
-             // created by the `sync` function, which means that its `val`
-             // property is an array of avars designed to be used with the
-             // Function prototype's `apply` method :-)
-         */
-                ply.apply(this, this.val).by(f);
-            } else {
-                ply(this.val).by(f);
-            }
-            return evt.exit();
-        };
-        y.by = function (f) {
-         // This function is a general-purpose iterator for key-value pairs,
-         // and it works exceptionally well in JavaScript because hash-like
-         // objects are so common in this language. This definition itself is
-         // a little slower than previous versions because they were optimized
-         // for internal use. In performance-critical sections of Quanah that
-         // run often but rarely change, I have inlined loops as appropriate.
-         // It is difficult to optimize code for use with modern JIT compilers,
-         // and my own recommendation is to hand-optimize with loops only if
-         // you're truly obsessed with performance -- it's a lot of work, and
-         // the auto-detecting and delegating dynamically in order to use the
-         // fastest possible loop pattern adds overhead that can be difficult
-         // to optimize for use in real-world applications. That said, if you
-         // have ideas for how to make `ply` run more efficiently, by all means
-         // drop me a line! :-)
-            if (is_Function(f) === false) {
-                throw new TypeError('`ply..by` expects a function.');
-            }
-            var i, key, obj, n, toc, x;
-            n = args.length;
-            toc = {};
-            x = [];
-            for (i = 0; i < n; i += 1) {
-                if ((args[i] !== null) && (args[i] !== undefined)) {
-                    obj = args[i].valueOf();
-                    for (key in obj) {
-                        if (obj.hasOwnProperty(key)) {
-                            if (toc.hasOwnProperty(key) === false) {
-                                toc[key] = x.push([key]) - 1;
+    ply = function () {
+     // This function has been condensed from its previous forms because
+     // changes in Quanah 0.2.x made its support of dual asynchronous and
+     // synchronous idioms both unnecessary and obsolete.
+        var args = Array.prototype.slice.call(arguments);
+        return {
+            by: function (f) {
+             // This function is a general-purpose iterator for key-value
+             // pairs, and it works exceptionally well in JavaScript because
+             // hash-like objects are so common in this language. This
+             // definition itself is a little slower than previous versions
+             // because they were optimized for internal use. In
+             // performance-critical sections of Quanah that run often but
+             // rarely change, I have inlined loops as appropriate. It is
+             // difficult to optimize code for use with modern JIT compilers,
+             // and my own recommendation is to hand-optimize with loops only
+             // if you're truly obsessed with performance -- it's a lot of
+             // work, and the auto-detecting and delegating dynamically in
+             // order to use the fastest possible loop pattern adds overhead
+             // that can be difficult to optimize for use in real-world
+             // applications. That said, if you have ideas for how to make
+             // `ply..by` run more efficiently, by all means drop me a line :-)
+                if (is_Function(f) === false) {
+                    throw new TypeError('`ply..by` expects a function.');
+                }
+                var i, key, obj, n, toc, x;
+                n = args.length;
+                toc = {};
+                x = [];
+                for (i = 0; i < n; i += 1) {
+                    if ((args[i] !== null) && (args[i] !== undefined)) {
+                        obj = args[i].valueOf();
+                        for (key in obj) {
+                            if (obj.hasOwnProperty(key)) {
+                                if (toc.hasOwnProperty(key) === false) {
+                                    toc[key] = x.push([key]) - 1;
+                                }
+                                x[toc[key]][i + 1] = obj[key];
                             }
-                            x[toc[key]][i + 1] = obj[key];
                         }
                     }
                 }
+                n = x.length;
+                for (i = 0; i < n; i += 1) {
+                    f.apply(this, x[i]);
+                }
+                return;
             }
-            n = x.length;
-            for (i = 0; i < n; i += 1) {
-                f.apply(this, x[i]);
-            }
-            return;
         };
-        return y;
     };
 
     puts = function () {
