@@ -2,23 +2,25 @@
 
 #-  render.rb ~~
 #                                                       ~~ (c) SRW, 19 Sep 2012
-#                                                   ~~ last updated 13 Aug 2013
+#                                                   ~~ last updated 09 Nov 2013
 
-require "date"
-require "redcarpet"
+require 'date'
+require 'redcarpet'
 
-filename = "index.html"
+filename = 'index.html'
 
-markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML,
-    :autolink => true, :space_after_headers => true)
+markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, {
+    autolink: true,
+    space_after_headers: true
+})
 
-today = "%02d %s %4d" % [
+today = '%02d %s %4d' % [
     Time.now.day,
     Date::ABBR_MONTHNAMES[Time.now.month],
     Time.now.year
 ]
 
-File::open(filename, "w") do |f|
+File::open(filename, 'w') do |f|
     content = <<-EOF
 <!DOCTYPE html>
 <!--
@@ -57,11 +59,12 @@ File::open(filename, "w") do |f|
     <a id="github_ribbon" href="https://github.com/wilkinson/qmachine">
       <span>Fork me on GitHub!</span>
     </a>
-    #{markdown.render(IO.read("README.md")).chomp}
+    #{markdown.render(IO.read('README.md')).chomp}
     <p>
       Note that this page embeds QM's analytical layer, too, which means that
-      you can open your browser's developer console and experiment without even
-      leaving this page!
+      you can
+      <a href="https://wiki.qmachine.org/index.php/Opening_a_browser_console" target="_blank">open your browser's developer console</a>
+      and experiment without even leaving this page!
     </p>
     <script async src="https://www.qmachine.org/q.js"></script>
   </body>
