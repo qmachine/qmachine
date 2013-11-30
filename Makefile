@@ -60,7 +60,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 28 Oct 2013
+#                                                   ~~ last updated 30 Nov 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -175,6 +175,7 @@ browser-client:                                                             \
         index.html                                                          \
         manifest.webapp                                                     \
         q.js                                                                \
+        respond.js                                                          \
         robots.txt                                                          \
         sitemap.xml                                                         \
         style-min.css                                                       \
@@ -354,16 +355,16 @@ $(CACHE_DIR):
 	@   $(call make-directory, $@)
 
 $(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/IQG9fJ")
+	@   $(call download-url, "http://goo.gl/SzKGdk")
 
 $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/Brc6pW")
+	@   $(call download-url, "http://goo.gl/4r66gD")
 
 $(CACHE_DIR)/bootstrap-theme.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/qlEB6G")
+	@   $(call download-url, "http://goo.gl/m4vbDE")
 
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/2RqIb")
+	@   $(call download-url, "http://goo.gl/a6ZyGk")
 
 $(CACHE_DIR)/hits-by-country.json:                                          \
     $(SRC_DIR)/browser-client/hits-by-country.json                          \
@@ -371,7 +372,7 @@ $(CACHE_DIR)/hits-by-country.json:                                          \
 	@   $(CP) $< $@
 
 $(CACHE_DIR)/homepage.js:                                                   \
-    $(CACHE_DIR)/jquery-191.js                                              \
+    $(CACHE_DIR)/jquery-git1.js                                             \
     $(CACHE_DIR)/bootstrap.js                                               \
     $(CACHE_DIR)/main.js                                                    \
     |   $(CACHE_DIR)
@@ -379,16 +380,16 @@ $(CACHE_DIR)/homepage.js:                                                   \
             $(call remove-source-maps, $@)
 
 $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/9g5f4")
+	@   $(call download-url, "http://goo.gl/8Ah9dC")
 
 $(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
-$(CACHE_DIR)/jquery-172.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/rvrUK")
-
 $(CACHE_DIR)/jquery-191.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/tiSzW")
+
+$(CACHE_DIR)/jquery-git1.js: | $(CACHE_DIR)
+	@   $(call download-url, "https://code.jquery.com/jquery-git1.min.js")
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/idKqIQ")
@@ -412,6 +413,9 @@ $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
 
 $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://git.io/5rxl6Q")
+
+$(CACHE_DIR)/respond.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/xZRyTq")
 
 $(CACHE_DIR)/robots.txt: $(SRC_DIR)/browser-client/robots.txt | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)

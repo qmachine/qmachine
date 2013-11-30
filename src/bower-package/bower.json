@@ -1,8 +1,8 @@
 {
     "dependencies": {
-        "bootstrap": "3.0.0",
-        "coffee-script": "1.6.2",
-        "jquery": "1.9.1",
+        "bootstrap": "3.0.2",
+        "coffee-script": "1.6.3",
+        "jquery": "1.10.2",
         "quanah": "0.2.0"
     },
     "main": [
