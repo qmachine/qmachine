@@ -3,8 +3,7 @@
 #-  Makefile ~~
 #
 #   This contains a live development workflow for QMachine (QM). To get started
-#   on Mac OS X 10.8 "Mountain Lion" with your own local sandbox, you will need
-#   to install ...
+#   on Mac OS X 10.9 with your own local sandbox, you will need to install ...
 #
 #       ... Homebrew using directions from http://mxcl.github.io/homebrew/.
 #
@@ -30,26 +29,17 @@
 #
 #   I prefer the standalone "Apache CouchDB.app" available from the CouchDB
 #   website (http://couchdb.apache.org/) over the Homebrew-installed version
-#   because it's more convenient. I also prefer Heroku's "Postgres.app"
-#   (http://postgresapp.com) over the version that ships with Mountain Lion. I
-#   don't know of any nice launchers for MongoDB or Redis, but Homebrew can
-#   install them for you, and it includes directions for launching them.
-#   
+#   because it's more convenient. I like the convenience of "Postgres.app"
+#   (http://postgresapp.com), but its default configuration is *not* a
+#   high-performance one -- in my testing, SQLite is almost as fast. I don't
+#   know of any nice launchers for MongoDB or Redis, but Homebrew can install
+#   them for you, and it includes directions for launching them.
+#
 #   Some optional targets may require extra packages to be installed by
 #   Homebrew, including
 #
 #           $ brew install closure-compiler jsmin mongodb qrencode \
 #               phantomjs redis yuicompressor
-#
-#   I use Heroku's platform-as-a-service (PaaS) for deployment, and this
-#   workflow does use the "Heroku Toolbelt" to build some of its targets, but
-#   I have also deployed QMachine to AppFog, App Harbor, and Cloud Foundry. I
-#   have no disclosures; I'm just documenting my tools for reproducibility.
-#
-#   Of course, if you are reading this and you represent a company interested
-#   in donating resources that will help me take QM to that proverbial "next
-#   level", then by all means contact me! I will consider all such offers and
-#   acknowledge your generosity in all ways tasteful and appropriate.
 #
 #   For a long time, icon generation from LaTeX source code was included as an
 #   extra touch, but folks complained too much about the extra dependency on
@@ -60,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 30 Nov 2013
+#                                                   ~~ last updated 01 Dec 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -73,9 +63,8 @@ SHARE_DIR   :=  $(PROJ_ROOT)/share
 SRC_DIR     :=  $(PROJ_ROOT)/src
 TEST_DIR    :=  $(PROJ_ROOT)/tests
 
-HEROKU_APP  :=  qmachine
 LOCAL_ADDR  :=  http://localhost:8177
-MOTHERSHIP  :=  https://$(strip $(HEROKU_APP)).herokuapp.com
+MOTHERSHIP  :=  https://qmachine.herokuapp.com
 QM_API_LOC  :=  '{"sqlite":"qm.db"}'
 QM_API_URL  :=  $(MOTHERSHIP)
 QM_WWW_URL  :=  $(MOTHERSHIP)

@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 02 Sep 2013
+#                                                   ~~ last updated 01 Dec 2013
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -206,7 +206,6 @@ CURL        :=  $(call contingent, curl) -L
 DATE        :=  $(call contingent, gdate date)
 GEM         :=  $(call contingent, gem)
 GIT         :=  $(call contingent, git)
-HEROKU      :=  $(call contingent, heroku)
 JSMIN       :=  $(call contingent, jsmin)
 LN          :=  $(call contingent, gln ln) -fs
 LS          :=  $(call contingent, gls ls) 2>/dev/null
