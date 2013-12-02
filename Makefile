@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 01 Dec 2013
+#                                                   ~~ last updated 03 Dec 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -145,13 +145,6 @@ browser-client:                                                             \
         apple-touch-icon-72x72.png                                          \
         apple-touch-icon-114x114.png                                        \
         apple-touch-icon-144x144.png                                        \
-        apple-touch-startup-image-320x460.png                               \
-        apple-touch-startup-image-640x920.png                               \
-        apple-touch-startup-image-640x1096.png                              \
-        apple-touch-startup-image-768x1004.png                              \
-        apple-touch-startup-image-748x1024.png                              \
-        apple-touch-startup-image-1536x2008.png                             \
-        apple-touch-startup-image-1496x2048.png                             \
         cache.manifest                                                      \
         coffeescript.js                                                     \
         favicon.ico                                                         \
