@@ -1,6 +1,6 @@
 {
     "dependencies": {
-        "bootstrap": "3.0.2",
+        "bootstrap": "3.0.3",
         "coffee-script": "1.6.3",
         "jquery": "1.10.2",
         "quanah": "0.2.0"

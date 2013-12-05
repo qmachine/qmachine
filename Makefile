@@ -337,13 +337,13 @@ $(CACHE_DIR):
 	@   $(call make-directory, $@)
 
 $(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/SzKGdk")
+	@   $(call download-url, "http://goo.gl/N5U0wB")
 
 $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/4r66gD")
+	@   $(call download-url, "http://goo.gl/MfuMZu")
 
 $(CACHE_DIR)/bootstrap-theme.css: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/m4vbDE")
+	@   $(call download-url, "http://goo.gl/qPqsDk")
 
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/a6ZyGk")
