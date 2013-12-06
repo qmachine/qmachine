@@ -78,7 +78,7 @@
   * sites' favicons are inserted automatically ... */
 
     li.left-favicon a {
-        padding-left: 0;
+        padding-left: 2px;
     }
 
     li.left-favicon a img {
