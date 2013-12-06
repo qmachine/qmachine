@@ -67,11 +67,23 @@
         border-radius: 6px;
     }
 
- /* Finally, we supplement the ".lead" class by padding its top to match its
+ /* Next, we supplement the ".lead" class by padding its top to match its
   * bottom's padding. */
 
     .lead {
         margin-top: 20px;
+    }
+
+ /* Finally, we add a custom class that we have integrated with jQuery so that
+  * sites' favicons are inserted automatically ... */
+
+    li.left-favicon a {
+        padding-left: 0;
+    }
+
+    li.left-favicon a img {
+        margin-left: 8px;
+        margin-right: 8px;
     }
 
 }

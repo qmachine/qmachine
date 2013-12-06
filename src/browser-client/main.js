@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 29 Oct 2013
+//                                                  ~~ last updated 05 Dec 2013
 
 (function () {
     'use strict';
@@ -35,15 +35,15 @@
         activeElement, alert, ajax, append, arrayToDataTable, avar,
         backgroundColor, blur, box, c, cache, call, callback, calls,
         clearTimeout, colorAxis, colors, console, countries, dataType,
-        datalessRegionColor, document, draw, error, exit, f, focus, GeoChart,
-        getItem, hasOwnProperty, id, is, join, jQuery, keepAspectRatio, key,
-        legend, length, load, localStorage, log, on, onreadystatechange, open,
-        packages, parse, projection, preventDefault, prototype, Q, QM,
-        'QM-total-calls', 'QM-total-countries', ready, readyState, region,
-        replace, responseText, revive, search, send, setItem, setRequestHeader,
-        setTimeout, slice, sort, success, status, statusText, stay, text,
-        toString, url, v, val, value, visualization, vol_timer, volunteer,
-        which, width
+        datalessRegionColor, document, draw, each, error, exit, f, focus,
+        GeoChart, getItem, hasOwnProperty, hostname, id, is, join, jQuery,
+        keepAspectRatio, key, legend, length, load, localStorage, log, on,
+        onreadystatechange, open, packages, parse, prepend, projection,
+        preventDefault, prototype, Q, QM, 'QM-total-calls',
+        'QM-total-countries', ready, readyState, region, replace, responseText,
+        revive, search, send, setItem, setRequestHeader, setTimeout, slice,
+        sort, success, status, statusText, stay, text, toString, url, v, val,
+        value, visualization, vol_timer, volunteer, which, width
     */
 
  // Prerequisites
@@ -279,6 +279,7 @@
 
     $(window.document).ready(function () {
      // This function runs when jQuery decides that the webpage has loaded.
+        /*jslint unparam: true */
         if (window.hasOwnProperty('google')) {
             google.load('visualization', '1', {
                 'callback': main,
@@ -382,6 +383,14 @@
                 });
                 return;
             }
+        });
+        $('li.left-favicon a').each(function (i, a) {
+         // This function inserts sites' favicons dynamically. Its execution
+         // can be delayed until after the page loads (as it is here) because
+         // it only affects elements in the navbar dropdown menus anyway.
+            $(a).prepend('<img src="//' + a.hostname + '/favicon.ico" ' +
+                'alt="(logo)" height="16" width="16">');
+            return;
         });
         return;
     });
