@@ -11,6 +11,13 @@
 
     /*jslint indent: 4, maxlen: 80, node: true */
 
+    /*properties
+        cf_connecting_ip, 'cf-connecting-ip', cf_ipcountry, 'cf-ipcountry',
+        cf_ray, 'cf-ray', cf_visitor, 'cf-visitor', connection, env,
+        hasOwnProperty, headers, host, ip, log, method, parse, remoteAddress,
+        replace, split, timestamp, url, 'x-forwarded-for'
+    */
+
  // Module definitions
 
     exports.log = function (request) {
@@ -24,11 +31,27 @@
             timestamp: new Date(),
             url: request.url
         };
-        if (request.headers.hasOwnProperty('cf-ipcountry')) {
+        if (request.headers.hasOwnProperty('cf-connecting-ip')) {
          // This header is specific to CloudFlare (www.cloudflare.com), but
          // storing the header with a hyphen inside can cause problems in query
          // languages like Hive. Thus, we use a hyphen convention.
+            data.cf_connecting_ip = request.headers['cf-connecting-ip'];
+        }
+        if (request.headers.hasOwnProperty('cf-ipcountry')) {
+         // This header is specific to CloudFlare (www.cloudflare.com), too.
             data.cf_ipcountry = request.headers['cf-ipcountry'];
+        }
+     /*
+        if (request.headers.hasOwnProperty('cf-ray')) {
+         // This header is specific to CloudFlare (www.cloudflare.com), too.
+         // It has been commented out here because it's mainly intended for
+         // debugging with CF Support. Read more at http://goo.gl/wMfrD8.
+            data.cf_ray = request.headers['cf-ray'];
+        }
+     */
+        if (request.headers.hasOwnProperty('cf-visitor')) {
+         // This header is specific to CloudFlare (www.cloudflare.com), too.
+            data.cf_visitor = request.headers['cf-visitor'];
         }
         if (request.headers.hasOwnProperty('x-forwarded-for')) {
             data.ip = request.headers['x-forwarded-for'].split(',')[0];
