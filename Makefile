@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 02 Dec 2013
+#                                                   ~~ last updated 09 Dec 2013
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -185,6 +185,7 @@ ruby-gem: | $(BUILD_DIR)/ruby-gem/
 web-service:                                                                \
     $(addprefix $(BUILD_DIR)/web-service/,                                  \
         .gitignore                                                          \
+        custom.js                                                           \
         katamari.json                                                       \
         package.json                                                        \
         Procfile                                                            \

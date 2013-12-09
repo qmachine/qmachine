@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 26 Nov 2013
+//                                                  ~~ last updated 09 Dec 2013
 
 (function () {
     'use strict';
@@ -18,23 +18,11 @@
  // Definitions
 
     options = {
+        log: require('./custom').log,
         worker_procs: require('os').cpus().length
     };
 
-    parse = function (x) {
-     // This function needs documentation.
-        return JSON.parse(x, function (key, val) {
-         // This function needs documentation.
-            /*jslint unparam: true */
-            if (typeof val === 'string') {
-                return val.replace(/[$][{]([A-Z0-9_]+)[}]/g, function ($0, $1) {
-                 // This function needs documentation.
-                    return process.env[$1];
-                });
-            }
-            return val;
-        });
-    };
+    parse = require('./custom').parse;
 
     qm = require('qm');
 
