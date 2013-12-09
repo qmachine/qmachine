@@ -48,11 +48,12 @@
          // debugging with CF Support. Read more at http://goo.gl/wMfrD8.
             data.cf_ray = request.headers['cf-ray'];
         }
-     */
         if (request.headers.hasOwnProperty('cf-visitor')) {
          // This header is specific to CloudFlare (www.cloudflare.com), too.
-            data.cf_visitor = request.headers['cf-visitor'];
+         // Read more at http://goo.gl/N7W6wJ.
+            data.cf_visitor = JSON.parse(request.headers['cf-visitor']);
         }
+     */
         if (request.headers.hasOwnProperty('x-forwarded-for')) {
             data.ip = request.headers['x-forwarded-for'].split(',')[0];
         } else {
