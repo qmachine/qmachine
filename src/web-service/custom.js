@@ -2,7 +2,7 @@
 
 //- custom.js ~~
 //                                                      ~~ (c) SRW, 09 Dec 2013
-//                                                  ~~ last updated 09 Dec 2013
+//                                                  ~~ last updated 10 Dec 2013
 
 (function () {
     'use strict';
@@ -15,7 +15,8 @@
         cf_connecting_ip, 'cf-connecting-ip', cf_ipcountry, 'cf-ipcountry',
         cf_ray, 'cf-ray', cf_visitor, 'cf-visitor', connection, content_length,
         'content-length', env, hasOwnProperty, headers, host, ip, log, method,
-        parse, remoteAddress, replace, split, timestamp, url, 'x-forwarded-for'
+        origin, parse, remoteAddress, replace, split, timestamp, url,
+        'x-forwarded-for'
     */
 
  // Module definitions
@@ -56,6 +57,9 @@
      */
         if (request.headers.hasOwnProperty('content-length')) {
             y.content_length = parseInt(request.headers['content-length'], 10);
+        }
+        if (request.headers.hasOwnProperty('origin')) {
+            y.origin = request.headers.origin;
         }
         if (request.headers.hasOwnProperty('x-forwarded-for')) {
             y.ip = request.headers['x-forwarded-for'].split(',')[0];
