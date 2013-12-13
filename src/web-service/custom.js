@@ -86,11 +86,11 @@
          // See http://goo.gl/B8Ks7h.
             y.x_forwarded_proto = headers['x-forwarded-proto'];
         }
-     */
         if (headers.hasOwnProperty('x-request-start')) {
          // See http://goo.gl/B8Ks7h.
             y.x_request_start = parseInt(headers['x-request-start'], 10);
         }
+     */
         if (headers.hasOwnProperty('x-wap-profile')) {
          // See http://goo.gl/vDg0CV.
             y.x_wap_profile = headers['x-wap-profile'];
