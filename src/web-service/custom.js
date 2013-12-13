@@ -2,7 +2,7 @@
 
 //- custom.js ~~
 //                                                      ~~ (c) SRW, 09 Dec 2013
-//                                                  ~~ last updated 10 Dec 2013
+//                                                  ~~ last updated 12 Dec 2013
 
 (function () {
     'use strict';
@@ -14,9 +14,11 @@
     /*properties
         cf_connecting_ip, 'cf-connecting-ip', cf_ipcountry, 'cf-ipcountry',
         cf_ray, 'cf-ray', cf_visitor, 'cf-visitor', connection, content_length,
-        'content-length', env, hasOwnProperty, headers, host, ip, log, method,
-        origin, parse, remoteAddress, replace, split, timestamp, url,
-        'x-forwarded-for'
+        'content-length', dnt, env, hasOwnProperty, headers, host, ip, log,
+        method, origin, parse, remoteAddress, replace, split, timestamp, url,
+        x_forwarded_for, 'x-forwarded-for', x_forwarded_port,
+        'x-forwarded-port', x_forwarded_proto, 'x-forwarded-proto',
+        x_request_start, 'x-request-start', x_wap_profile, 'x-wap-profile'
     */
 
  // Module definitions
@@ -24,47 +26,74 @@
     exports.log = function (request) {
      // This is a custom logging function that executes once for every request
      // if logging is enabled. This function is optional, however, because
-     // QMachine provides a default logging function; feel free to delete or
-     // adapt it as needed :-)
-        var y = {
-            host: request.headers.host,
+     // QMachine provides a default logging function. I have used a convention
+     // in which hyphens are converted into underscores in order to prevent
+     // inconveniences with certain tools that attempt to auto-detect schemas
+     // from JSON. Also, I have commented out various headers that I don't
+     // personally find useful. Ironically, the "Do Not Track" header (DNT) is
+     // logged alongside the tracking data because I don't understand the legal
+     // stuff yet, but I will delete all personal data from entries that opted
+     // out once I figure out which data are considered "personal".
+        var headers, y;
+        headers = request.headers;
+        y = {
+            host: headers.host,
             method: request.method,
             timestamp: new Date(),
             url: request.url
         };
-        if (request.headers.hasOwnProperty('cf-connecting-ip')) {
-         // This header is specific to CloudFlare (www.cloudflare.com), but
-         // storing the header with a hyphen inside can cause problems in query
-         // languages like Hive. Thus, we use a hyphen convention.
-            y.cf_connecting_ip = request.headers['cf-connecting-ip'];
+        if (headers.hasOwnProperty('cf-connecting-ip')) {
+         // See http://goo.gl/81sHn8.
+            y.cf_connecting_ip = headers['cf-connecting-ip'];
         }
-        if (request.headers.hasOwnProperty('cf-ipcountry')) {
-         // This header is specific to CloudFlare (www.cloudflare.com), too.
-            y.cf_ipcountry = request.headers['cf-ipcountry'];
+        if (headers.hasOwnProperty('cf-ipcountry')) {
+         // See http://goo.gl/QpDIBe.
+            y.cf_ipcountry = headers['cf-ipcountry'];
         }
      /*
-        if (request.headers.hasOwnProperty('cf-ray')) {
-         // This header is specific to CloudFlare (www.cloudflare.com), too.
-         // It has been commented out here because it's mainly intended for
-         // debugging with CF Support. Read more at http://goo.gl/wMfrD8.
-            y.cf_ray = request.headers['cf-ray'];
+        if (headers.hasOwnProperty('cf-ray')) {
+         // See http://goo.gl/wMfrD8.
+            y.cf_ray = headers['cf-ray'];
         }
-        if (request.headers.hasOwnProperty('cf-visitor')) {
-         // This header is specific to CloudFlare (www.cloudflare.com), too.
-         // Read more at http://goo.gl/N7W6wJ.
-            y.cf_visitor = JSON.parse(request.headers['cf-visitor']);
+        if (headers.hasOwnProperty('cf-visitor')) {
+         // See http://goo.gl/N7W6wJ.
+            y.cf_visitor = JSON.parse(headers['cf-visitor']);
         }
      */
-        if (request.headers.hasOwnProperty('content-length')) {
-            y.content_length = parseInt(request.headers['content-length'], 10);
+        if (headers.hasOwnProperty('content-length')) {
+            y.content_length = parseInt(headers['content-length'], 10);
         }
-        if (request.headers.hasOwnProperty('origin')) {
-            y.origin = request.headers.origin;
+        if (headers.hasOwnProperty('dnt')) {
+         // See http://goo.gl/Rrxu4L.
+            y.dnt = parseInt(headers.dnt, 10);
         }
-        if (request.headers.hasOwnProperty('x-forwarded-for')) {
-            y.ip = request.headers['x-forwarded-for'].split(',')[0];
+        if (headers.hasOwnProperty('origin')) {
+         // See http://goo.gl/BZldtx.
+            y.origin = headers.origin;
+        }
+        if (headers.hasOwnProperty('x-forwarded-for')) {
+         // See http://goo.gl/ZtqLv1.
+            y.ip = headers['x-forwarded-for'].split(',')[0];
         } else {
             y.ip = request.connection.remoteAddress;
+        }
+     /*
+        if (headers.hasOwnProperty('x-forwarded-port')) {
+         // See http://goo.gl/B8Ks7h.
+            y.x_forwarded_port = headers['x-forwarded-port'];
+        }
+        if (headers.hasOwnProperty('x-forwarded-proto')) {
+         // See http://goo.gl/B8Ks7h.
+            y.x_forwarded_proto = headers['x-forwarded-proto'];
+        }
+     */
+        if (headers.hasOwnProperty('x-request-start')) {
+         // See http://goo.gl/B8Ks7h.
+            y.x_request_start = parseInt(headers['x-request-start'], 10);
+        }
+        if (headers.hasOwnProperty('x-wap-profile')) {
+         // See http://goo.gl/vDg0CV.
+            y.x_wap_profile = headers['x-wap-profile'];
         }
         return y;
     };
