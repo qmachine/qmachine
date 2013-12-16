@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 15 Dec 2013
+//                                                  ~~ last updated 16 Dec 2013
 
 (function () {
     'use strict';
@@ -31,6 +31,16 @@
     if (process.env.IP !== undefined) {
      // This is for debugging on Cloud9.
         options.hostname = process.env.IP;
+    }
+
+    if (process.env.OPENSHIFT_INTERNAL_IP !== undefined) {
+     // This is for use with OpenShift.
+        options.hostname = process.env.OPENSHIFT_INTERNAL_IP;
+    }
+
+    if (process.env.OPENSHIFT_INTERNAL_PORT !== undefined) {
+     // This is for use with OpenShift.
+        options.port = process.env.OPENSHIFT_INTERNAL_PORT;
     }
 
     if (process.env.PORT !== undefined) {
