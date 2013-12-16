@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 09 Dec 2013
+//                                                  ~~ last updated 15 Dec 2013
 
 (function () {
     'use strict';
@@ -60,6 +60,11 @@
      // This is a custom environment variable I define prior to deployment.
         options.enable_www_server = true;
         options.static_content = parse(process.env.QM_WWW_STRING);
+    }
+
+    if (process.env.VCAP_APP_PORT !== undefined) {
+     // This is for use with AppFog.
+        options.port = process.env.VCAP_APP_PORT;
     }
 
     if (process.env.VMC_APP_PORT !== undefined) {
