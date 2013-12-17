@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 06 Nov 2013
+//                                                  ~~ last updated 17 Dec 2013
 
 (function (global, sandbox) {
     'use strict';
@@ -338,23 +338,17 @@
                 params = (params instanceof Object) ? params : {};
                 ply(params).by(function (key, val) {
                  // This has a "forEach" pattern ==> `ply` is justified.
-                    switch (key) {
-                    case 'get':
+                    if (key === 'get') {
                         obj.__defineGetter__(name, val);
-                        break;
-                    case 'set':
+                    } else if (key === 'set') {
                         obj.__defineSetter__(name, val);
-                        break;
-                    case 'value':
-                     // NOTE: This may fail if the property's "configurable"
+                    } else if (key === 'value') {
+                     // NOTE: This may fail if the property's `configurable`
                      // attribute was set to `false`, but if such an error
                      // could occur, that JS implementation would have had a
                      // native `Object.defineProperty` method anyway :-P
                         delete obj[name];
                         obj[name] = val;
-                        break;
-                    default:
-                     // (placeholder)
                     }
                     return;
                 });

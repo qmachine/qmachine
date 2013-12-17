@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 05 Dec 2013
+//                                                  ~~ last updated 17 Dec 2013
 
 (function () {
     'use strict';
@@ -93,20 +93,18 @@
     detect = function (feature_name) {
      // This function is a high-level feature detection abstraction that helps
      // make the rest of the program logic read like English.
-        switch (feature_name) {
-        case 'console.error':
-            return ((window.hasOwnProperty('console')) &&
+        var flag = false;
+        if (feature_name === 'console.error') {
+            flag = ((window.hasOwnProperty('console')) &&
                     (is_Function(window.console.error)));
-        case 'console.log':
-            return ((window.hasOwnProperty('console')) &&
+        } else if (feature_name === 'console.log') {
+            flag = ((window.hasOwnProperty('console')) &&
                     (is_Function(window.console.log)));
-        case 'localStorage':
+        } else if (feature_name === 'localStorage') {
          // HTML5 localStorage object
-            return (window.localStorage instanceof Object);
-        default:
-         // (placeholder)
+            flag = (window.localStorage instanceof Object);
         }
-        return false;
+        return flag;
     };
 
     get_data = function (callback) {
