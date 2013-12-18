@@ -14,28 +14,28 @@
     /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        a, ActiveXObject, addEventListener, adsafe, anon, appendChild, apply,
-        atob, attachEvent, avar, b, bitwise, body, box, browser, btoa, by,
-        call, can_run_remotely, cap, charAt, charCodeAt, CoffeeScript, comm,
-        configurable, console, constructor, contentWindow, continue,
-        createElement, css, data, debug, def, '__defineGetter__',
-        defineProperty, '__defineSetter__', detachEvent, devel, diagnostics,
-        display, document, done, enumerable, env, epitaph, eqeq, error, errors,
-        es5, eval, evil, exemptions, exit, f, fail, floor, forin, fragment,
-        fromCharCode, get, getElementsByTagName, global, hasOwnProperty, head,
-        host, ignoreCase, importScripts, indexOf, join, JSLINT, key, length,
-        lib, load_data, load_script, location, log, map, mapreduce, method,
-        multiline, navigator, newcap, node, nomen, now, on, onLine, onload,
-        onreadystatechange, open, parentElement, parse, passfail, plusplus,
-        ply, postMessage, predef, properties, protocol, prototype, push, puts,
-        Q, QM, QUANAH, query, random, readyState, reason, recent, reduce,
-        regexp, removeChild, removeEventListener, replace, responseText,
-        result, results, revive, rhino, run_remotely, safe, send, set,
-        setRequestHeader, setTimeout, shelf, shift, slice, sloppy, source, src,
-        status, stay, stringify, stupid, style, sub, submit, sync, test, time,
-        toJSON, toSource, toString, todo, undef, unparam, url, val, value,
-        valueOf, vars, via, visibility, volunteer, white, window, windows,
-        withCredentials, writable, x, XDomainRequest, XMLHttpRequest, y
+        a, ActiveXObject, addEventListener, appendChild, apply, asi, atob,
+        attachEvent, avar, b, body, box, btoa, by, call, can_run_remotely,
+        charAt, charCodeAt, CoffeeScript, comm, configurable, console,
+        constructor, contentWindow, createElement, data, def,
+        '__defineGetter__', defineProperty, '__defineSetter__', detachEvent,
+        diagnostics, display, document, done, enumerable, env, epitaph, eqnull,
+        error, errors, eval, exemptions, exit, expr, f, fail, floor,
+        fromCharCode, funcscope, get, getElementsByTagName, global,
+        hasOwnProperty, head, host, ignoreCase, importScripts, indexOf,
+        iterator, join, JSHINT, key, laxbreak, laxcomma, length, lib,
+        load_data, load_script, location, log, loopfunc, map, mapreduce,
+        method, moz, multiline, multistr, navigator, now, on, onLine, onload,
+        onreadystatechange, open, parentElement, parse, ply, postMessage,
+        predef, proto, protocol, prototype, push, puts, Q, QM, QUANAH, query,
+        random, readyState, reason, recent, reduce, removeChild,
+        removeEventListener, replace, responseText, result, results, revive,
+        run_remotely, scripturl, send, set, setRequestHeader, setTimeout,
+        shadow, shelf, shift, slice, smarttabs, source, src, status, stay,
+        stringify, style, sub, submit, supernew, sync, test, time, toJSON,
+        toSource, toString, undef, url, val, validthis, value, valueOf, via,
+        visibility, volunteer, window, withCredentials, writable, x,
+        XDomainRequest, XMLHttpRequest, y
     */
 
  // Prerequisites
@@ -250,7 +250,7 @@
     can_run_remotely = function (task) {
      // This function returns a boolean.
         return ((global.hasOwnProperty('JSON'))     &&
-                (global.hasOwnProperty('JSLINT'))   &&
+                (global.hasOwnProperty('JSHINT'))   &&
                 (task instanceof Object)            &&
                 (task.hasOwnProperty('f'))          &&
                 (task.hasOwnProperty('x'))          &&
@@ -432,14 +432,15 @@
      // parse the source code representation to confirm that the function did
      // not depend on its scope, then I might be able to serialize it, provided
      // that it did not contain any methods that depended on their scopes. Of
-     // course, writing such a tool is a huge undertaking, so instead I just
-     // used a fantastic program by Douglas Crockford, JSLINT, which contains
-     // an expertly-written parser with configurable parameters. A bonus here
-     // is that JSLINT allows me to avoid a number of other unsavory problems,
-     // such as functions that log messages to a console -- such functions may
-     // or may not be serializable, but their executions should definitely
-     // occur on the same machines that invoked them! Anyway, this function is
-     // only one solution to the serialization problem, and I welcome feedback
+     // course, writing such a tool is a huge undertaking, so originally I used
+     // JSLint by Douglas Crockford because it contains an expertly-written
+     // parser with configurable parameters. A bonus there was that JSLINT
+     // allowed me to avoid a number of other unsavory problems, such as
+     // functions that log messages to a console -- such functions may or may
+     // not be serializable, but their executions should definitely occur on
+     // the same machines that invoked them! Anyway, this function now uses the
+     // community-driven JSLint, "successor", JSHint, and it represents only
+     // one possible solution to the serialization problem. I welcome feedback
      // from others who may have battled the same problems :-)
         /*jslint unparam: true */
         if ((options instanceof Object) === false) {
@@ -476,54 +477,34 @@
              // or else the next line will fail when we try to remove leading
              // and trailing parentheses in order to appease JSLINT.
                 $f = left + $f.replace(/^[(]|[)]$/g, '') + right;
-             // Now, we send our function's serialized form `$f` into JSLINT
+             // Now, we send our function's serialized form `$f` into JSHint
              // for analysis, taking care to disable all options that are not
              // directly relevant to determining if the function is suitable
-             // for running in some remote JavaScript environment. If JSLINT
+             // for running in some remote JavaScript environment. If JSHint
              // returns `false` because the scan fails for some reason, the
              // answer to our question would be `true`, which is why we have
-             // to negate JSLINT's output.
-                flag = (false === global.JSLINT($f, copy(options, {
-                 // JSLINT configuration options, as of version 2012-07-27:
-                    'adsafe':   false,  //- enforce ADsafe rules?
-                    'anon':     true,   //- allow `function()`?
-                    'bitwise':  true,   //- allow use of bitwise operators?
-                    'browser':  false,  //- assume browser as JS environment?
-                    'cap':      true,   //- allow uppercase HTML?
-                    //confusion:true,   //- allow inconsistent type usage?
-                    'continue': true,   //- allow continuation statement?
-                    'css':      false,  //- allow CSS workarounds?
-                    'debug':    false,  //- allow debugger statements?
-                    'devel':    false,  //- allow output logging?
-                    'eqeq':     true,   //- allow `==` instead of `===`?
-                    'es5':      true,   //- allow ECMAScript 5 syntax?
-                    'evil':     false,  //- allow the `eval` statement?
-                    'forin':    true,   //- allow unfiltered `for..in`?
-                    'fragment': false,  //- allow HTML fragments?
-                    //'indent': 4,
-                    //'maxerr': 50,
-                    //'maxlen': 80,
-                    'newcap':   true,   //- constructors must be capitalized?
-                    'node':     false,  //- assume Node.js as JS environment?
-                    'nomen':    true,   //- allow names' dangling underscores?
-                    'on':       false,  //- allow HTML event handlers
-                    'passfail': true,   //- halt the scan on the first error?
-                    'plusplus': true,   //- allow `++` and `--` usage?
-                    'predef':   {},     //- predefined global variables
-                    'properties': false,//- require JSLINT /*properties */?
-                    'regexp':   true,   //- allow `.` in regexp literals?
-                    'rhino':    false,  //- assume Rhino as JS environment?
-                    'safe':     false,  //- enforce safe subset of ADsafe?
-                    'sloppy':   true,   //- ES5 strict mode pragma is optional?
-                    'stupid':   true,   //- allow `*Sync` calls in Node.js?
-                    'sub':      true,   //- allow all forms of subset notation?
-                    'todo':     true,   //- allow comments that start with TODO
-                    'undef':    false,  //- allow out-of-order definitions?
-                    'unparam':  true,   //- allow unused parameters?
-                    'vars':     true,   //- allow multiple `var` statements?
-                    'white':    true,   //- allow sloppy whitespace?
-                    //'widget': false,  //- assume Yahoo widget JS environment?
-                    'windows':  false   //- assume Windows OS?
+             // to negate JSHint's output.
+                flag = (false === global.JSHINT($f, copy(options, {
+                 // These configuration options are current as of 17 Dec 2013.
+                 // See http://www.jshint.com/docs/options/ for reference.
+                    'asi':          true,
+                    'eqnull':       true,
+                    'expr':         true,
+                    'funcscope':    true,
+                    'iterator':     true,
+                    'laxbreak':     true,
+                    'laxcomma':     true,
+                    'loopfunc':     true,
+                    'moz':          true,
+                    'multistr':     true,
+                    'proto':        true,
+                    'scripturl':    true,
+                    'smarttabs':    true,
+                    'shadow':       true,
+                    'sub':          true,
+                    'supernew':     true,
+                    'validthis':    true,
+                    'undef':        true
                 })));
             }
             ply(x).by(function (key, val) {
@@ -1274,7 +1255,7 @@
                 }
             }
             if (is_closed(task, options)) {
-                return evt.fail(global.JSLINT.errors[0].reason);
+                return evt.fail(global.JSHINT.errors[0].reason);
             }
             temp = avar({box: y.box, val: y.val});
             state.exemptions[temp.key] = options;
