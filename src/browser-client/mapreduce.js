@@ -1,6 +1,13 @@
 //- JavaScript source code
 
 //- mapreduce.js ~~
+//
+//  This file is the beginning of a new browser-based MapReduce engine that
+//  will use QMachine's API without modification. I'm not sure yet whether this
+//  undertaking will become a bolt-on framework that consumes the current web
+//  browser client or whether this will become its own project, but the idea
+//  here is to create a full MapReduce engine in the style of Hadoop et al.
+//
 //                                                      ~~ (c) SRW, 04 Feb 2014
 //                                                  ~~ last updated 06 Feb 2014
 
