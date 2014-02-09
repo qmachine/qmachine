@@ -9,7 +9,7 @@
 //  here is to create a full MapReduce engine in the style of Hadoop et al.
 //
 //                                                      ~~ (c) SRW, 04 Feb 2014
-//                                                  ~~ last updated 06 Feb 2014
+//                                                  ~~ last updated 09 Feb 2014
 
 (function (global) {
     'use strict';
@@ -18,12 +18,12 @@
 
     /*global */
 
-    /*jshint camelcase: true, maxparams: 1, quotmark: single, strict: true */
+    /*jshint camelcase: true, maxparams: 3, quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80 */
 
     /*properties
-        avar, constructor, exit, fail, hasOwnProperty, map, mapReduce,
+        avar, constructor, exit, fail, hasOwnProperty, length, map, mapReduce,
         prototype, Q, QUANAH, reduce, val
     */
 
@@ -50,34 +50,35 @@
 
  // Prototype definitions
 
-    AVar.prototype.mapReduce = function (obj) {
+    AVar.prototype.mapReduce = function (mapFunc, reduceFunc, optionsObj) {
      // This function's purpose should be obvious from its name. It must be
      // _foolproof_, so we begin by checking types.
         if ((this instanceof AVar) === false) {
             throw new TypeError('The `mapReduce` method is not generic.');
         }
+        var argc = arguments.length;
         this.Q(function (evt) {
          // Having established that `this` is an avar, we check the types of
-         // the original input argument `obj` and the `val` property of the
-         // avar using Quanah to take advantage of error handling. The function
-         // will run locally because it closes over `isFunction` and `obj`.
-            if ((obj instanceof Object) === false) {
-                return evt.fail('The `mapReduce` method expects ' +
-                        'its input argument to be an object.');
+         // the original input arguments to `mapReduce` as well as the `val`
+         // property of the avar using Quanah to take advantage of error
+         // handling. The function will run locally because it closes over
+         // `argc`, `isFunction`, and the original input arguments.
+            var exps = 'The `mapReduce` method expects ';
+            if ((argc !== 2) && (argc !== 3)) {
+                return evt.fail(exps + 'either two or three input arguments.');
+            }
+            if (isFunction(mapFunc) === false) {
+                return evt.fail(exps + 'its first argument to be a function.');
+            }
+            if (isFunction(reduceFunc) === false) {
+                return evt.fail(exps + 'its second argument to be a function.');
+            }
+            if ((argc === 3) && ((optionsObj instanceof Object) === false)) {
+                return evt.fail(exps + 'its input argument to be an object.');
             }
             if ((this.val instanceof Array) === false) {
-                return evt.fail('The `mapReduce` method expects ' +
-                        '`this.val` to be an array.');
+                return evt.fail(exps + '`this.val` to be an array.');
             }
-            if ((obj.hasOwnProperty('map') === false) ||
-                    (isFunction(obj.map) === false)) {
-                return evt.fail('No `map` function was specified.');
-            }
-            if ((obj.hasOwnProperty('reduce') === false) ||
-                    (isFunction(obj.reduce) === false)) {
-                return evt.fail('No `reduce` function was specified.');
-            }
-            // ...
             return evt.exit();
         });
         // ...
