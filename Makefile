@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 09 Dec 2013
+#                                                   ~~ last updated 03 Mar 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -143,8 +143,11 @@ browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
         apple-touch-icon-57x57.png                                          \
         apple-touch-icon-72x72.png                                          \
+        apple-touch-icon-76x76.png                                          \
         apple-touch-icon-114x114.png                                        \
+        apple-touch-icon-120x120.png                                        \
         apple-touch-icon-144x144.png                                        \
+        apple-touch-icon-152x152.png                                        \
         cache.manifest                                                      \
         coffeescript.js                                                     \
         favicon.ico                                                         \
@@ -425,8 +428,11 @@ $(ICONS_DIR):
     $(addprefix $(ICONS_DIR)/,                                              \
         apple-touch-icon-57x57.png                                          \
         apple-touch-icon-72x72.png                                          \
+        apple-touch-icon-76x76.png                                          \
         apple-touch-icon-114x114.png                                        \
+        apple-touch-icon-120x120.png                                        \
         apple-touch-icon-144x144.png                                        \
+        apple-touch-icon-152x152.png                                        \
         apple-touch-startup-image-320x460.png                               \
         apple-touch-startup-image-320x460.png                               \
         apple-touch-startup-image-640x920.png                               \
