@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 03 Mar 2014
+#                                                   ~~ last updated 16 Mar 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -64,10 +64,9 @@ SRC_DIR     :=  $(PROJ_ROOT)/src
 TEST_DIR    :=  $(PROJ_ROOT)/tests
 
 LOCAL_ADDR  :=  http://localhost:8177
-MOTHERSHIP  :=  https://qmachine.herokuapp.com
 QM_API_LOC  :=  '{"sqlite":"qm.db"}'
-QM_API_URL  :=  $(MOTHERSHIP)
-QM_WWW_URL  :=  $(MOTHERSHIP)
+QM_API_URL  :=  https://api.qmachine.org
+QM_WWW_URL  :=  https://www.qmachine.org
 
 ifeq ("$(strip $(db))", "couch")
     QM_API_LOC  :=  '{"couch":"http://127.0.0.1:5984/db"}'
@@ -203,8 +202,9 @@ web-service:                                                                \
 
 local-sandbox:
 	@   $(MAKE)                                                         \
-                MOTHERSHIP="$(strip $(LOCAL_ADDR))"                         \
                 QM_API_STRING=$(strip $(QM_API_LOC))                        \
+                QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
+                QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
                     web-service                                         ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
             if [ ! -d local-sandbox/ ]; then                                \
@@ -223,7 +223,10 @@ local-sandbox:
                     $(NPM) start
 
 rack-app: | $(BUILD_DIR)/rack-app/
-	@   $(MAKE) MOTHERSHIP="$(strip $(LOCAL_ADDR))" browser-client  ;   \
+	@   $(MAKE) \
+                QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
+                QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
+                    browser-client                                      ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
             if [ ! -d rack-app/public/ ]; then                              \
                 $(CP) browser-client rack-app/public                    ;   \

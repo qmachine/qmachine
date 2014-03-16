@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 01 Dec 2013
+#                                                   ~~ last updated 16 Mar 2014
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -118,7 +118,7 @@ define minify-css
     else                                                                    \
         $(call aside, "Optimizing stylesheets: $(1) -> $(2)")           ;   \
     fi                                                                  ;   \
-    echo "/*! $(MOTHERSHIP)/$(notdir $(2)) */\n" > $(2)                 ;   \
+    echo "/*! $(QM_WWW_URL)/$(notdir $(2)) */\n" > $(2)                 ;   \
     $(CAT) $(1) > $(2)-temp.js                                          ;   \
     if [ "$(firstword $(YUICOMP))" != "echo" ]; then                        \
         $(YUICOMP) --type css $(2)-temp.js -o $(2)-temp.js              ;   \
@@ -129,17 +129,17 @@ endef
 
 define minify-js
     if [ "$(strip $(MINIFY))" = "$(firstword $(CLOSURE))" ]; then           \
-        echo "// $(MOTHERSHIP)/$(notdir $(2))\n" > $(2)                 ;   \
+        echo "// $(QM_WWW_URL)/$(notdir $(2))\n" > $(2)                 ;   \
         $(CLOSURE) --compilation_level WHITESPACE_ONLY                      \
             $(1:%=--js %) >> $(2)                                       ;   \
     elif [ "$(strip $(MINIFY))" = "$(firstword $(YUICOMP))" ]; then         \
-        echo "// $(MOTHERSHIP)/$(notdir $(2))\n" > $(2)                 ;   \
+        echo "// $(QM_WWW_URL)/$(notdir $(2))\n" > $(2)                 ;   \
         $(YUICOMP) --nomunge --preserve-semi --disable-optimizations        \
             --type js $(1) >> $(2)                                      ;   \
     elif [ "$(strip $(MINIFY))" = "$(firstword $(JSMIN))" ]; then           \
-        $(CAT) $(1) | $(JSMIN) "$(MOTHERSHIP)/$(notdir $(2))" > $(2)    ;   \
+        $(CAT) $(1) | $(JSMIN) "$(QM_WWW_URL)/$(notdir $(2))" > $(2)    ;   \
     else                                                                    \
-        echo "// $(MOTHERSHIP)/$(notdir $(2))\n" > $(2)                 ;   \
+        echo "// $(QM_WWW_URL)/$(notdir $(2))\n" > $(2)                 ;   \
         $(CAT) $(1) >> $(2)                                             ;   \
     fi
 endef
@@ -178,9 +178,8 @@ endef
 
 define replace-url-macros
     $(SED) \
-        -e 's|MOTHERSHIP|$(strip $(MOTHERSHIP))|g'  \
-        -e 's|QM_API_URL|$(strip $(QM_API_URL))|g'  \
         -e 's|LOCAL_ADDR|$(strip $(LOCAL_ADDR))|g'  \
+        -e 's|QM_API_URL|$(strip $(QM_API_URL))|g'  \
         -e 's|QM_WWW_URL|$(strip $(QM_WWW_URL))|g'  $(1) > $(2)
 endef
 

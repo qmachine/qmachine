@@ -11,7 +11,7 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 28 Oct 2013
+//                                                  ~~ last updated 16 Mar 2014
 
 (function () {
     'use strict';
@@ -60,7 +60,7 @@
     };
 
     mothership = phantom.args[0]; // this is for compatibility with 1.4.0 ...
-    //mothership = require('system').env['MOTHERSHIP'];
+    //mothership = require('system').env['QM_API_URL'];
 
     queue = [];
 
