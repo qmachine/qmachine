@@ -26,7 +26,7 @@
 #   of a 'box', 'key', or 'status' value.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 21 Mar 2014
+#                                                   ~~ last updated 29 Mar 2014
 
 require 'rubygems'
 require 'bundler'
@@ -87,7 +87,7 @@ helpers do
           # us from being able to retrieve the results of the query.
             x = db.execute(query)
         rescue SQLite3::Exception => err
-            puts "Exception occured: #{err}"
+            puts "Exception occurred: #{err}"
         ensure
             db.close if db
         end
