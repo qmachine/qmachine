@@ -30,3 +30,4 @@ news sites. QM has also graced the front page of
 For more information, see
 [https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
 
+<!-- vim:set syntax=markdown: -->
