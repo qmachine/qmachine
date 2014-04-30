@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 16 Dec 2013
+//                                                  ~~ last updated 30 Apr 2014
 
 (function () {
     'use strict';
@@ -33,13 +33,19 @@
         options.hostname = process.env.IP;
     }
 
-    if (process.env.OPENSHIFT_INTERNAL_IP !== undefined) {
+    if (process.env.OPENSHIFT_NODEJS_IP !== undefined) {
      // This is for use with OpenShift.
+        options.hostname = process.env.OPENSHIFT_NODEJS_IP;
+    } else if (process.env.OPENSHIFT_INTERNAL_IP !== undefined) {
+     // This is an outdated environment variable for use with OpenShift.
         options.hostname = process.env.OPENSHIFT_INTERNAL_IP;
     }
 
-    if (process.env.OPENSHIFT_INTERNAL_PORT !== undefined) {
+    if (process.env.OPENSHIFT_NODEJS_PORT !== undefined) {
      // This is for use with OpenShift.
+        options.port = process.env.OPENSHIFT_NODEJS_PORT;
+    } else if (process.env.OPENSHIFT_INTERNAL_PORT !== undefined) {
+     // This is an outdated environment variable for use with OpenShift.
         options.port = process.env.OPENSHIFT_INTERNAL_PORT;
     }
 
