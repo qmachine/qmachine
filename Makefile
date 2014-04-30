@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 16 Mar 2014
+#                                                   ~~ last updated 30 Apr 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -381,7 +381,7 @@ $(CACHE_DIR)/jquery-git1.js: | $(CACHE_DIR)
 	@   $(call download-url, "https://code.jquery.com/jquery-git1.min.js")
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://git.io/idKqIQ")
+	@   $(call download-url, "http://goo.gl/9XuoRL")
 
 $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/1MnPH")
@@ -401,7 +401,7 @@ $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://git.io/5rxl6Q")
+	@   $(call download-url, "http://goo.gl/0C6XzA")
 
 $(CACHE_DIR)/respond.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/xZRyTq")
