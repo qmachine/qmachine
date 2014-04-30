@@ -16,7 +16,7 @@
 //      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
 //
 //                                                      ~~ (c) SRW, 19 Sep 2012
-//                                                  ~~ last updated 13 Feb 2013
+//                                                  ~~ last updated 30 Apr 2014
 
 (function (global) {
     'use strict';
@@ -58,7 +58,7 @@
     page.onConsoleMessage = function (message) {
      // This function ignores the console message and instead uses the event
      // itself as a trigger to render the page as a rasterized image.
-        global.console.log('Rasterizing to "' + output + '" ...');
+        global.console.log('Saving ' + address + ' -> ' + output + ' ...');
         page.render(output);
         global.console.log(message);
         global.console.log('Done.');
