@@ -1,4 +1,4 @@
-# QMachine [![Build Status](https://travis-ci.org/wilkinson/qmachine.png)](https://travis-ci.org/wilkinson/qmachine) [![Build Status](https://drone.io/github.com/wilkinson/qmachine/status.png)](https://drone.io/github.com/wilkinson/qmachine/latest) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wilkinson/qmachine/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+# QMachine [![Build Status](https://travis-ci.org/wilkinson/qmachine.png)](https://travis-ci.org/wilkinson/qmachine) [![Build Status](https://drone.io/github.com/wilkinson/qmachine/status.png)](https://drone.io/github.com/wilkinson/qmachine/latest)
 
 [QMachine](https://www.qmachine.org) (QM) is a web service that can incorporate
 ordinary web browsers into a World Wide Computer without installing anything.
@@ -30,3 +30,4 @@ news sites. QM has also graced the front page of
 For more information, see
 [https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
 
+<!-- vim:set syntax=markdown: -->

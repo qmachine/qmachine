@@ -2,7 +2,7 @@
 
 //- custom.js ~~
 //                                                      ~~ (c) SRW, 09 Dec 2013
-//                                                  ~~ last updated 12 Dec 2013
+//                                                  ~~ last updated 01 Apr 2014
 
 (function () {
     'use strict';
@@ -15,8 +15,8 @@
         cf_connecting_ip, 'cf-connecting-ip', cf_ipcountry, 'cf-ipcountry',
         cf_ray, 'cf-ray', cf_visitor, 'cf-visitor', connection, content_length,
         'content-length', dnt, env, hasOwnProperty, headers, host, ip, log,
-        method, origin, parse, remoteAddress, replace, split, timestamp, url,
-        x_forwarded_for, 'x-forwarded-for', x_forwarded_port,
+        method, origin, parse, referer, remoteAddress, replace, split,
+        timestamp, url, x_forwarded_for, 'x-forwarded-for', x_forwarded_port,
         'x-forwarded-port', x_forwarded_proto, 'x-forwarded-proto',
         x_request_start, 'x-request-start', x_wap_profile, 'x-wap-profile'
     */
@@ -70,6 +70,10 @@
         if (headers.hasOwnProperty('origin')) {
          // See http://goo.gl/BZldtx.
             y.origin = headers.origin;
+        }
+        if (headers.hasOwnProperty('referer')) {
+         // See http://goo.gl/BCW8Vf.
+            y.referer = headers.referer;
         }
         if (headers.hasOwnProperty('x-forwarded-for')) {
          // See http://goo.gl/ZtqLv1.

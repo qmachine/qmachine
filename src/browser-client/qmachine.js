@@ -2,7 +2,7 @@
 
 //- qmachine.js ~~
 //                                                      ~~ (c) SRW, 15 Nov 2012
-//                                                  ~~ last updated 17 Dec 2013
+//                                                  ~~ last updated 02 Feb 2014
 
 (function (global, sandbox) {
     'use strict';
@@ -1715,8 +1715,8 @@
  // RingoJS confound the issue by modifying the scope chain, running scripts
  // in sandboxed contexts, and using identifiers like `global` carelessly ...
 
-    /*jslint indent: 4, maxlen: 80 */
     /*global global: false */
+    /*jslint indent: 4, maxlen: 80 */
     /*properties global */
 
     if (this === null) {

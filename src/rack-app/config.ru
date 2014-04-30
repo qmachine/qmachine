@@ -17,7 +17,7 @@
 #   I do plan to merge this program with the Ruby gem in the future, which is
 #   why the database schema matches the Node.js implementation's (which is not
 #   as straight-forward as it could be). For now, it serves its purpose, and it
-#   does so with just 98 lines of source code ;-)
+#   does so with just 95 lines of source code ;-)
 #
 #   NOTE: Using a "%" character incorrectly in a URL will cause you great
 #   anguish, and there isn't a good way for me to handle this problem "softly"
@@ -26,7 +26,7 @@
 #   of a 'box', 'key', or 'status' value.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 26 Oct 2013
+#                                                   ~~ last updated 29 Mar 2014
 
 require 'rubygems'
 require 'bundler'
@@ -63,7 +63,7 @@ end
 helpers do
   # This block defines subfunctions for use inside the route definitions.
 
-    def query(sql)
+    def sqlite(query)
       # This helper method helps DRY out the code for database queries, and it
       # does so in an incredibly robust and inefficient way -- by creating the
       # table and evicting expired rows before every single query. A caveat, of
@@ -82,12 +82,12 @@ helpers do
                 );
                 DELETE FROM avars WHERE (exp_date < #{now_plus(0)})
                 sql
-          # We have to execute the query code `sql` separately because the
+          # We have to execute the query code `query` separately because the
           # `db.execute_batch` function always returns `nil`, which prevents
           # us from being able to retrieve the results of the query.
-            x = db.execute(sql)
+            x = db.execute(query)
         rescue SQLite3::Exception => err
-            puts "Exception occured: #{err}"
+            puts "Exception occurred: #{err}"
         ensure
             db.close if db
         end
@@ -127,20 +127,21 @@ if settings.enable_api_server? then
                 (@box.match(/^[\w\-]+$/)) and
                 ((@key.is_a?(String) and @key.match(/^[A-Za-z0-9]+$/)) or
                 (@status.is_a?(String) and @status.match(/^[A-Za-z0-9]+$/)))
-        cross_origin if (settings.enable_CORS == true)
+        cross_origin if settings.enable_CORS?
     end
 
     get '/:version/:box' do
       # This route responds to API calls that "read" from persistent storage,
       # such as when checking for new tasks to run or downloading results.
+        hang_up unless (@key.is_a?(String) ^ @status.is_a?(String))
         bk, bs = "#{@box}&#{@key}", "#{@box}&#{@status}"
-        if (@key.is_a?(String)) then
+        if @key.is_a?(String) then
           # This arm runs when a client requests the value of a specific avar.
-            x = query("SELECT body FROM avars WHERE box_key = '#{bk}'")
+            x = sqlite("SELECT body FROM avars WHERE box_key = '#{bk}'")
             y = (x.length == 0) ? '{}' : x[0][0]
         else
           # This arm runs when a client requests a task queue.
-            x = query("SELECT key FROM avars WHERE box_status = '#{bs}'")
+            x = sqlite("SELECT key FROM avars WHERE box_status = '#{bs}'")
             y = (x.length == 0) ? '[]' : (x.map {|row| row[0]}).to_json
         end
         return [200, {'Content-Type' => 'application/json'}, [y]]
@@ -149,25 +150,22 @@ if settings.enable_api_server? then
     post '/:version/:box' do
       # This route responds to API calls that "write" to persistent storage,
       # such as when uploading results or submitting new tasks.
-        hang_up unless (@key.is_a?(String))
+        hang_up unless @key.is_a?(String) and not @status.is_a?(String)
         body, ed = request.body.read, now_plus(settings.avar_ttl)
         x = JSON.parse(body)
         hang_up unless (@box == x['box']) and (@key == x['key'])
         bk, bs = "#{@box}&#{@key}", "#{@box}&#{x['status']}"
-        if (x['status'].is_a?(String)) then
-          # This arm runs only when a client writes a task description.
-            hang_up if (x['status'].match(/^[A-Za-z0-9]+$/) == nil)
-            query <<-sql
-                INSERT OR REPLACE INTO avars
-                    (body, box_key, box_status, exp_date, key)
-                VALUES ('#{body}', '#{bk}', '#{bs}', #{ed}, '#{x['key']}')
-                sql
+        if x['status'].is_a?(String) then
+          # This arm runs only when a client writes an avar which represents a
+          # task description.
+            hang_up unless x['status'].match(/^[A-Za-z0-9]+$/)
+            sqlite("INSERT OR REPLACE INTO avars
+                        (body, box_key, box_status, exp_date, key)
+                    VALUES ('#{body}', '#{bk}', '#{bs}', #{ed}, '#{@key}')")
         else
           # This arm runs when a client is writing a "regular avar".
-            query <<-sql
-                INSERT OR REPLACE INTO avars (body, box_key, exp_date)
-                VALUES ('#{body}', '#{bk}', #{ed})
-                sql
+            sqlite("INSERT OR REPLACE INTO avars (body, box_key, exp_date)
+                    VALUES ('#{body}', '#{bk}', #{ed})")
         end
         return [201, {'Content-Type' => 'text/plain'}, ['']]
     end

@@ -2,7 +2,7 @@
     "dependencies": {
         "bootstrap": "3.0.3",
         "coffee-script": "1.6.3",
-        "jquery": "1.10.2",
+        "jquery": "1.11.0",
         "quanah": "0.2.0"
     },
     "main": [
@@ -10,5 +10,5 @@
         "./src/browser-client/style.css"
     ],
     "name": "qm",
-    "version": "1.1.5"
+    "version": "1.1.7"
 }
