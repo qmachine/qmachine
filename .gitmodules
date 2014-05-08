@@ -4,3 +4,6 @@
 [submodule "src/ruby-gem"]
 	path = src/ruby-gem
 	url = https://github.com/qmachine/qm-ruby.git
+[submodule "src/browser-client"]
+	path = src/browser-client
+	url = https://github.com/qmachine/qm-browser-client.git
