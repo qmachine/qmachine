@@ -9,7 +9,7 @@
 //  NOTE: Should we also check Git tags in this script?
 //
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 04 Nov 2013
+//                                                  ~~ last updated 07 May 2014
 
 (function () {
     'use strict';
@@ -20,7 +20,7 @@
 
  // Declarations
 
-    var check_bower_package, check_browser_client, check_chrome_hosted_app,
+    var check_bower_package, check_chrome_hosted_app, check_homepage,
         check_npm_module, check_ruby_gem, check_web_service, current_version,
         fs;
 
@@ -38,10 +38,22 @@
         return;
     };
 
-    check_browser_client = function () {
+    check_chrome_hosted_app = function () {
+     // This function checks the package manifest file for Chrome Web Store.
+        var config = require('../src/chrome-hosted-app/manifest.json');
+        if (current_version === undefined) {
+            current_version = config.version;
+        }
+        if (config.version !== current_version) {
+            throw new Error('Version mismatch for Chrome Web Store');
+        }
+        return;
+    };
+
+    check_homepage = function () {
      // This function checks the configuration file for Mozilla's Firefox
      // Marketplace.
-        var filename = __dirname + '/../src/browser-client/manifest.webapp';
+        var filename = __dirname + '/../src/homepage/manifest.webapp';
         fs.readFile(filename, function (err, result) {
          // This function needs documentation.
             if (err !== null) {
@@ -56,18 +68,6 @@
             }
             return;
         });
-        return;
-    };
-
-    check_chrome_hosted_app = function () {
-     // This function checks the package manifest file for Chrome Web Store.
-        var config = require('../src/chrome-hosted-app/manifest.json');
-        if (current_version === undefined) {
-            current_version = config.version;
-        }
-        if (config.version !== current_version) {
-            throw new Error('Version mismatch for Chrome Web Store');
-        }
         return;
     };
 
@@ -145,8 +145,8 @@
  // Invocations
 
     check_bower_package();
-    check_browser_client();
     check_chrome_hosted_app();
+    check_homepage();
     check_npm_module();
     check_ruby_gem();
     check_web_service();

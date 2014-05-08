@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 30 Apr 2014
+#                                                   ~~ last updated 07 May 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -244,12 +244,12 @@ $(BUILD_DIR)/browser-client: | $(BUILD_DIR)
 	@   $(call make-directory, $@)
 
 $(BUILD_DIR)/browser-client/cache.manifest:                                 \
-    $(SRC_DIR)/browser-client/cache.manifest                                \
+    $(SRC_DIR)/homepage/cache.manifest                                      \
     |   $(BUILD_DIR)/browser-client
 	@   $(call timestamp, $<, $@)
 
 $(BUILD_DIR)/browser-client/manifest.webapp:                                \
-    $(SRC_DIR)/browser-client/manifest.webapp                               \
+    $(SRC_DIR)/homepage/manifest.webapp                                     \
     |   $(BUILD_DIR)/browser-client
 	@   $(CP) $< $@
 
@@ -356,7 +356,7 @@ $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/a6ZyGk")
 
 $(CACHE_DIR)/hits-by-country.json:                                          \
-    $(SRC_DIR)/browser-client/hits-by-country.json                          \
+    $(SRC_DIR)/homepage/hits-by-country.json                                \
     | $(CACHE_DIR)
 	@   $(CP) $< $@
 
@@ -371,7 +371,7 @@ $(CACHE_DIR)/homepage.js:                                                   \
 $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/8Ah9dC")
 
-$(CACHE_DIR)/index.html: $(SRC_DIR)/browser-client/index.html | $(CACHE_DIR)
+$(CACHE_DIR)/index.html: $(SRC_DIR)/homepage/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/jquery-191.js: | $(CACHE_DIR)
@@ -386,7 +386,7 @@ $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
 $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/1MnPH")
 
-$(CACHE_DIR)/main.js: $(SRC_DIR)/browser-client/main.js | $(CACHE_DIR)
+$(CACHE_DIR)/main.js: $(SRC_DIR)/homepage/main.js | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/q.js:                                                          \
@@ -406,15 +406,15 @@ $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
 $(CACHE_DIR)/respond.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/xZRyTq")
 
-$(CACHE_DIR)/robots.txt: $(SRC_DIR)/browser-client/robots.txt | $(CACHE_DIR)
+$(CACHE_DIR)/robots.txt: $(SRC_DIR)/homepage/robots.txt | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
-$(CACHE_DIR)/sitemap.xml: $(SRC_DIR)/browser-client/sitemap.xml | $(CACHE_DIR)
+$(CACHE_DIR)/sitemap.xml: $(SRC_DIR)/homepage/sitemap.xml | $(CACHE_DIR)
 	@   $(call replace-iso-date, $<, $@-temp)                       ;   \
             $(call replace-url-macros, $@-temp, $@)                     ;   \
             $(RM) $@-temp
 
-$(CACHE_DIR)/style.css: $(SRC_DIR)/browser-client/style.css | $(CACHE_DIR)
+$(CACHE_DIR)/style.css: $(SRC_DIR)/homepage/style.css | $(CACHE_DIR)
 	@   $(CP) $< $@
 
 $(CACHE_DIR)/style-min.css:                                                 \
