@@ -27,14 +27,26 @@
  // Definitions
 
     check_bower_package = function () {
-     // This function checks the configuration file for Twitter Bower.
-        var config = require('../src/bower-package/bower.json');
-        if (current_version === undefined) {
-            current_version = config.version;
-        }
-        if (config.version !== current_version) {
-            throw new Error('Version mismatch for Bower');
-        }
+     // This function checks the configuration files for Twitter Bower by
+     // checking first to make sure that the project-level configuration file,
+     // ".bowerrc", points to the manifest, "src/browser-client/bower.json".
+        var filename = __dirname + '/../.bowerrc';
+        fs.readFile(filename, function (err, result) {
+         // This function needs documentation.
+            if (err !== null) {
+                throw err;
+            }
+            var config1, config2;
+            config1 = JSON.parse(result);
+            config2 = require(__dirname + '/../' + config1.json);
+            if (current_version === undefined) {
+                current_version = config2.version;
+            }
+            if (config2.version !== current_version) {
+                throw new Error('Version mismatch for Bower');
+            }
+            return;
+        });
         return;
     };
 
