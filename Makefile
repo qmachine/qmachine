@@ -50,7 +50,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 07 May 2014
+#                                                   ~~ last updated 10 May 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -429,6 +429,7 @@ $(ICONS_DIR):
 
 .SECONDARY:                                                                 \
     $(addprefix $(ICONS_DIR)/,                                              \
+        amazon-logo.png                                                     \
         apple-touch-icon-57x57.png                                          \
         apple-touch-icon-72x72.png                                          \
         apple-touch-icon-76x76.png                                          \
@@ -454,10 +455,13 @@ $(ICONS_DIR):
         fluidicon.png                                                       \
         giant-favicon.ico                                                   \
         google-apps-header.png                                              \
-        googlecode.png                                                      \
+        google-code.png                                                     \
+        google-plus.png                                                     \
         icon-128.png                                                        \
         large-app-icon.png                                                  \
+        programmable-web.png                                                \
         qr.png                                                              \
+        stashboard-logo.png                                                 \
     )
 
 $(ICONS_DIR)/amazon-logo.png: $(ICONS_DIR)/icon-150.png | $(ICONS_DIR)
@@ -536,7 +540,7 @@ $(ICONS_DIR)/google-apps-header.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -alpha off                                                  \
             )
 
-$(ICONS_DIR)/googlecode.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
+$(ICONS_DIR)/google-code.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, $<,                                 \
                 -background none                                            \
                 -density 96                                                 \

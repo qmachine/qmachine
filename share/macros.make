@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 16 Mar 2014
+#                                                   ~~ last updated 09 May 2014
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -178,8 +178,9 @@ endef
 
 define replace-url-macros
     $(SED) \
-        -e 's|LOCAL_ADDR|$(strip $(LOCAL_ADDR))|g'  \
-        -e 's|QM_API_URL|$(strip $(QM_API_URL))|g'  \
+        -e 's|LOCAL_ADDR|$(strip $(LOCAL_ADDR))|g'      \
+        -e 's|https://api.qmachine.org|QM_API_URL|g'    \
+        -e 's|QM_API_URL|$(strip $(QM_API_URL))|g'      \
         -e 's|QM_WWW_URL|$(strip $(QM_WWW_URL))|g'  $(1) > $(2)
 endef
 
