@@ -5,7 +5,7 @@
 #   This contains a live development workflow for QMachine (QM). To get started
 #   on Mac OS X 10.9 with your own local sandbox, you will need to install ...
 #
-#       ... Homebrew using directions from http://mxcl.github.io/homebrew/.
+#       ... Homebrew using directions from http://brew.sh.
 #
 #       ... a minimal set of native dependencies by typing
 #           $ brew install imagemagick node
