@@ -10,8 +10,6 @@
 #       ... a minimal set of native dependencies by typing
 #           $ brew install imagemagick node
 #
-#       ... Node Package Manager (NPM) using directions from https://npmjs.org.
-#
 #   To run QM on localhost, run
 #
 #           $ make local-sandbox
