@@ -207,20 +207,19 @@ local-sandbox:
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
                     web-service                                         ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
-            if [ ! -d local-sandbox/ ]; then                                \
-                $(CP) web-service local-sandbox                         ;   \
+            if [ ! -d $@/ ]; then                                           \
+                $(CP) web-service $@                                    ;   \
             fi                                                          ;   \
-            if [ ! -d local-sandbox/node_modules/ ]; then                   \
-                $(call make-directory, local-sandbox/node_modules/)     ;   \
+            if [ ! -d $@/node_modules/ ]; then                              \
+                $(call make-directory, $@/node_modules/)                ;   \
             fi                                                          ;   \
-            if [ ! -d local-sandbox/node_modules/qm ]; then                 \
-                $(CP) npm-module local-sandbox/node_modules/qm          ;   \
+            if [ ! -d $@/node_modules/qm ]; then                            \
+                $(CP) npm-module $@/node_modules/qm                     ;   \
             fi                                                          ;   \
-            $(CD) local-sandbox/                                        ;   \
+            $(CD) $@/                                                   ;   \
             $(NPM) install                                              ;   \
-            QM_API_STRING=$(QM_API_LOC)                                     \
-                QM_WWW_STRING='"$(BUILD_DIR)/local-sandbox/katamari.json"'  \
-                    $(NPM) start
+            QM_API_STRING=$(QM_API_LOC) \
+                QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"' $(NPM) start
 
 rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) \
@@ -228,10 +227,10 @@ rack-app: | $(BUILD_DIR)/rack-app/
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
                     browser-client                                      ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
-            if [ ! -d rack-app/public/ ]; then                              \
-                $(CP) browser-client rack-app/public                    ;   \
+            if [ ! -d $@/public/ ]; then                                    \
+                $(CP) browser-client $@/public                          ;   \
             fi                                                          ;   \
-            $(CD) rack-app                                              ;   \
+            $(CD) $@/                                                   ;   \
             $(BUNDLE) package                                           ;   \
             $(BUNDLE) exec rackup
 
