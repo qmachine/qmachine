@@ -9,7 +9,7 @@
 //  NOTE: Should we also check Git tags in this script?
 //
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 07 May 2014
+//                                                  ~~ last updated 12 May 2014
 
 (function () {
     'use strict';
@@ -27,22 +27,18 @@
  // Definitions
 
     check_bower_package = function () {
-     // This function checks the configuration files for Twitter Bower by
-     // checking first to make sure that the project-level configuration file,
-     // ".bowerrc", points to the manifest, "src/browser-client/bower.json".
-        var filename = __dirname + '/../.bowerrc';
+     // This function checks the configuration files for Twitter Bower.
+        var filename = __dirname + '/../src/browser-client/bower.json';
         fs.readFile(filename, function (err, result) {
          // This function needs documentation.
             if (err !== null) {
                 throw err;
             }
-            var config1, config2;
-            config1 = JSON.parse(result);
-            config2 = require(__dirname + '/../' + config1.json);
+            var config = JSON.parse(result);
             if (current_version === undefined) {
-                current_version = config2.version;
+                current_version = config.version;
             }
-            if (config2.version !== current_version) {
+            if (config.version !== current_version) {
                 throw new Error('Version mismatch for Bower');
             }
             return;
