@@ -20,8 +20,8 @@ by a peer-reviewed academic journal. This report explains some of the design
 decisions behind QM, demonstrates the use of QM in scientific workflows, and
 elaborates on some of the future directions. The accompanying screencasts are
 already available on
-[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg)
-, one of which was featured on the
+[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg),
+one of which was featured on the
 [HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html)
 and
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
