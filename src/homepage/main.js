@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 17 Dec 2013
+//                                                  ~~ last updated 29 May 2014
 
 (function () {
     'use strict';
@@ -381,14 +381,6 @@
                 });
                 return;
             }
-        });
-        $('li.left-favicon a').each(function (i, a) {
-         // This function inserts sites' favicons dynamically. Its execution
-         // can be delayed until after the page loads (as it is here) because
-         // it only affects elements in the navbar dropdown menus anyway.
-            $(a).prepend('<img src="//' + a.hostname + '/favicon.ico" ' +
-                'alt="(logo)" height="16" width="16">');
-            return;
         });
         return;
     });
