@@ -145,6 +145,7 @@ browser-client:                                                             \
         apple-touch-icon-120x120.png                                        \
         apple-touch-icon-144x144.png                                        \
         apple-touch-icon-152x152.png                                        \
+        browserconfig.xml                                                   \
         cache.manifest                                                      \
         coffeescript.js                                                     \
         favicon.ico                                                         \
@@ -159,6 +160,7 @@ browser-client:                                                             \
         q.js                                                                \
         respond.js                                                          \
         robots.txt                                                          \
+        square150x150logo.png                                               \
         sitemap.xml                                                         \
         style-min.css                                                       \
         wiki.png                                                            \
@@ -350,12 +352,17 @@ $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
 $(CACHE_DIR)/bootstrap-theme.css: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/qPqsDk")
 
+$(CACHE_DIR)/browserconfig.xml:                                             \
+    $(SRC_DIR)/homepage/browserconfig.xml                                   \
+    |   $(CACHE_DIR)
+	@   $(CP) $< $@
+
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/a6ZyGk")
 
 $(CACHE_DIR)/hits-by-country.json:                                          \
     $(SRC_DIR)/homepage/hits-by-country.json                                \
-    | $(CACHE_DIR)
+    |   $(CACHE_DIR)
 	@   $(CP) $< $@
 
 $(CACHE_DIR)/homepage.js:                                                   \
@@ -599,6 +606,9 @@ $(ICONS_DIR)/programmable-web.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 
 $(ICONS_DIR)/qr.png: | $(ICONS_DIR)
 	@   $(QRENCODE) --margin=1 --size=10 --output=$@ $(QM_WWW_URL)
+
+$(ICONS_DIR)/square150x150logo.png: $(ICONS_DIR)/icon-150.png | $(ICONS_DIR)
+	@   $(CP) $< $@
 
 $(ICONS_DIR)/stashboard-logo.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
 	@   $(call generate-image-from, , $<,                               \

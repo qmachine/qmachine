@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    browserconfig.xml ~~
+
+    For more information, see http://goo.gl/hF6iGr .
+
+                                                        ~~ (c) SRW, 29 May 2014
+-->
+<browserconfig>
+  <msapplication>
+    <tile>
+      <square150x150logo src="square150x150logo.png"/>
+      <TileColor>#929292</TileColor>
+    </tile>
+  </msapplication>
+</browserconfig>
