@@ -16,10 +16,10 @@ available, and eventually it will be packaged and installable as a
 [gem](https://rubygems.org/gems/qm).
 
 The first of several manuscripts about QM has now been accepted for publication
-by a peer-reviewed academic journal. This report explains some of the design
-decisions behind QM, demonstrates the use of QM in scientific workflows, and
-elaborates on some of the future directions. The accompanying screencasts are
-already available on
+by [BMC Bioinformatics](http://www.biomedcentral.com/bmcbioinformatics). This
+report explains some of the design decisions behind QM, demonstrates the use of
+QM in scientific workflows, and elaborates on some of the future directions.
+The accompanying screencasts are already available on
 [YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg),
 one of which was featured on the
 [HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html)
