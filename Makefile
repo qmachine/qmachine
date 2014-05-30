@@ -48,7 +48,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 10 May 2014
+#                                                   ~~ last updated 29 May 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -161,6 +161,7 @@ browser-client:                                                             \
         robots.txt                                                          \
         sitemap.xml                                                         \
         style-min.css                                                       \
+        wiki.png                                                            \
     )
 	@   $(call hilite, 'Created $@.')
 
@@ -459,6 +460,7 @@ $(ICONS_DIR):
         programmable-web.png                                                \
         qr.png                                                              \
         stashboard-logo.png                                                 \
+        wiki.png                                                            \
     )
 
 $(ICONS_DIR)/amazon-logo.png: $(ICONS_DIR)/icon-150.png | $(ICONS_DIR)
@@ -607,6 +609,9 @@ $(ICONS_DIR)/stashboard-logo.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                 -gravity center                                             \
                 -extent 246x182                                             \
             )
+
+$(ICONS_DIR)/wiki.png: $(ICONS_DIR)/icon-135.png | $(ICONS_DIR)
+	@   $(CP) $< $@
 
 ###
 
