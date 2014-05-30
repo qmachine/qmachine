@@ -5,7 +5,7 @@ ordinary web browsers into a World Wide Computer without installing anything.
 QM contains three main components: an API server, a web server, and a website.
 The API server provides a message-passing interface between nodes using HTTP
 and JSON, and the web server exists only to serve the website, which functions
-as the browser client application. [Quanah](http://wilkinson.github.io/quanah/)
+as the browser client application. [Quanah](//wilkinson.github.io/quanah/)
 is used extensively to manage concurrency issues.
 
 Currently, there are two implementations of the server-side components. The
@@ -15,12 +15,13 @@ A "teaching version" written in [Ruby](http://www.ruby-lang.org) is also
 available, and eventually it will be packaged and installable as a
 [gem](https://rubygems.org/gems/qm).
 
-I am now revising the first of several manuscripts I have been preparing for
-peer-reviewed academic journals. These reports will explain some of the design
-decisions behind QM, demonstrate the use of QM in scientific workflows, and
-elaborate on the future directions of QM. I published a few screencasts on
-[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg)
-recently, one of which has been featured on the
+The first of several manuscripts about QM has now been accepted for publication
+by [BMC Bioinformatics](http://www.biomedcentral.com/bmcbioinformatics). This
+report explains some of the design decisions behind QM, demonstrates the use of
+QM in scientific workflows, and elaborates on some of the future directions.
+The accompanying screencasts are already available on
+[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg),
+one of which was featured on the
 [HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html)
 and
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
@@ -30,3 +31,4 @@ news sites. QM has also graced the front page of
 For more information, see
 [https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
 
+<!-- vim:set syntax=markdown: -->
