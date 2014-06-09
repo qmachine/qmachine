@@ -15,17 +15,17 @@ A "teaching version" written in [Ruby](http://www.ruby-lang.org) is also
 available, and eventually it will be packaged and installable as a
 [gem](https://rubygems.org/gems/qm).
 
-The first of several manuscripts about QM has now been accepted for publication
-by [BMC Bioinformatics](http://www.biomedcentral.com/bmcbioinformatics). This
-report explains some of the design decisions behind QM, demonstrates the use of
-QM in scientific workflows, and elaborates on some of the future directions.
-The accompanying screencasts are already available on
-[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg),
-one of which was featured on the
+[QMachine: Commodity Supercomputing in Web Browsers](http://www.biomedcentral.com/1471-2105/15/176/abstract)
+has now been published online in *BMC Bioinformatics*. This report explains
+some of the design decisions behind QM, demonstrates the use of QM in
+scientific workflows, and elaborates on some of the future directions. The
+accompanying screencasts, one of which was featured by the
 [HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html)
 and
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
-news sites. QM has also graced the front page of
+news sites, are available on
+[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg).
+QM has also graced the front page of
 [Hacker News](https://news.ycombinator.com/item?id=6095595).
 
 For more information, see
