@@ -2,7 +2,7 @@
 
 //- custom.js ~~
 //                                                      ~~ (c) SRW, 09 Dec 2013
-//                                                  ~~ last updated 14 May 2014
+//                                                  ~~ last updated 10 Jun 2014
 
 (function () {
     'use strict';
@@ -12,14 +12,16 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        cf_connecting_ip, 'cf-connecting-ip', cf_ipcountry, 'cf-ipcountry',
-        cf_ray, 'cf-ray', cf_visitor, 'cf-visitor', connection, content_length,
-        'content-length', dnt, env, from, hasOwnProperty, headers, host, ip,
-        log, method, origin, parse, referer, remoteAddress, replace, split,
-        timestamp, url, via, warning, x_att_deviceid, 'x-att-deviceid',
-        x_forwarded_for, 'x-forwarded-for', x_forwarded_port,
-        'x-forwarded-port', x_forwarded_proto, 'x-forwarded-proto',
-        x_request_start, 'x-request-start', x_wap_profile, 'x-wap-profile'
+        cf_connecting_ip, 'cf-connecting-ip', cf_connecting_ipv6,
+        'cf-connecting-ipv6', cf_ipcountry, 'cf-ipcountry', cf_pseudo_ipv4,
+        'cf-pseudo-ipv4', cf_ray, 'cf-ray', cf_visitor, 'cf-visitor',
+        connection, content_length, 'content-length', dnt, env, from,
+        hasOwnProperty, headers, host, ip, log, method, origin, parse, referer,
+        remoteAddress, replace, split, timestamp, url, via, warning,
+        x_att_deviceid, 'x-att-deviceid', x_forwarded_for, 'x-forwarded-for',
+        x_forwarded_port, 'x-forwarded-port', x_forwarded_proto,
+        'x-forwarded-proto', x_request_start, 'x-request-start', x_wap_profile,
+        'x-wap-profile'
     */
 
  // Module definitions
@@ -47,9 +49,17 @@
          // See http://goo.gl/81sHn8.
             y.cf_connecting_ip = headers['cf-connecting-ip'];
         }
+        if (headers.hasOwnProperty('cf-connecting-ipv6')) {
+         // See http://goo.gl/rjQIhh.
+            y.cf_connecting_ipv6 = headers['cf-connecting-ipv6'];
+        }
         if (headers.hasOwnProperty('cf-ipcountry')) {
          // See http://goo.gl/QpDIBe.
             y.cf_ipcountry = headers['cf-ipcountry'];
+        }
+        if (headers.hasOwnProperty('cf-pseudo-ipv4')) {
+         // See http://goo.gl/rjQIhh.
+            y.cf_pseudo_ipv4 = headers['cf-pseudo-ipv4'];
         }
      /*
         if (headers.hasOwnProperty('cf-ray')) {
