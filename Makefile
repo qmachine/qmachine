@@ -48,7 +48,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 29 May 2014
+#                                                   ~~ last updated 15 Jun 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -149,7 +149,6 @@ browser-client:                                                             \
         cache.manifest                                                      \
         coffeescript.js                                                     \
         favicon.ico                                                         \
-        fluidicon.png                                                       \
         giant-favicon.ico                                                   \
         hits-by-country.json                                                \
         homepage.js                                                         \
