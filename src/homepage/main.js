@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 29 May 2014
+//                                                  ~~ last updated 22 Jun 2014
 
 (function () {
     'use strict';
@@ -276,7 +276,7 @@
  // Invocations
 
     $(window.document).ready(function () {
-     // This function runs when jQuery decides that the webpage has loaded.
+     // This function runs when jQuery decides that the DOM is ready.
         /*jslint unparam: true */
         if (window.hasOwnProperty('google')) {
             google.load('visualization', '1', {
