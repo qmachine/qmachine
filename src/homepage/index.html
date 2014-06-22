@@ -2,7 +2,7 @@
 <!--
     index.html ~~
                                                         ~~ (c) SRW, 20 Nov 2012
-                                                    ~~ last updated 16 Jun 2014
+                                                    ~~ last updated 22 Jun 2014
 -->
 <!--[if IE]><![endif]-->
 <html lang="en">
@@ -15,7 +15,15 @@
 
     <link href="style-min.css" rel="stylesheet">
 
-  <!-- Ensure IE8 support of HTML5 elements and media queries -->
+  <!--[if !IE]>-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent">
+    <link rel="chrome-webstore-item"
+        href="https://chrome.google.com/webstore/detail/meagomakeegjimdibmlodmilfhplkjgp">
+    <link rel="shortcut icon" href="favicon.ico">
+  <!--<![endif]-->
+
   <!--[if lt IE 9]>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <script src="html5shiv.js"></script>
@@ -37,50 +45,6 @@
     <meta name="msapplication-window" content="width=800;height=600">
     <link rel="shortcut icon" href="giant-favicon.ico">
   <![endif]-->
-
-  <!--[if !IE]>-->
-    <link rel="shortcut icon" href="favicon.ico">
-  <!--<![endif]-->
-
-  <!--
-    Android / iOS integration
-  -->
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent">
-
-    <link rel="apple-touch-icon"
-        href="apple-touch-icon-57x57.png">
-
-    <link rel="apple-touch-icon" sizes="72x72"
-        href="apple-touch-icon-72x72.png">
-
-    <link rel="apple-touch-icon" sizes="76x76"
-        href="apple-touch-icon-76x76.png">
-
-    <link rel="apple-touch-icon" sizes="114x114"
-        href="apple-touch-icon-114x114.png">
-
-    <link rel="apple-touch-icon" sizes="120x120"
-        href="apple-touch-icon-120x120.png">
-
-    <link rel="apple-touch-icon" sizes="144x144"
-        href="apple-touch-icon-144x144.png">
-
-    <link rel="apple-touch-icon" sizes="152x152"
-        href="apple-touch-icon-152x152.png">
-
-  <!--
-    Chrome Web Store
-  -->
-
-    <link rel="chrome-webstore-item"
-        href="https://chrome.google.com/webstore/detail/meagomakeegjimdibmlodmilfhplkjgp">
-
-  <!--
-    Google Loader
-  -->
 
     <script src="//www.google.com/jsapi"></script>
 
