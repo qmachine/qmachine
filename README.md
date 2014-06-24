@@ -5,26 +5,27 @@ ordinary web browsers into a World Wide Computer without installing anything.
 QM contains three main components: an API server, a web server, and a website.
 The API server provides a message-passing interface between nodes using HTTP
 and JSON, and the web server exists only to serve the website, which functions
-as the browser client application. [Quanah](//wilkinson.github.io/quanah/)
+as the browser client application. [Quanah](https://wilkinson.github.io/quanah/)
 is used extensively to manage concurrency issues.
 
 Currently, there are two implementations of the server-side components. The
-original version is written in [Node.js](http://nodejs.org) and is available
-for deployment to server environments via [NPM](https://npmjs.org/package/qm).
-A "teaching version" written in [Ruby](http://www.ruby-lang.org) is also
+reference implementation uses [Node.js](http://nodejs.org), and it is available
+for server-side deployment via [NPM](https://www.npmjs.org/package/qm). A
+"teaching version" written in [Ruby](http://www.ruby-lang.org) is also
 available, and eventually it will be packaged and installable as a
 [gem](https://rubygems.org/gems/qm).
 
-[QMachine: Commodity Supercomputing in Web Browsers](http://www.biomedcentral.com/1471-2105/15/176/abstract)
-has now been published online in *BMC Bioinformatics*. This report explains
-some of the design decisions behind QM, demonstrates the use of QM in
-scientific workflows, and elaborates on some of the future directions. The
-accompanying screencasts, one of which was featured by the
+[QMachine: Commodity Supercomputing in Web Browsers](https://www.biomedcentral.com/1471-2105/15/176)
+has now been published online in *BMC Bioinformatics*. This
+["Highly Accessed"](https://www.biomedcentral.com/about/mostviewed/)
+report explains some of the design decisions behind QM, demonstrates the use of
+QM in scientific workflows, and elaborates on some of the future directions.
+The accompanying screencasts, one of which was featured by the
 [HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html)
 and
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
 news sites, are available on
-[YouTube](http://www.youtube.com/playlist?list=PLijUCyE0Z0-8nLL5qJ__v-VB3ZoRxSubg).
+[YouTube](https://www.youtube.com/playlist?list=PLwUGp_wSf5vjD5vwzj9Dhqbz-y54oALIe).
 QM has also graced the front page of
 [Hacker News](https://news.ycombinator.com/item?id=6095595).
 
