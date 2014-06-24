@@ -15,9 +15,9 @@ for server-side deployment via [NPM](https://www.npmjs.org/package/qm). A
 available, and eventually it will be packaged and installable as a
 [gem](https://rubygems.org/gems/qm).
 
-[QMachine: Commodity Supercomputing in Web Browsers](https://www.biomedcentral.com/1471-2105/15/176)
+[QMachine: Commodity Supercomputing in Web Browsers](http://www.biomedcentral.com/1471-2105/15/176)
 has now been published online in *BMC Bioinformatics*. This
-["Highly Accessed"](https://www.biomedcentral.com/about/mostviewed/)
+["Highly Accessed"](http://www.biomedcentral.com/about/mostviewed/)
 report explains some of the design decisions behind QM, demonstrates the use of
 QM in scientific workflows, and elaborates on some of the future directions.
 The accompanying screencasts, one of which was featured by the
