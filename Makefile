@@ -48,7 +48,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 15 Jun 2014
+#                                                   ~~ last updated 25 Jun 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -138,6 +138,7 @@ update:
 
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
+        apple-touch-icon.png                                                \
         apple-touch-icon-57x57.png                                          \
         apple-touch-icon-72x72.png                                          \
         apple-touch-icon-76x76.png                                          \
@@ -434,6 +435,7 @@ $(ICONS_DIR):
 .SECONDARY:                                                                 \
     $(addprefix $(ICONS_DIR)/,                                              \
         amazon-logo.png                                                     \
+        apple-touch-icon.png                                                \
         apple-touch-icon-57x57.png                                          \
         apple-touch-icon-72x72.png                                          \
         apple-touch-icon-76x76.png                                          \
@@ -470,6 +472,11 @@ $(ICONS_DIR):
     )
 
 $(ICONS_DIR)/amazon-logo.png: $(ICONS_DIR)/icon-150.png | $(ICONS_DIR)
+	@   $(CP) $< $@
+
+$(ICONS_DIR)/apple-touch-icon.png: \
+    $(ICONS_DIR)/apple-touch-icon-152x152.png \
+    | $(ICONS_DIR)
 	@   $(CP) $< $@
 
 $(ICONS_DIR)/apple-touch-icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
