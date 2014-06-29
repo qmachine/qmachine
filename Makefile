@@ -48,7 +48,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 25 Jun 2014
+#                                                   ~~ last updated 29 Jun 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -485,13 +485,13 @@ $(ICONS_DIR)/apple-touch-icon-%.png: $(ICONS_DIR)/logo.png | $(ICONS_DIR)
                     -channel A -morphology EdgeOut Diamond:10 +channel      \
                     +level-colors white                                     \
                 \) -compose DstOver -composite                              \
-                canvas:'#929292'                                            \
+                canvas:'#F2F2F2'                                            \
                 -background none                                            \
                 -density 96                                                 \
                 -resize "$*"                                                \
                 -quality 100                                                \
                 -composite                                                  \
-                -background '#929292'                                       \
+                -background '#F2F2F2'                                       \
                 -alpha off                                                  \
             )
 
@@ -596,7 +596,7 @@ $(ICONS_DIR)/logo.png: | $(ICONS_DIR)
                 -gravity center                                             \
                 -extent 1170x1170                                           \
                 -transparent white                                          \
-                -transparent-color '#929292'                                \
+                -transparent-color '#F2F2F2'                                \
                 -quality 100                                                \
             )
 
