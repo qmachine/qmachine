@@ -139,13 +139,6 @@ update:
 browser-client:                                                             \
     $(addprefix $(BUILD_DIR)/browser-client/,                               \
         apple-touch-icon.png                                                \
-        apple-touch-icon-57x57.png                                          \
-        apple-touch-icon-72x72.png                                          \
-        apple-touch-icon-76x76.png                                          \
-        apple-touch-icon-114x114.png                                        \
-        apple-touch-icon-120x120.png                                        \
-        apple-touch-icon-144x144.png                                        \
-        apple-touch-icon-152x152.png                                        \
         browserconfig.xml                                                   \
         cache.manifest                                                      \
         coffeescript.js                                                     \
