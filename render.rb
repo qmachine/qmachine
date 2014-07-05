@@ -56,7 +56,7 @@ File::open(filename, 'w') do |f|
             s.parentNode.insertBefore(ga, s);
         })();
     </script>
-    <a id="github_ribbon" href="https://github.com/wilkinson/qmachine">
+    <a id="github_ribbon" href="https://github.com/qmachine/qmachine">
       <span>Fork me on GitHub!</span>
     </a>
     #{markdown.render(IO.read('README.md')).chomp}
