@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 22 Jun 2014
+//                                                  ~~ last updated 05 Jul 2014
 
 (function () {
     'use strict';
@@ -95,10 +95,10 @@
      // make the rest of the program logic read like English.
         var flag = false;
         if (feature_name === 'console.error') {
-            flag = ((window.hasOwnProperty('console')) &&
+            flag = ((window.console instanceof Object) &&
                     (is_Function(window.console.error)));
         } else if (feature_name === 'console.log') {
-            flag = ((window.hasOwnProperty('console')) &&
+            flag = ((window.console instanceof Object) &&
                     (is_Function(window.console.log)));
         } else if (feature_name === 'localStorage') {
          // HTML5 localStorage object
