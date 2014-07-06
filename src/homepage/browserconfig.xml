@@ -5,12 +5,13 @@
     For more information, see http://goo.gl/hF6iGr .
 
                                                         ~~ (c) SRW, 29 May 2014
+                                                    ~~ last updated 05 Jul 2014
 -->
 <browserconfig>
   <msapplication>
     <tile>
       <square150x150logo src="square150x150logo.png"/>
-      <TileColor>#929292</TileColor>
+      <TileColor>#F2F2F2</TileColor>
     </tile>
   </msapplication>
 </browserconfig>
