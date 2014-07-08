@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 09 May 2014
+#                                                   ~~ last updated 07 Jul 2014
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -82,7 +82,7 @@ endef
 
 define download-url
     $(call aside, 'Retrieving $(notdir $@) ...')                        ;   \
-    $(CURL) -s -o $@ $(1)                                               ;   \
+    $(NODEJS) $(SHARE_DIR)/download.js $(1) $@                          ;   \
     if [ $$? -ne 0 ]; then                                                  \
         if [ -f $(CODEBANK)/lib/JavaScript/$(notdir $@) ]; then             \
             $(CP) $(CODEBANK)/lib/JavaScript/$(notdir $@) $@            ;   \
@@ -202,7 +202,6 @@ CD          :=  $(call contingent, cd)
 CLOSURE     :=  $(call contingent, closure-compiler)
 CONVERT     :=  $(call contingent, convert)
 CP          :=  $(call contingent, gcp cp) -rf
-CURL        :=  $(call contingent, curl) -L
 DATE        :=  $(call contingent, gdate date)
 GEM         :=  $(call contingent, gem)
 GIT         :=  $(call contingent, git)
