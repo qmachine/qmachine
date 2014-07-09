@@ -11,11 +11,12 @@
 #   control -- always execute your commits manually!
 #
 #                                                       ~~ (c) SRW, 31 Oct 2011
-#                                                   ~~ last updated 12 Feb 2013
+#                                                   ~~ last updated 09 Jul 2014
 
 #-  Temporary project directories
 build/
 cache/
+docs/_build/
 icons/
 var/
 
