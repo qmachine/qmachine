@@ -48,7 +48,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 29 Jun 2014
+#                                                   ~~ last updated 09 Jul 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -56,6 +56,7 @@ include $(PROJ_ROOT)/share/macros.make
 
 BUILD_DIR   :=  $(PROJ_ROOT)/build
 CACHE_DIR   :=  $(PROJ_ROOT)/cache
+DOCS_DIR    :=  $(PROJ_ROOT)/docs
 ICONS_DIR   :=  $(PROJ_ROOT)/icons
 SHARE_DIR   :=  $(PROJ_ROOT)/share
 SRC_DIR     :=  $(PROJ_ROOT)/src
