@@ -10,12 +10,13 @@ This manual is *very* incomplete -- please refer to the wiki_ instead.
 
 .. _wiki: https://wiki.qmachine.org/
 
-Contents:
 
+.. Table of Contents
 .. toctree::
    :maxdepth: 2
 
    http-api
+   sandbox
 
 Indices and tables
 ==================
