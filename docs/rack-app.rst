@@ -36,4 +36,5 @@ the :doc:`Ruby gem <ruby-gem>`.
 .. _Rack: https://rack.github.io/
 .. _RVM: http://rvm.io/
 .. _Sinatra: http://www.sinatrarb.com/
-.. _`sqlite3 gem`: https://rubygems.org/gems/sqlite3 
+.. _`sqlite3 gem`: https://rubygems.org/gems/sqlite3
+

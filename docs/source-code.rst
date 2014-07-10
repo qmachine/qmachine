@@ -14,17 +14,22 @@ available on GitHub here_.
 Other "mirrors"
 ---------------
 
--  `Bitbucket <https://bitbucket.org/wilkinson/qmachine>`__
--  `CodePlex <https://qmachine.codeplex.com/>`__
--  `Gitorious <https://gitorious.org/qmachine/qmachine>`__
--  `Google Code <https://code.google.com/p/qmachine/>`__
--  `SourceForge <http://sourceforge.net/projects/qm-project/>`__
+-  Bitbucket_
+-  CodePlex_
+-  Gitorious_
+-  `Google Code`_
+-  SourceForge_
 
 
 .. --------------------------
 .. External link definitions:
 .. --------------------------
 
+.. _Bitbucket: https://bitbucket.org/wilkinson/qmachine
+.. _CodePlex: https://qmachine.codeplex.com/
+.. _Gitorious: https://gitorious.org/qmachine/qmachine
+.. _`Google Code`: https://code.google.com/p/qmachine/
 .. _here: https://github.com/qmachine/qmachine
+.. _SourceForge: http://sourceforge.net/projects/qm-project/
 .. _`"superproject"`: https://en.wikibooks.org/wiki/Git/Submodules_and_Superprojects
 

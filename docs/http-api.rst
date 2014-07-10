@@ -3,7 +3,7 @@
 HTTP API
 ========
 
-QMachine (QM) is not restricted to use by web browsers  it can be used
+QMachine (QM) is not restricted to use by web browsers -- it can be used
 by any platform that understands HTTP and JavaScript Object Notation
 (JSON). This table specifies the Application Programming Interface (API)
 understood by QM's API server. Request and response data use JSON
