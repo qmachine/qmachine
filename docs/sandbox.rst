@@ -17,8 +17,9 @@ sandbox, you will need to install
 `Homebrew <http://mxcl.github.io/homebrew/>`__ using directions from its
 website. Then, install a minimal set of native dependencies by launching
 Terminal and typing
+::
 
-``$ brew install imagemagick node``
+    $ brew install imagemagick node
 
 I highly recommend installing `Git <http://git-scm.com/>`__ through
 Homebrew, as well, but it isn't required. I prefer the official Apache
@@ -34,8 +35,9 @@ Ubuntu Linux 12.04 LTS
 
 Ubuntu has a built-in package manager that we can use to install some of
 the dependencies:
+::
 
-``$ sudo apt-get install git imagemagick libsqlite3-dev make``
+    $ sudo apt-get install git imagemagick libsqlite3-dev make
 
 Then, you should install Node.js using the directions given
 `here <https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint>`__.
@@ -45,21 +47,25 @@ Node.js
 
 First, make sure that you have `Node Package Manager
 (NPM) <https://npmjs.org>`__ installed:
+::
 
-``$ which npm || echo 'NPM is missing' # see [https://npmjs.org/doc/README.html directions] if necessary``
+    $ which npm || echo 'NPM is missing' # see [https://npmjs.org/doc/README.html directions] if necessary
 
 Next, check out QM's source code from
 `GitHub <https://github.com/qmachine/qmachine>`__:
+::
 
-``$ git clone https://github.com/qmachine/qmachine.git``
+    $ git clone https://github.com/qmachine/qmachine.git
 
 Now, select your new copy of the repository as the current directory:
+::
 
-``$ cd qmachine/``
+    $ cd qmachine/
 
 Finally, launch QM on localhost:
+::
 
-``$ make local-sandbox``
+    $ make local-sandbox
 
 QM uses `SQLite <https://www.sqlite.org/>`__ bindings by default for
 convenience because then you don't have to turn on any other programs,
@@ -69,15 +75,12 @@ are `Apache CouchDB <https://couchdb.apache.org/>`__,
 `MongoDB <http://www.mongodb.org/>`__,
 `PostgreSQL <http://www.postgresql.org/>`__, and
 `Redis <http://redis.io/>`__. Then, you can run one of the following:
+::
 
-``$ make local-sandbox db=couch``
-``$ make local-sandbox db=mongo``
-``$ make local-sandbox db=postgres``
-``$ make local-sandbox db=redis``
-
-To stop the local sandbox, type
-
-``$ make clean``
+    $ make local-sandbox db=couch
+    $ make local-sandbox db=mongo
+    $ make local-sandbox db=postgres
+    $ make local-sandbox db=redis
 
 Ruby
 ----
