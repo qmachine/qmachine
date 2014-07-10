@@ -48,7 +48,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 09 Jul 2014
+#                                                   ~~ last updated 10 Jul 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -106,7 +106,10 @@ clean: reset
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
             if [ ! "$$($(LS) -A $(BUILD_DIR))" ]; then                      \
                 $(RM) $(BUILD_DIR)                                      ;   \
-            fi
+            fi                                                          ;   \
+            $(CD) $(DOCS_DIR)                                           ;   \
+            $(MAKE) $@
+
 
 clobber: clean
 	@   $(RM) $(CACHE_DIR)
