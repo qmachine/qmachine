@@ -110,7 +110,6 @@ clean: reset
             $(CD) $(DOCS_DIR)                                           ;   \
             $(MAKE) $@
 
-
 clobber: clean
 	@   $(RM) $(CACHE_DIR)
 
