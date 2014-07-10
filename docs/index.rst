@@ -3,8 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to QMachine's documentation!
-====================================
+QMachine
+========
+
+This manual is *very* incomplete -- please refer to the wiki_ instead.
+
+.. _wiki: https://wiki.qmachine.org/
 
 Contents:
 
