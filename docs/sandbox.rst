@@ -49,7 +49,11 @@ First, make sure that you have `Node Package Manager
 (NPM) <https://npmjs.org>`__ installed:
 ::
 
-    $ which npm || echo 'NPM is missing' # see [https://npmjs.org/doc/README.html directions] if necessary
+    $ which npm || echo 'NPM is missing'
+
+If NPM is missing, refer to its
+`documentation <https://www.npmjs.org/doc/README.html>`__ for the installation
+procedure.
 
 Next, check out QM's source code from
 `GitHub <https://github.com/qmachine/qmachine>`__:
