@@ -3,8 +3,7 @@ Running a local sandbox
 
 QMachine (QM) can be installed and run locally, which can be extremely
 useful for development as well as for deployment behind firewalls. A lot
-of this information is contained within the project's
-`Makefile <https://raw.githubusercontent.com/qmachine/qmachine/master/Makefile>`__.
+of this information is contained within the project's Makefile_.
 
 Prerequisites
 -------------
@@ -12,23 +11,19 @@ Prerequisites
 Mac OS X
 ~~~~~~~~
 
-To get started on Mac OS X 10.8 "Mountain Lion" with your own local
-sandbox, you will need to install
-`Homebrew <http://mxcl.github.io/homebrew/>`__ using directions from its
-website. Then, install a minimal set of native dependencies by launching
-Terminal and typing
+To get started on Mac OS X 10.8 "Mountain Lion" with your own local sandbox,
+you will need to install Homebrew_ using directions from its website. Then,
+install a minimal set of native dependencies by launching Terminal and typing
 ::
 
     $ brew install imagemagick node
 
-I highly recommend installing `Git <http://git-scm.com/>`__ through
-Homebrew, as well, but it isn't required. I prefer the official Apache
-CouchDB.app over the Homebrew-installed version because it's more
-convenient. I also prefer Heroku's
-`Postgres.app <http://postgresapp.com/>`__ over the version that ships
-with Mountain Lion. I don't know of any nice launchers for MongoDB or
-Redis, but Homebrew can install them for you, and it includes directions
-for launching them.
+I highly recommend installing Git_ through Homebrew, as well, but it isn't
+required. I prefer Apache's official CouchDB.app_ over the one installed by
+Homebrew because it includes a convenient launcher that lives in the menu bar.
+For the same reason, I also prefer Heroku's Postgres.app_ over the version that
+ships with Mountain Lion. I don't know of any nice launchers for MongoDB_ or
+Redis_, but Homebrew can install them for you, and directions are included.
 
 Ubuntu Linux 12.04 LTS
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -46,22 +41,19 @@ Node.js
 -------
 
 First, make sure that you have `Node Package Manager
-(NPM) <https://npmjs.org>`__ installed:
+(NPM) <https://www.npmjs.org/>`__ installed:
 ::
 
     $ which npm || echo 'NPM is missing'
 
-If NPM is missing, refer to its
-`documentation <https://www.npmjs.org/doc/README.html>`__ for the installation
-procedure.
+If NPM is missing, refer to its documentation_ for the installation procedure.
 
-Next, check out QM's source code from
-`GitHub <https://github.com/qmachine/qmachine>`__:
+Next, check out QM's source code from GitHub_:
 ::
 
     $ git clone https://github.com/qmachine/qmachine.git
 
-Now, select your new copy of the repository as the current directory:
+Now, select your local copy of the repository as the current directory:
 ::
 
     $ cd qmachine/
@@ -71,14 +63,11 @@ Finally, launch QM on localhost:
 
     $ make local-sandbox
 
-QM uses `SQLite <https://www.sqlite.org/>`__ bindings by default for
-convenience because then you don't have to turn on any other programs,
-configure internal ports, etc. If you can't get SQLite to work on your
-platform, or if you just prefer another database, the current choices
-are `Apache CouchDB <https://couchdb.apache.org/>`__,
-`MongoDB <http://www.mongodb.org/>`__,
-`PostgreSQL <http://www.postgresql.org/>`__, and
-`Redis <http://redis.io/>`__. Then, you can run one of the following:
+QM uses SQLite_ bindings by default for convenience because then you don't have
+to turn on any other programs, configure internal ports, etc. If you can't get
+SQLite to work on your platform, or if you just prefer another database, the
+current choices are CouchDB_, MongoDB_, PostgreSQL_, and Redis_. To launch with
+a different database, run one of the following:
 ::
 
     $ make local-sandbox db=couch
@@ -89,7 +78,22 @@ are `Apache CouchDB <https://couchdb.apache.org/>`__,
 Ruby
 ----
 
-There are instructions for using the minimal
-`Rack <http://rack.github.io/>`__-based implementation available
-`here <Rack_app>`__.
+There are instructions for using the minimal Rack_-based implementation
+available `here <Rack_app>`__.
+
+
+.. External link definitions:
+.. _CouchDB: http://couchdb.apache.org
+.. _CouchDB.app: http://couchdb.apache.org/#download
+.. _documentation: https://www.npmjs.org/doc/README.html
+.. _Git: http://git-scm.com/
+.. _GitHub: https://github.com/
+.. _Homebrew: http://mxcl.github.io/homebrew/
+.. _Makefile: https://raw.githubusercontent.com/qmachine/qmachine/master/Makefile
+.. _MongoDB: http://www.mongodb.org/
+.. _Postgres.app: http://postgresapp.com/
+.. _PostgreSQL: http://www.postgresql.org/
+.. _Rack: https://rack.github.io
+.. _Redis: http://redis.io/
+.. _SQLite: https://www.sqlite.org/
 
