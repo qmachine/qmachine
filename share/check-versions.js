@@ -9,7 +9,7 @@
 //  NOTE: Should we also check Git tags in this script?
 //
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 12 May 2014
+//                                                  ~~ last updated 10 Jul 2014
 
 (function () {
     'use strict';
@@ -20,9 +20,9 @@
 
  // Declarations
 
-    var check_bower_package, check_chrome_hosted_app, check_homepage,
-        check_npm_module, check_ruby_gem, check_web_service, current_version,
-        fs;
+    var check_bower_package, check_chrome_hosted_app, check_docs,
+        check_homepage, check_npm_module, check_ruby_gem, check_web_service,
+        current_version, fs;
 
  // Definitions
 
@@ -55,6 +55,42 @@
         if (config.version !== current_version) {
             throw new Error('Version mismatch for Chrome Web Store');
         }
+        return;
+    };
+
+    check_docs = function () {
+     // This function checks the Sphinx configuration file.
+        var filename = __dirname + '/../docs/conf.py';
+        fs.readFile(filename, function (err, result) {
+         // This function needs documentation.
+            if (err !== null) {
+                throw err;
+            }
+            var conf, pattern1, pattern2, release, r_v, version;
+            conf = result.toString();
+            pattern1 = /\nrelease = ['"]([0-9]+\.[0-9]+)\.([0-9]+)['"]\n/;
+            pattern2 = /\nversion = ['"]([0-9]+\.[0-9]+)['"]\n/;
+            if (pattern1.test(conf) === false) {
+                throw new Error('No "release" specified in Sphinx config');
+            }
+            if (pattern2.test(conf) === false) {
+                throw new Error('No "version" specified in Sphinx config');
+            }
+            release = conf.match(pattern1).slice(1).join('.');
+            r_v = conf.match(pattern1)[1];
+            version = conf.match(pattern2)[1];
+            if (r_v !== version) {
+                console.log(r_v, version);
+                throw new Error('release/version mismatch in Sphinx config');
+            }
+            if (current_version === undefined) {
+                current_version = release;
+            }
+            if (release !== current_version) {
+                throw new Error('Version mismatch for Sphinx config');
+            }
+            return;
+        });
         return;
     };
 
@@ -154,6 +190,7 @@
 
     check_bower_package();
     check_chrome_hosted_app();
+    check_docs();
     check_homepage();
     check_npm_module();
     check_ruby_gem();
