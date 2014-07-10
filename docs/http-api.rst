@@ -47,6 +47,10 @@ version of the API.
 | POST           | /v1/hello?key=world        | {}     | 201    |        |
 +----------------+----------------------------+--------+--------+--------+
 
-.. External links
+
+.. --------------------------
+.. External link definitions:
+.. --------------------------
+
 .. _here: http://bit.ly/altjsorg
 

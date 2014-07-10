@@ -39,8 +39,7 @@ Then, you should install Node.js_ using the directions given here_.
 Node.js
 -------
 
-First, make sure that you have `Node Package Manager
-(NPM) <https://www.npmjs.org/>`__ installed:
+First, make sure that you have NPM_ installed:
 ::
 
     $ which npm || echo 'NPM is missing'
@@ -78,10 +77,13 @@ Ruby
 ----
 
 There are instructions for using the minimal Rack_-based implementation
-available `here <Rack_app>`__.
+available :doc:`here <rack-app>`.
 
 
+.. --------------------------
 .. External link definitions:
+.. --------------------------
+
 .. _CouchDB: http://couchdb.apache.org
 .. _CouchDB.app: http://couchdb.apache.org/#download
 .. _documentation: https://www.npmjs.org/doc/README.html
@@ -92,6 +94,7 @@ available `here <Rack_app>`__.
 .. _Makefile: https://raw.githubusercontent.com/qmachine/qmachine/master/Makefile
 .. _MongoDB: http://www.mongodb.org/
 .. _Node.js: http://nodejs.org/
+.. _NPM: https://www.npmjs.org/
 .. _Postgres.app: http://postgresapp.com/
 .. _PostgreSQL: http://www.postgresql.org/
 .. _Rack: https://rack.github.io

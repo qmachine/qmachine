@@ -13,10 +13,12 @@ This manual is *very* incomplete -- please refer to the wiki_ instead.
 
 .. Table of Contents
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   http-api
-   sandbox
+    overview
+    http-api
+    local-sandbox
+    source-code
 
 Indices and tables
 ==================
