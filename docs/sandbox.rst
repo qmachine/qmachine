@@ -34,8 +34,7 @@ the dependencies:
 
     $ sudo apt-get install git imagemagick libsqlite3-dev make
 
-Then, you should install Node.js using the directions given
-`here <https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint>`__.
+Then, you should install Node.js_ using the directions given here_.
 
 Node.js
 -------
@@ -88,9 +87,11 @@ available `here <Rack_app>`__.
 .. _documentation: https://www.npmjs.org/doc/README.html
 .. _Git: http://git-scm.com/
 .. _GitHub: https://github.com/
+.. _here: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os
 .. _Homebrew: http://mxcl.github.io/homebrew/
 .. _Makefile: https://raw.githubusercontent.com/qmachine/qmachine/master/Makefile
 .. _MongoDB: http://www.mongodb.org/
+.. _Node.js: http://nodejs.org/
 .. _Postgres.app: http://postgresapp.com/
 .. _PostgreSQL: http://www.postgresql.org/
 .. _Rack: https://rack.github.io
