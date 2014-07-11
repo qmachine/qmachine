@@ -48,7 +48,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 10 Jul 2014
+#                                                   ~~ last updated 11 Jul 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -108,7 +108,8 @@ clean: reset
                 $(RM) $(BUILD_DIR)                                      ;   \
             fi                                                          ;   \
             $(CD) $(DOCS_DIR)                                           ;   \
-            $(MAKE) $@
+            $(MAKE) $@                                                  ;   \
+            $(RM) $(DOCS_DIR)/_static/favicon.ico
 
 clobber: clean
 	@   $(RM) $(CACHE_DIR)
