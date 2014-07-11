@@ -23,5 +23,5 @@ completely for free.
 .. include:: external-links.rst
 
 .. _here: https://www.npmjs.org/package/qm
-.. _runnable.com: https://runnable.com/qmachine
+.. _runnable.com: http://runnable.com/qmachine
 
