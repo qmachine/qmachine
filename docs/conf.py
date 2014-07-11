@@ -14,6 +14,7 @@
 
 import sys
 import os
+import urllib
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -122,7 +123,9 @@ html_theme = 'default'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = None
+if (os.environ.get('READTHEDOCS', None) == 'True'):
+    urllib.urlretrieve('https://www.qmachine.org/favicon.ico', os.path.join('_static', 'favicon.ico'))
+    html_favicon = 'favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -241,7 +244,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'QMachine', u'QMachine Documentation',
-   u'Sean Wilkinson', 'QMachine', 'One line description of project.',
+   u'Sean Wilkinson', 'QMachine', 'A platform for World Wide Computing.',
    'Miscellaneous'),
 ]
 
