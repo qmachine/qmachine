@@ -124,7 +124,7 @@ html_theme = 'default'
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
 #if (os.environ.get('READTHEDOCS', None) == 'True'):
-urllib.urlretrieve('https://www.qmachine.org/favicon.ico', os.path.join(os.path.abspath(os.path.dirname(__file__)), 'favicon.ico'))
+urllib.urlretrieve('https://www.qmachine.org/favicon.ico', os.path.join(os.path.abspath(os.path.dirname(__file__)), '_static', 'favicon.ico'))
 html_favicon = 'favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
