@@ -20,21 +20,15 @@ installed, you can install it via
     $ gem install bundler
 
 
-Then, point your browser to `http://localhost:8177 <http://localhost:8177>`_.
+Then, point your browser to http://localhost:8177.
 
 Note also that RVM_ is indispensible here for installing everything in a
 user-level sandbox! Eventually I will merge the teaching implementation into
-the :doc:`Ruby gem <ruby-gem>`.
+the :doc:`ruby-gem`.
 
 
-.. --------------------------
-.. External link definitions:
-.. --------------------------
+.. ----------------------------
+.. include:: external-links.rst
 
-.. _Bundler: http://bundler.io/
 .. _here: https://code.google.com/p/qmachine/downloads/detail?name=rackup-app.tar.gz
-.. _Rack: https://rack.github.io/
-.. _RVM: http://rvm.io/
-.. _Sinatra: http://www.sinatrarb.com/
-.. _`sqlite3 gem`: https://rubygems.org/gems/sqlite3
 

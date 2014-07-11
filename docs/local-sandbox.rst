@@ -3,7 +3,7 @@ Running a local sandbox
 
 QMachine (QM) can be installed and run locally, which can be extremely
 useful for development as well as for deployment behind firewalls. A lot
-of this information is contained within the project's Makefile_.
+of this information is contained within the project Makefile_.
 
 Prerequisites
 -------------
@@ -83,21 +83,9 @@ available :doc:`here <rack-app>`.
 .. --------------------------
 .. External link definitions:
 .. --------------------------
+.. include:: external-links.rst
 
-.. _CouchDB: http://couchdb.apache.org
-.. _CouchDB.app: http://couchdb.apache.org/#download
 .. _documentation: https://www.npmjs.org/doc/README.html
-.. _Git: http://git-scm.com/
-.. _GitHub: https://github.com/
 .. _here: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os
-.. _Homebrew: http://mxcl.github.io/homebrew/
 .. _Makefile: https://raw.githubusercontent.com/qmachine/qmachine/master/Makefile
-.. _MongoDB: http://www.mongodb.org/
-.. _Node.js: http://nodejs.org/
-.. _NPM: https://www.npmjs.org/
-.. _Postgres.app: http://postgresapp.com/
-.. _PostgreSQL: http://www.postgresql.org/
-.. _Rack: https://rack.github.io
-.. _Redis: http://redis.io/
-.. _SQLite: https://www.sqlite.org/
 

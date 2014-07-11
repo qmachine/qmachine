@@ -29,9 +29,6 @@ The website, which acts as the browser client interface, is implemented
 in only HTML5, CSS, and JavaScript.
 
 
-.. --------------------------
-.. External link definitions:
-.. --------------------------
-
-.. _Quanah: https://qmachine.github.io/quanah/
+.. ----------------------------
+.. include:: external-links.rst
 

@@ -19,11 +19,9 @@ guts of QM by allowing you to make your own copies to play with and debug,
 completely for free.
 
 
-.. --------------------------
-.. External link definitions:
-.. --------------------------
+.. ----------------------------
+.. include:: external-links.rst
 
 .. _here: https://www.npmjs.org/package/qm
-.. _NPM: https://www.npmjs.org/
 .. _runnable.com: https://runnable.com/qmachine
 

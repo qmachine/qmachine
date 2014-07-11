@@ -1,5 +1,3 @@
-.. _`HTTP API`:
-
 HTTP API
 ========
 
@@ -10,7 +8,7 @@ understood by QM's API server. Request and response data use JSON
 format, but data may be omitted where values are left blank. The "{}"
 denotes a JavaScript object, and the "[]" denotes a JSON array. A
 comprehensive list of software for interfacing with JavaScript from
-other programming languages is available here_.
+other programming languages is available `here <altjs.org_>`_.
 
 Version 1.0
 -----------
@@ -36,7 +34,7 @@ no actual purpose in the original API) in favor of "v1" to designate the
 version of the API.
 
 +----------------+----------------------------+--------+--------+--------+
-| HTTP Request   |                            | HTTP Response            |
+| HTTP Request                                | HTTP Response            |
 +================+============================+========+========+========+
 | Method         | URL                        | Data   | Code   | Data   |
 +----------------+----------------------------+--------+--------+--------+
@@ -47,10 +45,6 @@ version of the API.
 | POST           | /v1/hello?key=world        | {}     | 201    |        |
 +----------------+----------------------------+--------+--------+--------+
 
-
-.. --------------------------
-.. External link definitions:
-.. --------------------------
-
-.. _here: http://bit.ly/altjsorg
+.. ----------------------------
+.. include:: external-links.rst
 

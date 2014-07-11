@@ -1,8 +1,3 @@
-.. QMachine documentation master file, created by
-   sphinx-quickstart on Wed Jul  9 15:09:27 2014.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 QMachine
 ========
 
@@ -18,6 +13,9 @@ This manual is *very* incomplete -- please refer to the wiki_ instead.
     overview
     http-api
     local-sandbox
+    npm-module
+    rack-app
+    ruby-gem
     source-code
 
 Indices and tables
