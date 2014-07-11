@@ -19,9 +19,3 @@ This manual is *very* incomplete. For now, please refer to the `published paper 
     ruby-gem
     source-code
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
-
