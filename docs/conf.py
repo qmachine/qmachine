@@ -123,9 +123,9 @@ html_theme = 'default'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-if (os.environ.get('READTHEDOCS', None) == 'True'):
-    urllib.urlretrieve('https://www.qmachine.org/favicon.ico', os.path.join('_static', 'favicon.ico'))
-    html_favicon = 'favicon.ico'
+#if (os.environ.get('READTHEDOCS', None) == 'True'):
+urllib.urlretrieve('https://www.qmachine.org/favicon.ico', os.path.join(os.path.abspath(os.path.dirname(__file__)), 'favicon.ico'))
+html_favicon = 'favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
