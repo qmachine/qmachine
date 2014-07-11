@@ -14,6 +14,7 @@ This manual is *very* incomplete -- please refer to the wiki_ instead.
     http-api
     local-sandbox
     npm-module
+    paas-sandbox
     rack-app
     ruby-gem
     source-code
