@@ -29,8 +29,8 @@ news sites, are available on
 QM has also graced the front page of
 [Hacker News](https://news.ycombinator.com/item?id=6095595).
 
-For more information, see
-[https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
+The [manual](https://docs.qmachine.org) is a work in progress, but the
+[project wiki](https://wiki.qmachine.org) remains available for reference :-)
 
 ===
 
