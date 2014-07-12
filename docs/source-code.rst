@@ -7,7 +7,10 @@ GitHub
 There are a number of repositories associated with QMachine, and they are all
 currently being transferred to the `QMachine organization`_ on GitHub. The
 primary repository of interest is structured as a `"superproject"`_, and it is
-available on GitHub here_.
+available on GitHub here_. To clone the repository, use
+::
+
+$ git clone --recursive https://github.com/qmachine/qmachine.git
 
 
 Other "mirrors"
