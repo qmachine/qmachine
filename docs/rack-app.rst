@@ -14,7 +14,6 @@ directory,
     $ bundle exec rackup
 
 If you don't already have Bundler_ installed, you can install it via
-installed, you can install it via
 ::
 
     $ gem install bundler
