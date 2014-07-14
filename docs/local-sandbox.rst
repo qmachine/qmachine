@@ -76,8 +76,8 @@ a different database, run one of the following:
 Ruby
 ----
 
-There are instructions for using the minimal Rack_-based implementation
-available :doc:`here <rack-app>`.
+There are instructions for using the minimal "teaching version"
+:doc:`here <rack-app>`. Notes on using the :doc:`ruby-gem` are forthcoming.
 
 
 .. --------------------------
