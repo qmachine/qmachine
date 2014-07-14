@@ -1,8 +1,12 @@
 //- JavaScript source code
 
 //- download.js ~~
+//
+//  This is a quick Node.js script that was written to replace the need for
+//  Curl as part of the build process for the QMachine project.
+//
 //                                                      ~~ (c) SRW, 07 Jul 2014
-//                                                  ~~ last updated 07 Jul 2014
+//                                                  ~~ last updated 14 Jul 2014
 
 (function () {
     'use strict';
