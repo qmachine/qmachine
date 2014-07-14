@@ -12,8 +12,9 @@ Currently, there are two implementations of the server-side components. The
 reference implementation uses [Node.js](http://nodejs.org), and it is available
 for server-side deployment via [NPM](https://www.npmjs.org/package/qm). A
 "teaching version" written in [Ruby](http://www.ruby-lang.org) is also
-available, and eventually it will be packaged and installable as a
-[gem](https://rubygems.org/gems/qm).
+available, and it has now been packaged for installation as a
+[gem](https://rubygems.org/gems/qm), although it is not recommended for
+production environments.
 
 [QMachine: Commodity Supercomputing in Web Browsers](http://www.biomedcentral.com/1471-2105/15/176)
 has now been published online in *BMC Bioinformatics*. This
