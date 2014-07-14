@@ -23,8 +23,8 @@ installed, you can install it via
 Then, point your browser to http://localhost:8177.
 
 Note also that RVM_ is indispensible here for installing everything in a
-user-level sandbox! Eventually I will merge the teaching implementation into
-the :doc:`ruby-gem`.
+user-level sandbox. The teaching version has now been merged into the
+:doc:`ruby-gem`, but it is not yet feature-complete.
 
 
 .. ----------------------------
