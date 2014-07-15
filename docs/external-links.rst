@@ -21,4 +21,5 @@
 .. _Sinatra: http://www.sinatrarb.com/
 .. _SQLite: https://www.sqlite.org/
 .. _`sqlite3 gem`: https://rubygems.org/gems/sqlite3
+.. _wiki: https://wiki.qmachine.org/
 
