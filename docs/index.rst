@@ -7,10 +7,10 @@ QMachine
 
     overview
     http-api
-    local-sandbox
-    paas-sandbox
     npm-module
     rack-app
     ruby-gem
+    local-sandbox
+    paas-sandbox
     source-code
 
