@@ -10,8 +10,7 @@ your own webpage with a single line of HTML:
 
 Upon loading, your webpage will contain the ``QM`` object in its JavaScript
 environment, allowing your page's scripts to submit and volunteer to execute
-compute jobs on your page's visitors' machines using QM's API server completely
-for free.
+compute jobs on volunteers' machines using QM's API server -- for free.
 
 
 .. ----------------------------
