@@ -8,8 +8,8 @@ QMachine
     overview
     http-api
     local-sandbox
-    npm-module
     paas-sandbox
+    npm-module
     rack-app
     ruby-gem
     source-code
