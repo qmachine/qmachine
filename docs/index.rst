@@ -6,6 +6,7 @@ QMachine
     :maxdepth: 2
 
     overview
+    browser-client
     http-api
     npm-module
     rack-app

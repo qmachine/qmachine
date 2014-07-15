@@ -28,15 +28,16 @@ The API server provides a message-passing interface between nodes via an
 Web server
 ~~~~~~~~~~
 
-The web server exists only to serve the website. Both implementations of the
-API server include a configurable web server, but it can also be replaced
-trivially because the website is composed only of static content.
+The web server exists only to serve a website, which is only necessary if you
+want to use web browsers as compute nodes. Both implementations of the API
+server include a configurable web server, but it can also be replaced trivially
+because the website is composed only of static content.
 
 Website
 ~~~~~~~
 
-The website, which acts as the browser client interface, is implemented in only
-HTML, CSS, and JavaScript. It relies heavily on Quanah_.
+The website, which embeds the :doc:`browser client <browser-client>` interface,
+is implemented in only HTML, CSS, and JavaScript. It relies heavily on Quanah_.
 
 
 How to use it
