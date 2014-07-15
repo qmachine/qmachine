@@ -35,6 +35,6 @@ The [manual](https://docs.qmachine.org) is a work in progress, but the
 
 ===
 
-[![Build Status](https://travis-ci.org/qmachine/qmachine.png)](https://travis-ci.org/qmachine/qmachine) [![Build Status](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest)
+[![Build Status](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) [![Build Status](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest)
 
 <!-- vim:set syntax=markdown: -->
