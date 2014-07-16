@@ -2,29 +2,14 @@
 
 #-  Gemfile ~~
 #
-#   Currently, this Rack app is being developed with Ruby 2.0.0-p0 (MRI), and
-#   it doesn't work in JRuby because of the dependence on the 'sqlite3' gem.
-#   There are certainly ways to rectify this "problem", but I don't want to
-#   clutter up the code because it's only meant to be a teaching tool anyway.
-#   JRuby support is certainly on my wishlist, though :-)
-#
-#   For future reference, however, in case I change my mind:
-#
-#       -   http://goo.gl/ImCtC
-#       -   https://github.com/janko-m/sinatra-activerecord
-#
-#   NOTE: I wasn't able to deploy this app as-is to Heroku until I disabled the
-#   API server *and* commented out the "sqlite3" dependency.
+#   Currently, this app won't run on Heroku because of `qm`'s dependency on
+#   `sqlite3`. I'll fix that later.
 #
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 13 Jun 2013
+#                                                   ~~ last updated 16 Jul 2014
 
 source 'https://rubygems.org'
 
-gem 'json'
-gem 'sinatra'
-gem 'sinatra-cross_origin'
-gem 'sqlite3',  :platform => :ruby
-gem 'thin',     :platform => :ruby
+gem 'qm', :git => 'https://github.com/qmachine/qm-ruby.git'
 
 #-  vim:set syntax=ruby:

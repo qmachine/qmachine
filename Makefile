@@ -48,7 +48,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 11 Jul 2014
+#                                                   ~~ last updated 16 Jul 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -229,7 +229,7 @@ rack-app: | $(BUILD_DIR)/rack-app/
                 $(CP) browser-client $@/public                          ;   \
             fi                                                          ;   \
             $(CD) $@/                                                   ;   \
-            $(BUNDLE) package                                           ;   \
+            $(BUNDLE) package --all                                     ;   \
             $(BUNDLE) exec rackup
 
 ###
