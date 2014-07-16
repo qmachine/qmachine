@@ -10,9 +10,9 @@ require 'bundler'
 Bundler.require
 
 QM::launch_service({
-    avar_ttl:           86400,          # seconds
+    avar_ttl:           86400, # seconds
     enable_api_server:  true,
-    enable_CORS:        true,           # not working currently ...
+    enable_CORS:        true,
     enable_web_server:  true,
     hostname:           '0.0.0.0',
     persistent_storage: 'qm.db',
