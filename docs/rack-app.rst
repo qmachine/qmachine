@@ -5,12 +5,12 @@ An experimental implementation of QMachine using Sinatra_ is available in the
 project repository. It uses the `sqlite3 gem`_ to provide persistent storage in
 a self-contained manner.
 
-A prebuilt sandbox for testing on localhost is available here_. To use it,
-download the tarball and extract its contents. Then, from within the new
-directory,
+An outdated (but prebuilt!) sandbox for testing on localhost is available
+here_. To use it, download the tarball and extract its contents. Then, from
+within the new directory,
 ::
 
-    $ bundle install
+    $ bundle install --all
     $ bundle exec rackup
 
 If you don't already have Bundler_ installed, you can install it via
