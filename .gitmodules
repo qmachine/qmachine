@@ -1,9 +1,9 @@
+[submodule "src/browser-client"]
+	path = src/browser-client
+	url = https://github.com/qmachine/qm-browser-client.git
 [submodule "src/npm-module"]
 	path = src/npm-module
 	url = https://github.com/qmachine/qm-nodejs.git
 [submodule "src/ruby-gem"]
 	path = src/ruby-gem
 	url = https://github.com/qmachine/qm-ruby.git
-[submodule "src/browser-client"]
-	path = src/browser-client
-	url = https://github.com/qmachine/qm-browser-client.git
