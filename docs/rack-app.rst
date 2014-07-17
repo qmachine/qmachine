@@ -10,7 +10,7 @@ here_. To use it, download the tarball and extract its contents. Then, from
 within the new directory,
 ::
 
-    $ bundle install --all
+    $ bundle package --all
     $ bundle exec rackup
 
 If you don't already have Bundler_ installed, you can install it via
