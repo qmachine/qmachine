@@ -11,7 +11,7 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 16 Mar 2014
+//                                                  ~~ last updated 16 Jul 2014
 
 (function () {
     'use strict';
@@ -206,7 +206,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -233,7 +233,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -256,7 +256,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -280,7 +280,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -307,7 +307,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -332,7 +332,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -361,7 +361,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -382,7 +382,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -403,7 +403,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
@@ -425,7 +425,7 @@
             return evt.exit();
         }).on('error', function (message) {
          // This function needs documentation.
-            console.error('Error:', message);
+            console.error('Error:', JSON.stringify(message));
             return;
         });
         return;
