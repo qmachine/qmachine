@@ -185,7 +185,7 @@ define replace-url-macros
 endef
 
 define run-procfile
-    $(1) `$(SED) 's/web://' Procfile`
+    $(1) `$(SED) 's/web:[[:space:]]*//' Procfile`
 endef
 
 define show-usage-info
