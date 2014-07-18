@@ -17,6 +17,7 @@
 .. _Quanah: https://qmachine.github.io/quanah/
 .. _Rack: https://rack.github.io/
 .. _Redis: http://redis.io/
+.. _Ruby: https://www.ruby-lang.org/
 .. _RVM: http://rvm.io/
 .. _Sinatra: http://www.sinatrarb.com/
 .. _SQLite: https://www.sqlite.org/
