@@ -1,7 +1,7 @@
 Ruby gem
 ========
 
-The "teaching version" of QMachine has now been merged with the Ruby gem, and
+The "teaching version" of QMachine has now been merged into the Ruby gem, and
 the results are available here_. The implementation currently only supports
 MongoDB_ for persistent storage, but the gem's repository_ contains the code
 necessary for SQLite_, too. More documentation is forthcoming.
