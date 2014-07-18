@@ -11,9 +11,9 @@ Prerequisites
 Mac OS X
 ~~~~~~~~
 
-To get started on Mac OS X 10.8 "Mountain Lion" with your own local sandbox,
-you will need to install Homebrew_ using directions from its website. Then,
-install a minimal set of native dependencies by launching Terminal and typing
+To get started on Mac OS X with your own local sandbox, you will need to
+install Homebrew_ using directions from its website. Then, install a minimal
+set of native dependencies by launching Terminal and typing
 ::
 
     $ brew install imagemagick node
