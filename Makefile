@@ -217,7 +217,8 @@ local-sandbox:
             $(CD) $@/                                                   ;   \
             $(NPM) install                                              ;   \
             QM_API_STRING=$(QM_API_LOC) \
-                QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"' $(NPM) start
+                QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"' \
+                    $(call run-procfile)
 
 rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) \
@@ -230,7 +231,7 @@ rack-app: | $(BUILD_DIR)/rack-app/
             fi                                                          ;   \
             $(CD) $@/                                                   ;   \
             $(BUNDLE) package --all                                     ;   \
-            QM_API_STRING=$(QM_API_LOC) $(BUNDLE) exec rackup
+            QM_API_STRING=$(QM_API_LOC) $(call run-procfile)
 
 ###
 

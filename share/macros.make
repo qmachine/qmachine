@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 07 Jul 2014
+#                                                   ~~ last updated 18 Jul 2014
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -182,6 +182,10 @@ define replace-url-macros
         -e 's|https://api.qmachine.org|QM_API_URL|g'    \
         -e 's|QM_API_URL|$(strip $(QM_API_URL))|g'      \
         -e 's|QM_WWW_URL|$(strip $(QM_WWW_URL))|g'  $(1) > $(2)
+endef
+
+define run-procfile
+    `$(SED) 's/web://' Procfile`
 endef
 
 define show-usage-info
