@@ -76,10 +76,10 @@ a different database, run one of the following:
 Ruby
 ----
 
-An implementation of QMachine using Sinatra_ is available in the project
-repository which uses the :doc:`ruby-gem` directly. Currently, the gem itself
-only supports MongoDB_ for persistent storage, but the gem's repository still
-contains the code necessary to re-enable SQLite_ support in the future.
+An implementation of QMachine using Ruby_ is also available in the project
+repository. This version uses the :doc:`ruby-gem` directly. Please note that
+the gem itself only supports MongoDB_ for persistent storage currently, and
+that Node.js version is the one recommended for production.
 
 First, make sure that you have Bundler_ installed:
 ::
