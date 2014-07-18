@@ -22,6 +22,13 @@ MongoDB_ for persistent storage, but the gem's repository_ contains the code
 necessary for SQLite_, too.
 
 
+Source code
+-----------
+
+Full source code is available on GitHub at
+https://github.com/qmachine/qm-ruby.
+
+
 .. https://badge.fury.io/rb/qm.png
 .. https://gemnasium.com/qmachine/qm-ruby.png
 

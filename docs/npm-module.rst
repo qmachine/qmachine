@@ -33,6 +33,13 @@ completely for free.
 .. https://gemnasium.com/qmachine/qm-nodejs.png
 
 
+Source code
+-----------
+
+Full source code is available on GitHub at
+https://github.com/qmachine/qm-nodejs.
+
+
 .. ----------------------------
 .. include:: external-links.rst
 

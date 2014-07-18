@@ -38,6 +38,13 @@ advanced use are forthcoming, but they will essentially discuss working with
 avars.
 
 
+Source code
+-----------
+
+Full source code is available on GitHub at
+https://github.com/qmachine/qm-browser-client.
+
+
 .. ----------------------------
 .. include:: external-links.rst
 
