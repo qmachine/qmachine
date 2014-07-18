@@ -2,8 +2,8 @@ Running a local sandbox
 =======================
 
 QMachine (QM) can be installed and run locally, which can be extremely
-useful for development as well as for deployment behind firewalls. A lot
-of this information is contained within the project Makefile_.
+useful for development as well as for deployment behind firewalls.
+
 
 Prerequisites
 -------------
@@ -25,6 +25,7 @@ For the same reason, I also prefer Heroku's Postgres.app_ over the version that
 ships with Mountain Lion. I don't know of any nice launchers for MongoDB_ or
 Redis_, but Homebrew can install them for you, and directions are included.
 
+
 Ubuntu Linux 12.04 LTS
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -35,6 +36,7 @@ the dependencies:
     $ sudo apt-get install git imagemagick libsqlite3-dev make
 
 Then, you should install Node.js_ using the directions given here_.
+
 
 Node.js
 -------
@@ -72,6 +74,7 @@ a different database, run one of the following:
     $ make local-sandbox db=mongo
     $ make local-sandbox db=postgres
     $ make local-sandbox db=redis
+
 
 Ruby
 ----
@@ -111,5 +114,4 @@ Finally, start MongoDB and then type
 
 .. _documentation: https://www.npmjs.org/doc/README.html
 .. _here: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os
-.. _Makefile: https://raw.githubusercontent.com/qmachine/qmachine/master/Makefile
 
