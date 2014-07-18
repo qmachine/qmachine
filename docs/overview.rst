@@ -14,30 +14,30 @@ how to contribute to the open-source project.
 How it works
 ------------
 
-QM contains three main components: an API server, a web server, and a website.
-All of the :doc:`source code <source-code>` is freely available.
+QM provides a JSON-based message-passing service over HTTP that can be used to
+coordinate heterogeneous compute nodes for distributed computing. Thus, there
+are two main software categories involved: API servers and client libraries
+that consume the API. Any platform can integrate with QM trivially by using a
+client library that can communicate with JSON over HTTP.
 
-API server
-~~~~~~~~~~
 
-The API server provides a message-passing interface between nodes via an
-:doc:`http-api`. There are two implementations to choose from: the original
-:doc:`Node.js <npm-module>` version, and the "teaching version" written in
-:doc:`Ruby <ruby-gem>`.
+API servers
+~~~~~~~~~~~
 
-Web server
-~~~~~~~~~~
+The API server provides a message-passing interface between compute nodes via
+an :doc:`http-api`. There are two implementations to choose from: the
+:doc:`original reference version <npm-module>` written in Node.js_ and the
+:doc:`"teaching version" <ruby-gem>` written in Ruby_.
 
-The web server exists only to serve a website, which is only necessary if you
-want to use web browsers as compute nodes. Both implementations of the API
-server include a configurable web server, but it can also be replaced trivially
-because the website is composed only of static content.
 
-Website
-~~~~~~~
+Client libraries
+~~~~~~~~~~~~~~~~
 
-The website, which embeds the :doc:`browser client <browser-client>` interface,
-is implemented in only HTML, CSS, and JavaScript. It relies heavily on Quanah_.
+Currently, the only client library supported by the QM project is the
+:doc:`browser client <browser-client>`, which is written completely in
+JavaScript. Because web browsers must download the client software as part of a
+web page, basic web servers are included in the server-side implementations of
+QM. Clients for Node.js and Ruby are planned, but they are incomplete.
 
 
 How to use it
