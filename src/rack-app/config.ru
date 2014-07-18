@@ -2,7 +2,7 @@
 
 #-  config.ru ~~
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 16 Jul 2014
+#                                                   ~~ last updated 17 Jul 2014
 
 require 'rubygems'
 require 'bundler'
@@ -15,7 +15,10 @@ QM::launch_service({
     enable_CORS:        true,
     enable_web_server:  true,
     hostname:           '0.0.0.0',
-    persistent_storage: 'qm.db',
+    persistent_storage: {
+        mongo: 'mongodb://localhost:27017/test'
+        #sqlite: 'qm.db'
+    },
     port:               ENV['PORT'] || 8177,
     public_folder:      'public'
 })
