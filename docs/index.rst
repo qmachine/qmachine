@@ -6,8 +6,8 @@ QMachine
     :maxdepth: 2
 
     overview
-    browser-client
     http-api
+    browser-client
     npm-module
     ruby-gem
     local-sandbox
