@@ -72,8 +72,8 @@ check-versions:
 	@   $(NODEJS) $(SHARE_DIR)/check-versions.js
 
 clean: reset
-	@   $(RM) $(BUILD_DIR)/browser-client/                          ;   \
-            $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
+	@   $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
+            $(RM) $(BUILD_DIR)/homepage/                                ;   \
             $(RM) $(BUILD_DIR)/local-sandbox/                           ;   \
             $(RM) $(BUILD_DIR)/rack-app/                                ;   \
             $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
@@ -112,10 +112,18 @@ update:
 
 ###
 
-.PHONY: browser-client chrome-hosted-app npm-module ruby-gem web-service
+.PHONY: chrome-hosted-app homepage npm-module ruby-gem web-service
 
-browser-client:                                                             \
-    $(addprefix $(BUILD_DIR)/browser-client/,                               \
+chrome-hosted-app:                                                          \
+    $(addprefix $(BUILD_DIR)/chrome-hosted-app/,                            \
+        qmachine.zip                                                        \
+        snapshot-1280x800.png                                               \
+        snapshot-440x280.png                                                \
+    )
+	@   $(call hilite, 'Created $@.')
+
+homepage:                                                                   \
+    $(addprefix $(BUILD_DIR)/homepage/,                                     \
         apple-touch-icon.png                                                \
         browserconfig.xml                                                   \
         cache.manifest                                                      \
@@ -135,14 +143,6 @@ browser-client:                                                             \
         sitemap.xml                                                         \
         style-min.css                                                       \
         wiki.png                                                            \
-    )
-	@   $(call hilite, 'Created $@.')
-
-chrome-hosted-app:                                                          \
-    $(addprefix $(BUILD_DIR)/chrome-hosted-app/,                            \
-        qmachine.zip                                                        \
-        snapshot-1280x800.png                                               \
-        snapshot-440x280.png                                                \
     )
 	@   $(call hilite, 'Created $@.')
 
@@ -198,10 +198,10 @@ rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) \
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
-                    browser-client                                      ;   \
+                    homepage                                                \
             $(CD) $(BUILD_DIR)                                          ;   \
             if [ ! -d $@/public/ ]; then                                    \
-                $(CP) browser-client $@/public                          ;   \
+                $(CP) homepage $@/public                                ;   \
             fi                                                          ;   \
             $(CD) $@/                                                   ;   \
             $(BUNDLE) package --all                                     ;   \
@@ -212,30 +212,6 @@ rack-app: | $(BUILD_DIR)/rack-app/
 
 $(BUILD_DIR):
 	@   $(call make-directory, $@)
-
-$(BUILD_DIR)/browser-client: | $(BUILD_DIR)
-	@   $(call make-directory, $@)
-
-$(BUILD_DIR)/browser-client/cache.manifest:                                 \
-    $(SRC_DIR)/homepage/cache.manifest                                      \
-    |   $(BUILD_DIR)/browser-client
-	@   $(call timestamp, $<, $@)
-
-$(BUILD_DIR)/browser-client/manifest.webapp:                                \
-    $(SRC_DIR)/homepage/manifest.webapp                                     \
-    |   $(BUILD_DIR)/browser-client
-	@   $(CP) $< $@
-
-$(BUILD_DIR)/browser-client/%.js:                                           \
-    $(CACHE_DIR)/%.js                                                       \
-    |   $(BUILD_DIR)/browser-client
-	@   $(call minify-js, $<, $@)
-
-$(BUILD_DIR)/browser-client/%: $(CACHE_DIR)/% | $(BUILD_DIR)/browser-client
-	@   $(CP) $< $@
-
-$(BUILD_DIR)/browser-client/%: $(ICONS_DIR)/% | $(BUILD_DIR)/browser-client
-	@   $(CP) $< $@
 
 $(BUILD_DIR)/chrome-hosted-app: | $(BUILD_DIR)
 	@   $(call make-directory, $@)
@@ -274,6 +250,28 @@ $(BUILD_DIR)/chrome-hosted-app/snapshot-%.png:                              \
                 $(RM) $(@:%.png=%)-*.png                                ;   \
             fi
 
+$(BUILD_DIR)/homepage: | $(BUILD_DIR)
+	@   $(call make-directory, $@)
+
+$(BUILD_DIR)/homepage/cache.manifest:                                       \
+    $(SRC_DIR)/homepage/cache.manifest                                      \
+    |   $(BUILD_DIR)/homepage
+	@   $(call timestamp, $<, $@)
+
+$(BUILD_DIR)/homepage/%.js: $(CACHE_DIR)/%.js | $(BUILD_DIR)/homepage
+	@   $(call minify-js, $<, $@)
+
+$(BUILD_DIR)/homepage/%: $(CACHE_DIR)/% | $(BUILD_DIR)/homepage
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/homepage/%: $(ICONS_DIR)/% | $(BUILD_DIR)/homepage
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/homepage/manifest.webapp:                                      \
+    $(SRC_DIR)/homepage/manifest.webapp                                     \
+    |   $(BUILD_DIR)/homepage
+	@   $(CP) $< $@
+
 $(BUILD_DIR)/npm-module: $(SRC_DIR)/npm-module | $(BUILD_DIR)
 	@   $(CP) $< $@
 
@@ -301,11 +299,11 @@ $(BUILD_DIR)/web-service/.gitignore:                                        \
 	@   $(CP) $< $@
 
 $(BUILD_DIR)/web-service/katamari.json:                                     \
-    browser-client                                                          \
+    homepage                                                                \
     npm-module                                                              \
     | $(BUILD_DIR)/web-service
 	@   $(NODEJS) $(BUILD_DIR)/npm-module/examples/roll-up.js           \
-                $(BUILD_DIR)/browser-client $@
+                $(BUILD_DIR)/homepage $@
 
 $(BUILD_DIR)/web-service/%: $(SHARE_DIR)/% | $(BUILD_DIR)/web-service
 	@   $(CP) $< $@
