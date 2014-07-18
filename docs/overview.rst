@@ -27,7 +27,8 @@ API servers
 An API server provides a message-passing interface between compute nodes via
 an :doc:`http-api` implemented as a web service. There are two implementations
 to choose from: the :doc:`original reference version <npm-module>` written in
-Node.js_ and the :doc:`"teaching version" <ruby-gem>` written in Ruby_.
+Node.js_ and the :doc:`"teaching version" <ruby-gem>` written in Ruby_. The
+Node.js version is recommended for production.
 
 
 Client libraries
