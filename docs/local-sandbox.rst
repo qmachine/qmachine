@@ -84,7 +84,7 @@ contains the code necessary to re-enable SQLite_ support in the future.
 First, make sure that you have Bundler_ installed:
 ::
 
-    $ which npm || echo 'Bundler is missing'
+    $ which bundler || echo 'Bundler is missing'
 
 Obviously, if Bundler is missing, you will have to install it to continue.
 
