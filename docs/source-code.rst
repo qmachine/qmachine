@@ -2,7 +2,7 @@ Source code
 ===========
 
 There are a number of repositories associated with QMachine, and they are all
-currently being transferred to the `QMachine organization`_ on GitHub.
+being transferred to the `QMachine organization`_ on GitHub.
 
 Main project
 ------------
