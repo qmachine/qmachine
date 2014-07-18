@@ -3,35 +3,9 @@
 #-  Makefile ~~
 #
 #   This contains a live development workflow for QMachine (QM). To get started
-#   on Mac OS X 10.9 with your own local sandbox, you will need to install ...
+#   with your own local sandbox, check out
 #
-#       ... Homebrew using directions from http://brew.sh.
-#
-#       ... a minimal set of native dependencies by typing
-#           $ brew install imagemagick node
-#
-#   To run QM on localhost, run
-#
-#           $ make local-sandbox
-#
-#   QM uses the SQLite bindings by default for convenience because you don't
-#   have to turn on any other programs, configure internal ports, etc. If you
-#   can't get SQLite to work on your platform, or if you just prefer another
-#   database, the current choices are Apache CouchDB, MongoDB, PostgreSQL, and
-#   Redis. Then, you can run one of the following:
-#
-#           $ make local-sandbox db=couch
-#           $ make local-sandbox db=mongo
-#           $ make local-sandbox db=postgres
-#           $ make local-sandbox db=redis
-#
-#   I prefer the standalone "Apache CouchDB.app" available from the CouchDB
-#   website (http://couchdb.apache.org/) over the Homebrew-installed version
-#   because it's more convenient. I like the convenience of "Postgres.app"
-#   (http://postgresapp.com), but its default configuration is *not* a
-#   high-performance one -- in my testing, SQLite is almost as fast. I don't
-#   know of any nice launchers for MongoDB or Redis, but Homebrew can install
-#   them for you, and it includes directions for launching them.
+#       https://docs.qmachine.org/en/latest/local-sandbox.html
 #
 #   Some optional targets may require extra packages to be installed by
 #   Homebrew, including
@@ -216,9 +190,9 @@ local-sandbox:
             fi                                                          ;   \
             $(CD) $@/                                                   ;   \
             $(NPM) install                                              ;   \
-            QM_API_STRING=$(QM_API_LOC) \
-                QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"' \
-                    $(call run-procfile)
+            $(call run-procfile, \
+                QM_API_STRING=$(strip $(QM_API_LOC)) \
+                QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"')
 
 rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) \
@@ -231,7 +205,8 @@ rack-app: | $(BUILD_DIR)/rack-app/
             fi                                                          ;   \
             $(CD) $@/                                                   ;   \
             $(BUNDLE) package --all                                     ;   \
-            QM_API_STRING=$(QM_API_LOC) $(call run-procfile)
+            $(call run-procfile, \
+                QM_API_STRING=$(strip $(QM_API_LOC)))
 
 ###
 
