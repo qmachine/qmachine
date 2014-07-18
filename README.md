@@ -12,8 +12,9 @@ Currently, there are two implementations of the server-side components. The
 reference implementation uses [Node.js](http://nodejs.org), and it is available
 for server-side deployment via [NPM](https://www.npmjs.org/package/qm). A
 "teaching version" written in [Ruby](http://www.ruby-lang.org) is also
-available, and eventually it will be packaged and installable as a
-[gem](https://rubygems.org/gems/qm).
+available, and it has now been packaged for installation as a
+[gem](https://rubygems.org/gems/qm). The Node.js version is recommended for
+production environments.
 
 [QMachine: Commodity Supercomputing in Web Browsers](http://www.biomedcentral.com/1471-2105/15/176)
 has now been published online in *BMC Bioinformatics*. This
@@ -29,11 +30,11 @@ news sites, are available on
 QM has also graced the front page of
 [Hacker News](https://news.ycombinator.com/item?id=6095595).
 
-For more information, see
-[https://wiki.qmachine.org](https://wiki.qmachine.org) :-)
+The [manual](https://docs.qmachine.org) is a work in progress, but the
+[project wiki](https://wiki.qmachine.org) remains available for reference :-)
 
 ===
 
-[![Build Status](https://travis-ci.org/qmachine/qmachine.png)](https://travis-ci.org/qmachine/qmachine) [![Build Status](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest)
+[![Build Status](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) [![Build Status](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest)
 
 <!-- vim:set syntax=markdown: -->
