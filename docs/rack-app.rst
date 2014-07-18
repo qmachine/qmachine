@@ -3,7 +3,7 @@ Rack app
 
 An experimental implementation of QMachine using Sinatra_ is available in the
 project repository. It now uses the :doc:`ruby-gem` directly, and it supports
-either Mongo_ or SQLite_ for persistent storage.
+either MongoDB_ or SQLite_ for persistent storage.
 
 An outdated (but prebuilt!) sandbox for testing on localhost is available
 here_. To use it, download the tarball and extract its contents. Then, from
