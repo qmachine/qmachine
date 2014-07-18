@@ -198,7 +198,7 @@ rack-app: | $(BUILD_DIR)/rack-app/
 	@   $(MAKE) \
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
-                    homepage                                                \
+                    homepage                                            ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
             if [ ! -d $@/public/ ]; then                                    \
                 $(CP) homepage $@/public                                ;   \
