@@ -9,7 +9,7 @@ require 'bundler'
 
 Bundler.require
 
-QM::launch_service({
+options = {
     avar_ttl:           86400, # seconds
     enable_api_server:  true,
     enable_CORS:        true,
@@ -21,6 +21,12 @@ QM::launch_service({
     },
     port:               ENV['PORT'] || 8177,
     public_folder:      'public'
-})
+}
+
+if (ENV['QM_API_STRING']) then
+    options[:persistent_storage] = JSON.parse(ENV['QM_API_STRING'])
+end
+
+QM::launch_service(options)
 
 #-  vim:set syntax=ruby:

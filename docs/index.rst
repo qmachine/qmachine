@@ -9,7 +9,6 @@ QMachine
     browser-client
     http-api
     npm-module
-    rack-app
     ruby-gem
     local-sandbox
     paas-sandbox

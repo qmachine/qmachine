@@ -6,10 +6,11 @@
 #   `sqlite3`. I'll fix that later.
 #
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 16 Jul 2014
+#                                                   ~~ last updated 18 Jul 2014
 
 source 'https://rubygems.org'
 
+gem 'json'
 gem 'qm', :git => 'https://github.com/qmachine/qm-ruby.git'
 
 #-  vim:set syntax=ruby:

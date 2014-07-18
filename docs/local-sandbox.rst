@@ -76,8 +76,32 @@ a different database, run one of the following:
 Ruby
 ----
 
-There are instructions for using the minimal "teaching version"
-:doc:`here <rack-app>`. Notes on using the :doc:`ruby-gem` are forthcoming.
+An implementation of QMachine using Sinatra_ is available in the project
+repository which uses the :doc:`ruby-gem` directly. Currently, the gem itself
+only supports MongoDB_ for persistent storage, but the gem's repository still
+contains the code necessary to re-enable SQLite_ support in the future.
+
+First, make sure that you have Bundler_ installed:
+::
+
+    $ which npm || echo 'Bundler is missing'
+
+Obviously, if Bundler is missing, you will have to install it to continue.
+
+Next, check out QM's source code from GitHub_:
+::
+
+    $ git clone https://github.com/qmachine/qmachine.git
+
+Now, select your local copy of the repository as the current directory:
+::
+
+    $ cd qmachine/
+
+Finally, start MongoDB and then type
+::
+
+    $ make rack-app db=mongo
 
 
 .. --------------------------

@@ -23,7 +23,7 @@ API server
 The API server provides a message-passing interface between nodes via an
 :doc:`http-api`. There are two implementations to choose from: the original
 :doc:`Node.js <npm-module>` version, and the "teaching version" written in
-:doc:`Ruby <rack-app>`.
+:doc:`Ruby <ruby-gem>`.
 
 Web server
 ~~~~~~~~~~
