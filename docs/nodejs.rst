@@ -1,11 +1,18 @@
-NPM module
-==========
+Node.js
+=======
 
-An NPM_ module is available here_.
+Install with NPM
+----------------
+
+A Node.js_ module is available for installation with
+`Node Package Manager`_ (NPM). To install it in the current directory,
+::
+
+$ npm install qm
 
 
-Node.js client
---------------
+API client
+----------
 
 A client for Node.js is planned, but it not yet available as part of the
 module. When it becomes available, it will be possible to submit jobs from a
@@ -33,16 +40,9 @@ completely for free.
 .. https://gemnasium.com/qmachine/qm-nodejs.png
 
 
-Source code
------------
-
-Full source code is available on GitHub at
-https://github.com/qmachine/qm-nodejs.
-
-
 .. ----------------------------
 .. include:: external-links.rst
 
-.. _here: https://www.npmjs.org/package/qm
+.. _`Node Package Manager`: NPM_
 .. _runnable.com: http://runnable.com/qmachine
 

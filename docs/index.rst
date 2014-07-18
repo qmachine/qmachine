@@ -9,8 +9,8 @@ QMachine
     overview
     http-api
     browser-client
-    npm-module
-    ruby-gem
+    nodejs
+    ruby
     local-sandbox
     paas-sandbox
     source-code

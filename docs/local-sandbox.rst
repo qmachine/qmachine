@@ -79,10 +79,10 @@ a different database, run one of the following:
 Ruby
 ----
 
-An implementation of QMachine using Ruby_ is also available in the project
-repository. This version uses the :doc:`ruby-gem` directly. Please note that
-the gem itself only supports MongoDB_ for persistent storage currently, and
-that Node.js version is the one recommended for production.
+Additionally, a QM implementation that uses Ruby_ is available in the project
+repository. Please note that the :doc:`Ruby gem <ruby>` only supports MongoDB_
+for persistent storage and that the Node.js version is the one recommended for
+production.
 
 First, make sure that you have Bundler_ installed:
 ::
