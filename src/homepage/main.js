@@ -5,7 +5,7 @@
 //  This program's main purpose is to provide interaction for the graphical
 //  user interface (GUI) component of the browser client -- the webpage. It is
 //  not intended to be an integrated development environment (IDE), however!
-//  The most important part of QMachine's browser client is the "q.js" script,
+//  The most important part of QMachine's browser client is the "qm.js" script,
 //  which is loaded dynamically after the webpage has loaded. Ultimately, this
 //  script will be concatenated and/or minified with jQuery and Bootstrap to
 //  produce "homepage.js", which is loaded by the webpage using a script tag:
@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 05 Jul 2014
+//                                                  ~~ last updated 20 Jul 2014
 
 (function () {
     'use strict';
@@ -285,11 +285,11 @@
             });
         }
         $.ajax({
-            url: 'q.js',
+            url: 'qm.js',
             cache: true,
             dataType: 'script',
             success: function () {
-             // This function runs after "q.js" has loaded successfully.
+             // This function runs after "qm.js" has loaded successfully.
                 var QM = window.QM;
                 if (detect('localStorage')) {
                  // Here, we load a user's previous settings if they are

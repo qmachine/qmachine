@@ -136,7 +136,7 @@ homepage:                                                                   \
         icon-128.png                                                        \
         index.html                                                          \
         manifest.webapp                                                     \
-        q.js                                                                \
+        qm.js                                                               \
         respond.js                                                          \
         robots.txt                                                          \
         square150x150logo.png                                               \
@@ -365,7 +365,7 @@ $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
 $(CACHE_DIR)/main.js: $(SRC_DIR)/homepage/main.js | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
-$(CACHE_DIR)/q.js:                                                          \
+$(CACHE_DIR)/qm.js:                                                         \
     $(CACHE_DIR)/quanah.js                                                  \
     $(CACHE_DIR)/qmachine.js                                                \
     $(CACHE_DIR)/jslint.js                                                  \
