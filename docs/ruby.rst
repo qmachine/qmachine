@@ -36,9 +36,9 @@ example, which shows the default configuration values:
 
     QM::launch_service({
         avar_ttl:           86400, # seconds
-        enable_api_server:  true,
-        enable_CORS:        true,
-        enable_web_server:  true,
+        enable_api_server:  false,
+        enable_CORS:        false,
+        enable_web_server:  false,
         hostname:           '0.0.0.0',
         persistent_storage: {},
         port:               8177,
