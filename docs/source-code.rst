@@ -4,6 +4,14 @@ Source code
 There are a number of repositories associated with QMachine, and they are all
 being transferred to the `QMachine organization`_ on GitHub.
 
+
+Browser client
+--------------
+
+The source code for the :doc:`browser client <browser-client>` is available at
+https://github.com/qmachine/qm-browser-client.
+
+
 Main project
 ------------
 
@@ -16,12 +24,6 @@ $ git clone --recursive https://github.com/qmachine/qmachine.git
 
 There are also "mirrors" available at Bitbucket_, CodePlex_, Gitorious_,
 `Google Code`_, and SourceForge_.
-
-Browser client
---------------
-
-The source code for the :doc:`browser client <browser-client>` is available at
-https://github.com/qmachine/qm-browser-client.
 
 
 Node.js
