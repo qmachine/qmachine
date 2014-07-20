@@ -43,7 +43,7 @@ example, which shows the default configuration values:
         persistent_storage: {},
         port:               8177,
         public_folder:      'public'
-    }
+    })
 
 
 .. https://badge.fury.io/rb/qm.png
