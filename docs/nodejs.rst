@@ -26,6 +26,39 @@ The original, reference version of QM is available as part of the module, and
 a basic web server is also provided to enable the use of web browsers as
 compute nodes if so desired.
 
+A QM server can be launched by a Node.js program as shown in the following
+example, which shows the default configuration values:
+::
+
+    var qm = require('qm');
+
+    qm.launch_service({
+        enable_api_server:  false,
+        enable_CORS:        false,
+        enable_www_server:  false,
+        hostname:           '0.0.0.0',
+        log: function (request) {
+         // This function is the default logging function.
+            return {
+                host: request.headers.host,
+                method: request.method,
+                timestamp: new Date(),
+                url: request.url
+            };
+        },
+        match_hostname:     false,
+        max_http_sockets:   500,
+        max_upload_size:    1048576,    //- 1024 * 1024 = 1 Megabyte
+        persistent_storage: {
+            avar_ttl:       86400,      //- expire avars after 24 hours
+            gc_interval:    10          //- collect garbage every _ seconds
+        },
+        port:               8177,
+        static_content:     'katamari.json',
+        trafficlog_storage: {},
+        worker_procs:       0
+    });
+
 
 Try it live
 ~~~~~~~~~~~

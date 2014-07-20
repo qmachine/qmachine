@@ -28,6 +28,23 @@ compute nodes if so desired. This implementation currently only supports
 MongoDB_ for persistent storage, but the gem's repository_ contains the code
 necessary for SQLite_, too.
 
+A QM server can be launched by a Ruby program as shown in the following
+example, which shows the default configuration values:
+::
+
+    require 'qm'
+
+    QM::launch_service({
+        avar_ttl:           86400, # seconds
+        enable_api_server:  true,
+        enable_CORS:        true,
+        enable_web_server:  true,
+        hostname:           '0.0.0.0',
+        persistent_storage: {},
+        port:               8177,
+        public_folder:      'public'
+    }
+
 
 .. https://badge.fury.io/rb/qm.png
 .. https://gemnasium.com/qmachine/qm-ruby.png
