@@ -2,7 +2,7 @@
 
 #-  render.rb ~~
 #                                                       ~~ (c) SRW, 19 Sep 2012
-#                                                   ~~ last updated 09 Nov 2013
+#                                                   ~~ last updated 20 Jul 2014
 
 require 'date'
 require 'redcarpet'
@@ -66,7 +66,7 @@ File::open(filename, 'w') do |f|
       <a href="https://wiki.qmachine.org/index.php/Opening_a_browser_console" target="_blank">open your browser's developer console</a>
       and experiment without even leaving this page!
     </p>
-    <script async src="https://www.qmachine.org/q.js"></script>
+    <script async src="https://www.qmachine.org/qm.js"></script>
   </body>
 </html>
 EOF
