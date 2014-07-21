@@ -38,7 +38,7 @@ example, which shows the default configuration values:
         enable_api_server:  false,
         enable_CORS:        false,
         enable_www_server:  false,
-        hostname:           '0.0.0.0',
+        hostname:           '0.0.0.0',  //- aka INADDR_ANY
         log: function (request) {
          // This function is the default logging function.
             return {
