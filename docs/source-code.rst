@@ -18,9 +18,10 @@ Main project
 The main project repository is the best place to start with development. It is
 structured as a `"superproject"`_, which means that cloning it requires cloning
 its submodules, too:
-::
 
-$ git clone --recursive https://github.com/qmachine/qmachine.git
+.. code-block:: bash
+
+    $ git clone --recursive https://github.com/qmachine/qmachine.git
 
 There are also "mirrors" available at Bitbucket_, CodePlex_, Gitorious_,
 `Google Code`_, and SourceForge_.

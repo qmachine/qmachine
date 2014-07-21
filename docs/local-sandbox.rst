@@ -14,7 +14,8 @@ Mac OS X
 To get started on Mac OS X with your own local sandbox, you will need to
 install Homebrew_ using directions from its website. Then, install a minimal
 set of native dependencies by launching Terminal and typing
-::
+
+.. code-block:: bash
 
     $ brew install imagemagick node
 
@@ -31,7 +32,8 @@ Ubuntu Linux 12.04 LTS
 
 Ubuntu has a built-in package manager that we can use to install some of
 the dependencies:
-::
+
+.. code-block:: bash
 
     $ sudo apt-get install git imagemagick libsqlite3-dev make
 
@@ -42,24 +44,28 @@ Node.js
 -------
 
 First, make sure that you have NPM_ installed:
-::
+
+.. code-block:: bash
 
     $ which npm || echo 'NPM is missing'
 
 If NPM is missing, refer to its documentation_ for the installation procedure.
 
 Next, check out QM's source code from GitHub_:
-::
+
+.. code-block:: bash
 
     $ git clone https://github.com/qmachine/qmachine.git
 
 Now, select your local copy of the repository as the current directory:
-::
+
+.. code-block:: bash
 
     $ cd qmachine/
 
 Finally, launch QM on localhost:
-::
+
+.. code-block:: bash
 
     $ make local-sandbox
 
@@ -68,7 +74,8 @@ to turn on any other programs, configure internal ports, etc. If you can't get
 SQLite to work on your platform, or if you just prefer another database, the
 current choices are CouchDB_, MongoDB_, PostgreSQL_, and Redis_. To launch with
 a different database, run one of the following:
-::
+
+.. code-block:: bash
 
     $ make local-sandbox db=couch
     $ make local-sandbox db=mongo
@@ -85,24 +92,28 @@ for persistent storage and that the Node.js version is the one recommended for
 production.
 
 First, make sure that you have Bundler_ installed:
-::
+
+.. code-block:: bash
 
     $ which bundler || echo 'Bundler is missing'
 
 Obviously, if Bundler is missing, you will have to install it to continue.
 
 Next, check out QM's source code from GitHub_:
-::
+
+.. code-block:: bash
 
     $ git clone https://github.com/qmachine/qmachine.git
 
 Now, select your local copy of the repository as the current directory:
-::
+
+.. code-block:: bash
 
     $ cd qmachine/
 
 Finally, start MongoDB and then type
-::
+
+.. code-block:: bash
 
     $ make rack-app db=mongo
 

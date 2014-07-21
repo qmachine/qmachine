@@ -3,9 +3,10 @@ Browser client
 
 The browser client is the easiest place to start, because it can be added to
 your own webpage with a single line of HTML:
-::
 
-<script src="https://www.qmachine.org/qm.js"></script>
+.. code-block:: html
+
+    <script src="https://www.qmachine.org/qm.js"></script>
 
 Upon loading, your webpage will contain the ``QM`` object in its JavaScript
 environment, allowing your page's scripts to submit and volunteer to execute

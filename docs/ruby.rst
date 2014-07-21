@@ -6,9 +6,10 @@ Install with RubyGems
 
 A Ruby_ gem is available for installation with
 `RubyGems <https://rubygems.org/>`_. To install it globally,
-::
 
-$ gem install qm
+.. code-block:: bash
+
+    $ gem install qm
 
 
 API client
@@ -30,7 +31,8 @@ necessary for SQLite_, too.
 
 A QM server can be launched by a Ruby program as shown in the following
 example, which shows the default configuration values:
-::
+
+.. code-block:: ruby
 
     require 'qm'
 

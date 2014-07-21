@@ -6,9 +6,10 @@ Install with NPM
 
 A Node.js_ module is available for installation with
 `Node Package Manager`_ (NPM). To install it in the current directory,
-::
 
-$ npm install qm
+.. code-block:: bash
+
+    $ npm install qm
 
 
 API client
@@ -28,7 +29,8 @@ compute nodes if so desired.
 
 A QM server can be launched by a Node.js program as shown in the following
 example, which shows the default configuration values:
-::
+
+.. code-block:: javascript
 
     var qm = require('qm');
 
