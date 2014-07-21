@@ -50,6 +50,9 @@ original Node.js version does. It can use only MongoDB_ to provide persistent
 storage for the message-passing interface, and it does not yet have the ability
 to log traffic data directly into a database.
 
+.. The SQLite_ bindings are still present in the repository, but the presence
+.. of the `sqlite3 gem`_ disables deployment to Heroku.
+
 
 .. https://badge.fury.io/rb/qm.png
 .. https://gemnasium.com/qmachine/qm-ruby.png
