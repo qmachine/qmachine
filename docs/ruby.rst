@@ -25,9 +25,7 @@ API server
 
 The "teaching version" of QMachine has now been merged into the Ruby gem, and
 a basic web server is also provided to enable the use of web browsers as
-compute nodes if so desired. This implementation currently only supports
-MongoDB_ for persistent storage, but the gem's repository_ contains the code
-necessary for SQLite_, too.
+compute nodes if so desired.
 
 A QM server can be launched by a Ruby program as shown in the following
 example, which shows the default configuration values:
@@ -46,6 +44,11 @@ example, which shows the default configuration values:
         port:               8177,
         public_folder:      'public'
     })
+
+The Ruby version of the API server has significantly less flexibility than the
+original Node.js version does. It can use only MongoDB_ to provide persistent
+storage for the message-passing interface, and it does not yet have the ability
+to log traffic data directly into a database.
 
 
 .. https://badge.fury.io/rb/qm.png
