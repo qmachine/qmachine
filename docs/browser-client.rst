@@ -13,6 +13,17 @@ environment, allowing your page's scripts to submit and volunteer to execute
 jobs using the official QM servers -- for free!
 
 
+.. note::
+
+    Modern web browsers can often be programmed "externally" to the webpages
+    themselves. For example, browsers may load custom user scripts, or they may
+    be scripted by external programs to run unit tests. These capabilities are
+    not leveraged in any way by the QM browser client. It may or may not run
+    correctly within Web Worker contexts, but the client described in this
+    manual expects to run within the "ordinary" webpage context of a modern web
+    browser, unassisted by applets, extensions, plugins, etc.
+
+
 Basic use
 ---------
 
