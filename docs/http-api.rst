@@ -5,9 +5,10 @@ QMachine (QM) is not restricted to use by web browsers -- it can be used by any
 platform that understands HTTP and JavaScript Object Notation (JSON). These
 tables specify the Application Programming Interface (API) understood by QM's
 API server. Request and response data use JSON format, but data may be omitted
-where values are left blank. The "{}" denotes a JavaScript object, and the "[]"
-denotes a JSON array. A comprehensive list of software for interfacing with
-JavaScript from other programming languages is available `here <altjs.org_>`_.
+where values are left blank. The ``{}`` denotes a JavaScript object, and the
+``[]`` denotes a JSON array. A comprehensive list of software for interfacing
+with JavaScript from other programming languages is available
+`here <altjs.org_>`_.
 
 
 Version 1.0
@@ -18,9 +19,9 @@ Version 1.0
 ------------------------------------------------------- -----------------
  Method           URL                          Data     Code     Data
 ================= ============================ ======== ======== ========
- GET              /box/hello?key=world                  200      {}
- GET              /box/hello?status=waiting             200      []
- POST             /box/hello?key=world         {}       201
+ GET              /box/hello?key=world                  200      ``{}``
+ GET              /box/hello?status=waiting             200      ``[]``
+ POST             /box/hello?key=world         ``{}``   201
 ================= ============================ ======== ======== ========
 
 
@@ -37,9 +38,9 @@ version of the API.
 ------------------------------------------------------- -----------------
  Method           URL                          Data     Code     Data
 ================= ============================ ======== ======== ========
- GET              /v1/hello?key=world                   200      {}
- GET              /v1/hello?status=waiting              200      []
- POST             /v1/hello?key=world          {}       201
+ GET              /v1/hello?key=world                   200      ``{}``
+ GET              /v1/hello?status=waiting              200      ``[]``
+ POST             /v1/hello?key=world          ``{}``   201
 ================= ============================ ======== ======== ========
 
 
