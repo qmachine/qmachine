@@ -25,13 +25,15 @@ Version 1.0
 ================= ============================ ======== ======== ========
 
 
-Version 1.1
------------
+Version 1.1 (experimental)
+--------------------------
 
-The latest version of the API still supports the original API for
-backwards compatibility, but it deprecates the word "box" (which served
-no actual purpose in the original API) in favor of "v1" to designate the
-version of the API.
+The latest version of the API extends the original one to support the use of
+versioned API calls. The extensions were added in anticipation of future needs
+to support legacy APIs without running legacy servers. Although deprecating the
+word "box" in favor of "v1" seems desirable, it is possible that it anticipates
+needs that will never arise in practice. Discussion and input here would be
+much appreciated.
 
 ================= ============================ ======== ======== ========
  HTTP Request                                           HTTP Response
