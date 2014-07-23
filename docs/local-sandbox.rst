@@ -49,7 +49,8 @@ First, make sure that you have NPM_ installed:
 
     $ which npm || echo 'NPM is missing'
 
-If NPM is missing, refer to its documentation_ for the installation procedure.
+If NPM is missing, refer to its `documentation <NPM-documentation_>`_ for the
+installation procedure.
 
 Next, check out QM's source code from GitHub_:
 
@@ -118,11 +119,8 @@ Finally, start MongoDB and then type
     $ make rack-app db=mongo
 
 
-.. --------------------------
-.. External link definitions:
-.. --------------------------
+.. ----------------------------
 .. include:: external-links.rst
 
-.. _documentation: https://www.npmjs.org/doc/README.html
 .. _here: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os
 
