@@ -16,7 +16,7 @@
 #       served to show the default, and I removed a lot of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 22 Jul 2014
+#                                                   ~~ last updated 23 Jul 2014
 
 import sys
 import os
@@ -75,25 +75,22 @@ pygments_style = 'sphinx'
 
 html_theme = 'default'
 
-# The name of an image file (within the static path) to use as favicon of the
-# docs. This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels.
-
-srwdir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '_static')
+# Here, we will download a favicon from QM's homepage dynamically during the
+# build itself to avoid adding the image to the project repository. We need
+# only set the name of the image file to be found within the static path, and
+# it should be a 16x16 or 32x32 pixel Windows icon file (.ico).
 
 try:
-    os.stat(srwdir)
+    os.stat('_static')
 except:
-    os.mkdir(srwdir)
+    os.mkdir('_static')
 
 try:
     urllib.urlretrieve('https://www.qmachine.org/favicon.ico', \
-        os.path.join(srwdir, 'favicon.ico'))
+        os.path.join('_static', 'favicon.ico'))
     html_favicon = 'favicon.ico'
 except:
     pass
-
-del srwdir
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
