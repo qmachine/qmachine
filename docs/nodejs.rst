@@ -64,7 +64,7 @@ example, which shows the default configuration values:
 The Node.js version of the API server can use any of five different databases
 to provide persistent storage for its message-passing interface: CouchDB_,
 MongoDB_, PostgreSQL_, Redis_, and SQLite_. It can also log traffic data into
-CouchDB_, MongoDB_, or PostgreSQL_ if desired.
+CouchDB, MongoDB, or PostgreSQL_ if desired.
 
 
 Try it live
