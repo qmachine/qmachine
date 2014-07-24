@@ -10,6 +10,8 @@ where values are left blank. The ``{}`` denotes a JavaScript object, and the
 with JavaScript from other programming languages is available
 `here <altjs.org_>`_.
 
+.. Where should the discussion of CORS support go? Does that count as part of
+.. the API?
 
 Version 1.0
 -----------
