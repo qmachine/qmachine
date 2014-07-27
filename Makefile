@@ -13,16 +13,15 @@
 #           $ brew install closure-compiler jsmin mongodb qrencode \
 #               phantomjs redis yuicompressor
 #
-#   For a long time, icon generation from LaTeX source code was included as an
-#   extra touch, but folks complained too much about the extra dependency on
-#   MacTeX 2012. Consequently, the workflow now generates a green placeholder
-#   directly from ImageMagick which can be overridden by your own image file
-#   if you create an "icons/logo.pdf" file beforehand.
+#   Icons are generated from an "icons/logo.pdf" file, but it no such file is
+#   present, a green placeholder image will be created using ImageMagick. In
+#   the future, the use of ImageMagick may be replaced by simply downloading
+#   icons from the QM homepage (https://www.qmachine.org).
 #
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 18 Jul 2014
+#                                                   ~~ last updated 27 Jul 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
