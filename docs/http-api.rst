@@ -13,8 +13,11 @@ with JavaScript from other programming languages is available
 .. Where should the discussion of CORS support go? Does that count as part of
 .. the API?
 
-Version 1.0
------------
+Stable
+------
+
+These routes have always been defined, and they are still considered stable in
+QM |version|.
 
 ================= ============================ ======== ======== ========
  HTTP Request                                           HTTP Response
@@ -27,11 +30,11 @@ Version 1.0
 ================= ============================ ======== ======== ========
 
 
-Version 1.1 (experimental)
---------------------------
+Experimental
+------------
 
-The latest version of the API extends the original one to support the use of
-versioned API calls. The extensions were added in anticipation of future needs
+The latest version of the API (|release|) includes extensions that enable
+versioned API calls. These routes were added in anticipation of future needs
 to support legacy APIs without running legacy servers. Although deprecating the
 word "box" in favor of "v1" seems desirable, it is possible that it anticipates
 needs that will never arise in practice. Discussion and input here would be
