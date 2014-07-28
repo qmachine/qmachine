@@ -42,13 +42,14 @@ example, which shows the default configuration values:
         hostname:           '0.0.0.0',
         persistent_storage: {},
         port:               8177,
-        public_folder:      'public'
+        public_folder:      'public',
+        trafficlog_storage: {}
     })
 
 The Ruby version of the API server has significantly less flexibility than the
 original Node.js version does. The only choice to persist storage is MongoDB_
-for the message-passing interface, and it lacks the ability to log traffic data
-directly into a database.
+for the message-passing interface, and the only choice for logging traffic data
+into a database is MongoDB.
 
 
 .. The SQLite_ bindings are still present in the repository, but the presence
