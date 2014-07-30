@@ -7,10 +7,10 @@ Getting started
 The first step in getting started with any piece of software is installation,
 but "installation" is a misnomer when developing web applications. Browsers use
 JavaScript (JS) as their "native" programming language, but JS programs are
-never truly installed because they cannot alter or extend the web browsers
-themselves. Instead, JS programs are downloaded according to webpage content
-prior to execution, and they run in a "disposable" sandboxed environment that
-exists only while the webpage is open.
+never truly installed because they cannot alter or extend the browsers
+themselves. Instead, JS programs are downloaded according to the contents of
+webpages, and they run in "disposable" sandboxed environments that exist only
+while the webpages are open.
 
 Thus, the "installation" of QM's browser client into a webpage is as simple as
 adding a single line of HTML to the webpage:

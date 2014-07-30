@@ -1,25 +1,26 @@
 HTTP API
 ========
 
-QMachine (QM) is not restricted to use by web browsers -- it can be used by any
-platform that understands HTTP and JavaScript Object Notation (JSON). These
-tables specify the Application Programming Interface (API) understood by QM's
-API server. Request and response data use JSON format, but data may be omitted
-where values are left blank. The ``{}`` denotes a JavaScript object, and the
-``[]`` denotes a JSON array. A comprehensive list of software for interfacing
-with JavaScript from other programming languages is available
-`here <altjs.org_>`_.
-
-
-.. Where should the discussion of CORS support go? Does that count as part of
-.. the API?
+QMachine (QM) is not restricted to use by web browsers -- it can be used by
+almost any modern programming platform. Coordination of any distributed
+computing effort requires a common data interchange format and a common
+communications protocol. QM provides an Application Programming Interface (API)
+that uses JavaScript Object Notation (JSON) as its common data interchange
+format and Hypertext Transfer Protocol (HTTP) as its communications protocol.
+In short, QM's API allows JSON-encoded messages sent to URLs over HTTP to be
+used as a message-passing interface for distributed computing. The use of
+web-friendly technologies like HTTP and JSON allows browsers to join QM
+without installing anything. The API is also
+`CORS <http://www.w3.org/TR/cors/>`_-enabled.
 
 
 Stable
 ------
 
-These routes have always been defined, and they are still considered stable in
-QM |version|.
+This table specifies the "routes" understood by QM's API server. Request and
+response data use JSON format, but data may be omitted where values are left
+blank. The ``{}`` denotes a JSON object, and the ``[]`` denotes a JSON array.
+
 
 ================= ============================ ======== ======== ========
  HTTP Request                                           HTTP Response
@@ -30,6 +31,36 @@ QM |version|.
  GET              /box/hello?status=waiting             200      ``[]``
  POST             /box/hello?key=world         ``{}``   201
 ================= ============================ ======== ======== ========
+
+
+The data model is based on Quanah_'s "asynchronous variables" ("avars"). An
+avar is a JS object that acts as a generic container for a key-value pair.
+
+
+Get avar
+~~~~~~~~
+
+For the first route, an avar storing a value of 2 would look like
+
+.. code-block:: js
+
+    {"box":"hello","key":"world","val":2}
+
+
+Get jobs
+~~~~~~~~
+
+For the second route, an array containing three avars' keys might look like
+
+.. code-block:: js
+
+    ["job_key_1","job_key_2","job_key_3"]
+
+
+Set avar
+~~~~~~~~
+
+For the third route, no response data will be sent.
 
 
 Experimental
