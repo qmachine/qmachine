@@ -1,17 +1,27 @@
 Browser client
 ==============
 
-The browser client is the easiest place to start, because it can be added to
-your own webpage with a single line of HTML:
+Getting started
+---------------
+
+The first step in getting started with any piece of software is installation,
+but "installation" is a misnomer when developing web applications. Browsers use
+JavaScript (JS) as their "native" programming language, but JS programs are
+never truly installed because they cannot alter or extend the web browsers
+themselves. Instead, JS programs are downloaded according to webpage content
+prior to execution, and they run in a "disposable" sandboxed environment that
+exists only while the webpage is open.
+
+Thus, the "installation" of QM's browser client into a webpage is as simple as
+adding a single line of HTML to the webpage:
 
 .. code-block:: html
 
     <script src="https://www.qmachine.org/qm.js"></script>
 
-Upon loading, your webpage will contain the ``QM`` object in its JavaScript
-environment, allowing your page's scripts to submit and volunteer to execute
-jobs using the official QM servers -- for free!
-
+Upon loading, the webpage will contain a ``QM`` object in its JS environment
+that will allow other programs to submit jobs to and volunteer to execute jobs
+from the official QM servers -- for free!
 
 .. note::
 
@@ -23,10 +33,16 @@ jobs using the official QM servers -- for free!
     manual expects to run within the "ordinary" webpage context of a modern web
     browser, unassisted by applets, extensions, plugins, etc.
 
+For the hardcore software engineers out there, QM's browser client is available
+for "installation" via Bower_:
+
+.. code-block:: bash
+
+    $ bower install qm
+
 
 Basic use
 ---------
-
 
 Submitting jobs
 ~~~~~~~~~~~~~~~

@@ -2,6 +2,7 @@
 .. ==============
 
 .. _altjs.org: http://bit.ly/altjsorg
+.. _Bower: http://bower.io/
 .. _Bundler: http://bundler.io/
 .. _CouchDB: http://couchdb.apache.org
 .. _CouchDB.app: http://couchdb.apache.org/#download
