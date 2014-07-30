@@ -14,31 +14,45 @@ how to contribute to the open-source project.
 How it works
 ------------
 
-QM provides a JSON-based message-passing interface over HTTP that can be used
-to coordinate heterogeneous compute nodes for distributed computing. Thus,
-there are two main software categories involved: API servers and client
-libraries that consume the API. Any platform can integrate with QM trivially by
-using a client library that can communicate with JSON over HTTP.
+Coordination of any distributed computing effort requires a common data
+interchange format and a common communications protocol. QM provides an
+Application Programming Interface (API) that uses JavaScript Object Notation
+(JSON) as its common data interchange format and Hypertext Transfer Protocol
+(HTTP) as its communications protocol. In short, QM's API allows JSON-encoded
+messages sent to URLs over HTTP to become a message-passing interface for
+distributed computing. The use of web-friendly technologies is deliberate --
+QM is designed to be as universal as the World Wide Web itself.
+
+Most QM software falls into one of two categories. API clients are programs
+that consume QM's API, and API servers are programs that provide the API. Most
+programs that use QM will do so by taking advantage of a client library, but
+any platform can integrate with QM trivially by communicating with JSON over
+HTTP.
+
+
+API clients
+~~~~~~~~~~~
+
+An API client, as mentioned previously, is a program that consumes QM's API.
+The vast majority of "real world" programs will fall into this category, and
+most of these programs will use a client library for convenience. Currently,
+the only client library supported by the QM project is the
+:doc:`browser client <browser-client>`, which is written completely in
+JavaScript. Because web browsers must download the client software as part of a
+webpage, basic web servers are packaged alongside the API servers. An outdated
+Node.js client is now being resurrected, and a Ruby client is in the planning
+stages.
 
 
 API servers
 ~~~~~~~~~~~
 
-An API server provides a message-passing interface between compute nodes via
-an :doc:`http-api` implemented as a web service. There are two implementations
-to choose from: the :doc:`original reference version <nodejs>` written in
-Node.js_ and the :doc:`"teaching version" <ruby>` written in Ruby_. The
-Node.js version is recommended for production.
-
-
-Client libraries
-~~~~~~~~~~~~~~~~
-
-Currently, the only client library supported by the QM project is the
-:doc:`browser client <browser-client>`, which is written completely in
-JavaScript. Because web browsers must download the client software as part of a
-web page, basic web servers are packaged alongside the API servers. Clients for
-Node.js and Ruby are planned, but they are incomplete.
+An API server, as mentioned previously, is a program that provides the API.
+In QM's case, an API server is a program that responds to
+:doc:`specific HTTP requests <http-api>` from API clients. There are two
+implementations to choose from: the :doc:`original reference version <nodejs>`
+written in Node.js_ and the :doc:`"teaching version" <ruby>` written in Ruby_.
+The Node.js version is recommended for production.
 
 
 How to use it

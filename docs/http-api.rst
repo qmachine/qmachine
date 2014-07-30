@@ -1,17 +1,10 @@
 HTTP API
 ========
 
-QMachine (QM) is not restricted to use by web browsers -- it can be used by
-almost any modern programming platform. Coordination of any distributed
-computing effort requires a common data interchange format and a common
-communications protocol. QM provides an Application Programming Interface (API)
-that uses JavaScript Object Notation (JSON) as its common data interchange
-format and Hypertext Transfer Protocol (HTTP) as its communications protocol.
-In short, QM's API allows JSON-encoded messages sent to URLs over HTTP to be
-used as a message-passing interface for distributed computing. The use of
-web-friendly technologies like HTTP and JSON allows browsers to join QM
-without installing anything. The API is also
-`CORS <http://www.w3.org/TR/cors/>`_-enabled.
+QM's Application Programming Interface (API) uses JavaScript Object Notation
+(JSON) as its common data interchange format and Hypertext Transfer Protocol
+(HTTP) as its communications protocol. It also supports
+`Cross-Origin Resource Sharing <http://www.w3.org/TR/cors/>`_.
 
 
 Stable
