@@ -34,7 +34,7 @@ from the official QM servers -- for free!
     browser, unassisted by applets, extensions, plugins, etc.
 
 For the hardcore software engineers out there, QM's browser client is available
-for "installation" via Bower_:
+for "installation" with Bower_:
 
 .. code-block:: bash
 

@@ -1,8 +1,8 @@
 Node.js
 =======
 
-Install with NPM
-----------------
+Getting started
+---------------
 
 A Node.js_ module is available for installation with
 `Node Package Manager`_ (NPM). To install it in the current directory,

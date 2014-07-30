@@ -1,11 +1,11 @@
 Ruby
 ====
 
-Install with RubyGems
----------------------
+Getting started
+---------------
 
-A Ruby_ gem is available for installation with
-`RubyGems <https://rubygems.org/>`_. To install it globally,
+A Ruby_ gem is available for installation with RubyGems_. To install it
+globally,
 
 .. code-block:: bash
 
