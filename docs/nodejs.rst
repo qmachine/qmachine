@@ -28,7 +28,8 @@ a basic web server is also provided to enable the use of web browsers as
 compute nodes if so desired.
 
 A QM server can be launched by a Node.js program as shown in the following
-example, which shows the default configuration values:
+example, which includes default configuration values and commented database
+connection strings:
 
 .. code-block:: javascript
 
@@ -53,11 +54,20 @@ example, which shows the default configuration values:
         max_upload_size:    1048576,    //- 1024 * 1024 = 1 Megabyte
         persistent_storage: {
             avar_ttl:       86400,      //- expire avars after 24 hours
+         // couch:          'http://127.0.0.1:5984/db',
             gc_interval:    10          //- collect garbage every _ seconds
+         // mongo:          'mongodb://localhost:27017/test'
+         // postgres:       'postgres://localhost:5432/' + process.env.USER
+         // redis:          'redis://:@127.0.0.1:6379'
+         // sqlite:         'qm.db'
         },
         port:               8177,
         static_content:     'katamari.json',
-        trafficlog_storage: {},
+        trafficlog_storage: {
+         // couch:          'http://127.0.0.1:5984/traffic'
+         // mongo:          'mongodb://localhost:27017/test'
+         // postgres:       'postgres://localhost:5432/' + process.env.USER
+        },
         worker_procs:       0
     });
 

@@ -28,7 +28,8 @@ a basic web server is also provided to enable the use of web browsers as
 compute nodes if so desired.
 
 A QM server can be launched by a Ruby program as shown in the following
-example, which shows the default configuration values:
+example, which includes default configuration values and commented database
+connection strings:
 
 .. code-block:: ruby
 
@@ -40,10 +41,14 @@ example, which shows the default configuration values:
         enable_CORS:        false,
         enable_web_server:  false,
         hostname:           '0.0.0.0',
-        persistent_storage: {},
+        persistent_storage: {
+          # mongo:          'mongodb://localhost:27017/test'
+        },
         port:               8177,
         public_folder:      'public',
-        trafficlog_storage: {}
+        trafficlog_storage: {
+          # mongo:          'mongodb://localhost:27017/test'
+        }
     })
 
 The Ruby version of the API server has significantly less flexibility than the
