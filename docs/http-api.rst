@@ -20,9 +20,9 @@ blank. JSON objects are denoted ``{}``, and JSON arrays are denoted ``[]``.
 -------------------------------------------------------- ----------------
  Method           URL                           Data     Code     Data
 ================= ============================= ======== ======== =======
- GET              /box/cardboard?key=world               200      ``{}``
+ GET              /box/cardboard?key=982770f29           200      ``{}``
  GET              /box/cardboard?status=waiting          200      ``[]``
- POST             /box/cardboard?key=world      ``{}``   201
+ POST             /box/cardboard?key=982770f29  ``{}``   201
 ================= ============================= ======== ======== =======
 
 
@@ -43,7 +43,7 @@ For the first route, an avar storing a value of 2 would look like
 
 .. code-block:: js
 
-    {"box":"cardboard","key":"world","val":2}
+    {"box":"cardboard","key":"982770f29","val":2}
 
 
 Get jobs
@@ -83,9 +83,9 @@ much appreciated.
 -------------------------------------------------------- ----------------
  Method           URL                           Data     Code     Data
 ================= ============================= ======== ======== =======
- GET              /v1/cardboard?key=world                200      ``{}``
+ GET              /v1/cardboard?key=982770f29   200      ``{}``
  GET              /v1/cardboard?status=waiting           200      ``[]``
- POST             /v1/cardboard?key=world       ``{}``   201
+ POST             /v1/cardboard?key=982770f29   ``{}``   201
 ================= ============================= ======== ======== =======
 
 
