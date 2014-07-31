@@ -49,7 +49,7 @@ API servers
 ~~~~~~~~~~~
 
 An API server, by way of contrast, is a program that provides QM's API. In this
-case, server listen for and respond to specific HTTP requests, as defined by
+case, servers listen for and respond to specific HTTP requests, as defined by
 QM's :doc:`http-api`. There are two implementations to choose from: the
 :doc:`original reference version <nodejs>` written in Node.js and the
 :doc:`"teaching version" <ruby>` written in Ruby. The Node.js version is
