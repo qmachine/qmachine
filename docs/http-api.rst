@@ -26,7 +26,7 @@ blank. The ``{}`` denotes a JSON object, and the ``[]`` denotes a JSON array.
 ================= ============================ ======== ======== ========
 
 
-The data model is based on Quanah_'s "asynchronous variables" ("avars"). An
+The data model is based on Quanah_'s asynchronous variables ("avars"). An
 avar is a JS object that acts as a generic container for a key-value pair.
 
 

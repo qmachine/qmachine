@@ -2,6 +2,7 @@
 .. ==============
 
 .. _altjs.org: http://bit.ly/altjsorg
+.. _Apache: https://httpd.apache.org/
 .. _Bower: http://bower.io/
 .. _Bundler: http://bundler.io/
 .. _CouchDB: http://couchdb.apache.org
@@ -10,6 +11,7 @@
 .. _GitHub: https://github.com/
 .. _Homebrew: https://mxcl.github.io/homebrew/
 .. _MongoDB: http://www.mongodb.org/
+.. _Nginx: http://nginx.com/
 .. _Node.js: http://nodejs.org/
 .. _NPM: https://www.npmjs.org/
 .. _NPM-documentation: https://www.npmjs.org/doc/README.html

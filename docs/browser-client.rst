@@ -13,15 +13,15 @@ webpages, and they run in "disposable" sandboxed environments that exist only
 while the webpages are open.
 
 Thus, the "installation" of QM's browser client into a webpage is as simple as
-adding a single line of HTML to the webpage:
+adding a single line of HTML:
 
 .. code-block:: html
 
     <script src="https://www.qmachine.org/qm.js"></script>
 
-Upon loading, the webpage will contain a ``QM`` object in its JS environment
-that will allow other programs to submit jobs to and volunteer to execute jobs
-from the official QM servers -- for free!
+When the webpage loads, its JS environment will contain a ``QM`` object that
+will allow other programs to submit jobs to and volunteer to execute jobs from
+the official QM servers -- for free!
 
 .. note::
 
