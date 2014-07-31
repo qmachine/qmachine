@@ -49,8 +49,8 @@ For the first route, an avar storing a value of 2 would look like
 Get jobs
 ~~~~~~~~
 
-To get unknown job descriptions, a client must request a list of keys to
-those avars by known box and known status.
+To get unknown job descriptions, a client must request a list of their keys by
+known box and known status.
 
 For the second route, an array containing three avars' keys might look like
 
@@ -62,7 +62,7 @@ For the second route, an array containing three avars' keys might look like
 Set avar
 ~~~~~~~~
 
-To set the value of an avar, a client must send the new value as a request by
+To set the value of an avar, a client must send the new value in a request by
 known box and known key.
 
 For the third route, no response data will be sent.
