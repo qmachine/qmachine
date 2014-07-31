@@ -34,25 +34,26 @@ API clients
 ~~~~~~~~~~~
 
 An API client, as mentioned previously, is a program that consumes QM's API.
-The vast majority of "real world" programs will fall into this category, and
-most of these programs will use a client library for convenience. Currently,
-the only client library supported by the QM project is the
-:doc:`browser client <browser-client>`, which is written completely in
-JavaScript. Because web browsers must download the client software as part of a
-webpage, basic web servers are packaged alongside the API servers. An outdated
-Node.js client is now being resurrected, and a Ruby client is in the planning
-stages.
+More specifically, clients send JSON-encoded messages over HTTP to specific
+URLs, as defined by QM's :doc:`http-api`. The vast majority of "real world"
+programs will fall into this category, and most of these programs will use a
+client library for convenience. Currently, the only client library supported by
+the QM project is the :doc:`browser client <browser-client>`, which is written
+completely in JavaScript. Because web browsers must download the client
+software as part of a webpage, basic web servers are packaged alongside the API
+servers. An outdated Node.js client is now being resurrected, and a Ruby client
+is planned.
 
 
 API servers
 ~~~~~~~~~~~
 
-An API server, as mentioned previously, is a program that provides the API.
-In QM's case, an API server is a program that responds to
-:doc:`specific HTTP requests <http-api>` from API clients. There are two
-implementations to choose from: the :doc:`original reference version <nodejs>`
-written in Node.js_ and the :doc:`"teaching version" <ruby>` written in Ruby_.
-The Node.js version is recommended for production.
+An API server, by way of contrast, is a program that provides QM's API. In this
+case, server listen for and respond to specific HTTP requests, as defined by
+QM's :doc:`http-api`. There are two implementations to choose from: the
+:doc:`original reference version <nodejs>` written in Node.js_ and the
+:doc:`"teaching version" <ruby>` written in Ruby_. The Node.js version is
+recommended for production.
 
 
 How to use it
