@@ -2,7 +2,7 @@
 
 #-  config.ru ~~
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 28 Jul 2014
+#                                                   ~~ last updated 01 Aug 2014
 
 require 'rubygems'
 require 'bundler'
@@ -17,7 +17,6 @@ options = {
     hostname:           '0.0.0.0',
     persistent_storage: {
         #mongo: 'mongodb://localhost:27017/test'
-        #sqlite: 'qm.db'
     },
     port:               ENV['PORT'] || 8177,
     public_folder:      'public',
