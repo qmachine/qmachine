@@ -16,7 +16,7 @@ Main project
 ------------
 
 The main project repository is the best place to start with development. It is
-structured as a `"superproject"`_, which means that cloning it requires cloning
+structured as a superproject_, which means that cloning it requires cloning
 its submodules, too:
 
 .. code-block:: bash
@@ -50,5 +50,5 @@ https://github.com/qmachine/qm-ruby.
 .. _`Google Code`: https://code.google.com/p/qmachine/
 .. _`QMachine organization`: https://github.com/qmachine
 .. _SourceForge: http://sourceforge.net/projects/qm-project/
-.. _`"superproject"`: https://en.wikibooks.org/wiki/Git/Submodules_and_Superprojects
+.. _superproject: https://en.wikibooks.org/wiki/Git/Submodules_and_Superprojects
 
