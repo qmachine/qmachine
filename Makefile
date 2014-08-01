@@ -21,7 +21,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 27 Jul 2014
+#                                                   ~~ last updated 01 Aug 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -36,24 +36,21 @@ SRC_DIR     :=  $(PROJ_ROOT)/src
 TEST_DIR    :=  $(PROJ_ROOT)/tests
 
 LOCAL_ADDR  :=  http://localhost:8177
-QM_API_LOC  :=  '{"sqlite":"qm.db"}'
 QM_API_URL  :=  https://api.qmachine.org
 QM_WWW_URL  :=  https://www.qmachine.org
 
+db          :=  sqlite
+
 ifeq ("$(strip $(db))", "couch")
-    QM_API_LOC  :=  '{"couch":"http://127.0.0.1:5984/db"}'
-endif
-
-ifeq ("$(strip $(db))", "mongo")
-    QM_API_LOC  :=  '{"mongo":"mongodb://localhost:27017/test"}'
-endif
-
-ifeq ("$(strip $(db))", "postgres")
-    QM_API_LOC  :=  '{"postgres":"postgres://localhost:5432/$(USER)"}'
-endif
-
-ifeq ("$(strip $(db))", "redis")
-    QM_API_LOC  :=  '{"redis":"redis://:@127.0.0.1:6379"}'
+    QM_API_STRING   :=  '{"couch":"http://127.0.0.1:5984/db"}'
+else ifeq ("$(strip $(db))", "mongo")
+    QM_API_STRING   :=  '{"mongo":"mongodb://localhost:27017/test"}'
+else ifeq ("$(strip $(db))", "postgres")
+    QM_API_STRING   :=  '{"postgres":"postgres://localhost:5432/$(USER)"}'
+else ifeq ("$(strip $(db))", "redis")
+    QM_API_STRING   :=  '{"redis":"redis://:@127.0.0.1:6379"}'
+else ifeq ("$(strip $(db))", "sqlite")
+    QM_API_STRING   :=  '{"sqlite":"qm.db"}'
 endif
 
 .PHONY: all check check-versions clean clobber distclean help reset update
@@ -173,7 +170,7 @@ web-service:                                                                \
 
 local-sandbox:
 	@   $(MAKE)                                                         \
-                QM_API_STRING=$(strip $(QM_API_LOC))                        \
+                QM_API_STRING=$(strip $(QM_API_STRING))                     \
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
                     web-service                                         ;   \
@@ -190,7 +187,7 @@ local-sandbox:
             $(CD) $@/                                                   ;   \
             $(NPM) install                                              ;   \
             $(call run-procfile, \
-                QM_API_STRING=$(strip $(QM_API_LOC)) \
+                QM_API_STRING=$(strip $(QM_API_STRING)) \
                 QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"')
 
 rack-app: | $(BUILD_DIR)/rack-app/
@@ -205,7 +202,7 @@ rack-app: | $(BUILD_DIR)/rack-app/
             $(CD) $@/                                                   ;   \
             $(BUNDLE) package --all                                     ;   \
             $(call run-procfile, \
-                QM_API_STRING=$(strip $(QM_API_LOC)))
+                QM_API_STRING=$(strip $(QM_API_STRING)))
 
 ###
 
