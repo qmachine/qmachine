@@ -52,9 +52,9 @@ connection strings:
     })
 
 The Ruby version of the API server has significantly less flexibility than the
-original Node.js version does. The only choice to persist storage is MongoDB_
-for the message-passing interface, and the only choice for logging traffic data
-into a database is MongoDB.
+original Node.js version does. The only choice to persist storage for the
+message-passing interface is MongoDB_, and Mongo is also the only choice for
+logging traffic data into a database.
 
 
 .. The SQLite_ bindings are still present in the repository, but the presence
