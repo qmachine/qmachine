@@ -2,15 +2,16 @@
 
 #-  Gemfile ~~
 #
-#   Currently, this app won't run on Heroku because of `qm`'s dependency on
-#   `sqlite3`. I'll fix that later.
+#   This app runs just fine on Heroku now, but it only supports MongoDB for
+#   storage.
 #
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 18 Jul 2014
+#                                                   ~~ last updated 31 Jul 2014
 
 source 'https://rubygems.org'
 
 gem 'json'
 gem 'qm', :git => 'https://github.com/qmachine/qm-ruby.git'
+gem 'thin'
 
 #-  vim:set syntax=ruby:

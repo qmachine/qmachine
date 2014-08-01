@@ -16,7 +16,7 @@
 #       served to show the default, and I removed a lot of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 24 Jul 2014
+#                                                   ~~ last updated 31 Jul 2014
 
 import sys
 import os
@@ -56,7 +56,7 @@ version = '1.1'
 
 # The full version, including alpha/beta/rc tags.
 
-release = '1.1.12'
+release = '1.1.13'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
