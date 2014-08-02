@@ -21,7 +21,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 01 Aug 2014
+#                                                   ~~ last updated 02 Aug 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -276,9 +276,6 @@ $(BUILD_DIR)/npm-module/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-module
 
 $(BUILD_DIR)/rack-app/: $(SRC_DIR)/rack-app/ | $(BUILD_DIR)
 	@   $(CP) $< $@
-
-$(BUILD_DIR)/rack-app/public/: | $(BUILD_DIR)/rack-app/
-	@   $(call make-directory, $@)
 
 $(BUILD_DIR)/ruby-gem: | $(BUILD_DIR)
 	@   $(CP) $(SRC_DIR)/ruby-gem/ $@
