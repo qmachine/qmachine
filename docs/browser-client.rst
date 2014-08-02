@@ -10,10 +10,8 @@ JavaScript (JS) as their "native" programming language, but JS programs are
 never truly installed because they cannot alter or extend the browsers
 themselves. Instead, JS programs are downloaded according to the contents of
 webpages, and they run in "disposable" sandboxed environments that exist only
-while the webpages are open.
-
-Thus, the "installation" of QM's browser client into a webpage is as simple as
-adding a single line of HTML:
+while the webpages are open. Thus, the "installation" of QM's browser client
+into a webpage is as simple as adding a single line of HTML:
 
 .. code-block:: html
 
