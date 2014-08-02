@@ -27,9 +27,9 @@ blank. JSON objects are denoted ``{}``, and JSON arrays are denoted ``[]``.
 
 
 The data model is based on Quanah_'s asynchronous variables ("avars"). An
-avar is a JS object that acts as a generic container for other types. Each avar
-stores a unique identifier, "key", alongside the contained data, "val". QM
-extends this model by adding a "box" parameter to allow grouping and a "status"
+avar is a JS object that acts as a generic container for other types by storing
+a unique identifier, "key", alongside the contained data, "val". QM extends
+this model by adding a "box" parameter to allow grouping and a "status"
 parameter for avars that represent job descriptions.
 
 
