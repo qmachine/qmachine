@@ -8,23 +8,40 @@ useful for development as well as for deployment behind firewalls.
 Prerequisites
 -------------
 
+QM is developed on Mac and Linux systems, and the Makefile located in the root
+of the main project's Git repository contains live instructions for building
+and testing *everything*.
+
+To get up and running, you will need `GNU Make`_, a standard POSIX development
+environment, and Git_.
+
+To build and run an API server, you will need MongoDB_ and either Node.js_ or
+Ruby_. If you choose the Node.js version, you can use CouchDB_, PostgreSQL_,
+Redis_, or SQLite_ instead, but the Makefile assumes Mongo by default.
+
+.. Is an explanation needed for why MongoDB is now the default?
+
+To build the homepage and/or custom images, you will need ImageMagick_.
+
+Tests use PhantomJS_.
+
+
 Mac OS X
 ~~~~~~~~
 
-To get started on Mac OS X with your own local sandbox, you will need to
-install Homebrew_ using directions from its website. Then, install a minimal
-set of native dependencies by launching Terminal and typing
+To get started on Mac OS X with your own local sandbox, you will want to
+install the Homebrew_ package manager using directions from its website. It
+will allow you to install all of the software mentioned above by launching
+Terminal and typing
 
 .. code-block:: bash
 
-    $ brew install imagemagick node
+    $ brew install couchdb imagemagick mongodb node phantomjs postgresql redis
 
-I highly recommend installing Git_ through Homebrew, as well, but it isn't
-required. I prefer Apache's official CouchDB.app_ over the one installed by
-Homebrew because it includes a convenient launcher that lives in the menu bar.
-For the same reason, I also prefer Heroku's Postgres.app_ over the version that
-ships with Mountain Lion. I don't know of any nice launchers for MongoDB_ or
-Redis_, but Homebrew can install them for you, and directions are included.
+I highly recommend installing Git through Homebrew, as well, but it isn't
+required. I prefer Apache's official CouchDB.app_ and Heroku's Postgres.app_
+over the distributions installed by Homebrew because they include convenient
+launchers that live in the menu bar.
 
 
 Ubuntu Linux 12.04 LTS
@@ -37,7 +54,7 @@ the dependencies:
 
     $ sudo apt-get install git imagemagick libsqlite3-dev make
 
-Then, you should install Node.js_ using the directions given here_.
+Then, you should install Node.js using the directions given here_.
 
 
 Node.js
@@ -64,17 +81,14 @@ Now, select your local copy of the repository as the current directory:
 
     $ cd qmachine/
 
-Finally, launch QM on localhost:
+Finally, start MongoDB and then launch QM on localhost:
 
 .. code-block:: bash
 
     $ make local-sandbox
 
-QM uses SQLite_ bindings by default for convenience because then you don't have
-to turn on any other programs, configure internal ports, etc. If you can't get
-SQLite to work on your platform, or if you just prefer another database, the
-current choices are CouchDB_, MongoDB_, PostgreSQL_, and Redis_. To launch with
-a different database, run one of the following:
+QM defaults to MongoDB for storage, but the workflow's high-level targets can
+be configured from the command-line explicitly:
 
 .. code-block:: bash
 
@@ -82,15 +96,14 @@ a different database, run one of the following:
     $ make local-sandbox db=mongo
     $ make local-sandbox db=postgres
     $ make local-sandbox db=redis
+    $ make local-sandbox db=sqlite
 
 
 Ruby
 ----
 
-Additionally, a QM implementation that uses Ruby_ is available in the project
-repository. Please note that the :doc:`Ruby gem <ruby>` only supports MongoDB_
-for persistent storage and that the Node.js version is the one recommended for
-production.
+A Ruby implementation of QM is also available in the project repository, and
+its directions are similar to those for Node.js.
 
 First, make sure that you have Bundler_ installed:
 
@@ -98,9 +111,13 @@ First, make sure that you have Bundler_ installed:
 
     $ which bundler || echo 'Bundler is missing'
 
-Obviously, if Bundler is missing, you will have to install it to continue.
+If Bundler is missing, install it:
 
-Next, check out QM's source code from GitHub_:
+.. code-block:: bash
+
+    $ gem install bundler
+
+Next, check out QM's source code from GitHub:
 
 .. code-block:: bash
 
@@ -112,7 +129,14 @@ Now, select your local copy of the repository as the current directory:
 
     $ cd qmachine/
 
-Finally, start MongoDB and then type
+Finally, start MongoDB and then launch QM on localhost:
+
+.. code-block:: bash
+
+    $ make rack-app
+
+QM defaults to MongoDB for storage, but the Ruby version only supports MongoDB
+anyway. Thus, explicit configuration at the command-line is unnecessary:
 
 .. code-block:: bash
 

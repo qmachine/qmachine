@@ -39,7 +39,7 @@ LOCAL_ADDR  :=  http://localhost:8177
 QM_API_URL  :=  https://api.qmachine.org
 QM_WWW_URL  :=  https://www.qmachine.org
 
-db          :=  sqlite
+db          :=  mongo
 
 ifeq ("$(strip $(db))", "couch")
     QM_API_STRING   :=  '{"couch":"http://127.0.0.1:5984/db"}'
