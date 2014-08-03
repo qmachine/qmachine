@@ -1,8 +1,11 @@
 #-  Rack configuration file
 
 #-  config.ru ~~
+#
+#   See https://docs.qmachine.org/en/latest/ruby.html for more information.
+#
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 01 Aug 2014
+#                                                   ~~ last updated 03 Aug 2014
 
 require 'rubygems'
 require 'bundler'
@@ -10,22 +13,17 @@ require 'bundler'
 Bundler.require
 
 options = {
-    avar_ttl:           86400, # seconds
-    enable_api_server:  true,
-    enable_CORS:        true,
     enable_web_server:  true,
-    hostname:           '0.0.0.0',
-    persistent_storage: {
-        #mongo: 'mongodb://localhost:27017/test'
-    },
-    port:               ENV['PORT'] || 8177,
-    public_folder:      'public',
-    trafficlog_storage: {
-        #mongo: 'mongodb://localhost:27017/test'
-    }
+    public_folder:      'public'
 }
 
+if (ENV['PORT']) then
+    options[:port] = ENV['PORT']
+end
+
 if (ENV['QM_API_STRING']) then
+    options[:enable_api_server] = true
+    options[:enable_CORS] = true
     options[:persistent_storage] = JSON.parse(ENV['QM_API_STRING'])
 end
 
