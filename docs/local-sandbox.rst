@@ -31,7 +31,7 @@ Mac OS X
 
 To get started on Mac OS X with your own local sandbox, you will want to
 install the Homebrew_ package manager using directions from its website. It
-will allow you to install all of the software mentioned above by launching
+will allow you to install all of the software mentioned previously by launching
 Terminal and typing
 
 .. code-block:: bash
@@ -44,17 +44,11 @@ over the distributions installed by Homebrew because they include convenient
 launchers that live in the menu bar.
 
 
-Ubuntu Linux 12.04 LTS
-~~~~~~~~~~~~~~~~~~~~~~
+Ubuntu Linux
+~~~~~~~~~~~~
 
-Ubuntu has a built-in package manager that we can use to install some of
-the dependencies:
-
-.. code-block:: bash
-
-    $ sudo apt-get install git imagemagick libsqlite3-dev make
-
-Then, you should install Node.js using the directions given here_.
+Ubuntu has a great built-in package manager that we can take advantage of, but
+package names vary by version. Incantations are forthcoming.
 
 
 Node.js
@@ -103,7 +97,8 @@ Ruby
 ----
 
 A Ruby implementation of QM is also available in the project repository, and
-its directions are similar to those for Node.js.
+its directions are similar to those for Node.js. If you don't already use RVM_,
+you should -- it's fantastic and highly recommended.
 
 First, make sure that you have Bundler_ installed:
 
