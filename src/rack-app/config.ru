@@ -2,6 +2,9 @@
 
 #-  config.ru ~~
 #
+#   This Ruby app launches a QM API server and a web server for anything placed
+#   in the "public" folder.
+#
 #   See https://docs.qmachine.org/en/latest/ruby.html for more information.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
