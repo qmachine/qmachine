@@ -2,15 +2,18 @@
 <!--
     sitemap.xml ~~
 
-    For more information, see http://en.wikipedia.org/wiki/Sitemaps .
+    For more information, see https://en.wikipedia.org/wiki/Sitemaps .
 
                                                         ~~ (c) SRW, 12 Nov 2012
+                                                    ~~ last updated 04 Aug 2014
 -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                      http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>QM_WWW_URL/</loc>
     <lastmod>ISO_DATE</lastmod>
     <changefreq>daily</changefreq>
-    <priority>1.0</priority>
   </url>
 </urlset>
