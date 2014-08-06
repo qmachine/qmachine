@@ -9,7 +9,7 @@
 //  NOTE: Should we also check Git tags in this script?
 //
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 10 Jul 2014
+//                                                  ~~ last updated 05 Aug 2014
 
 (function () {
     'use strict';
@@ -163,13 +163,18 @@
     check_web_service = function () {
      // This function checks to make sure that the package manifest file for
      // the private "web-service" NPM module keeps pace with the "qm" module.
-        var config = require('../src/web-service/package.json');
+        var config, err;
+        config = require('../src/web-service/package.json');
+        err = new Error('Version mismatch for web service');
         if (current_version === undefined) {
             current_version = config.version;
         }
-        if ((config.dependencies.qm !== current_version) ||
-                (config.version !== current_version)) {
-            throw new Error('Version mismatch for web service');
+        if ((config.dependencies.qm !== current_version) &&
+                (config.dependencies.qm !== 'qmachine/qm-nodejs')) {
+            throw err;
+        }
+        if (config.version !== current_version) {
+            throw err;
         }
         return;
     };
