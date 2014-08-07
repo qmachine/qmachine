@@ -2,7 +2,7 @@
 
 #-  .travis.yml ~~
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 11 Jul 2014
+#                                                   ~~ last updated 07 Aug 2014
 
 before_install:
     -   sudo apt-get update -qq
@@ -12,6 +12,7 @@ language: node_js
 
 node_js:
     -   "0.10"
+    -   "0.8"
 
 script: "make check-versions web-service"
 
