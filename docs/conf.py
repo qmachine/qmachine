@@ -16,7 +16,7 @@
 #       served to show the default, and I removed a lot of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 31 Jul 2014
+#                                                   ~~ last updated 07 Aug 2014
 
 import sys
 import os
@@ -97,6 +97,11 @@ except:
 # so a file named "default.css" will overwrite the builtin "default.css".
 
 html_static_path = ['_static']
+
+# Add directories that contain files not directly related to the documentation,
+# such as "robots.txt" or ".htaccess" here.
+
+#html_extra_path = ['_extra']
 
 # Output file base name for HTML help builder.
 
