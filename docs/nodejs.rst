@@ -11,6 +11,8 @@ A Node.js_ module is available for installation with
 
     $ npm install qm
 
+.. Or, use `npm install qmachine/qm-nodejs` if you're really daring!
+
 
 API client
 ----------

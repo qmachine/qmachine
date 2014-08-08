@@ -38,6 +38,8 @@ for "installation" with Bower_:
 
     $ bower install qm
 
+.. Or, use `bower install qmachine/qm-browser-client` if you're really daring!
+
 
 Basic use
 ---------
