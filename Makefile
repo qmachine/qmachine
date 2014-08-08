@@ -109,7 +109,7 @@ update:
 
 ###
 
-.PHONY: chrome-hosted-app homepage npm-module ruby-gem web-service
+.PHONY: chrome-hosted-app homepage npm-module ruby-gem testpage web-service
 
 chrome-hosted-app:                                                          \
     $(addprefix $(BUILD_DIR)/chrome-hosted-app/,                            \
