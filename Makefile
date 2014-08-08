@@ -21,7 +21,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 02 Aug 2014
+#                                                   ~~ last updated 08 Aug 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -73,6 +73,7 @@ clean: reset
             $(RM) $(BUILD_DIR)/local-sandbox/                           ;   \
             $(RM) $(BUILD_DIR)/rack-app/                                ;   \
             $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
+            $(RM) $(BUILD_DIR)/testpage/                                ;   \
             $(RM) $(BUILD_DIR)/web-service/                             ;   \
             if [ ! "$$($(LS) -A $(BUILD_DIR))" ]; then                      \
                 $(RM) $(BUILD_DIR)                                      ;   \
@@ -151,6 +152,15 @@ npm-module: | $(BUILD_DIR)/npm-module/
 ruby-gem: | $(BUILD_DIR)/ruby-gem/
 	@   $(CD) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(GEM) build qm.gemspec
+
+testpage:                                                                   \
+    $(addprefix $(BUILD_DIR)/testpage/,                                     \
+        coffeescript.js                                                     \
+        index.html                                                          \
+        main.js                                                             \
+        qm.js                                                               \
+    )
+	@   $(call hilite, 'Created $@.')
 
 web-service:                                                                \
     $(addprefix $(BUILD_DIR)/web-service/,                                  \
@@ -282,6 +292,20 @@ $(BUILD_DIR)/ruby-gem: | $(BUILD_DIR)
 
 $(BUILD_DIR)/ruby-gem/README.md: | $(BUILD_DIR)/ruby-gem/
 	@   $(CP) $(PROJ_ROOT)/README.md $@
+
+$(BUILD_DIR)/testpage: | $(BUILD_DIR)
+	@   $(call make-directory, $@)
+
+$(BUILD_DIR)/testpage/coffeescript.js:                                      \
+    $(CACHE_DIR)/coffeescript.js                                            \
+    | $(BUILD_DIR)/testpage/
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/testpage/qm.js: $(CACHE_DIR)/qm.js | $(BUILD_DIR)/testpage/
+	@   $(CP) $< $@
+
+$(BUILD_DIR)/testpage/%: $(SRC_DIR)/testpage/% | $(BUILD_DIR)/testpage/
+	@   $(CP) $< $@
 
 $(BUILD_DIR)/web-service: | $(BUILD_DIR)
 	@   $(call make-directory, $@)
