@@ -79,18 +79,18 @@ Finally, start MongoDB and then launch QM on localhost:
 
 .. code-block:: bash
 
-    $ make local-sandbox
+    $ make node-app
 
 QM defaults to MongoDB for storage, but the workflow's high-level targets can
 be configured from the command-line explicitly:
 
 .. code-block:: bash
 
-    $ make local-sandbox db=couch
-    $ make local-sandbox db=mongo
-    $ make local-sandbox db=postgres
-    $ make local-sandbox db=redis
-    $ make local-sandbox db=sqlite
+    $ make node-app db=couch
+    $ make node-app db=mongo
+    $ make node-app db=postgres
+    $ make node-app db=redis
+    $ make node-app db=sqlite
 
 
 Ruby
@@ -128,14 +128,14 @@ Finally, start MongoDB and then launch QM on localhost:
 
 .. code-block:: bash
 
-    $ make rack-app
+    $ make ruby-app
 
 QM defaults to MongoDB for storage, but the Ruby version only supports MongoDB
 anyway. Thus, explicit configuration at the command-line is unnecessary:
 
 .. code-block:: bash
 
-    $ make rack-app db=mongo
+    $ make ruby-app db=mongo
 
 
 .. ----------------------------

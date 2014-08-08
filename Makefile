@@ -70,11 +70,10 @@ check-versions:
 clean: reset
 	@   $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
             $(RM) $(BUILD_DIR)/homepage/                                ;   \
-            $(RM) $(BUILD_DIR)/local-sandbox/                           ;   \
-            $(RM) $(BUILD_DIR)/rack-app/                                ;   \
+            $(RM) $(BUILD_DIR)/node-app/                                ;   \
+            $(RM) $(BUILD_DIR)/ruby-app/                                ;   \
             $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
             $(RM) $(BUILD_DIR)/testpage/                                ;   \
-            $(RM) $(BUILD_DIR)/web-service/                             ;   \
             if [ ! "$$($(LS) -A $(BUILD_DIR))" ]; then                      \
                 $(RM) $(BUILD_DIR)                                      ;   \
             fi                                                          ;   \
@@ -109,7 +108,7 @@ update:
 
 ###
 
-.PHONY: chrome-hosted-app homepage npm-module ruby-gem testpage web-service
+.PHONY: chrome-hosted-app homepage npm-module ruby-gem testpage
 
 chrome-hosted-app:                                                          \
     $(addprefix $(BUILD_DIR)/chrome-hosted-app/,                            \
@@ -162,45 +161,25 @@ testpage:                                                                   \
     )
 	@   $(call hilite, 'Created $@.')
 
-web-service:                                                                \
-    $(addprefix $(BUILD_DIR)/web-service/,                                  \
-        .gitignore                                                          \
-        custom.js                                                           \
-        katamari.json                                                       \
-        package.json                                                        \
-        Procfile                                                            \
-        server.js                                                           \
-        .slugignore                                                         \
-    )
-	@   $(call hilite, 'Created $@.')
-
 ###
 
-.PHONY: local-sandbox rack-app
+.PHONY: node-app ruby-app
 
-local-sandbox:
+node-app: | $(BUILD_DIR)/node-app/
 	@   $(MAKE)                                                         \
                 QM_API_STRING=$(strip $(QM_API_STRING))                     \
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
-                    web-service                                         ;   \
-            $(CD) $(BUILD_DIR)                                          ;   \
-            if [ ! -d $@/ ]; then                                           \
-                $(CP) web-service $@                                    ;   \
-            fi                                                          ;   \
-            if [ ! -d $@/node_modules/ ]; then                              \
-                $(call make-directory, $@/node_modules/)                ;   \
-            fi                                                          ;   \
-            if [ ! -d $@/node_modules/qm ]; then                            \
-                $(CP) npm-module $@/node_modules/qm                     ;   \
-            fi                                                          ;   \
-            $(CD) $@/                                                   ;   \
+                    homepage                                            ;   \
+            $(CD) $(BUILD_DIR)/node-app/                                ;   \
             $(NPM) install                                              ;   \
+            $(NODEJS) node_modules/qm/examples/roll-up.js \
+                ../homepage katamari.json                               ;   \
             $(call run-procfile, \
                 QM_API_STRING=$(strip $(QM_API_STRING)) \
                 QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"')
 
-rack-app: | $(BUILD_DIR)/rack-app/
+ruby-app: | $(BUILD_DIR)/ruby-app/
 	@   $(MAKE) \
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
@@ -278,13 +257,16 @@ $(BUILD_DIR)/homepage/manifest.webapp:                                      \
     |   $(BUILD_DIR)/homepage
 	@   $(CP) $< $@
 
+$(BUILD_DIR)/node-app/: $(SRC_DIR)/node-app/ | $(BUILD_DIR)
+	@   $(CP) $< $@
+
 $(BUILD_DIR)/npm-module: $(SRC_DIR)/npm-module | $(BUILD_DIR)
 	@   $(CP) $< $@
 
 $(BUILD_DIR)/npm-module/%: $(PROJ_ROOT)/% | $(BUILD_DIR)/npm-module
 	@   $(CP) $< $@
 
-$(BUILD_DIR)/rack-app/: $(SRC_DIR)/rack-app/ | $(BUILD_DIR)
+$(BUILD_DIR)/ruby-app/: $(SRC_DIR)/ruby-app/ | $(BUILD_DIR)
 	@   $(CP) $< $@
 
 $(BUILD_DIR)/ruby-gem: | $(BUILD_DIR)
@@ -305,27 +287,6 @@ $(BUILD_DIR)/testpage/qm.js: $(CACHE_DIR)/qm.js | $(BUILD_DIR)/testpage/
 	@   $(CP) $< $@
 
 $(BUILD_DIR)/testpage/%: $(SRC_DIR)/testpage/% | $(BUILD_DIR)/testpage/
-	@   $(CP) $< $@
-
-$(BUILD_DIR)/web-service: | $(BUILD_DIR)
-	@   $(call make-directory, $@)
-
-$(BUILD_DIR)/web-service/.gitignore:                                        \
-    $(PROJ_ROOT)/.gitignore                                                 \
-    | $(BUILD_DIR)/web-service
-	@   $(CP) $< $@
-
-$(BUILD_DIR)/web-service/katamari.json:                                     \
-    homepage                                                                \
-    npm-module                                                              \
-    | $(BUILD_DIR)/web-service
-	@   $(NODEJS) $(BUILD_DIR)/npm-module/examples/roll-up.js           \
-                $(BUILD_DIR)/homepage $@
-
-$(BUILD_DIR)/web-service/%: $(SHARE_DIR)/% | $(BUILD_DIR)/web-service
-	@   $(CP) $< $@
-
-$(BUILD_DIR)/web-service/%: $(SRC_DIR)/web-service/% | $(BUILD_DIR)/web-service
 	@   $(CP) $< $@
 
 $(CACHE_DIR):

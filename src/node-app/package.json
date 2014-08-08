@@ -4,7 +4,7 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": "1.1.13"
+        "qm": "qmachine/qm-nodejs"
     },
     "engines": {
         "node": "0.10.x",
