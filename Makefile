@@ -58,7 +58,7 @@ endif
 
 '': help;
 
-all: $(shell $(LS) $(SRC_DIR))
+all: check-versions chrome-hosted-app homepage npm-module ruby-gem testpage
 
 check: $(CACHE_DIR)/quanah.js | check-versions
 	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json \
