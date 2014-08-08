@@ -55,7 +55,7 @@ connection strings:
         persistent_storage: {
             avar_ttl:       86400,      //- expire avars after 24 hours
          // couch:          'http://127.0.0.1:5984/db',
-            gc_interval:    10          //- collect garbage every _ seconds
+            gc_interval:    60          //- collect garbage every _ seconds
          // mongo:          'mongodb://localhost:27017/test'
          // postgres:       'postgres://localhost:5432/' + process.env.USER
          // redis:          'redis://:@127.0.0.1:6379'
