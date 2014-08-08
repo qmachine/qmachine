@@ -9,7 +9,7 @@
 //  NOTE: Should we also check Git tags in this script?
 //
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 05 Aug 2014
+//                                                  ~~ last updated 08 Aug 2014
 
 (function () {
     'use strict';
@@ -21,7 +21,7 @@
  // Declarations
 
     var check_bower_package, check_chrome_hosted_app, check_docs,
-        check_homepage, check_npm_module, check_ruby_gem, check_web_service,
+        check_homepage, check_node_app, check_npm_module, check_ruby_gem,
         current_version, fs;
 
  // Definitions
@@ -115,6 +115,25 @@
         return;
     };
 
+    check_node_app = function () {
+     // This function checks to make sure that the package manifest file for
+     // the private "qm-node-app" NPM module keeps pace with the "qm" module.
+        var config, err;
+        config = require('../src/node-app/package.json');
+        err = new Error('Version mismatch for Node.js app');
+        if (current_version === undefined) {
+            current_version = config.version;
+        }
+        if ((config.dependencies.qm !== current_version) &&
+                (config.dependencies.qm !== 'qmachine/qm-nodejs')) {
+            throw err;
+        }
+        if (config.version !== current_version) {
+            throw err;
+        }
+        return;
+    };
+
     check_npm_module = function () {
      // This function checks the package manifest file for Node Package Manager
      // (NPM).
@@ -160,25 +179,6 @@
         return;
     };
 
-    check_web_service = function () {
-     // This function checks to make sure that the package manifest file for
-     // the private "web-service" NPM module keeps pace with the "qm" module.
-        var config, err;
-        config = require('../src/web-service/package.json');
-        err = new Error('Version mismatch for web service');
-        if (current_version === undefined) {
-            current_version = config.version;
-        }
-        if ((config.dependencies.qm !== current_version) &&
-                (config.dependencies.qm !== 'qmachine/qm-nodejs')) {
-            throw err;
-        }
-        if (config.version !== current_version) {
-            throw err;
-        }
-        return;
-    };
-
     fs = require('fs');
 
  // Out-of-scope definitions
@@ -197,9 +197,9 @@
     check_chrome_hosted_app();
     check_docs();
     check_homepage();
+    check_node_app();
     check_npm_module();
     check_ruby_gem();
-    check_web_service();
 
  // That's all, folks!
 
