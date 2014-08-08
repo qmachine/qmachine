@@ -68,15 +68,7 @@ check-versions:
 	@   $(NODEJS) $(SHARE_DIR)/check-versions.js
 
 clean: reset
-	@   $(RM) $(BUILD_DIR)/chrome-hosted-app/                       ;   \
-            $(RM) $(BUILD_DIR)/homepage/                                ;   \
-            $(RM) $(BUILD_DIR)/node-app/                                ;   \
-            $(RM) $(BUILD_DIR)/ruby-app/                                ;   \
-            $(RM) $(BUILD_DIR)/ruby-gem/                                ;   \
-            $(RM) $(BUILD_DIR)/testpage/                                ;   \
-            if [ ! "$$($(LS) -A $(BUILD_DIR))" ]; then                      \
-                $(RM) $(BUILD_DIR)                                      ;   \
-            fi                                                          ;   \
+	@   $(RM) $(BUILD_DIR)/                                         ;   \
             $(CD) $(DOCS_DIR)                                           ;   \
             $(MAKE) $@                                                  ;   \
             $(RM) $(DOCS_DIR)/_static/favicon.ico
