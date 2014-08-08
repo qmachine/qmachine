@@ -81,8 +81,8 @@ Finally, start MongoDB and then launch QM on localhost:
 
     $ make node-app
 
-QM defaults to MongoDB for storage, but the workflow's high-level targets can
-be configured from the command-line explicitly:
+QM defaults to MongoDB for storage, but a different database can be specified
+explicitly:
 
 .. code-block:: bash
 
