@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 30 Apr 2014
+//                                                  ~~ last updated 08 Aug 2014
 
 (function () {
     'use strict';
@@ -76,6 +76,11 @@
      // This is a custom environment variable I define prior to deployment.
         options.enable_www_server = true;
         options.static_content = parse(process.env.QM_WWW_STRING);
+    }
+
+    if (process.env.TRAVIS_JOB_ID !== undefined) {
+     // This is for use with Travis CI, where the VMs run on 1.5 virtual cores.
+        options.worker_procs = 1;
     }
 
     if (process.env.VCAP_APP_PORT !== undefined) {
