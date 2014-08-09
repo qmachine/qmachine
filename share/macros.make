@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 18 Jul 2014
+#                                                   ~~ last updated 08 Aug 2014
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -192,7 +192,7 @@ define show-usage-info
     printf '%s\n' 'Usage: $(MAKE) [options] [target] ...'               ;   \
     printf '%s\n' '  where "high-level" targets include'                ;   \
     $(SED) -n 's/^.PHONY:\([^$$]*\)$$/\1/p' $(MAKEFILE_LIST) | \
-        $(XARGS) printf '    %s\n' $(APPS) | $(SORT)
+        $(XARGS) printf '    %s\n' | $(SORT)
 endef
 
 define timestamp
