@@ -14,6 +14,7 @@ node_js:
     -   "0.10"
     -   "0.8"
 
-script: "make check-versions homepage npm-module testpage"
+script:
+    -   make all
 
 #-  vim:set syntax=yaml:
