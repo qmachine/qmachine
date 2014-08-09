@@ -8,6 +8,17 @@ before_install:
     -   sudo apt-get update -qq
     -   sudo apt-get install -qq git imagemagick make
 
+before_script:
+    -   psql -c "create database ${USER};" -U postgres
+    -   make node-app db=$db
+
+env:
+    -   db=couch
+    -   db=mongo
+    -   db=postgres
+    -   db=redis
+    -   db=sqlite
+
 language: node_js
 
 node_js:
@@ -15,6 +26,11 @@ node_js:
     -   "0.8"
 
 script:
-    -   make all
+    -   make check
+
+services:
+    -   couchdb
+    -   mongodb
+    -   redis-server
 
 #-  vim:set syntax=yaml:
