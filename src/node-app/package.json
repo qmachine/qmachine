@@ -10,7 +10,7 @@
         "node": "0.10.x",
         "npm":  "1.4.x"
     },
-    "name": "web-service",
+    "name": "qm-node-app",
     "private": true,
     "readme": "See https://wiki.qmachine.org for more information.",
     "scripts": {},
