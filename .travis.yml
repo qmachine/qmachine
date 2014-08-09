@@ -11,6 +11,7 @@ before_install:
 before_script:
     -   psql -c "create database ${USER};" -U postgres
     -   make node-app db=$db
+    -   sleep 5
 
 env:
     -   db=couch
