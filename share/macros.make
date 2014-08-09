@@ -184,8 +184,17 @@ define replace-url-macros
         -e 's|QM_WWW_URL|$(strip $(QM_WWW_URL))|g'  $(1) > $(2)
 endef
 
+# The following definition executes the command in the Heroku Procfile in the
+# foreground for all environments except Travis CI. It was inspired by the code
+# used to test SproutCore -- see http://goo.gl/IwW2o9.
+
 define run-procfile
-    $(1) `$(SED) 's/web:[[:space:]]*//' Procfile`
+    LAUNCH_COMMAND=`$(SED) 's/web:[[:space:]]*//' Procfile`             ;   \
+    if [ -z $${TRAVIS_JOB_ID} ]; then                                       \
+        $(1) $${LAUNCH_COMMAND}                                         ;   \
+    else                                                                    \
+        ( $(1) $${LAUNCH_COMMAND} & ) || /bin/true                      ;   \
+    fi
 endef
 
 define show-usage-info
