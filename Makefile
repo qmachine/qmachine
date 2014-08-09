@@ -159,7 +159,6 @@ testpage:                                                                   \
 
 node-app: | $(BUILD_DIR)/node-app/
 	@   $(MAKE)                                                         \
-                QM_API_STRING=$(strip $(QM_API_STRING))                     \
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
                     homepage                                            ;   \
