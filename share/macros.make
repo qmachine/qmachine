@@ -190,7 +190,7 @@ endef
 
 define run-procfile
     LAUNCH_COMMAND=`$(SED) 's/web:[[:space:]]*//' Procfile`             ;   \
-    if [[ "$${TRAVIS}" = "true" ]]; then                                    \
+    if [[ "$${TRAVIS}" = 'true' ]]; then                                    \
         ( $(1) $${LAUNCH_COMMAND} & ) || :                              ;   \
     else                                                                    \
         $(1) $${LAUNCH_COMMAND}                                         ;   \
