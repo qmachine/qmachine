@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 08 Aug 2014
+//                                                  ~~ last updated 10 Aug 2014
 
 (function () {
     'use strict';
@@ -78,7 +78,7 @@
         options.static_content = parse(process.env.QM_WWW_STRING);
     }
 
-    if (process.env.TRAVIS_JOB_ID !== undefined) {
+    if (process.env.TRAVIS === 'true') {
      // This is for use with Travis CI, where the VMs run on 1.5 virtual cores.
         options.worker_procs = 1;
     }

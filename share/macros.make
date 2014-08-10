@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 08 Aug 2014
+#                                                   ~~ last updated 10 Aug 2014
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -190,10 +190,10 @@ endef
 
 define run-procfile
     LAUNCH_COMMAND=`$(SED) 's/web:[[:space:]]*//' Procfile`             ;   \
-    if [ -z $${TRAVIS_JOB_ID} ]; then                                       \
-        $(1) $${LAUNCH_COMMAND}                                         ;   \
+    if [[ "$${TRAVIS}" = "true" ]]; then                                    \
+        ( $(1) $${LAUNCH_COMMAND} & ) || :                              ;   \
     else                                                                    \
-        ( $(1) $${LAUNCH_COMMAND} & ) || /bin/true                      ;   \
+        $(1) $${LAUNCH_COMMAND}                                         ;   \
     fi
 endef
 
