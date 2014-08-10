@@ -9,7 +9,18 @@
 
  // Pragmas
 
+    /*jshint maxparams: 1, quotmark: single, strict: true */
+
     /*jslint indent: 4, maxlen: 80, node: true */
+
+    /*properties
+        cpus, enable_api_server, enable_CORS, enable_web_server, env, hostname,
+        IP, launch_service, length, log, match_hostname, OPENSHIFT_INTERNAL_IP,
+        OPENSHIFT_INTERNAL_PORT, OPENSHIFT_NODEJS_IP, OPENSHIFT_NODEJS_PORT,
+        parse, persistent_storage, port, PORT, QM_API_STRING, QM_HOSTNAME,
+        QM_LOG_STRING, QM_WWW_STRING, static_content, trafficlog_storage,
+        TRAVIS, VCAP_APP_PORT, VMC_APP_PORT, worker_procs
+    */
 
  // Declarations
 
@@ -74,7 +85,7 @@
 
     if (process.env.QM_WWW_STRING !== undefined) {
      // This is a custom environment variable I define prior to deployment.
-        options.enable_www_server = true;
+        options.enable_web_server = true;
         options.static_content = parse(process.env.QM_WWW_STRING);
     }
 
