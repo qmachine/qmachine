@@ -2,8 +2,8 @@
 
 #-  Makefile ~~
 #
-#   This contains a live development workflow for QMachine (QM). To get started
-#   with your own local sandbox, check out
+#   This contains a live development workflow for QMachine (QM). Type "make"
+#   to list high-level targets, or check out
 #
 #       https://docs.qmachine.org/en/latest/local-sandbox.html
 #
@@ -21,7 +21,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 08 Aug 2014
+#                                                   ~~ last updated 10 Aug 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
