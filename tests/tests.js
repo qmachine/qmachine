@@ -11,7 +11,7 @@
 //  NOTE: I need to rewrite this junk so it uses Quanah ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 16 Jul 2014
+//                                                  ~~ last updated 10 Aug 2014
 
 (function () {
     'use strict';
@@ -21,6 +21,14 @@
     /*jshint quotmark: single, strict: true */
 
     /*jslint indent: 4, maxlen: 80, node: true */
+
+    /*properties
+        '$', args, avar, box, click, close, create, error, evaluate, exit, f,
+        hasOwnProperty, join, length, log, map, mapreduce, on,
+        onConsoleMessage, onError, onResourceReceived, onResourceRequested,
+        open, push, Q, QM, read, reduce, separator, slice, stringify, submit,
+        val, workingDirectory, x, y
+    */
 
  // Prerequisites
 
@@ -95,8 +103,8 @@
         };
         homepage.onError = function (message) {
          // This function needs documentation.
-            var y = JSON.stringify(message, undefined, 4);
-            console.error('Submitter Error:', y);
+            var obj = JSON.stringify(message, undefined, 4);
+            console.error('Submitter Error:', obj);
             return exit(1);
         };
         homepage.onResourceReceived = function () {
