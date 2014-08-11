@@ -6,7 +6,7 @@
 //  Curl as part of the build process for the QMachine project.
 //
 //                                                      ~~ (c) SRW, 07 Jul 2014
-//                                                  ~~ last updated 14 Jul 2014
+//                                                  ~~ last updated 10 Aug 2014
 
 (function () {
     'use strict';
@@ -18,20 +18,25 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        argv, error, exit, get, headers, indexOf, join, location, on, parse,
-        protocol, push, statusCode, writeFile
+        argv, error, exit, get, hasOwnProperty, headers, indexOf, join, length,
+        location, networkInterfaces, on, parse, protocol, push, statusCode,
+        writeFile
     */
 
  // Prerequisites
 
  // Declarations
 
-    var download, fs, http, https, url;
+    var download, fs, http, https, is_online, os, url;
 
  // Definitions
 
     download = function (src_url, dest_file) {
      // This function needs documentation.
+        if (is_online() === false) {
+            console.error('This computer is not online.');
+            return process.exit(1);
+        }
         var obj, protocol;
         obj = url.parse(src_url);
         if (obj.protocol === 'http:') {
@@ -81,6 +86,21 @@
     http = require('http');
 
     https = require('https');
+
+    is_online = function () {
+     // This function needs documentation.
+        var key, x, y;
+        x = os.networkInterfaces();
+        y = [];
+        for (key in x) {
+            if ((x.hasOwnProperty(key)) && (key !== 'lo0')) {
+                y.push(key);
+            }
+        }
+        return (y.length > 0);
+    };
+
+    os = require('os');
 
     url = require('url');
 
