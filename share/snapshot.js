@@ -16,16 +16,24 @@
 //      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
 //
 //                                                      ~~ (c) SRW, 19 Sep 2012
-//                                                  ~~ last updated 30 Apr 2014
+//                                                  ~~ last updated 10 Aug 2014
 
 (function (global) {
     'use strict';
 
  // Pragmas
 
+    /*global phantom: false, require: false */
+
+    /*jshint maxparams: 2, quotmark: single, strict: true */
+
     /*jslint indent: 4, maxlen: 80 */
 
-    /*global phantom: false, require: false */
+    /*properties
+        args, box, console, create, error, evaluate, exit, hasOwnProperty,
+        height, length, log, onConsoleMessage, onError, open, QM, render,
+        setTimeout, split, viewportSize, width
+    */
 
  // Prerequisites
 

@@ -9,14 +9,21 @@
 //  NOTE: Should we also check Git tags in this script?
 //
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 08 Aug 2014
+//                                                  ~~ last updated 10 Aug 2014
 
 (function () {
     'use strict';
 
  // Pragmas
 
+    /*jshint maxparams: 2, quotmark: single, strict: true */
+
     /*jslint indent: 4, maxlen: 80, node: true, nomen: true */
+
+    /*properties
+        dependencies, forEach, join, log, match, on, parse, qm, readFile,
+        slice, split, test, toString, trim, version
+    */
 
  // Declarations
 
