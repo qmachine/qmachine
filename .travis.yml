@@ -5,33 +5,40 @@
 #                                                   ~~ last updated 10 Aug 2014
 
 before_install:
-    -   sudo apt-get update -qq
-    -   sudo apt-get install -qq imagemagick
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq imagemagick
 
 before_script:
-    -   psql -c "create database ${USER};" -U postgres
-    -   make node-app db=$db
-    -   sleep 5
+  - psql -c "create database ${USER};" -U postgres
+  - make node-app db=$db
+  - sleep 5
 
 env:
-    -   db=couch
-    -   db=mongo
-    -   db=postgres
-    -   db=redis
-    -   db=sqlite
+  - db=couch
+  - db=mongo
+  - db=postgres
+  - db=redis
+  - db=sqlite
 
 language: node_js
 
+matrix:
+  include:
+    before_script:
+      - make ruby-app db=$db
+      - sleep 5
+    env: db=mongo
+
 node_js:
-    -   "0.10"
-    -   "0.8"
+  - "0.10"
+  - "0.8"
 
 script:
-    -   make check
+  - make check
 
 services:
-    -   couchdb
-    -   mongodb
-    -   redis-server
+  - couchdb
+  - mongodb
+  - redis-server
 
 #-  vim:set syntax=yaml:
