@@ -115,7 +115,6 @@ homepage:                                                                   \
         apple-touch-icon.png                                                \
         browserconfig.xml                                                   \
         cache.manifest                                                      \
-        coffeescript.js                                                     \
         favicon.ico                                                         \
         giant-favicon.ico                                                   \
         hits-by-country.json                                                \
@@ -146,7 +145,6 @@ ruby-gem: | $(BUILD_DIR)/ruby-gem/
 
 testpage:                                                                   \
     $(addprefix $(BUILD_DIR)/testpage/,                                     \
-        coffeescript.js                                                     \
         index.html                                                          \
         main.js                                                             \
         qm.js                                                               \
