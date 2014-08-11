@@ -23,7 +23,8 @@ Redis_, or SQLite_ instead, but the Makefile assumes Mongo by default.
 
 To build the homepage and/or custom images, you will need ImageMagick_.
 
-Tests use PhantomJS_.
+PhantomJS_ is used for regression testing and for creating snapshots that can
+be converted into thumbnails.
 
 
 Mac OS X
