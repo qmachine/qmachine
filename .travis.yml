@@ -22,13 +22,6 @@ env:
 
 language: node_js
 
-matrix:
-  include:
-    before_script:
-      - make ruby-app db=$db
-      - sleep 5
-    env: db=mongo
-
 node_js:
   - "0.10"
   - "0.8"
