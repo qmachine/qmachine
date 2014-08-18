@@ -20,11 +20,14 @@ before_script:
   - sleep 5
 
 env:
-    - backend=node-app db=couch
-    - backend=node-app db=mongo
-    - backend=node-app db=postgres
-    - backend=node-app db=redis
-    - backend=node-app db=sqlite
+  global:
+    - backend=node-app
+  matrix:
+    - db=couch
+    - db=mongo
+    - db=postgres
+    - db=redis
+    - db=sqlite
 
 language: node_js
 
