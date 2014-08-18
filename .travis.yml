@@ -11,29 +11,27 @@
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq imagemagick
-  - rvm use "2.1.2" --install --binary --fuzzy
+  - rvm use '2.1.2' --install --binary --fuzzy
   - ruby --version
 
 before_script:
   - psql -c "create database ${USER};" -U postgres
-  - make $app db=$db
+  - make $backend db=$db
   - sleep 5
 
 env:
-  global:
-    - app=node-app
-  matrix:
-    - db=couch
-    - db=mongo
-    - db=postgres
-    - db=redis
-    - db=sqlite
+    - backend=node-app db=couch
+    - backend=node-app db=mongo
+    - backend=node-app db=postgres
+    - backend=node-app db=redis
+    - backend=node-app db=sqlite
 
 language: node_js
 
 matrix:
   include:
-    - env: app=ruby-app db=mongo
+    - node_js: "0.10"
+      env: backend=ruby-app db=mongo
 
 node_js:
   - "0.10"
