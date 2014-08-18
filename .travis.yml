@@ -12,7 +12,6 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq imagemagick
   - rvm use '2.1.2' --install --binary --fuzzy
-  - ruby --version
 
 before_script:
   - psql -c "create database ${USER};" -U postgres
