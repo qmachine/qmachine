@@ -2,7 +2,7 @@
 
 #-  .travis.yml ~~
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 10 Aug 2014
+#                                                   ~~ last updated 18 Aug 2014
 
 before_install:
   - sudo apt-get update -qq
@@ -10,17 +10,22 @@ before_install:
 
 before_script:
   - psql -c "create database ${USER};" -U postgres
-  - make node-app db=$db
+  - make $app db=$db
   - sleep 5
 
 env:
-  - db=couch
-  - db=mongo
-  - db=postgres
-  - db=redis
-  - db=sqlite
+  - app=node-app db=couch
+  - app=node-app db=mongo
+  - app=node-app db=postgres
+  - app=node-app db=redis
+  - app=node-app db=sqlite
 
 language: node_js
+
+matrix:
+  include:
+    - node_js: "0.10"
+      env: app=ruby-app db=mongo
 
 node_js:
   - "0.10"
