@@ -2,9 +2,8 @@
 
 #-  .travis.yml ~~
 #
-#   These instructions test the Node.js version of QMachine ten times -- two
-#   different versions of Node.js against 5 databases each. I haven't figured
-#   out how to test the Ruby version yet.
+#   These instructions run QMachine's tests eleven times -- two versions of
+#   Node.js against 5 databases each, plus Ruby against Mongo.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
 #                                                   ~~ last updated 18 Aug 2014
@@ -12,20 +11,29 @@
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq imagemagick
+  - rvm use "2.1.2" --install --binary --fuzzy
+  - ruby --version
 
 before_script:
   - psql -c "create database ${USER};" -U postgres
-  - make node-app db=$db
+  - make $app db=$db
   - sleep 5
 
 env:
-  - db=couch
-  - db=mongo
-  - db=postgres
-  - db=redis
-  - db=sqlite
+  global:
+    - app=node-app
+  matrix:
+    - db=couch
+    - db=mongo
+    - db=postgres
+    - db=redis
+    - db=sqlite
 
 language: node_js
+
+matrix:
+  include:
+    - env: app=ruby-app db=mongo
 
 node_js:
   - "0.10"
