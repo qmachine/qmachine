@@ -50,10 +50,16 @@ Submitting jobs
 See http://www.biomedcentral.com/1471-2105/15/176#sec4 for now.
 
 
-Volunteering to run jobs
-~~~~~~~~~~~~~~~~~~~~~~~~
+Using volunteers' machines
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-See http://www.biomedcentral.com/1471-2105/15/176#sec4 for now.
+Two convenience functions, ``QM.start`` and ``QM.stop``, are provided in order
+to control a simple non-blocking (asynchronous) event loop externally. The loop
+"fires" approximately once per second, and if appropriate, it will run the
+``QM.volunteer`` function. This internal event loop is neither externally
+configurable nor necessary for using QM -- it simply wraps the ``QM.volunteer``
+function for convenience, rather than forcing application code to implement the
+non-blocking event loop.
 
 
 Advanced use
