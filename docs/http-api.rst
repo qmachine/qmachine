@@ -15,15 +15,15 @@ response data use JSON format, but data may be omitted where values are left
 blank. JSON objects are denoted ``{}``, and JSON arrays are denoted ``[]``.
 
 
-================= ============================= ======== ======== =======
- HTTP Request                                            HTTP Response
--------------------------------------------------------- ----------------
- Method           URL                           Data     Code     Data
-================= ============================= ======== ======== =======
- GET              /box/cardboard?key=982770f29           200      ``{}``
- GET              /box/cardboard?status=waiting          200      ``[]``
- POST             /box/cardboard?key=982770f29  ``{}``   201
-================= ============================= ======== ======== =======
+======== ================ ============================= ======== ===== =======
+..       HTTP Request                                   HTTP Response
+-------- ---------------------------------------------- ----------------------
+Purpose  Method           URL                           Data     Code  Data
+======== ================ ============================= ======== ===== =======
+Get avar GET              /box/cardboard?key=982770f29           200   ``{}``
+Get jobs GET              /box/cardboard?status=waiting          200   ``[]``
+Set avar POST             /box/cardboard?key=982770f29  ``{}``   201
+======== ================ ============================= ======== ===== =======
 
 
 The data model is based on Quanah_'s asynchronous variables ("avars"). An
@@ -37,9 +37,8 @@ Get avar
 ~~~~~~~~
 
 To get the value of an avar, a client must request it by known box and known
-key.
-
-For the first route, an avar storing a value of 2 would look like
+key. For the example shown in the table, an avar storing a value of 2 would
+look like
 
 .. code-block:: js
 
@@ -50,9 +49,8 @@ Get jobs
 ~~~~~~~~
 
 To get unknown job descriptions, a client must request a list of their keys by
-known box and known status.
-
-For the second route, an array containing three avars' keys might look like
+known box and known status. For the example show in the table, an array
+containing three avars' keys might look like
 
 .. code-block:: js
 
@@ -63,9 +61,7 @@ Set avar
 ~~~~~~~~
 
 To set the value of an avar, a client must send the new value in a request by
-known box and known key.
-
-For the third route, no response data will be sent.
+known box and known key. No response data will be returned.
 
 
 Experimental
@@ -78,15 +74,16 @@ word "box" in favor of "v1" seems desirable, it is possible that it anticipates
 needs that will never arise in practice. Discussion and input here would be
 much appreciated.
 
-================= ============================= ======== ======== =======
- HTTP Request                                            HTTP Response
--------------------------------------------------------- ----------------
- Method           URL                           Data     Code     Data
-================= ============================= ======== ======== =======
- GET              /v1/cardboard?key=982770f29   200      ``{}``
- GET              /v1/cardboard?status=waiting           200      ``[]``
- POST             /v1/cardboard?key=982770f29   ``{}``   201
-================= ============================= ======== ======== =======
+
+======== ================ ============================= ======== ===== =======
+..       HTTP Request                                   HTTP Response
+-------- ---------------------------------------------- ----------------------
+Purpose  Method           URL                           Data     Code  Data
+======== ================ ============================= ======== ===== =======
+Get avar GET              /v1/cardboard?key=982770f29            200   ``{}``
+Get jobs GET              /v1/cardboard?status=waiting           200   ``[]``
+Set avar POST             /v1/cardboard?key=982770f29   ``{}``   201
+======== ================ ============================= ======== ===== =======
 
 
 .. ----------------------------
