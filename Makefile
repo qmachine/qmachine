@@ -21,7 +21,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 10 Aug 2014
+#                                                   ~~ last updated 23 Aug 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -60,7 +60,7 @@ endif
 
 all: check-versions chrome-hosted-app homepage npm-module ruby-gem testpage
 
-check: $(CACHE_DIR)/quanah.js | check-versions
+check: | check-versions
 	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json \
                 $(TEST_DIR)/tests.js '$(LOCAL_ADDR)'
 
