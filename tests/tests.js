@@ -8,10 +8,8 @@
 //
 //  Coming soon: tests that check the JSON return types of API calls.
 //
-//  NOTE: I need to rewrite this junk so it uses Quanah ...
-//
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 10 Aug 2014
+//                                                  ~~ last updated 23 Aug 2014
 
 (function () {
     'use strict';
@@ -24,26 +22,10 @@
 
     /*properties
         '$', args, avar, box, click, close, create, error, evaluate, exit, f,
-        hasOwnProperty, join, length, log, map, mapreduce, on,
-        onConsoleMessage, onError, onResourceReceived, onResourceRequested,
-        open, push, Q, QM, read, reduce, separator, slice, stringify, submit,
-        val, workingDirectory, x, y
+        hasOwnProperty, length, log, map, mapreduce, on, onConsoleMessage,
+        onError, onResourceReceived, onResourceRequested, open, push, Q, QM,
+        reduce, slice, stringify, submit, val, x, y
     */
-
- // Prerequisites
-
-    (function () {
-     // Loading Quanah is a pain in Ubuntu 12.04 LTS because the version of
-     // PhantomJS is 1.4.0; the ability to reference your own modules was not
-     // added until version 1.7.0. Thus, we have to load our code the hard way.
-        /*jslint evil: true */
-        var fs, src, txt;
-        fs = require('fs');
-        src = [fs.workingDirectory, 'cache', 'quanah.js'].join(fs.separator);
-        txt = fs.read(src);
-        eval(txt);
-        return;
-    }());
 
  // Declarations
 
@@ -67,8 +49,7 @@
         return;
     };
 
-    mothership = phantom.args[0]; // this is for compatibility with 1.4.0 ...
-    //mothership = require('system').env['QM_API_URL'];
+    mothership = phantom.args[0];
 
     queue = [];
 
@@ -116,10 +97,10 @@
             //console.log(request.method, request.url);
             return;
         };
-        homepage.open(mothership, function (status) {
+        homepage.open(mothership, function (load_status) {
          // This function needs documentation.
-            if (status !== 'success') {
-                console.error('Something went wrong:', status);
+            if (load_status !== 'success') {
+                console.error('Something went wrong:', load_status);
                 return exit(1);
             }
             console.log('Running test ...');
@@ -152,10 +133,10 @@
             //console.log(request.method, request.url);
             return;
         };
-        homepage.open(mothership, function (status) {
+        homepage.open(mothership, function (load_status) {
          // This function needs documentation.
-            if (status !== 'success') {
-                console.error('Something went wrong:', status);
+            if (load_status !== 'success') {
+                console.error('Something went wrong:', load_status);
                 return exit(1);
             }
             homepage.evaluate(f);
