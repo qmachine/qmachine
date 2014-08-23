@@ -10,8 +10,7 @@
 #   Some optional targets may require extra packages to be installed by
 #   Homebrew, including
 #
-#           $ brew install closure-compiler jsmin mongodb qrencode \
-#               phantomjs redis yuicompressor
+#       $ brew install closure-compiler jsmin qrencode yuicompressor
 #
 #   Icons are generated from an "icons/logo.pdf" file, but it no such file is
 #   present, a green placeholder image will be created using ImageMagick. In
