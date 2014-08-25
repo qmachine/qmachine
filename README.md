@@ -3,14 +3,14 @@
 [QMachine](https://www.qmachine.org) (QM) is a web service for distributed
 computing. Its design relaxes the usual requirements of a distributed computer
 so far that it can be powered completely by web browsers – without installing
-anything. As a model for computation, QM has been detailed in a recent paper,
-[QMachine: Commodity Supercomputing in Web Browsers](http://www.biomedcentral.com/1471-2105/15/176).
-This repository is structured as a
+anything. This repository is structured as a
 [superproject](https://en.wikibooks.org/wiki/Git/Submodules_and_Superprojects),
 which means that cloning it requires cloning its submodules, too:
 
     $ git clone --recursive https://github.com/qmachine/qmachine.git
 
+As a model for computation, QM has been detailed in a recent paper,
+[QMachine: Commodity Supercomputing in Web Browsers](http://www.biomedcentral.com/1471-2105/15/176).
 The paper, which earned
 ["Highly Accessed"](http://www.biomedcentral.com/about/mostviewed/) status from
 *BMC Bioinformatics*, explains some of the design decisions behind QM,
