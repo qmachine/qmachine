@@ -9,7 +9,7 @@
 //  Coming soon: tests that check the JSON return types of API calls.
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 23 Aug 2014
+//                                                  ~~ last updated 29 Aug 2014
 
 (function () {
     'use strict';
@@ -147,7 +147,7 @@
 
  // Test definitions
 
-    console.log('NOTE: Remember to launch a worker for "make-check"!');
+    console.log('NOTE: Test box is "make-check".');
 
     register_test('Results: 1', function f() {
      // This function tests "Method Q" for the case when all parameters for
