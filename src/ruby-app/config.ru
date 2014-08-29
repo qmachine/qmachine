@@ -8,7 +8,7 @@
 #   See https://docs.qmachine.org/en/latest/ruby.html for more information.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 03 Aug 2014
+#                                                   ~~ last updated 28 Aug 2014
 
 require 'rubygems'
 require 'bundler'
@@ -26,7 +26,7 @@ end
 
 if (ENV['QM_API_STRING']) then
     options[:enable_api_server] = true
-    options[:enable_CORS] = true
+    options[:enable_cors] = true
     options[:persistent_storage] = JSON.parse(ENV['QM_API_STRING'])
 end
 

@@ -38,7 +38,7 @@ connection strings:
     QM::launch_service({
         avar_ttl:           86400, # seconds to store avars (default: 24 hours)
         enable_api_server:  false,
-        enable_CORS:        false,
+        enable_cors:        false,
         enable_web_server:  false,
         hostname:           '0.0.0.0',
         persistent_storage: {

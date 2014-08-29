@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 10 Aug 2014
+//                                                  ~~ last updated 28 Aug 2014
 
 (function () {
     'use strict';
@@ -14,7 +14,7 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        cpus, enable_api_server, enable_CORS, enable_web_server, env, hostname,
+        cpus, enable_api_server, enable_cors, enable_web_server, env, hostname,
         IP, launch_service, length, log, match_hostname, OPENSHIFT_INTERNAL_IP,
         OPENSHIFT_INTERNAL_PORT, OPENSHIFT_NODEJS_IP, OPENSHIFT_NODEJS_PORT,
         parse, persistent_storage, port, PORT, QM_API_STRING, QM_HOSTNAME,
@@ -68,7 +68,7 @@
     if (process.env.QM_API_STRING !== undefined) {
      // This is a custom environment variable I define prior to deployment.
         options.enable_api_server = true;
-        options.enable_CORS = true;
+        options.enable_cors = true;
         options.persistent_storage = parse(process.env.QM_API_STRING);
     }
 
