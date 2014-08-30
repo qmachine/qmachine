@@ -2,11 +2,11 @@
 
 #-  .travis.yml ~~
 #
-#   These instructions run QMachine's tests eleven times -- two versions of
-#   Node.js against 5 databases each, plus Ruby against Mongo.
+#   These instructions run QMachine's tests 11 times -- 2 versions of Node.js
+#   against 5 databases each, plus Ruby against Mongo.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 18 Aug 2014
+#                                                   ~~ last updated 29 Aug 2014
 
 before_install:
   - sudo apt-get update -qq
@@ -32,12 +32,12 @@ language: node_js
 
 matrix:
   include:
-    - node_js: "0.10"
+    - node_js: '0.10'
       env: backend=ruby-app db=mongo
 
 node_js:
-  - "0.10"
-  - "0.8"
+  - '0.10'
+  - '0.8'
 
 script:
   - make check
