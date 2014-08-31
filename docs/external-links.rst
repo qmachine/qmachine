@@ -10,6 +10,7 @@
 .. _Git: http://git-scm.com/
 .. _GitHub: https://github.com/
 .. _`GNU Make`: https://www.gnu.org/software/make/
+.. _Heroku: https://www.heroku.com/
 .. _Homebrew: https://mxcl.github.io/homebrew/
 .. _ImageMagick: http://www.imagemagick.org/
 .. _MongoDB: http://www.mongodb.org/
@@ -17,6 +18,7 @@
 .. _Node.js: http://nodejs.org/
 .. _NPM: https://www.npmjs.org/
 .. _NPM-documentation: https://www.npmjs.org/doc/README.html
+.. _OpenShift: https://www.openshift.com/
 .. _PhantomJS: http://phantomjs.org/
 .. _Postgres.app: http://postgresapp.com/
 .. _PostgreSQL: http://www.postgresql.org/
