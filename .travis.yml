@@ -6,11 +6,10 @@
 #   against 5 databases each, plus Ruby against Mongo.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 29 Aug 2014
+#                                                   ~~ last updated 31 Aug 2014
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq imagemagick
   - rvm use '2.1.2' --install --binary --fuzzy
 
 before_script:
