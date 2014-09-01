@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 23 Aug 2014
+#                                                   ~~ last updated 31 Aug 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -145,7 +145,6 @@ ruby-gem: | $(BUILD_DIR)/ruby-gem/
 testpage:                                                                   \
     $(addprefix $(BUILD_DIR)/testpage/,                                     \
         index.html                                                          \
-        main.js                                                             \
         qm.js                                                               \
     )
 	@   $(call hilite, 'Created $@.')
@@ -158,11 +157,11 @@ node-app: | $(BUILD_DIR)/node-app/
 	@   $(MAKE)                                                         \
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
-                    homepage                                            ;   \
+                    testpage                                            ;   \
             $(CD) $(BUILD_DIR)/node-app/                                ;   \
             $(NPM) install                                              ;   \
             $(NODEJS) node_modules/qm/examples/roll-up.js \
-                ../homepage katamari.json                               ;   \
+                ../testpage katamari.json                               ;   \
             $(call run-procfile, \
                 QM_API_STRING=$(strip $(QM_API_STRING)) \
                 QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"')
@@ -171,10 +170,10 @@ ruby-app: | $(BUILD_DIR)/ruby-app/
 	@   $(MAKE) \
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
-                    homepage                                            ;   \
+                    testpage                                            ;   \
             $(CD) $(BUILD_DIR)                                          ;   \
             if [ ! -d $@/public/ ]; then                                    \
-                $(CP) homepage $@/public                                ;   \
+                $(CP) testpage $@/public                                ;   \
             fi                                                          ;   \
             $(CD) $@/                                                   ;   \
             $(BUNDLE) package --all                                     ;   \

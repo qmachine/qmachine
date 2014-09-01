@@ -9,7 +9,7 @@
 //  Coming soon: tests that check the JSON return types of API calls.
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 29 Aug 2014
+//                                                  ~~ last updated 31 Aug 2014
 
 (function () {
     'use strict';
@@ -21,10 +21,10 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        '$', args, avar, box, click, close, create, error, evaluate, exit, f,
+        args, avar, box, click, close, create, error, evaluate, exit, f,
         hasOwnProperty, length, log, map, mapreduce, on, onConsoleMessage,
         onError, onResourceReceived, onResourceRequested, open, push, Q, QM,
-        reduce, slice, stringify, submit, val, x, y
+        reduce, slice, start, stringify, submit, val, x, y
     */
 
  // Declarations
@@ -435,18 +435,13 @@
      // This function configures a volunteer.
         volunteer(function f() {
          // This function runs inside the volunteer context :-)
-            if (window.hasOwnProperty('jQuery') === false) {
-             // We will assume that jQuery will eventually load.
-                setTimeout(f, 100);
-                return;
-            }
             if (window.hasOwnProperty('QM') === false) {
              // We will also assume that QMachine will eventually load.
                 setTimeout(f, 100);
                 return;
             }
             window.QM.box = 'make-check';
-            window.$('#QM-volunteer-input').click();
+            window.QM.start();
             return;
         });
         return;
