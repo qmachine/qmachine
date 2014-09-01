@@ -18,7 +18,7 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 20 Jul 2014
+//                                                  ~~ last updated 31 Aug 2014
 
 (function () {
     'use strict';
@@ -32,18 +32,17 @@
     /*jslint browser: true, devel: true, indent: 4, maxlen: 80 */
 
     /*properties
-        activeElement, alert, ajax, append, arrayToDataTable, avar,
-        backgroundColor, blur, box, c, cache, call, callback, calls,
-        clearTimeout, colorAxis, colors, console, countries, dataType,
-        datalessRegionColor, document, draw, each, error, exit, f, focus,
-        GeoChart, getItem, hasOwnProperty, hostname, id, is, join, jQuery,
-        keepAspectRatio, key, legend, length, load, localStorage, log, on,
-        onreadystatechange, open, packages, parse, prepend, projection,
-        preventDefault, prototype, Q, QM, 'QM-total-calls',
-        'QM-total-countries', ready, readyState, region, replace, responseText,
-        revive, search, send, setItem, setRequestHeader, setTimeout, slice,
-        sort, success, status, statusText, stay, text, toString, url, v, val,
-        value, visualization, vol_timer, volunteer, which, width
+        activeElement, ajax, alert, append, arrayToDataTable, avar,
+        backgroundColor, blur, box, c, cache, call, callback, calls, colorAxis,
+        colors, console, countries, datalessRegionColor, dataType, document,
+        draw, error, f, focus, GeoChart, getItem, hasOwnProperty, id, is, join,
+        jQuery, keepAspectRatio, legend, length, load, localStorage, log, on,
+        onreadystatechange, open, packages, parse, preventDefault, projection,
+        prototype, Q, QM, 'QM-total-calls', 'QM-total-countries', ready,
+        readyState, region, replace, responseText, revive, search, send,
+        setItem, setRequestHeader, slice, sort, start, status, statusText,
+        stay, stop, success, text, toString, url, v, val, value, visualization,
+        which, width
     */
 
  // Prerequisites
@@ -55,8 +54,7 @@
  // Declarations
 
     var $, add_commas, convert_to_rank, detect, get_data, is_Function, jserr,
-        jsout, main, options, state, sync_country_names, update_html_spans,
-        update_summary;
+        main, options, sync_country_names, update_html_spans, update_summary;
 
  // Definitions
 
@@ -145,15 +143,6 @@
         return;
     };
 
-    jsout = function () {
-     // This function provides an output logging mechanism that doesn't totally
-     // shatter in old browsers.
-        if (detect('console.log')) {
-            window.console.log(Array.prototype.join.call(arguments, ' '));
-        }
-        return;
-    };
-
     main = function () {
      // This function needs documentation.
         if (google.visualization === undefined) {
@@ -202,8 +191,6 @@
         region: 'world',
         width: '100%'
     };
-
-    state = {};
 
     sync_country_names = function (data, table) {
      // This function hacks the Google Visualization API itself by attempting
@@ -349,34 +336,11 @@
                 });
                 $('#QM-volunteer-input').on('click', function volunteer() {
                  // This function runs every time the checkbox is clicked.
-                    if ($('#QM-volunteer-input').is(':checked') === false) {
-                     // Yes, you're right, it _does_ look inefficient to ask
-                     // jQuery to do separate queries, but because `volunteer`
-                     // calls itself recursively using `setTimeout`, using
-                     // `$(this)` can do some pretty wacky stuff if you're not
-                     // careful. I prefer this strategy it's simple :-)
-                        window.clearTimeout(state.vol_timer);
-                        return;
+                    if ($('#QM-volunteer-input').is(':checked')) {
+                        QM.start();
+                    } else {
+                        QM.stop();
                     }
-                    QM.volunteer(QM.box).on('error', function (message) {
-                     // This function redirects "error" messages appropriately.
-                        if (message === 'Nothing to do ...') {
-                         // Back by popular demand ;-)
-                            jsout(message);
-                        } else {
-                            jserr('Error:', message);
-                        }
-                        window.clearTimeout(state.vol_timer);
-                        state.vol_timer = window.setTimeout(volunteer, 1000);
-                        return;
-                    }).Q(function (evt) {
-                     // This function provides visual feedback for debugging
-                     // as soon as the volunteer finishes executing a task.
-                        jsout('Done:', this.key);
-                        window.clearTimeout(state.vol_timer);
-                        state.vol_timer = window.setTimeout(volunteer, 1000);
-                        return evt.exit();
-                    });
                     return;
                 });
                 return;
