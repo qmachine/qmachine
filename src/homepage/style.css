@@ -12,7 +12,7 @@
  *  ideas, let me know :-)
  *
  *                                                      ~~ (c) SRW, 29 Oct 2012
- *                                                  ~~ last updated 05 Jul 2014
+ *                                                  ~~ last updated 01 Sep 2014
  */
 
 @media all {
@@ -28,7 +28,7 @@
  /* The next two rules are what happens when your upstream author removes a
   * feature you like -- you paste it back in and disparage them for it, haha.
   * In this case, support for ":invalid" pseudo-selectors was removed from
-  * Twitter Bootstrap 3.x by this commit: http://git.io/1AHLzg). */
+  * Twitter Bootstrap 3.x by this commit: http://git.io/1AHLzg. */
 
     input:focus:invalid,
     textarea:focus:invalid,
