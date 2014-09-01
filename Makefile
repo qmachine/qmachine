@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 31 Aug 2014
+#                                                   ~~ last updated 01 Sep 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -146,6 +146,7 @@ testpage:                                                                   \
     $(addprefix $(BUILD_DIR)/testpage/,                                     \
         index.html                                                          \
         qm.js                                                               \
+        robots.txt                                                          \
     )
 	@   $(call hilite, 'Created $@.')
 
