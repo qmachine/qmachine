@@ -22,6 +22,7 @@
 .. _PhantomJS: http://phantomjs.org/
 .. _Postgres.app: http://postgresapp.com/
 .. _PostgreSQL: http://www.postgresql.org/
+.. _QMachine: https://www.qmachine.org/
 .. _Quanah: https://qmachine.github.io/quanah/
 .. _Rack: https://rack.github.io/
 .. _Redis: http://redis.io/

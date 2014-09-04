@@ -1,7 +1,7 @@
 Overview
 ========
 
-QMachine (QM) is a web service for distributed computing. Its design relaxes
+QMachine_ (QM) is a web service for distributed computing. Its design relaxes
 the usual requirements of a distributed computer so far that it can be powered
 completely by web browsers -- without installing anything. As a model for
 computation, QM has been detailed in a recent paper,
