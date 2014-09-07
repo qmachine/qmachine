@@ -65,11 +65,6 @@ database for logging traffic data.
 .. https://gemnasium.com/qmachine/qm-ruby.png
 
 
-.. --------------------------
-.. External link definitions:
-.. --------------------------
+.. ----------------------------
 .. include:: external-links.rst
-
-.. _here: https://rubygems.org/gems/qm
-.. _repository: https://github.com/qmachine/qm-ruby
 

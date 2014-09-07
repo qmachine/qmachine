@@ -21,6 +21,8 @@ Redis_, or SQLite_ instead, but the Makefile assumes Mongo by default.
 
 .. Is an explanation needed for why MongoDB is now the default?
 
+.. To build the documentation, you will need Sphinx_. 
+
 To build the homepage and/or custom images, you will need ImageMagick_.
 
 PhantomJS_ is used for regression testing and for creating snapshots that can
@@ -141,6 +143,4 @@ anyway. Thus, explicit configuration at the command-line is unnecessary:
 
 .. ----------------------------
 .. include:: external-links.rst
-
-.. _here: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os
 
