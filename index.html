@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     index.html ~~
-                                                        ~~ (c) SRW, 20 Jul 2014
+                                                        ~~ (c) SRW, 09 Sep 2014
 -->
 <html lang="en">
   <head>
@@ -40,16 +40,16 @@
 <p><a href="https://www.qmachine.org">QMachine</a> (QM) is a web service for distributed
 computing. Its design relaxes the usual requirements of a distributed computer
 so far that it can be powered completely by web browsers – without installing
-anything. As a model for computation, QM has been detailed in a recent paper,
-<a href="http://www.biomedcentral.com/1471-2105/15/176">QMachine: Commodity Supercomputing in Web Browsers</a>.
-This repository is structured as a
+anything. This repository is structured as a
 <a href="https://en.wikibooks.org/wiki/Git/Submodules_and_Superprojects">superproject</a>,
 which means that cloning it requires cloning its submodules, too:</p>
 
 <pre><code>$ git clone --recursive https://github.com/qmachine/qmachine.git
 </code></pre>
 
-<p>The paper, which earned
+<p>As a model for computation, QM is detailed in a recent open access paper,
+<a href="http://www.biomedcentral.com/1471-2105/15/176">QMachine: commodity supercomputing in web browsers</a>.
+The paper, which earned
 <a href="http://www.biomedcentral.com/about/mostviewed/">&quot;Highly Accessed&quot;</a> status from
 <em>BMC Bioinformatics</em>, explains some of the design decisions behind QM,
 demonstrates the use of QM in scientific workflows, and elaborates on some of
@@ -68,7 +68,14 @@ QM has also graced the front page of
 
 <h1></h1>
 
-<p><a href="https://travis-ci.org/qmachine/qmachine"><img src="https://travis-ci.org/qmachine/qmachine.svg?branch=master" alt="Build Status"></a> <a href="https://drone.io/github.com/qmachine/qmachine/latest"><img src="https://drone.io/github.com/qmachine/qmachine/status.png" alt="Build Status"></a></p>
+<p>| Purpose         | Build Status                                                                                                                      |
+|:---------------:|:---------------------------------------------------------------------------------------------------------------------------------:|
+| Unit tests      | <a href="https://travis-ci.org/qmachine/qmachine"><img src="https://travis-ci.org/qmachine/qmachine.svg?branch=master" alt="Build Status"></a>             |
+| Special targets | <a href="https://drone.io/github.com/qmachine/qmachine/latest"><img src="https://drone.io/github.com/qmachine/qmachine/status.png" alt="Build Status"></a> |</p>
+
+<!--
+[![Coverage Status](https://img.shields.io/coveralls/qmachine/qmachine.svg)](https://coveralls.io/r/qmachine/qmachine)
+-->
 
 <!-- vim:set syntax=markdown: -->
     <p>

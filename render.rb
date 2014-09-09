@@ -63,7 +63,7 @@ File::open(filename, 'w') do |f|
     <p>
       Note that this page embeds QM's analytical layer, too, which means that
       you can
-      <a href="https://wiki.qmachine.org/index.php/Opening_a_browser_console" target="_blank">open your browser's developer console</a>
+      <a href="https://wiki.qmachine.org/wiki/Opening_a_browser_console" target="_blank">open your browser's developer console</a>
       and experiment without even leaving this page!
     </p>
     <script async src="https://www.qmachine.org/qm.js"></script>
