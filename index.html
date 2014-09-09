@@ -37,41 +37,52 @@
     </a>
     <h1>QMachine</h1>
 
-<p><a href="https://www.qmachine.org">QMachine</a> (QM) is a web service for distributed
-computing. Its design relaxes the usual requirements of a distributed computer
-so far that it can be powered completely by web browsers – without installing
-anything. This repository is structured as a
-<a href="https://en.wikibooks.org/wiki/Git/Submodules_and_Superprojects">superproject</a>,
+<p><a href="https://www.qmachine.org">QMachine</a> (QM) is a web service for distributed<br>
+computing. Its design relaxes the usual requirements of a distributed computer<br>
+so far that it can be powered completely by web browsers – without installing<br>
+anything. This repository is structured as a<br>
+<a href="https://en.wikibooks.org/wiki/Git/Submodules_and_Superprojects">superproject</a>,<br>
 which means that cloning it requires cloning its submodules, too:</p>
 
 <pre><code>$ git clone --recursive https://github.com/qmachine/qmachine.git
 </code></pre>
 
-<p>As a model for computation, QM is detailed in a recent open access paper,
-<a href="http://www.biomedcentral.com/1471-2105/15/176">QMachine: commodity supercomputing in web browsers</a>.
-The paper, which earned
-<a href="http://www.biomedcentral.com/about/mostviewed/">&quot;Highly Accessed&quot;</a> status from
-<em>BMC Bioinformatics</em>, explains some of the design decisions behind QM,
-demonstrates the use of QM in scientific workflows, and elaborates on some of
-the future directions. The accompanying screencasts, one of which was featured
-by the
-<a href="http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html">HPCwire</a>
-and
-<a href="http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/">insideHPC</a>
-news sites, are available on
-<a href="https://www.youtube.com/playlist?list=PLwUGp_wSf5vjD5vwzj9Dhqbz-y54oALIe">YouTube</a>.
-QM has also graced the front page of
+<p>As a model for computation, QM is detailed in a recent open access paper,<br>
+<a href="http://www.biomedcentral.com/1471-2105/15/176">QMachine: commodity supercomputing in web browsers</a>.<br>
+The paper, which earned<br>
+<a href="http://www.biomedcentral.com/about/mostviewed/">&quot;Highly Accessed&quot;</a> status from<br>
+<em>BMC Bioinformatics</em>, explains some of the design decisions behind QM,<br>
+demonstrates the use of QM in scientific workflows, and elaborates on some of<br>
+the future directions. The accompanying screencasts, one of which was featured<br>
+by the<br>
+<a href="http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html">HPCwire</a><br>
+and<br>
+<a href="http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/">insideHPC</a><br>
+news sites, are available on<br>
+<a href="https://www.youtube.com/playlist?list=PLwUGp_wSf5vjD5vwzj9Dhqbz-y54oALIe">YouTube</a>.<br>
+QM has also graced the front page of<br>
 <a href="https://news.ycombinator.com/item?id=6095595">Hacker News</a>.</p>
 
-<p>The <a href="https://docs.qmachine.org">manual</a> is improving steadily, and a
+<p>The <a href="https://docs.qmachine.org">manual</a> is improving steadily, and a<br>
 <a href="https://wiki.qmachine.org">project wiki</a> is also available for reference.</p>
 
 <h1></h1>
 
-<p>| Purpose         | Build Status                                                                                                                      |
-|:---------------:|:---------------------------------------------------------------------------------------------------------------------------------:|
-| Unit tests      | <a href="https://travis-ci.org/qmachine/qmachine"><img src="https://travis-ci.org/qmachine/qmachine.svg?branch=master" alt="Build Status"></a>             |
-| Special targets | <a href="https://drone.io/github.com/qmachine/qmachine/latest"><img src="https://drone.io/github.com/qmachine/qmachine/status.png" alt="Build Status"></a> |</p>
+<table><thead>
+<tr>
+<th align="center">Purpose</th>
+<th align="center">Build Status</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="center">Unit tests</td>
+<td align="center"><a href="https://travis-ci.org/qmachine/qmachine"><img src="https://travis-ci.org/qmachine/qmachine.svg?branch=master" alt="Build Status"></a></td>
+</tr>
+<tr>
+<td align="center">Special targets</td>
+<td align="center"><a href="https://drone.io/github.com/qmachine/qmachine/latest"><img src="https://drone.io/github.com/qmachine/qmachine/status.png" alt="Build Status"></a></td>
+</tr>
+</tbody></table>
 
 <!--
 [![Coverage Status](https://img.shields.io/coveralls/qmachine/qmachine.svg)](https://coveralls.io/r/qmachine/qmachine)
@@ -81,7 +92,7 @@ QM has also graced the front page of
     <p>
       Note that this page embeds QM's analytical layer, too, which means that
       you can
-      <a href="https://wiki.qmachine.org/index.php/Opening_a_browser_console" target="_blank">open your browser's developer console</a>
+      <a href="https://wiki.qmachine.org/wiki/Opening_a_browser_console" target="_blank">open your browser's developer console</a>
       and experiment without even leaving this page!
     </p>
     <script async src="https://www.qmachine.org/qm.js"></script>

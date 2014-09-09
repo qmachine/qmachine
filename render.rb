@@ -2,17 +2,12 @@
 
 #-  render.rb ~~
 #                                                       ~~ (c) SRW, 19 Sep 2012
-#                                                   ~~ last updated 20 Jul 2014
+#                                                   ~~ last updated 09 Sep 2014
 
 require 'date'
-require 'redcarpet'
+require 'github/markdown'
 
 filename = 'index.html'
-
-markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, {
-    autolink: true,
-    space_after_headers: true
-})
 
 today = '%02d %s %4d' % [
     Time.now.day,
@@ -59,7 +54,7 @@ File::open(filename, 'w') do |f|
     <a id="github_ribbon" href="https://github.com/qmachine/qmachine">
       <span>Fork me on GitHub!</span>
     </a>
-    #{markdown.render(IO.read('README.md')).chomp}
+    #{GitHub::Markdown.render_gfm(IO.read('README.md')).chomp}
     <p>
       Note that this page embeds QM's analytical layer, too, which means that
       you can
