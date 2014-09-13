@@ -30,10 +30,11 @@ The [manual](https://docs.qmachine.org) is improving steadily, and a
 
 ===
 
-| Purpose         | Build Status                                                                                                                      |
-|:---------------:|:---------------------------------------------------------------------------------------------------------------------------------:|
-| Unit tests      | [![Build Status](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine)             |
-| Special targets | [![Build Status](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest) |
+| Purpose         | Status                                                                                                                                              |
+|:---------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------:|
+| Documentation   | [![Documentation Status](https://readthedocs.org/projects/qmachine/badge/?version=latest)](https://readthedocs.org/projects/qmachine/?badge=latest) |
+| Unit tests      | [![Build Status](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine)                               |
+| Special targets | [![Build Status](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest)                   |
 
 <!--
 [![Coverage Status](https://img.shields.io/coveralls/qmachine/qmachine.svg)](https://coveralls.io/r/qmachine/qmachine)
