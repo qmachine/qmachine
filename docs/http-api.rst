@@ -27,9 +27,9 @@ Set avar POST             /box/cardboard?key=982770f29  ``{}``   201
 
 
 The data model is based on Quanah_'s asynchronous variables ("avars"). An
-avar is a JS object that acts as a generic container for other types by storing
-a unique identifier, "key", alongside the contained data, "val". QM extends
-this model by adding a "box" parameter to allow grouping and a "status"
+avar is a JavaScript object that acts as a generic container for other types by
+storing a unique identifier, "key", alongside the contained data, "val". QM
+extends this model by adding a "box" parameter to allow grouping and a "status"
 parameter for avars that represent job descriptions.
 
 
@@ -37,8 +37,7 @@ Get avar
 ~~~~~~~~
 
 To get the value of an avar, a client must request it by known box and known
-key. For the example shown in the table, an avar storing a value of 2 would
-look like
+key. For the example shown in the table, an avar with "cardboard" as its box, "982770f29" as its key, and 2 as its value would look like
 
 .. code-block:: js
 
@@ -49,8 +48,9 @@ Get jobs
 ~~~~~~~~
 
 To get unknown job descriptions, a client must request a list of their keys by
-known box and known status. For the example show in the table, an array
-containing three avars' keys might look like
+known box and known status. This list is represented as a JSON array. For the
+example show in the table, an array containing three avars' keys might look
+like
 
 .. code-block:: js
 
@@ -61,7 +61,8 @@ Set avar
 ~~~~~~~~
 
 To set the value of an avar, a client must send the new value in a request by
-known box and known key. No response data will be returned.
+known box and known key. No response data will be returned, but a successful
+response will be indicated by an HTTP status code of 201.
 
 
 Experimental
