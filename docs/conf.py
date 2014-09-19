@@ -16,7 +16,7 @@
 #       served to show the default, and I removed a lot of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 05 Sep 2014
+#                                                   ~~ last updated 18 Sep 2014
 
 import sys
 import os
@@ -111,14 +111,11 @@ htmlhelp_basename = 'QMachinedoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
-
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
-
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+  # Additional stuff for the LaTeX preamble.
+    'preamble': """
+      % Preserve copy/paste-ability for apostrophes, backticks, etc.
+        \usepackage{upquote}
+    """
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
