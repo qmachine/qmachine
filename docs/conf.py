@@ -13,7 +13,7 @@
 #       file.
 #
 #   -   All configuration values have a default; values that were commented out
-#       served to show the default, and I removed a lot of them.
+#       served to show the default, and I removed most of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
 #                                                   ~~ last updated 18 Sep 2014
@@ -110,13 +110,7 @@ htmlhelp_basename = 'QMachinedoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
-latex_elements = {
-  # Additional stuff for the LaTeX preamble.
-    'preamble': """
-      % Preserve copy/paste-ability for apostrophes, backticks, etc.
-        \usepackage{upquote}
-    """
-}
+latex_elements = {}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
@@ -130,12 +124,6 @@ latex_documents = [
 
 latex_show_pagerefs = True
 
-# If true, show URL addresses after external links.
-#latex_show_urls = False
-
-# If false, no module index is generated.
-#latex_domain_indices = True
-
 
 # -- Options for manual page output ---------------------------------------
 
@@ -145,9 +133,6 @@ latex_show_pagerefs = True
 man_pages = [
     ('index', 'qmachine', u'QMachine Documentation', [u'Sean Wilkinson'], 1)
 ]
-
-# If true, show URL addresses after external links.
-#man_show_urls = False
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -162,13 +147,5 @@ texinfo_documents = [
    'Miscellaneous'),
 ]
 
-# If false, no module index is generated.
-#texinfo_domain_indices = True
-
-# How to display URL addresses: 'footnote', 'no', or 'inline'.
-#texinfo_show_urls = 'footnote'
-
-# If true, do not generate a @detailmenu in the "Top" node's menu.
-#texinfo_no_detailmenu = False
 
 #-  vim:set syntax=python:
