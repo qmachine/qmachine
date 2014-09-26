@@ -19,8 +19,8 @@
 #
 #   Thanks for stopping by :-)
 #
-#                                                       ~~ (c) SRW, 06 Feb 2012
-#                                                   ~~ last updated 01 Sep 2014
+#                                                       ~~ (c) SRW, 19 May 2010
+#                                                   ~~ last updated 26 Sep 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
