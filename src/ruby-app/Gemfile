@@ -2,11 +2,11 @@
 
 #-  Gemfile ~~
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 21 Oct 2014
+#                                                   ~~ last updated 29 Oct 2014
 
 source 'https://rubygems.org'
 
-ruby '2.1.3'
+ruby '2.1.4'
 
 gem 'json'
 gem 'qm', :git => 'https://github.com/qmachine/qm-ruby.git'
