@@ -12,7 +12,7 @@
     },
     "name": "qm-node-app",
     "private": true,
-    "readme": "See https://wiki.qmachine.org for more information.",
+    "readme": "See https://docs.qmachine.org/en/latest/nodejs.html.",
     "scripts": {},
     "version": "1.1.15"
 }
