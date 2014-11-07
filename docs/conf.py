@@ -16,11 +16,9 @@
 #       served to show the default, and I removed most of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 18 Sep 2014
+#                                                   ~~ last updated 07 Nov 2014
 
-import sys
-import os
-import urllib
+import os, sys, urllib
 
 # -- General configuration ------------------------------------------------
 
