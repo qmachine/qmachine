@@ -6,7 +6,7 @@
 //  Curl as part of the build process for the QMachine project.
 //
 //                                                      ~~ (c) SRW, 07 Jul 2014
-//                                                  ~~ last updated 10 Aug 2014
+//                                                  ~~ last updated 09 Nov 2014
 
 (function () {
     'use strict';
@@ -18,9 +18,9 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        argv, error, exit, get, hasOwnProperty, headers, indexOf, join, length,
-        location, networkInterfaces, on, parse, protocol, push, statusCode,
-        writeFile
+        argv, createWriteStream, error, exit, get, hasOwnProperty, headers,
+        indexOf, length, location, networkInterfaces, on, parse, pipe,
+        protocol, push, statusCode
     */
 
  // Prerequisites
@@ -31,14 +31,15 @@
 
  // Definitions
 
-    download = function (src_url, dest_file) {
+    download = function (src_url, dest_filename) {
      // This function needs documentation.
         if (is_online() === false) {
             console.error('This computer is not online.');
             return process.exit(1);
         }
-        var obj, protocol;
+        var obj, outfile, protocol;
         obj = url.parse(src_url);
+        outfile = fs.createWriteStream(dest_filename);
         if (obj.protocol === 'http:') {
             protocol = http;
         } else if (obj.protocol === 'https:') {
@@ -49,34 +50,18 @@
         protocol.get(src_url, function (response) {
          // This function needs documentation.
             if ([300, 301, 302, 303, 307].indexOf(response.statusCode) >= 0) {
-                download(response.headers.location, dest_file);
+                download(response.headers.location, dest_filename);
                 return;
             }
             if ([200, 201].indexOf(response.statusCode) < 0) {
                 throw new Error('Error ' + response.statusCode);
             }
-            var temp = [];
-            response.on('data', function (chunk) {
-             // This function needs documentation.
-                temp.push(chunk);
-                return;
-            });
-            response.on('end', function () {
-             // This function needs documentation.
-                fs.writeFile(dest_file, temp.join(''), function (err) {
-                 // This function needs documentation.
-                    if (err !== null) {
-                        throw err;
-                    }
-                    return process.exit();
-                });
-                return;
-            });
+            response.on('end', process.exit).pipe(outfile);
             return;
         }).on('error', function (err) {
          // This function needs documentation.
             console.error('Error:', err);
-            return;
+            return process.exit(1);
         });
         return;
     };
