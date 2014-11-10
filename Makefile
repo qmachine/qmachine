@@ -232,7 +232,8 @@ $(BUILD_DIR)/homepage/cache.manifest:                                       \
 	@   $(call timestamp, $<, $@)
 
 $(BUILD_DIR)/homepage/%.js: $(CACHE_DIR)/%.js | $(BUILD_DIR)/homepage
-	@   $(call minify-js, $<, $@)
+	@   $(call minify-js, $<, $@)                                   ;   \
+            $(call check-js-syntax, $@)
 
 $(BUILD_DIR)/homepage/%: $(CACHE_DIR)/% | $(BUILD_DIR)/homepage
 	@   $(CP) $< $@
@@ -284,7 +285,8 @@ $(CACHE_DIR)/bootstrap.css: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/N5U0wB")
 
 $(CACHE_DIR)/bootstrap.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/MfuMZu")
+	@   $(call download-url, "http://goo.gl/MfuMZu")                ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/bootstrap-theme.css: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/qPqsDk")
@@ -295,7 +297,8 @@ $(CACHE_DIR)/browserconfig.xml:                                             \
 	@   $(CP) $< $@
 
 $(CACHE_DIR)/coffeescript.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/a6ZyGk")
+	@   $(call download-url, "http://goo.gl/a6ZyGk")                ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/hits-by-country.json:                                          \
     $(SRC_DIR)/homepage/hits-by-country.json                                \
@@ -308,28 +311,35 @@ $(CACHE_DIR)/homepage.js:                                                   \
     $(CACHE_DIR)/main.js                                                    \
     |   $(CACHE_DIR)
 	@   $(call replace-url-macros, $^, $@)                          ;   \
-            $(call remove-source-maps, $@)
+            $(call remove-source-maps, $@)                              ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/8Ah9dC")
+	@   $(call download-url, "http://goo.gl/8Ah9dC")                ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/index.html: $(SRC_DIR)/homepage/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
 $(CACHE_DIR)/jquery-191.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/tiSzW")
+	@   $(call download-url, "http://goo.gl/tiSzW")                 ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/jquery-git1.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/OmsyrL")
+	@   $(call download-url, "http://goo.gl/OmsyrL")                ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/9XuoRL")
+	@   $(call download-url, "http://goo.gl/9XuoRL")                ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/json2.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/1MnPH")
+	@   $(call download-url, "http://goo.gl/1MnPH")                 ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/main.js: $(SRC_DIR)/homepage/main.js | $(CACHE_DIR)
-	@   $(call replace-url-macros, $<, $@)
+	@   $(call replace-url-macros, $<, $@)                          ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/qm.js:                                                         \
     $(CACHE_DIR)/quanah.js                                                  \
@@ -337,16 +347,20 @@ $(CACHE_DIR)/qm.js:                                                         \
     $(CACHE_DIR)/jslint.js                                                  \
     $(CACHE_DIR)/json2.js                                                   \
     |   $(CACHE_DIR)
-	@   $(call replace-url-macros, $^, $@)
+	@   $(call replace-url-macros, $^, $@)                          ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
-	@   $(call replace-url-macros, $<, $@)
+	@   $(call replace-url-macros, $<, $@)                          ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/0C6XzA")
+	@   $(call download-url, "http://goo.gl/0C6XzA")                ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/respond.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/xZRyTq")
+	@   $(call download-url, "http://goo.gl/xZRyTq")                ;   \
+            $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/robots.txt: $(SRC_DIR)/homepage/robots.txt | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)

@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 10 Aug 2014
+#                                                   ~~ last updated 10 Nov 2014
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -40,6 +40,14 @@ define available
             fi                                                          ;   \
         done                                                                \
     )
+endef
+
+define check-js-syntax
+    $(call aside, "Checking syntax of $(1) ...")                        ;   \
+    $(NODEJS) $(SHARE_DIR)/check-js-syntax.js $(1)                      ;   \
+    if [ $$? -ne 0 ]; then                                                  \
+        exit 1                                                          ;   \
+    fi
 endef
 
 define compile-js
