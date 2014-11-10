@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 26 Sep 2014
+#                                                   ~~ last updated 10 Nov 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -320,7 +320,7 @@ $(CACHE_DIR)/jquery-191.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/tiSzW")
 
 $(CACHE_DIR)/jquery-git1.js: | $(CACHE_DIR)
-	@   $(call download-url, "https://code.jquery.com/jquery-git1.min.js")
+	@   $(call download-url, "http://goo.gl/OmsyrL")
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
 	@   $(call download-url, "http://goo.gl/9XuoRL")
