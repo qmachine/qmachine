@@ -6,7 +6,7 @@
 //  Curl as part of the build process for the QMachine project.
 //
 //                                                      ~~ (c) SRW, 07 Jul 2014
-//                                                  ~~ last updated 09 Nov 2014
+//                                                  ~~ last updated 10 Nov 2014
 
 (function () {
     'use strict';
@@ -19,8 +19,8 @@
 
     /*properties
         argv, createWriteStream, error, exit, get, hasOwnProperty, headers,
-        indexOf, length, location, networkInterfaces, on, parse, pipe,
-        protocol, push, statusCode
+        indexOf, join, length, location, networkInterfaces, on, parse, pipe,
+        protocol, push, statusCode, writeFile
     */
 
  // Prerequisites
@@ -31,8 +31,10 @@
 
  // Definitions
 
+ /*
     download = function (src_url, dest_filename) {
-     // This function needs documentation.
+     // This function was prettier because it used streaming, but it caused
+     // problems with Make ...
         if (is_online() === false) {
             console.error('This computer is not online.');
             return process.exit(1);
@@ -62,6 +64,57 @@
          // This function needs documentation.
             console.error('Error:', err);
             return process.exit(1);
+        });
+        return;
+    };
+ */
+
+    download = function (src_url, dest_file) {
+     // This function needs documentation.
+        if (is_online() === false) {
+            console.error('This computer is not online.');
+            return process.exit(1);
+        }
+        var obj, protocol;
+        obj = url.parse(src_url);
+        if (obj.protocol === 'http:') {
+            protocol = http;
+        } else if (obj.protocol === 'https:') {
+            protocol = https;
+        } else {
+            throw new Error('Unsupported protocol: "' + obj.protocol + '"');
+        }
+        protocol.get(src_url, function (response) {
+         // This function needs documentation.
+            if ([300, 301, 302, 303, 307].indexOf(response.statusCode) >= 0) {
+                download(response.headers.location, dest_file);
+                return;
+            }
+            if ([200, 201].indexOf(response.statusCode) < 0) {
+                throw new Error('Error ' + response.statusCode);
+            }
+            var temp = [];
+            response.on('data', function (chunk) {
+             // This function needs documentation.
+                temp.push(chunk);
+                return;
+            });
+            response.on('end', function () {
+             // This function needs documentation.
+                fs.writeFile(dest_file, temp.join(''), function (err) {
+                 // This function needs documentation.
+                    if (err !== null) {
+                        throw err;
+                    }
+                    return process.exit();
+                });
+                return;
+            });
+            return;
+        }).on('error', function (err) {
+         // This function needs documentation.
+            console.error('Error:', err);
+            return;
         });
         return;
     };
