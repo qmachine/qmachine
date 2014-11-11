@@ -8,8 +8,11 @@
 //
 //  Coming soon: tests that check the JSON return types of API calls.
 //
+//  NOTE: See https://github.com/ariya/phantomjs/issues/12697 if tests are
+//  failing right now ...
+//
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 31 Aug 2014
+//                                                  ~~ last updated 10 Nov 2014
 
 (function () {
     'use strict';
@@ -86,6 +89,10 @@
          // This function needs documentation.
             var obj = JSON.stringify(message, undefined, 4);
             console.error('Submitter Error:', obj);
+            if ((homepage instanceof Object) &&
+                    (homepage.hasOwnProperty('close'))) {
+                homepage.close();
+            }
             return exit(1);
         };
         homepage.onResourceReceived = function () {
