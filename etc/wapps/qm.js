@@ -2,17 +2,17 @@
 
 //- qm.js ~~
 //                                                      ~~ (c) SRW, 22 Mar 2013
-//                                                  ~~ last updated 22 Mar 2013
+//                                                  ~~ last updated 11 Nov 2014
 
 /*global wApps: false */
 
 wApps.manifest.apps.push({
-    "name": "QMachine",
-    "description": "Distributed Computing in JavaScript",
-    "url": "https://www.qmachine.org/",
-    "author": "Sean Wilkinson",
-    "namespace": "QM",
-    "buildUI": function (id) {
+    'name': 'QMachine',
+    'description': 'Distributed Computing in JavaScript',
+    'url': 'https://www.qmachine.org/',
+    'author': 'Sean Wilkinson',
+    'namespace': 'QM',
+    'buildUI': function (id) {
         'use strict';
         /*jslint browser: true, indent: 4, maxlen: 80 */
         var $ = window.jQuery;
