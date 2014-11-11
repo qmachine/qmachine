@@ -16,9 +16,9 @@
 #       served to show the default, and I removed most of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 07 Nov 2014
+#                                                   ~~ last updated 11 Nov 2014
 
-import os, sys, urllib
+import os, urllib
 
 # -- General configuration ------------------------------------------------
 
@@ -79,16 +79,16 @@ html_theme = 'default'
 # it should be a 16x16 or 32x32 pixel Windows icon file (.ico).
 
 try:
-    os.stat('_static')
+  os.stat('_static')
 except:
-    os.mkdir('_static')
+  os.mkdir('_static')
 
 try:
-    urllib.urlretrieve('https://www.qmachine.org/favicon.ico', \
-        os.path.join('_static', 'favicon.ico'))
-    html_favicon = 'favicon.ico'
+  urllib.urlretrieve('https://www.qmachine.org/favicon.ico', \
+    os.path.join('_static', 'favicon.ico'))
+  html_favicon = 'favicon.ico'
 except:
-    pass
+  pass
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
