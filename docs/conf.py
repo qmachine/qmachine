@@ -129,7 +129,7 @@ latex_show_pagerefs = True
 # (source start file, name, description, authors, manual section).
 
 man_pages = [
-    ('index', 'qmachine', u'QMachine Documentation', [u'Sean Wilkinson'], 1)
+  ('index', 'qmachine', u'QMachine Documentation', [u'Sean Wilkinson'], 1)
 ]
 
 
@@ -141,8 +141,8 @@ man_pages = [
 
 texinfo_documents = [
   ('index', 'QMachine', u'QMachine Documentation',
-   u'Sean Wilkinson', 'QMachine', 'A platform for World Wide Computing.',
-   'Miscellaneous'),
+    u'Sean Wilkinson', 'QMachine', 'A platform for World Wide Computing.',
+    'Miscellaneous'),
 ]
 
 
