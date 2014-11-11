@@ -306,7 +306,7 @@ $(CACHE_DIR)/hits-by-country.json:                                          \
 	@   $(CP) $< $@
 
 $(CACHE_DIR)/homepage.js:                                                   \
-    $(CACHE_DIR)/jquery-git1.js                                             \
+    $(CACHE_DIR)/jquery.js                                                  \
     $(CACHE_DIR)/bootstrap.js                                               \
     $(CACHE_DIR)/main.js                                                    \
     |   $(CACHE_DIR)
@@ -321,12 +321,12 @@ $(CACHE_DIR)/html5shiv.js: | $(CACHE_DIR)
 $(CACHE_DIR)/index.html: $(SRC_DIR)/homepage/index.html | $(CACHE_DIR)
 	@   $(call replace-url-macros, $<, $@)
 
-$(CACHE_DIR)/jquery-191.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/tiSzW")                 ;   \
+$(CACHE_DIR)/jquery.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/qjRe3z")                ;   \
             $(call check-js-syntax, $@)
 
-$(CACHE_DIR)/jquery-git1.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/OmsyrL")                ;   \
+$(CACHE_DIR)/jquery-191.js: | $(CACHE_DIR)
+	@   $(call download-url, "http://goo.gl/tiSzW")                 ;   \
             $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/jslint.js: | $(CACHE_DIR)
