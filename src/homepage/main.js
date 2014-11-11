@@ -18,14 +18,14 @@
 //      https://bugzilla.mozilla.org/show_bug.cgi?id=756028
 //
 //                                                      ~~ (c) SRW, 23 May 2012
-//                                                  ~~ last updated 31 Aug 2014
+//                                                  ~~ last updated 11 Nov 2014
 
 (function () {
     'use strict';
 
  // Pragmas
 
-    /*global google: false, jQuery: false */
+    /*global google: false */
 
     /*jshint maxparams: 2, quotmark: single, strict: true */
 
