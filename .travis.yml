@@ -6,10 +6,10 @@
 #   against 5 databases each, plus Ruby against Mongo.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 29 Oct 2014
+#                                                   ~~ last updated 14 Nov 2014
 
 before_install:
-  - rvm use 'ruby-2.1.4' --install --binary --fuzzy
+  - rvm use 'ruby-2.1.5' --install --binary --fuzzy
 
 before_script:
   - psql -c "create database ${USER};" -U postgres
