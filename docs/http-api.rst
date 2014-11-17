@@ -21,7 +21,7 @@ blank. JSON objects are denoted ``{}``, and JSON arrays are denoted ``[]``.
 Purpose  Method           URL                           Data     Code  Data
 ======== ================ ============================= ======== ===== =======
 Get avar GET              /box/cardboard?key=982770f29           200   ``{}``
-Get jobs GET              /box/cardboard?status=waiting          200   ``[]``
+Get list GET              /box/cardboard?status=waiting          200   ``[]``
 Set avar POST             /box/cardboard?key=982770f29  ``{}``   201
 ======== ================ ============================= ======== ===== =======
 
@@ -44,12 +44,14 @@ key. For the example shown in the table, an avar with "cardboard" as its box, "9
     {"box":"cardboard","key":"982770f29","val":2}
 
 
-Get jobs
+Get list
 ~~~~~~~~
 
-To get unknown job descriptions, a client must request a list of their keys by
-known box and known status. This list is represented as a JSON array. For the
-example show in the table, an array containing three avars' keys might look
+Because job descriptions are avars that must be accessed by a known box and a
+known key, a volunteer which knows only the box cannot run a job until it also
+knows the job's key. Clients may request a list of jobs' keys using a known
+box and a known status; this list is represented as a JSON array. For the
+example shown in the table, an array containing three avars' keys might look
 like
 
 .. code-block:: js
@@ -82,7 +84,7 @@ much appreciated.
 Purpose  Method           URL                           Data     Code  Data
 ======== ================ ============================= ======== ===== =======
 Get avar GET              /v1/cardboard?key=982770f29            200   ``{}``
-Get jobs GET              /v1/cardboard?status=waiting           200   ``[]``
+Get list GET              /v1/cardboard?status=waiting           200   ``[]``
 Set avar POST             /v1/cardboard?key=982770f29   ``{}``   201
 ======== ================ ============================= ======== ===== =======
 
