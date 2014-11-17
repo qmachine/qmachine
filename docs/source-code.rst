@@ -34,6 +34,13 @@ The source code for the :doc:`Node.js module <nodejs>` is available at
 https://github.com/qmachine/qm-nodejs.
 
 
+R
+--
+
+The source code for an experimental R package is available at
+https://github.com/qmachine/qm-r.
+
+
 Ruby
 ----
 
