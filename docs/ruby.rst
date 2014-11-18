@@ -15,9 +15,9 @@ globally,
 API client
 ----------
 
-A client for Ruby is planned, but it not yet available as part of the gem. When
-it becomes available, it will be possible to submit jobs from a Ruby program to
-be executed by volunteer compute nodes.
+A client for Ruby is under development, but it not yet available in the stable
+release of the gem. When it becomes available, it will be possible to submit
+jobs from a Ruby program to be executed by volunteer compute nodes.
 
 
 API server
