@@ -34,6 +34,13 @@ The source code for the :doc:`Node.js module <nodejs>` is available at
 https://github.com/qmachine/qm-nodejs.
 
 
+Python
+------
+
+The source code for a *very* incomplete Python package is available at
+https://github.com/qmachine/qmachine-python.
+
+
 R
 --
 
