@@ -13,6 +13,8 @@
     "name": "qm-node-app",
     "private": true,
     "readme": "See https://docs.qmachine.org/en/latest/nodejs.html.",
-    "scripts": {},
+    "scripts": {
+        "postinstall": "node ./node_modules/qm/examples/roll-up.js public/"
+    },
     "version": "1.1.15"
 }

@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 10 Nov 2014
+#                                                   ~~ last updated 20 Nov 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -159,10 +159,11 @@ node-app: | $(BUILD_DIR)/node-app/
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
                     testpage                                            ;   \
-            $(CD) $(BUILD_DIR)/node-app/                                ;   \
+            if [ ! -d $(BUILD_DIR)/$@/public ]; then                        \
+                $(CP) $(BUILD_DIR)/testpage $(BUILD_DIR)/$@/public      ;   \
+            fi                                                          ;   \
+            $(CD) $(BUILD_DIR)/$@                                       ;   \
             $(NPM) install                                              ;   \
-            $(NODEJS) node_modules/qm/examples/roll-up.js \
-                ../testpage katamari.json                               ;   \
             $(call run-procfile, \
                 QM_API_STRING=$(strip $(QM_API_STRING)) \
                 QM_WWW_STRING='"$(BUILD_DIR)/$@/katamari.json"')
@@ -172,11 +173,10 @@ ruby-app: | $(BUILD_DIR)/ruby-app/
                 QM_API_URL='$(strip $(LOCAL_ADDR))'                         \
                 QM_WWW_URL='$(strip $(LOCAL_ADDR))'                         \
                     testpage                                            ;   \
-            $(CD) $(BUILD_DIR)                                          ;   \
-            if [ ! -d $@/public/ ]; then                                    \
-                $(CP) testpage $@/public                                ;   \
+            if [ ! -d $(BUILD_DIR)/$@/public ]; then                        \
+                $(CP) $(BUILD_DIR)/testpage $(BUILD_DIR)/$@/public      ;   \
             fi                                                          ;   \
-            $(CD) $@/                                                   ;   \
+            $(CD) $(BUILD_DIR)/$@                                       ;   \
             $(BUNDLE) package --all                                     ;   \
             $(call run-procfile, \
                 QM_API_STRING=$(strip $(QM_API_STRING)))
