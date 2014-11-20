@@ -14,7 +14,8 @@
     "private": true,
     "readme": "See https://docs.qmachine.org/en/latest/nodejs.html.",
     "scripts": {
-        "postinstall": "node ./node_modules/qm/examples/roll-up.js public/"
+        "prestart": "node ./node_modules/qm/examples/roll-up.js public/",
+        "start": "node server.js"
     },
     "version": "1.1.15"
 }
