@@ -6,9 +6,10 @@
 #   against 5 databases each, plus Ruby against Mongo.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 14 Nov 2014
+#                                                   ~~ last updated 20 Nov 2014
 
 before_install:
+  - sudo npm install npm -g
   - rvm use 'ruby-2.1.5' --install --binary --fuzzy
 
 before_script:
