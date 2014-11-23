@@ -355,7 +355,7 @@ $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
             $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/0C6XzA")                ;   \
+	@   $(call download-url, "http://goo.gl/dldClJ")                ;   \
             $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/respond.js: | $(CACHE_DIR)
