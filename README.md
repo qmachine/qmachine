@@ -11,12 +11,12 @@ which means that cloning it requires cloning its submodules, too:
 
 As a model for computation, QM is detailed in a recent open access paper,
 [QMachine: commodity supercomputing in web browsers](http://www.biomedcentral.com/1471-2105/15/176).
-The paper, which earned
-["Highly Accessed"](http://www.biomedcentral.com/about/mostviewed/) status from
-*BMC Bioinformatics*, explains some of the design decisions behind QM,
-demonstrates the use of QM in scientific workflows, and elaborates on some of
-the future directions. The accompanying screencasts, one of which was featured
-by the
+That paper, which is the most
+["Highly Accessed"](http://www.biomedcentral.com/about/mostviewed/) paper in
+*BMC Bioinformatics* of all time, explains some of the design decisions behind
+QM, demonstrates the use of QM in scientific workflows, and elaborates on some
+of the future directions. The accompanying screencasts, one of which was
+featured by the
 [HPCwire](http://www.hpcwire.com/hpcwire/2013-03-14/qmachine_combines_hpc_with_www.html)
 and
 [insideHPC](http://insidehpc.com/2013/03/09/video-qmachine-commodity-supercomputing-with-web-browsers/)
