@@ -12,7 +12,7 @@
 //  failing right now ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 10 Nov 2014
+//                                                  ~~ last updated 24 Nov 2014
 
 (function () {
     'use strict';
@@ -156,10 +156,10 @@
 
     console.log('NOTE: Test box is "make-check".');
 
+ /*
     register_test('Results: 1', function f() {
      // This function tests "Method Q" for the case when all parameters for
      // remote execution are specified explicitly to the constructor.
-        /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
             return;
@@ -180,6 +180,7 @@
         });
         return;
     });
+ */
 
     register_test('Results: 2', function f() {
      // This function tests "Method Q" for the case when the `box` and `val`
@@ -296,7 +297,7 @@
              // This function needs documentation.
                 return x + 2;
             },
-            x: window.QM.avar({val: 4})
+            x: window.QM.avar(4)
         }).Q(function (evt) {
          // This function needs documentation.
             console.log('Results: ' + this.val);
@@ -321,7 +322,7 @@
         window.QM.submit({
             box: 'make-check',
             f: '(x) -> x + 3',
-            x: window.QM.avar({val: 4})
+            x: window.QM.avar(4)
         }).Q(function (evt) {
          // This function needs documentation.
             console.log('Results: ' + this.val);
@@ -344,13 +345,15 @@
             setTimeout(f, 0);
             return;
         }
+        var x = window.QM.avar(4);
+        x.box = 'booger';
         window.QM.submit({
             box: 'make-check',
             f: function (x) {
              // This function needs documentation.
                 return x * 2;
             },
-            x: window.QM.avar({box: 'booger', val: 4})
+            x: x
         }).Q(function (evt) {
          // This function needs documentation.
             console.log('Results: ' + this.val);
