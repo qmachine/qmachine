@@ -28,16 +28,19 @@ Set avar POST             /box/cardboard?key=982770f29  ``{}``   201
 
 The data model is based on Quanah_'s asynchronous variables ("avars"). An
 avar is a JavaScript object that acts as a generic container for other types by
-storing a unique identifier, "key", alongside the contained data, "val". QM
-extends this model by adding a "box" parameter to allow grouping and a "status"
-parameter for avars that represent job descriptions.
+storing data in its "val" property. QM extends this model by adding "box",
+"key", and optional "status" properties. The "box" property is useful for
+grouping avars in various ways, while the "key" property is a unique identifier
+for each avar. The optional "status" property is present on avars that
+represent job descriptions.
 
 
 Get avar
 ~~~~~~~~
 
 To get the value of an avar, a client must request it by known box and known
-key. For the example shown in the table, an avar with "cardboard" as its box, "982770f29" as its key, and 2 as its value would look like
+key. For the example shown in the table, an avar with "cardboard" as its box,
+"982770f29" as its key, and 2 as its value would look like
 
 .. code-block:: js
 
