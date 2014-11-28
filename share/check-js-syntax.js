@@ -8,14 +8,12 @@
 //  that have been downloaded.
 //
 //                                                      ~~ (c) SRW, 10 Nov 2014
-//                                                  ~~ last updated 10 Nov 2014
+//                                                  ~~ last updated 28 Nov 2014
 
 (function () {
     'use strict';
 
  // Pragmas
-
-    /*global */
 
     /*jshint maxparams: 2, quotmark: single, strict: true */
 
