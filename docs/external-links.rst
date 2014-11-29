@@ -3,6 +3,7 @@
 
 .. _altjs.org: http://bit.ly/altjsorg
 .. _Apache: https://httpd.apache.org/
+.. _Bluemix: https://bluemix.net/
 .. _Bower: http://bower.io/
 .. _Bundler: http://bundler.io/
 .. _CouchDB: http://couchdb.apache.org
