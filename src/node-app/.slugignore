@@ -6,6 +6,8 @@
 #       https://devcenter.heroku.com/articles/slug-compiler
 #
 #                                                       ~~ (c) SRW, 22 Oct 2012
-#                                                   ~~ last updated 20 Nov 2014
+#                                                   ~~ last updated 28 Nov 2014
+
+^manifest\.yml$
 
 #-  vim:set syntax=gitconfig:

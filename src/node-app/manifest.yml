@@ -1,0 +1,23 @@
+#-  Cloud Foundry application manifest
+
+#-  manifest.yml ~~
+#
+#   This file is used for deploying to Cloud Foundry platforms. This file has
+#   only been tested with IBM Bluemix so far, and I wasn't using the `cf`
+#   command-line tool because I was using IBM's Continuous Delivery Pipeline
+#   instead.
+#
+#   For more information about application manifests, see http://goo.gl/WDWSjM.
+#
+#                                                       ~~ (c) SRW, 28 Nov 2014
+#                                                   ~~ last updated 28 Nov 2014
+
+applications:
+  - command: npm start
+    disk_quota: 1024M
+    instances: 2
+    memory: 256M
+    name: qmachine
+    path: .
+
+#-  vim:set syntax=yaml:

@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 28 Aug 2014
+//                                                  ~~ last updated 28 Nov 2014
 
 (function () {
     'use strict';
@@ -19,7 +19,7 @@
         OPENSHIFT_INTERNAL_PORT, OPENSHIFT_NODEJS_IP, OPENSHIFT_NODEJS_PORT,
         parse, persistent_storage, port, PORT, QM_API_STRING, QM_HOSTNAME,
         QM_LOG_STRING, QM_WWW_STRING, static_content, trafficlog_storage,
-        TRAVIS, VCAP_APP_PORT, VMC_APP_PORT, worker_procs
+        TRAVIS, VCAP_APP_HOST, VCAP_APP_PORT, VMC_APP_PORT, worker_procs
     */
 
  // Declarations
@@ -94,8 +94,13 @@
         options.worker_procs = 1;
     }
 
+    if (process.env.VCAP_APP_HOST !== undefined) {
+     // This is for Cloud Foundry platforms like AppFog and IBM Bluemix.
+        options.hostname = process.env.VCAP_APP_HOST;
+    }
+
     if (process.env.VCAP_APP_PORT !== undefined) {
-     // This is for use with AppFog.
+     // This is for Cloud Foundry platforms like AppFog and IBM Bluemix.
         options.port = process.env.VCAP_APP_PORT;
     }
 

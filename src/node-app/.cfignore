@@ -1,0 +1,10 @@
+#-  Cloud Foundry ignore file
+
+#-  .cfignore ~~
+#                                                       ~~ (c) SRW, 28 Nov 2014
+#                                                   ~~ last updated 28 Nov 2014
+
+Procfile
+node_modules
+
+#-  vim:set syntax=gitconfig:
