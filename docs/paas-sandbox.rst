@@ -8,9 +8,15 @@ design was driven by the goal to be as far "above the metal" as possible.
 One-click deployment to Heroku
 ------------------------------
 
-In fact, QM is so far "above the metal" that it can be deployed to Heroku_
-with a single click. Skeptical? Visit the version-controlled repository at
-https://github.com/qmachine/qm-ruby-turnkey to try it out :-)
+To deploy your own turnkey QM system to Heroku_, click the button below:
+
+.. image:: /_static/heroku-button.png
+    :alt: (Button that deploys QM to Heroku)
+    :align: center
+    :target: https://heroku.com/deploy?template=https://github.com/qmachine/qm-ruby-turnkey
+
+For information about how it works, visit the version-controlled repository at
+https://github.com/qmachine/qm-ruby-turnkey.
 
 
 Other platforms

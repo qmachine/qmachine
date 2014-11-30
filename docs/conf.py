@@ -16,7 +16,7 @@
 #       served to show the default, and I removed most of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 24 Nov 2014
+#                                                   ~~ last updated 29 Nov 2014
 
 import os, urllib
 
@@ -87,6 +87,12 @@ try:
   urllib.urlretrieve('https://www.qmachine.org/favicon.ico', \
     os.path.join('_static', 'favicon.ico'))
   html_favicon = 'favicon.ico'
+except:
+  pass
+
+try:
+  urllib.urlretrieve('https://www.herokucdn.com/deploy/button.png', \
+    os.path.join('_static', 'heroku-button.png'))
 except:
   pass
 
