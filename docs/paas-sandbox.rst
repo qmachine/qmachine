@@ -20,11 +20,11 @@ you can do it without even leaving this page.
 
     To deploy your own turnkey system, click the button. Seriously, try it.
 
-It's okay if you're leery of clicking things, or if your computer's security
+It's okay if you're leery of clicking things, if your computer's security
 settings blocked the coolness, or if you're using a hard copy of the manual.
-The idea here is the same one common throughout QM itself: a workflow can be
-launched simply by loading a URL. In this case, your click sends a message to
-Heroku to create a new app from a template in a version-controlled repository,
+The idea here appears again and again in QM: a workflow can be launched simply
+by loading a URL. In this case, your click sends a message to Heroku to create
+a new app from a template in a version-controlled repository,
 https://github.com/qmachine/qm-ruby-turnkey. This template contains the
 "blueprint" for a turnkey QM system, complete with an API server, a web server,
 and a barebones webpage that loads the browser client. It uses the
