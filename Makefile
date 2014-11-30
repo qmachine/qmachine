@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 20 Nov 2014
+#                                                   ~~ last updated 29 Nov 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -70,7 +70,8 @@ clean: reset
 	@   $(RM) $(BUILD_DIR)/                                         ;   \
             $(CD) $(DOCS_DIR)                                           ;   \
             $(MAKE) $@                                                  ;   \
-            $(RM) $(DOCS_DIR)/_static/favicon.ico
+            $(RM) $(DOCS_DIR)/_static/favicon.ico                       ;   \
+            $(RM) $(DOCS_DIR)/_static/heroku-button.png
 
 clobber: clean
 	@   $(RM) $(CACHE_DIR)
