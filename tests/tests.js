@@ -12,7 +12,7 @@
 //  failing right now ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 24 Nov 2014
+//                                                  ~~ last updated 30 Nov 2014
 
 (function () {
     'use strict';
@@ -156,15 +156,17 @@
 
     console.log('NOTE: Test box is "make-check".');
 
- /*
     register_test('Results: 1', function f() {
-     // This function tests "Method Q" for the case when all parameters for
-     // remote execution are specified explicitly to the constructor.
+     // This function tests that the API server allows underscores as valid
+     // characters in an avar's "key" property. Admittedly, it's not a very
+     // good test ...
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
             return;
         }
-        var x = window.QM.avar({box: 'make-check', val: 0});
+        var x = window.QM.avar(0);
+        x.box = 'make-check';
+        x.key = '_underscore_';
         x.Q(function (evt) {
          // This function needs documentation.
             this.val += 1;
@@ -180,7 +182,6 @@
         });
         return;
     });
- */
 
     register_test('Results: 2', function f() {
      // This function tests "Method Q" for the case when the `box` and `val`
