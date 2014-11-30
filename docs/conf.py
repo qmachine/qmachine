@@ -84,15 +84,17 @@ except:
   os.mkdir('_static')
 
 try:
-  urllib.urlretrieve('https://www.qmachine.org/favicon.ico', \
-    os.path.join('_static', 'favicon.ico'))
+  if (os.path.isfile(os.path.join('_static', 'favicon.ico')) is False):
+    urllib.urlretrieve('https://www.qmachine.org/favicon.ico', \
+        os.path.join('_static', 'favicon.ico'))
   html_favicon = 'favicon.ico'
 except:
   pass
 
 try:
-  urllib.urlretrieve('https://www.herokucdn.com/deploy/button.png', \
-    os.path.join('_static', 'heroku-button.png'))
+  if (os.path.isfile(os.path.join('_static', 'heroku-button.png')) is False):
+    urllib.urlretrieve('https://www.herokucdn.com/deploy/button.png', \
+      os.path.join('_static', 'heroku-button.png'))
 except:
   pass
 
