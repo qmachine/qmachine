@@ -59,7 +59,7 @@ to control a simple non-blocking (asynchronous) event loop externally. The loop
 ``QM.volunteer`` function. This internal event loop is neither externally
 configurable nor necessary for using QM -- it simply wraps the ``QM.volunteer``
 function for convenience, rather than forcing application code to implement its
-own non-blocking event loop.
+own non-blocking loop.
 
 
 Advanced use
