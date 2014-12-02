@@ -11,7 +11,7 @@
 #   control -- always execute your commits manually!
 #
 #                                                       ~~ (c) SRW, 31 Oct 2011
-#                                                   ~~ last updated 09 Jul 2014
+#                                                   ~~ last updated 02 Dec 2014
 
 #-  Temporary project directories
 build/
@@ -33,13 +33,6 @@ var/
 #-  Node.js modules
 node_modules/
 
-#-  Vim files (taken from http://git.io/qmQqxA)
-.*.s[a-w][a-z]
-*.un~
-Session.vim
-.netrwhist
-*~
-
 #-  OS generated files (adapted from http://git.io/fBFWrw)
 ._*
 .DS_Store
@@ -50,5 +43,12 @@ Session.vim
 ehthumbs.db
 Icon?
 Thumbs.db
+
+#-  Vim files (taken from http://git.io/qmQqxA)
+.*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
 
 #-  vim:set syntax=gitconfig:
