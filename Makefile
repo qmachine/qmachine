@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 29 Nov 2014
+#                                                   ~~ last updated 02 Dec 2014
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -60,8 +60,15 @@ endif
 all: check-versions chrome-hosted-app homepage npm-module ruby-gem testpage
 
 check: | check-versions
-	@   $(PHANTOMJS) --config=$(TEST_DIR)/config.json \
-                $(TEST_DIR)/tests.js '$(LOCAL_ADDR)'
+	@   $(PHANTOMJS) \
+                --cookies-file=/dev/null \
+                --disk-cache=no \
+                --ignore-ssl-errors=yes \
+                --local-to-remote-url-access=yes \
+                --max-disk-cache-size=0 \
+                --ssl-protocol=any \
+                --web-security=no \
+                    $(TEST_DIR)/tests.js '$(LOCAL_ADDR)'
 
 check-versions:
 	@   $(NODEJS) $(SHARE_DIR)/check-versions.js
@@ -213,11 +220,15 @@ $(BUILD_DIR)/chrome-hosted-app/qmachine/%:                                  \
 
 $(BUILD_DIR)/chrome-hosted-app/snapshot-%.png:                              \
     $(SHARE_DIR)/snapshot.js                                                \
-    $(SRC_DIR)/chrome-hosted-app/phantomjs-config.json                      \
     |   $(BUILD_DIR)/chrome-hosted-app
 	@   $(PHANTOMJS)                                                    \
-                --config=$(SRC_DIR)/chrome-hosted-app/phantomjs-config.json \
-                $(SHARE_DIR)/snapshot.js $(QM_WWW_URL) $* $@            ;   \
+                --cookies-file=/dev/null \
+                --disk-cache=no \
+                --ignore-ssl-errors=yes \
+                --max-disk-cache-size=0 \
+                --ssl-protocol=any \
+                --web-security=no \
+                    $(SHARE_DIR)/snapshot.js $(QM_WWW_URL) $* $@        ;   \
             $(CONVERT) -crop $* $@ $@                                   ;   \
             if [ -f $(@:%.png=%-0.png) ]; then                              \
                 $(CP) $(@:%.png=%-0.png) $@                             ;   \
