@@ -67,10 +67,9 @@ Advanced use
 
 QM's browser client leverages asynchronous variables ("avars") extensively to
 manage concurrency issues in an object-oriented way, and this programming model
-is provided by the Quanah_ JavaScript library. All of the convenience methods
-provided by the browser client are implemented with Quanah. Tutorials for
-advanced use are forthcoming, but they will essentially discuss working with
-avars.
+is provided by Quanah_ and its JavaScript library. Tutorials for advanced use
+are forthcoming, but they will essentially discuss working with avars. For now,
+the best reference on Quanah is its `manual <https://quanah.readthedocs.org>`_.
 
 
 .. ----------------------------
