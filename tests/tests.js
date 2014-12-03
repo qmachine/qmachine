@@ -12,7 +12,7 @@
 //  failing right now ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 30 Nov 2014
+//                                                  ~~ last updated 02 Dec 2014
 
 (function () {
     'use strict';
@@ -25,7 +25,7 @@
 
     /*properties
         args, avar, box, click, close, create, error, evaluate, exit, f,
-        hasOwnProperty, length, log, map, mapreduce, on, onConsoleMessage,
+        hasOwnProperty, key, length, log, map, mapreduce, on, onConsoleMessage,
         onError, onResourceReceived, onResourceRequested, open, push, Q, QM,
         reduce, slice, start, stringify, submit, val, x, y
     */
@@ -160,6 +160,7 @@
      // This function tests that the API server allows underscores as valid
      // characters in an avar's "key" property. Admittedly, it's not a very
      // good test ...
+        /*jslint browser: true */
         if (window.hasOwnProperty('QM') === false) {
             setTimeout(f, 0);
             return;
@@ -167,6 +168,34 @@
         var x = window.QM.avar(0);
         x.box = 'make-check';
         x.key = '_underscore_';
+        x.Q(function (evt) {
+         // This function needs documentation.
+            this.val += 1;
+            return evt.exit();
+        }).Q(function (evt) {
+         // This function needs documentation.
+            console.log('Results: ' + this.val);
+            return evt.exit();
+        }).on('error', function (message) {
+         // This function needs documentation.
+            console.error('Error: ' + JSON.stringify(message));
+            return;
+        });
+        return;
+    });
+
+    register_test('Results: 1.1', function f() {
+     // This function tests that the API server allows hyphens as valid
+     // characters in an avar's "key" property. Admittedly, it's not a very
+     // good test ...
+        /*jslint browser: true */
+        if (window.hasOwnProperty('QM') === false) {
+            setTimeout(f, 0);
+            return;
+        }
+        var x = window.QM.avar(0.1);
+        x.box = 'make-check';
+        x.key = '-hyphen-';
         x.Q(function (evt) {
          // This function needs documentation.
             this.val += 1;
