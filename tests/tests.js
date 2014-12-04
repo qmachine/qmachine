@@ -75,7 +75,7 @@
              // This method didn't appear until PhantomJS 1.7.0 ...
                 homepage.close();
             }
-            console.log(message);
+            console.log('[submitter]', message);
             if (message === y) {
                 return exit(0);
             }
@@ -122,7 +122,10 @@
         var homepage = require('webpage').create();
         homepage.onConsoleMessage = function (message) {
          // This function needs documentation.
-            console.log(message);
+            console.log('[volunteer]', message);
+            if (message.slice(0, 6) === 'Error:') {
+                return exit(1);
+            }
             return;
         };
         homepage.onError = function (message) {
@@ -133,6 +136,7 @@
         };
         homepage.onResourceReceived = function () {
          // This function needs documentation.
+            //console.log('Received:', request.url);
             return;
         };
         homepage.onResourceRequested = function () {
