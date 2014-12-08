@@ -38,5 +38,3 @@ The [manual](https://docs.qmachine.org) is improving steadily, and a
 | Unit tests | [![Unit tests](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) |
 | Special targets | [![Special targets](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest) |
 
-
-<!-- vim:set syntax=ghmarkdown: -->
