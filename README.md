@@ -1,4 +1,5 @@
-# QMachine
+QMachine
+========
 
 
 [QMachine](https://www.qmachine.org) (QM) is a web service for distributed
@@ -31,14 +32,11 @@ The [manual](https://docs.qmachine.org) is improving steadily, and a
 
 ===
 
-| Purpose         | Status                                                                                                                                              |
-|:---------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------:|
-| Documentation   | [![Documentation Status](https://readthedocs.org/projects/qmachine/badge/?version=latest)](https://readthedocs.org/projects/qmachine/?badge=latest) |
-| Unit tests      | [![Build Status](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine)                               |
-| Special targets | [![Build Status](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest)                   |
+| Purpose | Status |
+|:-------:|:------:|
+| Documentation | [![Documentation Status](https://readthedocs.org/projects/qmachine/badge/?version=latest)](https://readthedocs.org/projects/qmachine/?badge=latest) |
+| Unit tests | [![Unit tests](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) |
+| Special targets | [![Special targets](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest) |
 
-<!--
-[![Coverage Status](https://img.shields.io/coveralls/qmachine/qmachine.svg)](https://coveralls.io/r/qmachine/qmachine)
--->
 
-<!-- vim:set syntax=markdown: -->
+<!-- vim:set syntax=ghmarkdown: -->
