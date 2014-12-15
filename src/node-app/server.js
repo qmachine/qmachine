@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 28 Nov 2014
+//                                                  ~~ last updated 14 Dec 2014
 
 (function () {
     'use strict';
@@ -18,7 +18,7 @@
         IP, launch_service, length, log, match_hostname, OPENSHIFT_INTERNAL_IP,
         OPENSHIFT_INTERNAL_PORT, OPENSHIFT_NODEJS_IP, OPENSHIFT_NODEJS_PORT,
         parse, persistent_storage, port, PORT, QM_API_STRING, QM_HOSTNAME,
-        QM_LOG_STRING, QM_WWW_STRING, static_content, trafficlog_storage,
+        QM_LOG_STRING, QM_WEB_STRING, static_content, trafficlog_storage,
         TRAVIS, VCAP_APP_HOST, VCAP_APP_PORT, VMC_APP_PORT, worker_procs
     */
 
@@ -83,10 +83,10 @@
         options.trafficlog_storage = parse(process.env.QM_LOG_STRING);
     }
 
-    if (process.env.QM_WWW_STRING !== undefined) {
+    if (process.env.QM_WEB_STRING !== undefined) {
      // This is a custom environment variable I define prior to deployment.
         options.enable_web_server = true;
-        options.static_content = parse(process.env.QM_WWW_STRING);
+        options.static_content = parse(process.env.QM_WEB_STRING);
     }
 
     if (process.env.TRAVIS === 'true') {
