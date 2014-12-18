@@ -34,5 +34,5 @@
 .. _Sphinx: http://sphinx-doc.org/
 .. _SQLite: https://www.sqlite.org/
 .. _`sqlite3 gem`: https://rubygems.org/gems/sqlite3
-.. _wiki: https://wiki.qmachine.org/
+.. _wiki: https://www.qmachine.org/wiki/Main_Page
 

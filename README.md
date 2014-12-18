@@ -28,7 +28,8 @@ QM has also graced the front page of
 [Hacker News](https://news.ycombinator.com/item?id=6095595).
 
 The [manual](https://docs.qmachine.org) is improving steadily, and a
-[project wiki](https://wiki.qmachine.org) is also available for reference.
+[project wiki](https://www.qmachine.org/wiki/Main_Page) is also available for
+reference.
 
 ===
 
