@@ -15,7 +15,7 @@
 .. _Homebrew: https://mxcl.github.io/homebrew/
 .. _ImageMagick: http://www.imagemagick.org/
 .. _MongoDB: http://www.mongodb.org/
-.. _Nginx: http://nginx.com/
+.. _Nginx: http://nginx.org/
 .. _Node.js: http://nodejs.org/
 .. _NPM: https://www.npmjs.org/
 .. _NPM-documentation: https://www.npmjs.org/doc/README.html
