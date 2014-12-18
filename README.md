@@ -36,6 +36,6 @@ reference.
 | Purpose | Status |
 |:-------:|:------:|
 | Documentation | [![Documentation Status](https://readthedocs.org/projects/qmachine/badge/?version=latest)](https://readthedocs.org/projects/qmachine/?badge=latest) |
-| Unit tests | [![Unit tests](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) |
 | Special targets | [![Special targets](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest) |
+| Unit tests | [![Unit tests](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) |
 
