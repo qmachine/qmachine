@@ -14,7 +14,7 @@ which means that cloning it requires cloning its submodules, too:
 As a model for computation, QM is described in a recent open access paper,
 [QMachine: commodity supercomputing in web browsers](http://www.biomedcentral.com/1471-2105/15/176).
 That paper, which is the
-[most highly accessed paper of all time](http://www.biomedcentral.com/bmcbioinformatics/mostviewed/alltime)
+[most accessed paper of all time](http://www.biomedcentral.com/bmcbioinformatics/mostviewed/alltime)
 for *BMC Bioinformatics*, explains some of the design decisions behind QM,
 demonstrates its use in scientific workflows, and elaborates on some of its
 future directions. The accompanying screencasts, one of which was featured by
