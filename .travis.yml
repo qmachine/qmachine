@@ -6,7 +6,7 @@
 #   against 5 databases each, plus Ruby against Mongo.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 20 Nov 2014
+#                                                   ~~ last updated 21 Dec 2014
 
 before_install:
   - npm install -g npm@latest
@@ -45,5 +45,7 @@ services:
   - couchdb
   - mongodb
   - redis-server
+
+sudo: false
 
 #-  vim:set syntax=yaml:
