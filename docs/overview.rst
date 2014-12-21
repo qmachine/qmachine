@@ -62,7 +62,8 @@ other resources that are published online. A web server is not strictly
 necessary as part of QM, but it is useful for making the browser client
 available to web browsers. The web servers bundled with the API servers are
 present only for convenience, and it is trivial to use off-the-shelf web
-servers like Apache_ or Nginx_ instead.
+servers like Apache_ or Nginx_ instead. (In fact, QM's own homepage uses
+Nginx.)
 
 
 How to use it
