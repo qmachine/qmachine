@@ -2,7 +2,7 @@
 
 //- custom.js ~~
 //                                                      ~~ (c) SRW, 09 Dec 2013
-//                                                  ~~ last updated 10 Aug 2014
+//                                                  ~~ last updated 22 Dec 2014
 
 (function () {
     'use strict';
@@ -18,12 +18,12 @@
         'cf-connecting-ipv6', cf_ipcountry, 'cf-ipcountry', cf_pseudo_ipv4,
         'cf-pseudo-ipv4', cf_ray, 'cf-ray', cf_visitor, 'cf-visitor',
         connection, content_length, 'content-length', dnt, env, from,
-        hasOwnProperty, headers, host, ip, log, method, origin, parse, referer,
-        remoteAddress, replace, split, timestamp, url, via, warning,
-        x_att_deviceid, 'x-att-deviceid', x_forwarded_for, 'x-forwarded-for',
-        x_forwarded_port, 'x-forwarded-port', x_forwarded_proto,
-        'x-forwarded-proto', x_request_start, 'x-request-start', x_wap_profile,
-        'x-wap-profile'
+        hasOwnProperty, headers, heroku_request_id, host, ip, log, method,
+        origin, parse, referer, remoteAddress, replace, split, timestamp, url,
+        via, warning, x_att_deviceid, 'x-att-deviceid', x_forwarded_for,
+        'x-forwarded-for', x_forwarded_port, 'x-forwarded-port',
+        x_forwarded_proto, 'x-forwarded-proto', 'x-request-id',
+        x_request_start, 'x-request-start', x_wap_profile, 'x-wap-profile'
     */
 
  // Module definitions
@@ -100,15 +100,15 @@
          // See http://goo.gl/RNi5So.
             y.warning = headers.warning;
         }
+        if (headers.hasOwnProperty('x-att-deviceid')) {
+         // See http://goo.gl/IRuyx.
+            y.x_att_deviceid = headers['x-att-deviceid'];
+        }
         if (headers.hasOwnProperty('x-forwarded-for')) {
          // See http://goo.gl/ZtqLv1.
             y.ip = headers['x-forwarded-for'].split(',')[0];
         } else {
             y.ip = request.connection.remoteAddress;
-        }
-        if (headers.hasOwnProperty('x-att-deviceid')) {
-         // See http://goo.gl/IRuyx.
-            y.x_att_deviceid = headers['x-att-deviceid'];
         }
      /*
         if (headers.hasOwnProperty('x-forwarded-port')) {
@@ -119,6 +119,12 @@
          // See http://goo.gl/B8Ks7h.
             y.x_forwarded_proto = headers['x-forwarded-proto'];
         }
+     */
+        if (headers.hasOwnProperty('x-request-id')) {
+         // See http://goo.gl/3xqgw8.
+            y.heroku_request_id = headers['x-request-id'];
+        }
+     /*
         if (headers.hasOwnProperty('x-request-start')) {
          // See http://goo.gl/B8Ks7h.
             y.x_request_start = parseInt(headers['x-request-start'], 10);
