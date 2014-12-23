@@ -93,8 +93,8 @@
      // This is for use with Travis CI. On their original infrastructure, the
      // VMs run on 1.5 cores with burst capacity, so it was best to set
      // `options.worker_procs = 1`. The new infrastructure, based on Docker
-     // containers, offers 2 dedicated cores. See http://goo.gl/6x9Df6.
-        options.worker_procs = 2;
+     // containers, offers 2 dedicated cores, but ... see http://goo.gl/6x9Df6.
+        options.worker_procs = 1;
     }
 
     if (process.env.VCAP_APP_HOST !== undefined) {
