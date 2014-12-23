@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 14 Dec 2014
+//                                                  ~~ last updated 23 Dec 2014
 
 (function () {
     'use strict';
@@ -90,8 +90,11 @@
     }
 
     if (process.env.TRAVIS === 'true') {
-     // This is for use with Travis CI, where the VMs run on 1.5 virtual cores.
-        options.worker_procs = 1;
+     // This is for use with Travis CI. On their original infrastructure, the
+     // VMs run on 1.5 cores with burst capacity, so it was best to set
+     // `options.worker_procs = 1`. The new infrastructure, based on Docker
+     // containers, offers 2 dedicated cores. See http://goo.gl/6x9Df6.
+        options.worker_procs = 2;
     }
 
     if (process.env.VCAP_APP_HOST !== undefined) {
