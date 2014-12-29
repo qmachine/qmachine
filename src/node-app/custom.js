@@ -2,7 +2,7 @@
 
 //- custom.js ~~
 //                                                      ~~ (c) SRW, 09 Dec 2013
-//                                                  ~~ last updated 22 Dec 2014
+//                                                  ~~ last updated 28 Dec 2014
 
 (function () {
     'use strict';
@@ -14,16 +14,9 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        cf_connecting_ip, 'cf-connecting-ip', cf_connecting_ipv6,
-        'cf-connecting-ipv6', cf_ipcountry, 'cf-ipcountry', cf_pseudo_ipv4,
-        'cf-pseudo-ipv4', cf_ray, 'cf-ray', cf_visitor, 'cf-visitor',
-        connection, content_length, 'content-length', dnt, env, from,
-        hasOwnProperty, headers, heroku_request_id, host, ip, log, method,
-        origin, parse, referer, remoteAddress, replace, split, timestamp, url,
-        via, warning, x_att_deviceid, 'x-att-deviceid', x_forwarded_for,
-        'x-forwarded-for', x_forwarded_port, 'x-forwarded-port',
-        x_forwarded_proto, 'x-forwarded-proto', 'x-request-id',
-        x_request_start, 'x-request-start', x_wap_profile, 'x-wap-profile'
+        connection, content_length, 'content-length', dnt, env, hasOwnProperty,
+        headers, host, ip, log, method, parse, remoteAddress, replace, split,
+        timestamp, url, 'x-forwarded-for'
     */
 
  // Module definitions
@@ -34,11 +27,10 @@
      // QMachine provides a default logging function. I have used a convention
      // in which hyphens are converted into underscores in order to prevent
      // inconveniences with certain tools that attempt to auto-detect schemas
-     // from JSON. Also, I have commented out various headers that I don't
-     // personally find useful. Ironically, the "Do Not Track" header (DNT) is
-     // logged alongside the tracking data because I don't understand the legal
-     // stuff yet, but I will delete all personal data from entries that opted
-     // out once I figure out which data are considered "personal".
+     // from JSON. Ironically, the "Do Not Track" header (DNT) is logged
+     // alongside the tracking data because I don't understand the legal stuff
+     // yet, but I will delete all personal data from entries that opted out
+     // once I figure out which data are considered "personal".
         var headers, y;
         headers = request.headers;
         y = {
@@ -47,32 +39,6 @@
             timestamp: new Date(),
             url: request.url
         };
-        if (headers.hasOwnProperty('cf-connecting-ip')) {
-         // See http://goo.gl/81sHn8.
-            y.cf_connecting_ip = headers['cf-connecting-ip'];
-        }
-        if (headers.hasOwnProperty('cf-connecting-ipv6')) {
-         // See http://goo.gl/rjQIhh.
-            y.cf_connecting_ipv6 = headers['cf-connecting-ipv6'];
-        }
-        if (headers.hasOwnProperty('cf-ipcountry')) {
-         // See http://goo.gl/QpDIBe.
-            y.cf_ipcountry = headers['cf-ipcountry'];
-        }
-        if (headers.hasOwnProperty('cf-pseudo-ipv4')) {
-         // See http://goo.gl/rjQIhh.
-            y.cf_pseudo_ipv4 = headers['cf-pseudo-ipv4'];
-        }
-     /*
-        if (headers.hasOwnProperty('cf-ray')) {
-         // See http://goo.gl/wMfrD8.
-            y.cf_ray = headers['cf-ray'];
-        }
-        if (headers.hasOwnProperty('cf-visitor')) {
-         // See http://goo.gl/N7W6wJ.
-            y.cf_visitor = JSON.parse(headers['cf-visitor']);
-        }
-     */
         if (headers.hasOwnProperty('content-length')) {
             y.content_length = parseInt(headers['content-length'], 10);
         }
@@ -80,59 +46,11 @@
          // See http://goo.gl/Rrxu4L.
             y.dnt = parseInt(headers.dnt, 10);
         }
-        if (headers.hasOwnProperty('from')) {
-         // See http://goo.gl/RNi5So.
-            y.from = headers.from;
-        }
-        if (headers.hasOwnProperty('origin')) {
-         // See http://goo.gl/BZldtx.
-            y.origin = headers.origin;
-        }
-        if (headers.hasOwnProperty('referer')) {
-         // See http://goo.gl/BCW8Vf.
-            y.referer = headers.referer;
-        }
-        if (headers.hasOwnProperty('via')) {
-         // See http://goo.gl/RNi5So.
-            y.via = headers.via;
-        }
-        if (headers.hasOwnProperty('warning')) {
-         // See http://goo.gl/RNi5So.
-            y.warning = headers.warning;
-        }
-        if (headers.hasOwnProperty('x-att-deviceid')) {
-         // See http://goo.gl/IRuyx.
-            y.x_att_deviceid = headers['x-att-deviceid'];
-        }
         if (headers.hasOwnProperty('x-forwarded-for')) {
          // See http://goo.gl/ZtqLv1.
             y.ip = headers['x-forwarded-for'].split(',')[0];
         } else {
             y.ip = request.connection.remoteAddress;
-        }
-     /*
-        if (headers.hasOwnProperty('x-forwarded-port')) {
-         // See http://goo.gl/B8Ks7h.
-            y.x_forwarded_port = headers['x-forwarded-port'];
-        }
-        if (headers.hasOwnProperty('x-forwarded-proto')) {
-         // See http://goo.gl/B8Ks7h.
-            y.x_forwarded_proto = headers['x-forwarded-proto'];
-        }
-     */
-        if (headers.hasOwnProperty('x-request-id')) {
-         // See http://goo.gl/3xqgw8.
-            y.heroku_request_id = headers['x-request-id'];
-        }
-     /*
-        if (headers.hasOwnProperty('x-request-start')) {
-         // See http://goo.gl/B8Ks7h.
-            y.x_request_start = parseInt(headers['x-request-start'], 10);
-        }
-     */
-        if (headers.hasOwnProperty('x-wap-profile')) {
-         // See http://goo.gl/vDg0CV.
-            y.x_wap_profile = headers['x-wap-profile'];
         }
         return y;
     };
