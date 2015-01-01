@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 11 Dec 2014
+#                                                   ~~ last updated 31 Dec 2014
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -223,7 +223,7 @@ CD          :=  $(call contingent, cd)
 CLOSURE     :=  $(call contingent, closure-compiler)
 CONVERT     :=  $(call contingent, convert)
 CP          :=  $(call contingent, gcp cp) -rf
-DATE        :=  $(call contingent, gdate date)
+DATE        :=  TZ=GMT $(call contingent, gdate date)
 GEM         :=  $(call contingent, gem)
 GIT         :=  $(call contingent, git)
 JSMIN       :=  $(call contingent, jsmin)
