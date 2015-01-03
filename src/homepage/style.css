@@ -12,7 +12,7 @@
  *  ideas, let me know :-)
  *
  *                                                      ~~ (c) SRW, 29 Oct 2012
- *                                                  ~~ last updated 01 Sep 2014
+ *                                                  ~~ last updated 02 Jan 2015
  */
 
 @media all {
@@ -28,7 +28,8 @@
  /* The next two rules are what happens when your upstream author removes a
   * feature you like -- you paste it back in and disparage them for it, haha.
   * In this case, support for ":invalid" pseudo-selectors was removed from
-  * Twitter Bootstrap 3.x by this commit: http://git.io/1AHLzg. */
+  * Twitter Bootstrap 3.x (see http://git.io/1AHLzg). The `-moz-box-shadow`
+  * was added at the suggestion of CSSLint. */
 
     input:focus:invalid,
     textarea:focus:invalid,
@@ -41,6 +42,7 @@
     textarea:focus:invalid:focus,
     select:focus:invalid:focus {
         border-color: #e9322d;
+        -moz-box-shadow: 0 0 6px #f8b9b7;
         -webkit-box-shadow: 0 0 6px #f8b9b7;
         box-shadow: 0 0 6px #f8b9b7;
     }
