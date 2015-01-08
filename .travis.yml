@@ -33,7 +33,7 @@ language: node_js
 
 matrix:
   allow_failures:
-    - db=couch
+    - env: backend=node-app db=couch
   include:
     - node_js: '0.10'
       env: backend=ruby-app db=mongo
