@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 14 Dec 2014
+#                                                   ~~ last updated 10 Jan 2015
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -60,6 +60,7 @@ endif
 all: check-versions chrome-hosted-app homepage npm-module ruby-gem testpage
 
 check: | check-versions
+	@   $(NODEJS) $(TEST_DIR)/api-tests.js
 	@   $(PHANTOMJS) \
                 --cookies-file=/dev/null \
                 --disk-cache=no \
