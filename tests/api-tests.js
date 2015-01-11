@@ -1,6 +1,11 @@
 //- JavaScript source code
 
 //- api-tests.js ~~
+//
+//  This file is a self-contained Node.js program that verifies the correctness
+//  of a particular implementation of QMachine's HTTP API. This program does
+//  not test the performance of the implementation under load.
+//
 //                                                      ~~ (c) SRW, 10 Jan 2015
 //                                                  ~~ last updated 10 Jan 2015
 
@@ -33,25 +38,23 @@
     http = require('http');
 
     make_call = function (obj, callback) {
-     // This function needs documentation.
-        if ((obj instanceof Object) === false) {
-            throw new TypeError('`make_call` expects an object as input.');
-        }
+     // This function sends a single HTTP API call to the specified endpoint.
         var handler, options, req;
         handler = function (res) {
-         // This function needs documentation.
+         // This function checks that the response matches what was expected.
             if (res.statusCode !== obj.res.statusCode) {
                 throw new Error('status code mismatch (' +
                     res.statusCode + ' !== ' + obj.res.statusCode + ')');
             }
             var temp = [];
             res.on('data', function (chunk) {
-             // This function needs documentation.
+             // This function accumulates the response data as it comes in.
                 temp.push(chunk);
                 return;
             });
             res.on('end', function () {
-             // This function needs documentation.
+             // This function checks that the response data matches what was
+             // expected.
                 var data = temp.join('');
                 if (data !== obj.res.data) {
                     throw new Error('data mismatch (' +
@@ -80,13 +83,16 @@
     };
 
     test = function (sequence) {
-     // This function needs documentation.
+     // This function accepts arrays of objects that describe individual API
+     // calls to be made. These calls will be made sequentially in FIFO order
+     // by calling this function recursively from a callback function.
         var job = sequence.shift();
         if (job === undefined) {
             return;
         }
         make_call(job, function (err) {
-         // This function needs documentation.
+         // This function is a callback function that will run `test` again
+         // recursively.
             if (err !== null) {
                 console.error(job.label + ': ' + err.message);
                 process.exit(1);
@@ -101,7 +107,7 @@
  // Out-of-scope definitions
 
     process.on('exit', function (code) {
-     // This function needs documentation.
+     // This function always runs last, just before the program terminates.
         if (code === 0) {
             console.log('Success: all basic API tests passed.');
         } else {
