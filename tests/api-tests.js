@@ -7,7 +7,7 @@
 //  not test the performance of the implementation under load.
 //
 //                                                      ~~ (c) SRW, 10 Jan 2015
-//                                                  ~~ last updated 10 Jan 2015
+//                                                  ~~ last updated 11 Jan 2015
 
 (function () {
     'use strict';
@@ -240,6 +240,18 @@
     }]);
 
     test([{
+        'label': 'In `set_avar` route, the body must not be empty',
+        'req': {
+            'method': 'POST',
+            'path': '/box/emptybody?key=abc123'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+
+    test([{
         'label': 'In `set_avar` route, "key" in body must match URL param',
         'req': {
             'data': '{"box":"justabox","key":"csharp","val":2}',
@@ -376,6 +388,64 @@
             },
             'method': 'POST',
             'path': '/box/param&badness?key=abc123'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+
+    test([{
+        'label': 'In `get_avar` route, "key" cannot contain a `.` character',
+        'req': {
+            'method': 'GET',
+            'path': '/box/parambadness?key=abc.123'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+
+    test([{
+        'label': 'In `set_avar` route, "key" cannot contain a `.` character',
+        'req': {
+            'data': '{"box":"parambadness","key":"abc.123","val":2}',
+            'headers': {
+                'Content-Length': 46,
+                'Content-Type': 'application/json'
+            },
+            'method': 'POST',
+            'path': '/box/param&badness?key=abc.123'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+
+    test([{
+        'label': 'In `set_avar` route, "key" cannot contain a `&` character',
+        'req': {
+            'data': '{"box":"parambadness","key":"abc&123","val":2}',
+            'headers': {
+                'Content-Length': 46,
+                'Content-Type': 'application/json'
+            },
+            'method': 'POST',
+            'path': '/box/param&badness?key=abc&123'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+
+    test([{
+        'label': 'In `get_jobs` route, "status" cannot contain a `.` character',
+        'req': {
+            'method': 'GET',
+            'path': '/box/parambadness?status=still.waiting'
         },
         'res': {
             'data': '',
