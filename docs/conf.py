@@ -16,7 +16,7 @@
 #       served to show the default, and I removed most of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 01 Jan 2015
+#                                                   ~~ last updated 12 Jan 2015
 
 import os, urllib
 
@@ -54,7 +54,7 @@ version = '1.2'
 
 # The full version, including alpha/beta/rc tags.
 
-release = '1.2.1'
+release = '1.2.2'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
