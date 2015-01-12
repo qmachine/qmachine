@@ -43,8 +43,8 @@
         handler = function (res) {
          // This function checks that the response matches what was expected.
             if (res.statusCode !== obj.res.statusCode) {
-                throw new Error('status code mismatch (' +
-                    res.statusCode + ' !== ' + obj.res.statusCode + ')');
+                return callback(new Error('status code mismatch (' +
+                        res.statusCode + ' !== ' + obj.res.statusCode + ')'));
             }
             var temp = [];
             res.on('data', function (chunk) {
@@ -314,6 +314,7 @@
     }]);
 
     test([{
+     // NOTE: This test may not actually be important ...
         'label': 'In `get_avar` route, "box" cannot contain a `.` character',
         'req': {
             'method': 'GET',
@@ -326,6 +327,7 @@
     }]);
 
     test([{
+     // NOTE: This test may not actually be important ...
         'label': 'In `get_jobs` route, "box" cannot contain a `.` character',
         'req': {
             'method': 'GET',
@@ -338,6 +340,7 @@
     }]);
 
     test([{
+     // NOTE: This test may not actually be important ...
         'label': 'In `set_avar` route, "box" cannot contain a `.` character',
         'req': {
             'data': '{"box":"mongo.badness","key":"abc123","val":2}',
@@ -396,6 +399,39 @@
     }]);
 
     test([{
+        'label': 'In `get_avar` route, "key" supports the expected characters',
+        'req': {
+            'method': 'GET',
+            'path': '/box/deadbeef?key=ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+                    'abcdefghijklmnopqrstuvwxyz0123456789_-'
+        },
+        'res': {
+            'data': '{}',
+            'statusCode': 200
+        }
+    }]);
+
+    test([{
+        'label': 'In `set_avar` route, "key" supports the expected characters',
+        'req': {
+            'data': '{"box":"abc123","key":"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef' +
+                    'ghijklmnopqrstuvwxyz0123456789_-","val":2}',
+            'headers': {
+                'Content-Length': 97,
+                'Content-Type': 'application/json'
+            },
+            'method': 'POST',
+            'path': '/box/abc123?key=ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+                    'abcdefghijklmnopqrstuvwxyz0123456789_-'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 201
+        }
+    }]);
+
+    test([{
+     // NOTE: This test may not actually be important ...
         'label': 'In `get_avar` route, "key" cannot contain a `.` character',
         'req': {
             'method': 'GET',
@@ -408,6 +444,7 @@
     }]);
 
     test([{
+     // NOTE: This test may not actually be important ...
         'label': 'In `set_avar` route, "key" cannot contain a `.` character',
         'req': {
             'data': '{"box":"parambadness","key":"abc.123","val":2}',
@@ -424,7 +461,28 @@
         }
     }]);
 
+ /*
     test([{
+     // This test doesn't work because URLs are parsed such that "key" and
+     // "waiting" will be treated as different query parameters anyway :-)
+        'label': 'In `get_avar` route, "key" cannot contain a `&` character',
+        'req': {
+            'method': 'GET',
+            'path': '/box/parambadness?key=abc&123'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+ */
+
+    test([{
+     // This request should fail for at least two reasons. First, the URL will
+     // be parsed with two query parameters, "key" and "123"; thus, the value
+     // of "key" will be "abc", which won't match the value given in the body
+     // of the request. The second reason the request should fail is because
+     // the internal key contains `&`, which shouldn't be allowed.
         'label': 'In `set_avar` route, "key" cannot contain a `&` character',
         'req': {
             'data': '{"box":"parambadness","key":"abc&123","val":2}',
@@ -442,10 +500,78 @@
     }]);
 
     test([{
+        'label': 'In `get_jobs` route, "status" supports the expected ' +
+                'characters',
+        'req': {
+            'method': 'GET',
+            'path': '/box/waiting?status=ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+                    'abcdefghijklmnopqrstuvwxyz0123456789_-'
+        },
+        'res': {
+            'data': '[]',
+            'statusCode': 200
+        }
+    }]);
+
+    test([{
+        'label': 'In `set_avar` route, "status" of body supports the ' +
+                'expected characters',
+        'req': {
+            'data': '{"box":"lala","key":"lele","status":"ABCDEFGHIJKLMNOPQR' +
+                    'STUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-","val":2}',
+            'headers': {
+                'Content-Length': 111,
+                'Content-Type': 'application/json'
+            },
+            'method': 'POST',
+            'path': '/box/lala?key=lele'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 201
+        }
+    }]);
+
+    test([{
+     // NOTE: This test may not actually be important ...
         'label': 'In `get_jobs` route, "status" cannot contain a `.` character',
         'req': {
             'method': 'GET',
             'path': '/box/parambadness?status=still.waiting'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+
+ /*
+    test([{
+     // This test doesn't work because URLs are parsed such that "status" and
+     // "waiting" will be treated as different query parameters anyway :-)
+        'label': 'In `get_jobs` route, "status" cannot contain a `&` character',
+        'req': {
+            'method': 'GET',
+            'path': '/box/parambadness?status=still&waiting'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+ */
+
+    test([{
+        'label': 'In `set_avar` route, "status" of body cannot contain a ' +
+                '`&` character',
+        'req': {
+            'data': '{"box":"lala","key":"lele","status":"pb&j","val":2}',
+            'headers': {
+                'Content-Length': 51,
+                'Content-Type': 'application/json'
+            },
+            'method': 'POST',
+            'path': '/box/lala?key=lele'
         },
         'res': {
             'data': '',
