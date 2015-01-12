@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 31 Dec 2014
+#                                                   ~~ last updated 12 Jan 2015
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -181,7 +181,9 @@ define remove-source-maps
 endef
 
 define replace-iso-date
-    $(SED) -e 's|ISO_DATE|$(shell $(DATE) "+%Y-%m-%d")|g' $(1) > $(2)
+    $(SED) -e \
+        's|\(<lastmod>\).*\(</lastmod>\)|\1$(shell $(DATE) '+%Y-%m-%d')\2|g' \
+            $(1) > $(2)
 endef
 
 define replace-url-macros

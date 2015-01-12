@@ -5,15 +5,15 @@
     For more information, see https://en.wikipedia.org/wiki/Sitemaps .
 
                                                         ~~ (c) SRW, 12 Nov 2012
-                                                    ~~ last updated 04 Aug 2014
+                                                    ~~ last updated 12 Jan 2015
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                       http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
-    <loc>QM_WWW_URL/</loc>
-    <lastmod>ISO_DATE</lastmod>
+    <loc>https://www.qmachine.org/</loc>
+    <lastmod>2015-01-12</lastmod>
     <changefreq>daily</changefreq>
   </url>
 </urlset>

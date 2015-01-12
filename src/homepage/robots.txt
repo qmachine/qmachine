@@ -6,11 +6,11 @@
 #       http://en.wikipedia.org/wiki/Robots_exclusion_standard .
 #
 #                                                       ~~ (c) SRW, 12 Nov 2012
-#                                                   ~~ last updated 21 Oct 2013
+#                                                   ~~ last updated 12 Jan 2015
 
 User-agent: *
 Disallow: /box/
 Disallow: /v1/
-Sitemap: QM_WWW_URL/sitemap.xml
+Sitemap: https://www.qmachine.org/sitemap.xml
 
 #-  vim:set syntax=robots:
