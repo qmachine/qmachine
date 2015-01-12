@@ -7,7 +7,7 @@
 //  not test the performance of the implementation under load.
 //
 //                                                      ~~ (c) SRW, 10 Jan 2015
-//                                                  ~~ last updated 11 Jan 2015
+//                                                  ~~ last updated 12 Jan 2015
 
 (function () {
     'use strict';
@@ -19,9 +19,10 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        'Content-Length', 'Content-Type', data, end, error, exit,
-        hasOwnProperty, headers, hostname, join, label, log, message, method,
-        on, path, port, push, req, request, res, shift, statusCode, write
+        box, 'Content-Length', 'Content-Type', data, end, error, exit,
+        hasOwnProperty, headers, hostname, join, key, label, length, log,
+        message, method, on, path, port, push, req, request, res, shift,
+        status, statusCode, stringify, val, write
     */
 
  // Declarations
@@ -131,10 +132,10 @@
     }]);
 
     test([{
-        'label': 'Simple test for the `get_jobs` route',
+        'label': 'Simple test for the `get_list` route',
         'req': {
             'method': 'GET',
-            'path': '/box/simpletest?status=get_jobs'
+            'path': '/box/simpletest?status=get_list'
         },
         'res': {
             'data': '[]',
@@ -282,7 +283,7 @@
     }]);
 
     test([{
-        'label': 'In `get_jobs` route, "box" supports the expected characters',
+        'label': 'In `get_list` route, "box" supports the expected characters',
         'req': {
             'method': 'GET',
             'path': '/box/ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
@@ -328,7 +329,7 @@
 
     test([{
      // NOTE: This test may not actually be important ...
-        'label': 'In `get_jobs` route, "box" cannot contain a `.` character',
+        'label': 'In `get_list` route, "box" cannot contain a `.` character',
         'req': {
             'method': 'GET',
             'path': '/box/mongo.badness?status=waiting'
@@ -370,7 +371,7 @@
     }]);
 
     test([{
-        'label': 'In `get_jobs` route, "box" cannot contain a `&` character',
+        'label': 'In `get_list` route, "box" cannot contain a `&` character',
         'req': {
             'method': 'GET',
             'path': '/box/param&badness?status=waiting'
@@ -500,7 +501,7 @@
     }]);
 
     test([{
-        'label': 'In `get_jobs` route, "status" supports the expected ' +
+        'label': 'In `get_list` route, "status" supports the expected ' +
                 'characters',
         'req': {
             'method': 'GET',
@@ -534,7 +535,7 @@
 
     test([{
      // NOTE: This test may not actually be important ...
-        'label': 'In `get_jobs` route, "status" cannot contain a `.` character',
+        'label': 'In `get_list` route, "status" cannot contain a `.` character',
         'req': {
             'method': 'GET',
             'path': '/box/parambadness?status=still.waiting'
@@ -549,7 +550,7 @@
     test([{
      // This test doesn't work because URLs are parsed such that "status" and
      // "waiting" will be treated as different query parameters anyway :-)
-        'label': 'In `get_jobs` route, "status" cannot contain a `&` character',
+        'label': 'In `get_list` route, "status" cannot contain a `&` character',
         'req': {
             'method': 'GET',
             'path': '/box/parambadness?status=still&waiting'
@@ -578,6 +579,67 @@
             'statusCode': 444
         }
     }]);
+
+    (function () {
+
+        var i, n, temp, x1, x2;
+
+        n = 1024 * 1024; // to create a body > 1 MB in length
+
+        temp = '';
+
+        for (i = 0; i < n; i += 1) {
+            temp += 'x';
+        }
+
+        x1 = JSON.stringify({
+            'box': 'biguglyupload',
+            'key': 'regular_avar',
+            'val': temp
+        });
+
+        x2 = JSON.stringify({
+            'box': 'biguglyupload',
+            'key': 'task_avar',
+            'status': 'not-a-real-task',
+            'val': temp
+        });
+
+        test([{
+            'label': 'In `set_avar` route, upload size is limited for avar',
+            'req': {
+                'data': x1,
+                'headers': {
+                    'Content-Length': x1.length,
+                    'Content-Type': 'application/json'
+                },
+                'method': 'POST',
+                'path': '/box/biguglyupload?key=regular_avar'
+            },
+            'res': {
+                'data': '',
+                'statusCode': 444
+            }
+        }, {
+            'label': 'In `set_avar` route, upload size is limited for task',
+            'req': {
+                'data': x2,
+                'headers': {
+                    'Content-Length': x2.length,
+                    'Content-Type': 'application/json'
+                },
+                'method': 'POST',
+                'path': '/box/biguglyupload?key=task_avar'
+            },
+            'res': {
+                'data': '',
+                'statusCode': 444
+            }
+        }]);
+
+        return;
+
+    }());
 
  // That's all, folks!
 

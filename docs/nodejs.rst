@@ -52,8 +52,8 @@ connection strings:
             };
         },
         match_hostname:     false,
+        max_body_size:      1048576,    //- 1024 * 1024 = 1 MB
         max_http_sockets:   500,
-        max_upload_size:    1048576,    //- 1024 * 1024 = 1 Megabyte
         persistent_storage: {
             avar_ttl:       86400,      //- expire avars after 24 hours
          // couch:          'http://127.0.0.1:5984/db',
