@@ -188,6 +188,18 @@
     }]);
 
     test([{
+        'label': 'GET requests must specify a non-empty "box"',
+        'req': {
+            'method': 'GET',
+            'path': '/box/?key=hello'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+
+    test([{
         'label': 'GET requests must specify a "key" or a "status"',
         'req': {
             'method': 'GET',
@@ -311,6 +323,40 @@
         'res': {
             'data': '',
             'statusCode': 201
+        }
+    }]);
+
+    test([{
+        'label': 'In `set_avar` route, "box" cannot be zero-length for avar',
+        'req': {
+            'data': '{"box":"","key":"regular_avar","val":2}',
+            'headers': {
+                'Content-Length': 39,
+                'Content-Type': 'application/json'
+            },
+            'method': 'POST',
+            'path': '/box/?key=regular_avar'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
+        }
+    }]);
+
+    test([{
+        'label': '`set_avar` route must specify a non-empty "box" for task',
+        'req': {
+            'data': '{"box":"","key":"task_avar","status":"waiting","val":2}',
+            'headers': {
+                'Content-Length': 55,
+                'Content-Type': 'application/json'
+            },
+            'method': 'POST',
+            'path': '/box/?key=task_avar'
+        },
+        'res': {
+            'data': '',
+            'statusCode': 444
         }
     }]);
 
