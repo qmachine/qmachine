@@ -58,8 +58,8 @@
              // expected.
                 var data = temp.join('');
                 if (data !== obj.res.data) {
-                    throw new Error('data mismatch (' +
-                        data + ' !== ' + obj.res.data + ')');
+                    return callback(new Error('data mismatch (' +
+                        data + ' !== ' + obj.res.data + ')'));
                 }
                 callback(null);
                 return;
