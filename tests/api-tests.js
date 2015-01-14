@@ -7,7 +7,7 @@
 //  not test the performance of the implementation under load.
 //
 //                                                      ~~ (c) SRW, 10 Jan 2015
-//                                                  ~~ last updated 12 Jan 2015
+//                                                  ~~ last updated 14 Jan 2015
 
 (function () {
     'use strict';
@@ -630,7 +630,7 @@
 
         var i, n, temp, x1, x2;
 
-        n = 1024 * 1024; // to create a body > 1 MB in length
+        n = 64 * 1024; // to create a body >= the default "max_body_size"
 
         temp = '';
 

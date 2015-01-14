@@ -43,7 +43,7 @@ connection strings:
         enable_cors:        false,
         enable_web_server:  false,
         hostname:           '0.0.0.0',
-        max_body_size:      1048576, # 1024 * 1024 = 1 MB
+        max_body_size:      65536, # 64 * 1024 = 64 KB
         persistent_storage: {
           # mongo:          'mongodb://localhost:27017/test'
         },

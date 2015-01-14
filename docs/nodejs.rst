@@ -52,7 +52,7 @@ connection strings:
             };
         },
         match_hostname:     false,
-        max_body_size:      1048576,    //- 1024 * 1024 = 1 MB
+        max_body_size:      65536,      //- 64 * 1024 = 64 KB
         max_http_sockets:   500,
         persistent_storage: {
             avar_ttl:       86400,      //- expire avars after 24 hours
