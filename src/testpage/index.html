@@ -2,7 +2,7 @@
 <!--
     index.html ~~
                                                         ~~ (c) SRW, 08 Aug 2014
-                                                    ~~ last updated 14 Jan 2015
+                                                    ~~ last updated 15 Jan 2015
 -->
 <html lang="en">
   <head>
@@ -18,14 +18,11 @@
       <a href="https://www.qmachine.org" target="_blank">QMachine homepage</a>.
     </div>
   <!--
-    NOTE: This test page doesn't pass the PhantomJS-based unit tests if the
-    test machine is offline, because some of the tests try to load CoffeeScript
-    from a web-based CDN. In such a case, include a "coffeescript.js" file in
-    the static content directory and uncomment the script tag shown below :-)
+    NOTE: This test page wasn't passing the PhantomJS-based unit tests when the
+    test machine was offline, because some of the tests were trying to load
+    CoffeeScript from a web-based CDN.
   -->
-  <!--
-    <script src="./coffeescript.js"></script>
-  -->
+    <script async src="./coffeescript.js"></script>
     <script async src="./qm.js"></script>
   </body>
 </html>

@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 10 Jan 2015
+#                                                   ~~ last updated 15 Jan 2015
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -154,6 +154,7 @@ ruby-gem: | $(BUILD_DIR)/ruby-gem/
 testpage:                                                                   \
     $(addprefix $(BUILD_DIR)/testpage/,                                     \
         index.html                                                          \
+        coffeescript.js                                                     \
         qm.js                                                               \
         robots.txt                                                          \
     )
