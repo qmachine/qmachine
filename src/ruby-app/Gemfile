@@ -1,8 +1,12 @@
 #-  Ruby dependency management file
 
 #-  Gemfile ~~
+#
+#   Note that Thin is not strictly required here; WEBrick also works, and
+#   possibly other platforms and web servers, too.
+#
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 15 Jan 2015
+#                                                   ~~ last updated 16 Jan 2015
 
 git_repo = {
     git: 'https://github.com/qmachine/qm-ruby.git'
@@ -14,7 +18,9 @@ local_fs = {
 
 gem 'json'
 gem 'qm', (FileTest.directory?(local_fs[:path]) ? local_fs : git_repo)
-gem 'thin'
+gem 'thin', {
+    platforms: ['ruby']
+}
 
 ruby '2.2.0'
 
