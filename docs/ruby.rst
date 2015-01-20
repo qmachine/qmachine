@@ -37,7 +37,7 @@ connection strings:
 
     require 'qm'
 
-    QM::launch_service({
+    QM.launch_service({
         avar_ttl:           86400, # seconds to store avars (default: 24 hours)
         enable_api_server:  false,
         enable_cors:        false,
@@ -54,14 +54,18 @@ connection strings:
         }
     })
 
+.. NOTE: In the code sample shown above, `QM.launch_service` is used instead of
+.. `QM::launch_service` in order to look as similar to Node.js as possible. Is
+.. this a "terrible" thing to do in Ruby?
+
 The Ruby version of the API server has significantly less flexibility than the
 original Node.js version does. The only choice to persist storage for the
 message-passing interface is MongoDB_, and MongoDB is also the only supported
 database for logging traffic data.
 
 
-.. The SQLite_ bindings are still present in the repository, but the presence
-.. of the `sqlite3 gem`_ disables deployment to Heroku.
+.. The SQLite_ bindings are no longer present in the repository's `master`
+.. branch because the `sqlite3 gem`_ disables deployment to Heroku.
 
 
 .. https://badge.fury.io/rb/qm.png

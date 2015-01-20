@@ -8,7 +8,7 @@
 #   See https://docs.qmachine.org/en/latest/ruby.html for more information.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 28 Aug 2014
+#                                                   ~~ last updated 20 Jan 2015
 
 require 'rubygems'
 require 'bundler'
@@ -16,24 +16,18 @@ require 'bundler'
 Bundler.require
 
 options = {
+    enable_api_server:  true,
+    enable_cors:        true,
     enable_web_server:  true,
-    public_folder:      'public'
+    persistent_storage: {
+        mongo:          'mongodb://localhost:27017/test'
+    }
 }
 
-if (ENV['PORT']) then
-    options[:port] = ENV['PORT']
-end
-
 if (ENV['QM_API_STRING']) then
-    options[:enable_api_server] = true
-    options[:enable_cors] = true
     options[:persistent_storage] = JSON.parse(ENV['QM_API_STRING'])
 end
 
-if (ENV['QM_LOG_STRING']) then
-    options[:trafficlog_storage] = JSON.parse(ENV['QM_LOG_STRING'])
-end
-
-QM::launch_service(options)
+QM.launch_service(options)
 
 #-  vim:set syntax=ruby:
