@@ -16,7 +16,7 @@
 //      ~/Library/Application\ Support/Ofi\ Labs/PhantomJS/ .
 //
 //                                                      ~~ (c) SRW, 19 Sep 2012
-//                                                  ~~ last updated 10 Aug 2014
+//                                                  ~~ last updated 20 Jan 2015
 
 (function (global) {
     'use strict';
@@ -86,11 +86,11 @@
             return phantom.exit(1);
         }
         global.console.log('Page has loaded ...');
-        page.evaluate(function f() {
+        page.evaluate(function g() {
          // This function will be executed by the webpage, not by PhantomJS.
             /*jslint browser: true */
             if (window.hasOwnProperty('QM') === false) {
-                window.setTimeout(f, 0);
+                window.setTimeout(g, 0);
                 return;
             }
             window.QM.box = 'hi-mom';
