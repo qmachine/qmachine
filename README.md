@@ -35,6 +35,7 @@ reference.
 
 | Purpose | Status |
 |:-------:|:------:|
+| Code review | [![Codacy Badge](https://www.codacy.com/project/badge/c61fcaa6c2be4cc28cddbd8b8f3162fc)](https://www.codacy.com/public/qmachine/qmachine) |
 | Documentation | [![Documentation Status](https://readthedocs.org/projects/qmachine/badge/?version=latest)](https://readthedocs.org/projects/qmachine/?badge=latest) |
 | Special targets | [![Special targets](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest) |
 | Unit tests | [![Unit tests](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) |
