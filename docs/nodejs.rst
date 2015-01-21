@@ -70,7 +70,7 @@ connection strings:
          // mongo:          'mongodb://localhost:27017/test'
          // postgres:       'postgres://localhost:5432/' + process.env.USER
         },
-        worker_procs:       0
+        worker_procs:       1
     });
 
 The Node.js version of the API server can use any of five different databases

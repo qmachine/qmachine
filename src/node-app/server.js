@@ -2,7 +2,7 @@
 
 //- server.js ~~
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 20 Jan 2015
+//                                                  ~~ last updated 21 Jan 2015
 
 (function () {
     'use strict';
@@ -14,9 +14,9 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        cpus, enable_api_server, enable_cors, enable_web_server, env,
-        launch_service, length, mongo, parse, persistent_storage,
-        static_content, QM_API_STRING, QM_WEB_STRING, TRAVIS, worker_procs
+        enable_api_server, enable_cors, enable_web_server, env, launch_service,
+        mongo, parse, persistent_storage, static_content, QM_API_STRING,
+        QM_WEB_STRING, TRAVIS, worker_procs
     */
 
  // Declarations
@@ -49,13 +49,13 @@
     }
 
     if (process.env.TRAVIS === 'true') {
-     // This is for use with Travis CI. On their original infrastructure, the
-     // VMs run on 1.5 cores with burst capacity, so it was best to set
-     // `options.worker_procs = 1`. The new infrastructure, based on Docker
-     // containers, offers 2 dedicated cores, but ... see http://goo.gl/6x9Df6.
+     // This is for use with running the unit tests on Travis CI. On their
+     // original infrastructure, the VMs run on 1.5 cores with burst capacity,
+     // so it was best to set `options.worker_procs = 1`. The new
+     // infrastructure, based on Docker containers, offers 2 dedicated cores,
+     // but ... see http://goo.gl/6x9Df6. QM defaults to 1 anyway, but there's
+     // no harm in setting it explicitly.
         options.worker_procs = 1;
-    } else {
-        options.worker_procs = require('os').cpus().length;
     }
 
     qm.launch_service(options);
