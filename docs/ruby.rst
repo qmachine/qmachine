@@ -51,7 +51,8 @@ connection strings:
         public_folder:      'public',
         trafficlog_storage: {
           # mongo:          'mongodb://localhost:27017/test'
-        }
+        },
+        worker_procs:       1
     })
 
 .. NOTE: In the code sample shown above, `QM.launch_service` is used instead of

@@ -1,6 +1,6 @@
-#-  Rack configuration file
+#-  Ruby source code
 
-#-  config.ru ~~
+#-  server.rb ~~
 #
 #   This Ruby app launches a QM API server and a web server for anything placed
 #   in the "public" folder.
@@ -8,7 +8,7 @@
 #   See https://docs.qmachine.org/en/latest/ruby.html for more information.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 20 Jan 2015
+#                                                   ~~ last updated 21 Jan 2015
 
 require 'rubygems'
 require 'bundler'
