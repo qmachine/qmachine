@@ -18,7 +18,7 @@ API client
 A client for Ruby is under development. Basic low-level functions are now
 available in the stable release, but no effort has been made to leverage any of
 Ruby's language-level concurrency features. It is possible to use the current
-functions in a Ruby program to submit jobs to be executed by volunter compute
+functions in a Ruby program to submit jobs to be executed by volunteer compute
 nodes, but it is not yet convenient.
 
 
@@ -59,8 +59,8 @@ connection strings:
 .. `QM::launch_service` in order to look as similar to Node.js as possible. Is
 .. this a "terrible" thing to do in Ruby?
 
-The Ruby version of the API server has significantly less flexibility than the
-original Node.js version does. The only choice to persist storage for the
+The Ruby version of the API server has less flexibility than the original
+Node.js version does. The only choice to persist storage for the
 message-passing interface is MongoDB_, and MongoDB is also the only supported
 database for logging traffic data.
 
