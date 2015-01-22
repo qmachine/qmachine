@@ -1,6 +1,12 @@
 //- JavaScript source code
 
 //- server.js ~~
+//
+//  This Node.js app launches a QM API server and a web server for anything
+//  placed in the "public" folder.
+//
+//  See https://docs.qmachine.org/en/latest/nodejs.html for more information.
+//
 //                                                      ~~ (c) SRW, 06 Oct 2012
 //                                                  ~~ last updated 21 Jan 2015
 

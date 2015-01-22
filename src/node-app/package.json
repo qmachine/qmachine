@@ -4,7 +4,7 @@
         "email": "sean@mathbiol.org"
     },
     "dependencies": {
-        "qm": "qmachine/qm-nodejs"
+        "qm": "../../src/npm-module"
     },
     "engines": {
         "node": "0.10.x"
@@ -13,7 +13,7 @@
     "private": true,
     "readme": "See https://docs.qmachine.org/en/latest/nodejs.html.",
     "scripts": {
-        "prestart": "node ./node_modules/qm/examples/roll-up.js public/",
+        "prestart": "node ./node_modules/qm/examples/roll-up.js",
         "start": "node server.js"
     },
     "version": "1.2.2"

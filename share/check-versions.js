@@ -6,10 +6,8 @@
 //  due simply to human oversight. Semantic versioning is a nice idea, but it
 //  can be a really big pain sometimes.
 //
-//  NOTE: Should we also check Git tags in this script?
-//
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 10 Aug 2014
+//                                                  ~~ last updated 22 Jan 2015
 
 (function () {
     'use strict';
@@ -132,7 +130,8 @@
             current_version = config.version;
         }
         if ((config.dependencies.qm !== current_version) &&
-                (config.dependencies.qm !== 'qmachine/qm-nodejs')) {
+                (config.dependencies.qm !== 'qmachine/qm-nodejs') &&
+                (config.dependencies.qm !== '../../src/npm-module')) {
             throw err;
         }
         if (config.version !== current_version) {
