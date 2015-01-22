@@ -8,7 +8,7 @@
 //  See https://docs.qmachine.org/en/latest/nodejs.html for more information.
 //
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 21 Jan 2015
+//                                                  ~~ last updated 22 Jan 2015
 
 (function () {
     'use strict';
@@ -37,7 +37,8 @@
         enable_web_server:  true,
         persistent_storage: {
             mongo:          'mongodb://localhost:27017/test'
-        }
+        },
+        worker_procs:       2
     };
 
     parse = require('./custom').parse;
@@ -59,8 +60,7 @@
      // original infrastructure, the VMs run on 1.5 cores with burst capacity,
      // so it was best to set `options.worker_procs = 1`. The new
      // infrastructure, based on Docker containers, offers 2 dedicated cores,
-     // but ... see http://goo.gl/6x9Df6. QM defaults to 1 anyway, but there's
-     // no harm in setting it explicitly.
+     // but ... see http://goo.gl/6x9Df6.
         options.worker_procs = 1;
     }
 

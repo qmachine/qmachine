@@ -8,7 +8,7 @@
 #   See https://docs.qmachine.org/en/latest/ruby.html for more information.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 21 Jan 2015
+#                                                   ~~ last updated 22 Jan 2015
 
 require 'rubygems'
 require 'bundler'
@@ -21,11 +21,16 @@ options = {
     enable_web_server:  true,
     persistent_storage: {
         mongo:          'mongodb://localhost:27017/test'
-    }
+    },
+    worker_procs:       2
 }
 
 if (ENV['QM_API_STRING']) then
     options[:persistent_storage] = JSON.parse(ENV['QM_API_STRING'])
+end
+
+if (ENV['TRAVIS'] == 'true') then
+    options[:worker_procs] = 1
 end
 
 QM.launch_service(options)
