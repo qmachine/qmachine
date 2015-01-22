@@ -16,7 +16,7 @@
 #   When I can test for regressions instantly, I will reconsider. UGH.
 #
 #                                                       ~~ (c) SRW, 27 Nov 2012
-#                                                   ~~ last updated 12 Jan 2015
+#                                                   ~~ last updated 21 Jan 2015
 
 SHELL   :=  sh
 ECHO    :=  echo -e
@@ -201,9 +201,9 @@ endef
 define run-procfile
     LAUNCH_COMMAND=`$(SED) 's/web:[[:space:]]*//' Procfile`             ;   \
     if [ -z $${TRAVIS_JOB_ID} ]; then                                       \
-        $(1) $(SHELL) -c "$${LAUNCH_COMMAND}"                           ;   \
+        $(1) $(SHELL) -c "$${LAUNCH_COMMAND}" || $(TRUE)                ;   \
     else                                                                    \
-        ( $(1) $(SHELL) -c "$${LAUNCH_COMMAND}" & ) || /bin/true        ;   \
+        ( $(1) $(SHELL) -c "$${LAUNCH_COMMAND}" & ) || $(TRUE)          ;   \
     fi
 endef
 
@@ -240,6 +240,7 @@ QRENCODE    :=  $(call contingent, qrencode) --8bit --level=H
 RM          :=  $(call contingent, grm rm) -rf
 SED         :=  $(call contingent, gsed sed)
 SORT        :=  $(call contingent, gsort sort) -u
+TRUE        :=  $(call contingent, true)
 XARGS       :=  $(call contingent, xargs)
 YUICOMP     :=  $(call contingent, yuicompressor)
 ZIP         :=  $(call contingent, zip)
