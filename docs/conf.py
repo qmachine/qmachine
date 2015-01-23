@@ -54,7 +54,7 @@ version = '1.2'
 
 # The full version, including alpha/beta/rc tags.
 
-release = '1.2.2'
+release = '1.2.3'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
