@@ -7,7 +7,7 @@
 //  can be a really big pain sometimes.
 //
 //                                                      ~~ (c) SRW, 31 Aug 2013
-//                                                  ~~ last updated 22 Jan 2015
+//                                                  ~~ last updated 23 Jan 2015
 
 (function () {
     'use strict';
@@ -20,7 +20,7 @@
 
     /*properties
         dependencies, forEach, join, log, match, on, parse, qm, readFile,
-        slice, split, test, toString, trim, version
+        slice, split, test, toString, version
     */
 
  // Declarations
@@ -123,19 +123,15 @@
     check_node_app = function () {
      // This function checks to make sure that the package manifest file for
      // the private "qm-node-app" NPM module keeps pace with the "qm" module.
-        var config, err;
-        config = require('../src/node-app/package.json');
-        err = new Error('Version mismatch for Node.js app');
+        var config = require('../src/node-app/package.json');
         if (current_version === undefined) {
             current_version = config.version;
         }
-        if ((config.dependencies.qm !== current_version) &&
-                (config.dependencies.qm !== 'qmachine/qm-nodejs') &&
-                (config.dependencies.qm !== '../../src/npm-module')) {
-            throw err;
+        if (config.dependencies.qm !== '../../src/npm-module') {
+            throw new Error('"node-app" should depend on local checkout');
         }
         if (config.version !== current_version) {
-            throw err;
+            throw new Error('Version mismatch for Node.js app');
         }
         return;
     };
@@ -158,7 +154,7 @@
      // really tough problem if you want to solve it correctly (see
      // http://git.io/xUnKYA), but by setting conventions, it's a really easy
      // problem :-P
-        var filename = __dirname + '/../src/ruby-gem/qm.gemspec';
+        var filename = __dirname + '/../src/ruby-gem/lib/qm.rb';
         fs.readFile(filename, function (err, result) {
          // This function needs documentation.
             if (err !== null) {
@@ -166,12 +162,12 @@
             }
             result.toString().split('\n').forEach(function (line) {
              // This function needs documentation.
-                var temp, version;
-                temp = line.trim().split('=');
-                if (temp[0].trim() !== 'spec.version') {
+                var re, version;
+                re = /^\s*VERSION\s*=\s*['"]([0-9]+\.[0-9]+\.[0-9]+)['"]\s*$/;
+                if (re.test(line) === false) {
                     return;
                 }
-                version = temp[1].trim().slice(1, -1);
+                version = line.match(re)[1];
                 if (current_version === undefined) {
                     current_version = version;
                 }
