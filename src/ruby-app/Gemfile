@@ -2,18 +2,18 @@
 
 #-  Gemfile ~~
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 21 Jan 2015
+#                                                   ~~ last updated 24 Jan 2015
 
-git_repo = {
-    git: 'https://github.com/qmachine/qm-ruby.git'
-}
-
-local_fs = {
+from_dir = {
     path: File.join(Dir.pwd, '..', '..', 'src', 'ruby-gem')
 }
 
+from_git = {
+    git: 'https://github.com/qmachine/qm-ruby.git'
+}
+
 gem 'json'
-gem 'qm', (FileTest.directory?(local_fs[:path]) ? local_fs : git_repo)
+gem 'qm', (FileTest.directory?(from_dir[:path]) ? from_dir : from_git)
 
 ruby '2.2.0'
 
