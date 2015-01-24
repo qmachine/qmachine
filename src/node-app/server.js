@@ -20,9 +20,9 @@
     /*jslint indent: 4, maxlen: 80, node: true */
 
     /*properties
-        enable_api_server, enable_cors, enable_web_server, env, launch_service,
-        mongo, parse, persistent_storage, static_content, QM_API_STRING,
-        QM_WEB_STRING, TRAVIS, worker_procs
+        cpus, enable_api_server, enable_cors, enable_web_server, env,
+        launch_service, length, mongo, parse, persistent_storage,
+        static_content, QM_API_STRING, QM_WEB_STRING, TRAVIS, worker_procs
     */
 
  // Declarations
@@ -38,7 +38,7 @@
         persistent_storage: {
             mongo:          'mongodb://localhost:27017/test'
         },
-        worker_procs:       2
+        worker_procs:       require('os').cpus().length
     };
 
     qm = require('qm');

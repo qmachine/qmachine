@@ -8,7 +8,7 @@
 #   See https://docs.qmachine.org/en/latest/ruby.html for more information.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 23 Jan 2015
+#                                                   ~~ last updated 24 Jan 2015
 
 require 'rubygems'
 require 'bundler'
@@ -22,7 +22,7 @@ options = {
     persistent_storage: {
         mongo:          'mongodb://localhost:27017/test'
     },
-    worker_procs:       2
+    worker_procs:       Facter.value('ProcessorCount')
 }
 
 if (ENV['QM_API_STRING']) then

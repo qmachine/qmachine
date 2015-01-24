@@ -12,6 +12,7 @@ from_git = {
     git: 'https://github.com/qmachine/qm-ruby.git'
 }
 
+gem 'facter'
 gem 'json'
 gem 'qm', (FileTest.directory?(from_dir[:path]) ? from_dir : from_git)
 
