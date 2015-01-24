@@ -38,9 +38,11 @@ connection strings:
     var qm = require('qm');
 
     qm.launch_service({
+        avar_ttl:           86400,      //- expire avars after 24 hours
         enable_api_server:  false,
         enable_cors:        false,
         enable_web_server:  false,
+        gc_interval:        60,         //- evict old avars every _ seconds
         hostname:           '0.0.0.0',  //- aka INADDR_ANY
         log: function (request) {
          // This function is the default logging function.
@@ -55,9 +57,7 @@ connection strings:
         max_body_size:      65536,      //- 64 * 1024 = 64 KB
         max_http_sockets:   500,
         persistent_storage: {
-            avar_ttl:       86400,      //- expire avars after 24 hours
          // couch:          'http://127.0.0.1:5984/db',
-            gc_interval:    60          //- collect garbage every _ seconds
          // mongo:          'mongodb://localhost:27017/test'
          // postgres:       'postgres://localhost:5432/' + process.env.USER
          // redis:          'redis://:@127.0.0.1:6379'
