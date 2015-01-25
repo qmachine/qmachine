@@ -8,7 +8,7 @@
 //  See https://docs.qmachine.org/en/latest/nodejs.html for more information.
 //
 //                                                      ~~ (c) SRW, 06 Oct 2012
-//                                                  ~~ last updated 24 Jan 2015
+//                                                  ~~ last updated 25 Jan 2015
 
 (function () {
     'use strict';
@@ -22,7 +22,7 @@
     /*properties
         cpus, enable_api_server, enable_cors, enable_web_server, env,
         launch_service, length, mongo, parse, persistent_storage,
-        static_content, QM_API_STRING, QM_WEB_STRING, TRAVIS, worker_procs
+        QM_API_STRING, TRAVIS, worker_procs
     */
 
  // Declarations
@@ -47,10 +47,6 @@
 
     if (process.env.QM_API_STRING !== undefined) {
         options.persistent_storage = JSON.parse(process.env.QM_API_STRING);
-    }
-
-    if (process.env.QM_WEB_STRING !== undefined) {
-        options.static_content = JSON.parse(process.env.QM_WEB_STRING);
     }
 
     if (process.env.TRAVIS === 'true') {

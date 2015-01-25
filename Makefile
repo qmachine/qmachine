@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 15 Jan 2015
+#                                                   ~~ last updated 25 Jan 2015
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -175,8 +175,7 @@ node-app: | $(BUILD_DIR)/node-app/
             $(CD) $(BUILD_DIR)/$@                                       ;   \
             $(NPM) install                                              ;   \
             $(call run-procfile, \
-                QM_API_STRING=$(strip $(QM_API_STRING)) \
-                QM_WEB_STRING='"$(BUILD_DIR)/$@/katamari.json"')
+                QM_API_STRING=$(strip $(QM_API_STRING)))
 
 ruby-app: | $(BUILD_DIR)/ruby-app/
 	@   $(MAKE) \
