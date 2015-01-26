@@ -64,7 +64,7 @@ connection strings:
          // sqlite:         'qm.db'
         },
         port:               8177,
-        static_content:     'katamari.json',
+        static_content:     require('path').resolve('./katamari.json'),
         trafficlog_storage: {
          // couch:          'http://127.0.0.1:5984/traffic'
          // mongo:          'mongodb://localhost:27017/test'
