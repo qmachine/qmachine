@@ -37,7 +37,8 @@ reference.
 |:-------:|:------:|
 | Code review | [![Codacy Badge](https://www.codacy.com/project/badge/c61fcaa6c2be4cc28cddbd8b8f3162fc)](https://www.codacy.com/public/qmachine/qmachine) |
 | Documentation | [![Documentation Status](https://readthedocs.org/projects/qmachine/badge/?version=latest)](https://readthedocs.org/projects/qmachine/?badge=latest) |
-| Social media | [![Facebook](https://www.google.com/s2/favicons?domain=www.facebook.com)](https://www.facebook.com/qmachineorg) [![Google+](https://www.google.com/s2/favicons?domain=plus.google.com)](https://plus.google.com/+qmachineorg) [![Twitter](https://www.google.com/s2/favicons?domain=twitter.com)](https://twitter.com/qmachineorg) [![YouTube](https://www.google.com/s2/favicons?domain=www.youtube.com)](https://www.youtube.com/playlist?list=PLwUGp_wSf5vjD5vwzj9Dhqbz-y54oALIe)
 | Special targets | [![Special targets](https://drone.io/github.com/qmachine/qmachine/status.png)](https://drone.io/github.com/qmachine/qmachine/latest) |
 | Unit tests | [![Unit tests](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) |
+
+[![Facebook](https://www.google.com/s2/favicons?domain=www.facebook.com)](https://www.facebook.com/qmachineorg) [![Google+](https://www.google.com/s2/favicons?domain=plus.google.com)](https://plus.google.com/+qmachineorg) [![Twitter](https://www.google.com/s2/favicons?domain=twitter.com)](https://twitter.com/qmachineorg) [![YouTube](https://www.google.com/s2/favicons?domain=www.youtube.com)](https://www.youtube.com/playlist?list=PLwUGp_wSf5vjD5vwzj9Dhqbz-y54oALIe)
 
