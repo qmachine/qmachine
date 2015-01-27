@@ -41,11 +41,11 @@ reference.
 | Unit tests | [![Unit tests](https://travis-ci.org/qmachine/qmachine.svg?branch=master)](https://travis-ci.org/qmachine/qmachine) |
 
 
-<a href="https://www.facebook.com/qmachineorg"><img alt="Facebook logo" height="16" width="16" src="//www.google.com/s2/favicons?domain=www.facebook.com"></a>
+[![Facebook](https://www.google.com/s2/favicons?domain=www.facebook.com)](https://www.facebook.com/qmachineorg)
 
-<a href="https://plus.google.com/+qmachineorg"><img alt="Google+ logo" height="16" width="16" src="//www.google.com/s2/favicons?domain=plus.google.com"></a>
+[![Google+](https://www.google.com/s2/favicons?domain=plus.google.com)](https://plus.google.com/+qmachineorg)
 
-<a href="https://twitter.com/qmachineorg"><img alt="Twitter logo" height="16" width="16" src="//www.google.com/s2/favicons?domain=twitter.com"></a>
+[![Twitter](https://www.google.com/s2/favicons?domain=twitter.com)](https://twitter.com/qmachineorg)
 
-<a href="//www.youtube.com/playlist?list=PLwUGp_wSf5vjD5vwzj9Dhqbz-y54oALIe"><img alt="YouTube logo" height="16" width="16" src="//www.google.com/s2/favicons?domain=www.youtube.com"></a>
+[![YouTube](https://www.google.com/s2/favicons?domain=www.youtube.com)](https://www.youtube.com/playlist?list=PLwUGp_wSf5vjD5vwzj9Dhqbz-y54oALIe)
 
