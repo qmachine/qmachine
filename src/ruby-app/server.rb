@@ -8,7 +8,7 @@
 #   See https://docs.qmachine.org/en/latest/ruby.html for more information.
 #
 #                                                       ~~ (c) SRW, 24 Apr 2013
-#                                                   ~~ last updated 24 Jan 2015
+#                                                   ~~ last updated 28 Jan 2015
 
 require 'rubygems'
 require 'bundler'
@@ -25,7 +25,7 @@ options = {
     worker_procs:       Facter.value('ProcessorCount')
 }
 
-if (ENV['QM_API_STRING']) then
+if (ENV['QM_API_STRING'] != nil) then
     options['persistent_storage'] = JSON.parse(ENV['QM_API_STRING'])
 end
 
