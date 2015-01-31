@@ -2,7 +2,7 @@
 
 #-  Gemfile ~~
 #                                                       ~~ (c) SRW, 25 Apr 2013
-#                                                   ~~ last updated 24 Jan 2015
+#                                                   ~~ last updated 30 Jan 2015
 
 from_dir = {
     path: File.join(Dir.pwd, '..', '..', 'src', 'ruby-gem')
@@ -15,6 +15,9 @@ from_git = {
 gem 'facter'
 gem 'json'
 gem 'qm', (FileTest.directory?(from_dir[:path]) ? from_dir : from_git)
+gem 'sqlite3', {
+    platforms: ['ruby']
+}
 
 ruby '2.2.0'
 

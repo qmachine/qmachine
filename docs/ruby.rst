@@ -46,6 +46,7 @@ connection strings:
         max_body_size:      65536, # 64 * 1024 = 64 KB
         persistent_storage: {
           # mongo:          'mongodb://localhost:27017/test'
+          # sqlite:         'qm.db' # experimental
         },
         port:               8177,
         public_folder:      'public',
@@ -60,13 +61,10 @@ connection strings:
 .. this a "terrible" thing to do in Ruby?
 
 The Ruby version of the API server has less flexibility than the original
-Node.js version does. The only choice to persist storage for the
-message-passing interface is MongoDB_, and MongoDB is also the only supported
-database for logging traffic data.
-
-
-.. The SQLite_ bindings are no longer present in the repository's `master`
-.. branch because the `sqlite3 gem`_ disables deployment to Heroku.
+Node.js version does. The only choices to persist storage for the
+message-passing interface are MongoDB_ and SQLite_ (although the latter is only
+experimental at the moment), and MongoDB is the only supported database for
+logging traffic data.
 
 
 .. https://badge.fury.io/rb/qm.png

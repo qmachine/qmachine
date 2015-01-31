@@ -2,13 +2,13 @@
 
 #-  .travis.yml ~~
 #
-#   These instructions run QMachine's tests 11 times -- 2 versions of Node.js
-#   against 5 databases each, plus Ruby against Mongo. CouchDB support is
+#   These instructions run QMachine's tests 12 times -- 2 versions of Node.js
+#   against 5 databases each, plus Ruby against 2 databases. CouchDB support is
 #   probably going to be removed soon, so its failures are allowed (and, at
 #   this point, somewhat expected ...).
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 08 Jan 2015
+#                                                   ~~ last updated 30 Jan 2015
 
 before_install:
   - npm install -g npm@latest
@@ -37,6 +37,8 @@ matrix:
   include:
     - node_js: '0.10'
       env: backend=ruby-app db=mongo
+    - node_js: '0.10'
+      env: backend-ruby-app db=sqlite
 
 node_js:
   - '0.10'
