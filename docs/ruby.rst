@@ -46,6 +46,7 @@ connection strings:
         max_body_size:      65536, # 64 * 1024 = 64 KB
         persistent_storage: {
           # mongo:          'mongodb://localhost:27017/test'
+          # postgres:       postgres://localhost:5432/' + ENV['USER']
           # sqlite:         'qm.db' # experimental
         },
         port:               8177,
@@ -56,15 +57,12 @@ connection strings:
         worker_procs:       1
     })
 
-.. NOTE: In the code sample shown above, `QM.launch_service` is used instead of
-.. `QM::launch_service` in order to look as similar to Node.js as possible. Is
-.. this a "terrible" thing to do in Ruby?
 
 The Ruby version of the API server has less flexibility than the original
-Node.js version does. The only choices to persist storage for the
-message-passing interface are MongoDB_ and SQLite_ (although the latter is only
-experimental at the moment), and MongoDB is the only supported database for
-logging traffic data.
+Node.js version does. There are now three choices to persist storage for the
+message-passing interface, but MongoDB_ is strongly recommended. Support for
+PostgreSQL_ and SQLite_ is experimental, and it may be removed in the future.
+MongoDB is the only supported database for logging traffic data.
 
 
 .. https://badge.fury.io/rb/qm.png
