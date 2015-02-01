@@ -6,7 +6,7 @@
 //  Curl as part of the build process for the QMachine project.
 //
 //                                                      ~~ (c) SRW, 07 Jul 2014
-//                                                  ~~ last updated 10 Nov 2014
+//                                                  ~~ last updated 31 Jan 2015
 
 (function () {
     'use strict';
@@ -114,7 +114,7 @@
         }).on('error', function (err) {
          // This function needs documentation.
             console.error('Error:', err);
-            return;
+            return process.exit(1);
         });
         return;
     };
