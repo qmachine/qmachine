@@ -6,7 +6,7 @@
 //  Curl as part of the build process for the QMachine project.
 //
 //                                                      ~~ (c) SRW, 07 Jul 2014
-//                                                  ~~ last updated 31 Jan 2015
+//                                                  ~~ last updated 02 Jan 2015
 
 (function () {
     'use strict';
@@ -19,8 +19,8 @@
 
     /*properties
         argv, createWriteStream, error, exit, get, hasOwnProperty, headers,
-        indexOf, join, length, location, networkInterfaces, on, parse, pipe,
-        protocol, push, statusCode, writeFile
+        indexOf, join, length, location, message, networkInterfaces, on, parse,
+        pipe, protocol, push, statusCode, writeFile
     */
 
  // Prerequisites
@@ -113,7 +113,7 @@
             return;
         }).on('error', function (err) {
          // This function needs documentation.
-            console.error('Error:', err);
+            console.error('Error:', err.message);
             return process.exit(1);
         });
         return;
