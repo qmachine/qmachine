@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 25 Jan 2015
+#                                                   ~~ last updated 03 Feb 2015
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -47,7 +47,7 @@ else ifeq ("$(strip $(db))", "mongo")
 else ifeq ("$(strip $(db))", "postgres")
     QM_API_STRING   :=  '{"postgres":"postgres://localhost:5432/$(USER)"}'
 else ifeq ("$(strip $(db))", "redis")
-    QM_API_STRING   :=  '{"redis":"redis://:@127.0.0.1:6379"}'
+    QM_API_STRING   :=  '{"redis":"redis://127.0.0.1:6379"}'
 else ifeq ("$(strip $(db))", "sqlite")
     QM_API_STRING   :=  '{"sqlite":"qm.db"}'
 endif

@@ -60,7 +60,7 @@ connection strings:
          // couch:          'http://127.0.0.1:5984/db',
          // mongo:          'mongodb://localhost:27017/test'
          // postgres:       'postgres://localhost:5432/' + process.env.USER
-         // redis:          'redis://:@127.0.0.1:6379'
+         // redis:          'redis://127.0.0.1:6379'
          // sqlite:         'qm.db'
         },
         port:               8177,
