@@ -5,12 +5,11 @@
 #   These instructions run QMachine's tests 14 times -- 2 versions of Node.js
 #   against 5 databases each, plus Ruby against 4 databases. CouchDB support is
 #   probably going to be removed soon, so its failures are allowed (and, at
-#   this point, somewhat expected ...). The Redis definitions for Ruby are also
-#   allowed to fail because I'm having trouble testing on my own machine right
-#   now, thanks to PhantomJS 2.0 ...
+#   this point, somewhat expected ...). Ruby databases other than MongoDB are
+#   also allowed to fail because they are considered experimental right now.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 03 Feb 2015
+#                                                   ~~ last updated 04 Feb 2015
 
 before_install:
   - npm install -g npm@latest
@@ -36,7 +35,9 @@ language: node_js
 matrix:
   allow_failures:
     - env: db=couch
+    - env: backend=ruby-app db=postgres
     - env: backend=ruby-app db=redis
+    - env: backend=ruby-app db=sqlite
   include:
     - node_js: '0.10'
       env: backend=ruby-app db=mongo
