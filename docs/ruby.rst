@@ -46,7 +46,8 @@ connection strings:
         max_body_size:      65536, # 64 * 1024 = 64 KB
         persistent_storage: {
           # mongo:          'mongodb://localhost:27017/test'
-          # postgres:       postgres://localhost:5432/' + ENV['USER']
+          # postgres:       'postgres://localhost:5432/' + ENV['USER']
+          # redis:          'redis://127.0.0.1:6379'
           # sqlite:         'qm.db' # experimental
         },
         port:               8177,
@@ -60,9 +61,10 @@ connection strings:
 
 The Ruby version of the API server has less flexibility than the original
 Node.js version does. There are now three choices to persist storage for the
-message-passing interface, but MongoDB_ is strongly recommended. Support for
-PostgreSQL_ and SQLite_ is experimental, and it may be removed in the future.
-MongoDB is the only supported database for logging traffic data.
+message-passing interface, but MongoDB_ is strongly recommended. Experimental
+support for PostgreSQL_, Redis_, and SQLite_ are available, but that support
+may be removed in the future. Currently, MongoDB is the only supported database
+for logging traffic data.
 
 
 .. https://badge.fury.io/rb/qm.png

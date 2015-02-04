@@ -134,13 +134,14 @@ Finally, start MongoDB and then launch QM on localhost:
     $ make ruby-app
 
 QM defaults to MongoDB for storage, but the Ruby version also has experimental
-support for Postgres and SQLite. Thus, possible command-line incantations
-include:
+support for Postgres, Redis, and SQLite. Thus, possible command-line
+incantations include:
 
 .. code-block:: bash
 
     $ make ruby-app db=mongo
     $ make ruby-app db=postgres
+    $ make ruby-app db=redis
     $ make ruby-app db=sqlite
 
 

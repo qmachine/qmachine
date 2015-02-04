@@ -2,13 +2,15 @@
 
 #-  .travis.yml ~~
 #
-#   These instructions run QMachine's tests 13 times -- 2 versions of Node.js
-#   against 5 databases each, plus Ruby against 3 databases. CouchDB support is
+#   These instructions run QMachine's tests 14 times -- 2 versions of Node.js
+#   against 5 databases each, plus Ruby against 4 databases. CouchDB support is
 #   probably going to be removed soon, so its failures are allowed (and, at
-#   this point, somewhat expected ...).
+#   this point, somewhat expected ...). The Redis definitions for Ruby are also
+#   allowed to fail because I'm having trouble testing on my own machine right
+#   now, thanks to PhantomJS 2.0 ...
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 01 Feb 2015
+#                                                   ~~ last updated 03 Feb 2015
 
 before_install:
   - npm install -g npm@latest
@@ -34,11 +36,14 @@ language: node_js
 matrix:
   allow_failures:
     - env: db=couch
+    - env: backend=ruby-app db=redis
   include:
     - node_js: '0.10'
       env: backend=ruby-app db=mongo
     - node_js: '0.10'
       env: backend=ruby-app db=postgres
+    - node_js: '0.10'
+      env: backend=ruby-app db=redis
     - node_js: '0.10'
       env: backend=ruby-app db=sqlite
 
