@@ -60,7 +60,7 @@ connection strings:
 
 
 The Ruby version of the API server has less flexibility than the original
-Node.js version does. There are now three choices to persist storage for the
+Node.js version does. There are now four choices to persist storage for the
 message-passing interface, but MongoDB_ is strongly recommended. Experimental
 support for PostgreSQL_, Redis_, and SQLite_ are available, but that support
 may be removed in the future. Currently, MongoDB is the only supported database
