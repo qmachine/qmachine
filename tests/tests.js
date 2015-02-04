@@ -12,7 +12,7 @@
 //  failing right now ...
 //
 //                                                      ~~ (c) SRW, 28 Nov 2012
-//                                                  ~~ last updated 02 Dec 2014
+//                                                  ~~ last updated 03 Feb 2015
 
 (function () {
     'use strict';
@@ -52,7 +52,13 @@
         return;
     };
 
-    mothership = phantom.args[0];
+    mothership = (function () {
+     // Unfortunately, we have to do some version detection here. Ugh.
+        if (phantom.args instanceof Object) {
+            return phantom.args[0];
+        }
+        return require('system').args[0];
+    }());
 
     queue = [];
 
