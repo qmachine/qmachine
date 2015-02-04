@@ -38,11 +38,11 @@ connection strings:
     var qm = require('qm');
 
     qm.launch_service({
-        avar_ttl:           86400,      //- expire avars after 24 hours
+        avar_ttl:           86400,      //- expire avars after _ seconds
         enable_api_server:  false,
         enable_cors:        false,
         enable_web_server:  false,
-        gc_interval:        60,         //- evict old avars every _ seconds
+        gc_interval:        60,         //- evict unused avars every _ seconds
         hostname:           '0.0.0.0',  //- aka INADDR_ANY
         log: function (request) {
          // This function is the default logging function.

@@ -38,12 +38,13 @@ connection strings:
     require 'qm'
 
     QM.launch_service({
-        avar_ttl:           86400, # seconds to store avars (default: 24 hours)
+        avar_ttl:           86400,      # expire avars after _ seconds
         enable_api_server:  false,
         enable_cors:        false,
         enable_web_server:  false,
+        gc_interval:        60,         # evict unused avars every _ seconds
         hostname:           '0.0.0.0',
-        max_body_size:      65536, # 64 * 1024 = 64 KB
+        max_body_size:      65536,      # 64 * 1024 = 64 KB
         persistent_storage: {
           # mongo:          'mongodb://localhost:27017/test'
           # postgres:       'postgres://localhost:5432/' + ENV['USER']
