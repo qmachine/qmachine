@@ -48,7 +48,7 @@ connection strings:
           # mongo:          'mongodb://localhost:27017/test'
           # postgres:       'postgres://localhost:5432/' + ENV['USER']
           # redis:          'redis://127.0.0.1:6379'
-          # sqlite:         'qm.db' # experimental
+          # sqlite:         'qm.db'
         },
         port:               8177,
         public_folder:      'public',
