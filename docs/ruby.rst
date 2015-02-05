@@ -55,6 +55,7 @@ connection strings:
         public_folder:      'public',
         trafficlog_storage: {
           # mongo:          'mongodb://localhost:27017/test'
+          # postgres:       'postgres://localhost:5432/' + ENV['USER']
         },
         worker_procs:       1
     })
@@ -63,7 +64,7 @@ connection strings:
 The Ruby version of the API server has less flexibility than the original
 Node.js version does. There are now four choices to persist storage for the
 message-passing interface, but MongoDB_ is strongly recommended. Experimental
-support for PostgreSQL_, Redis_, and SQLite_ are available, but that support
+support for PostgreSQL_, Redis_, and SQLite_ is available, but that support
 may be removed in the future. Currently, MongoDB is the only supported database
 for logging traffic data.
 
