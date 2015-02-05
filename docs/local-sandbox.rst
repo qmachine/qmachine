@@ -70,7 +70,7 @@ Next, check out QM's source code from GitHub_:
 
 .. code-block:: bash
 
-    $ git clone https://github.com/qmachine/qmachine.git
+    $ git clone --recursive https://github.com/qmachine/qmachine.git
 
 Now, select your local copy of the repository as the current directory:
 
@@ -119,7 +119,7 @@ Next, check out QM's source code from GitHub:
 
 .. code-block:: bash
 
-    $ git clone https://github.com/qmachine/qmachine.git
+    $ git clone --recursive https://github.com/qmachine/qmachine.git
 
 Now, select your local copy of the repository as the current directory:
 
