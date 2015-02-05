@@ -9,7 +9,10 @@
 #   also allowed to fail because they are considered experimental right now.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 04 Feb 2015
+#                                                   ~~ last updated 05 Feb 2015
+
+#addons:
+#  postgres: '9.2'          # see http://goo.gl/w344UT and http://goo.gl/3ef8hF
 
 before_install:
   - npm install -g npm@latest
