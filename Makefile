@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 03 Feb 2015
+#                                                   ~~ last updated 08 Feb 2015
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -368,7 +368,7 @@ $(CACHE_DIR)/qmachine.js: $(SRC_DIR)/browser-client/qmachine.js | $(CACHE_DIR)
             $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/quanah.js: | $(CACHE_DIR)
-	@   $(call download-url, "http://goo.gl/dldClJ")                ;   \
+	@   $(call download-url, "http://goo.gl/dmyncK")                ;   \
             $(call check-js-syntax, $@)
 
 $(CACHE_DIR)/respond.js: | $(CACHE_DIR)
