@@ -20,7 +20,7 @@
 #   Thanks for stopping by :-)
 #
 #                                                       ~~ (c) SRW, 19 May 2010
-#                                                   ~~ last updated 08 Feb 2015
+#                                                   ~~ last updated 16 Feb 2015
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 
@@ -77,9 +77,7 @@ check-versions:
 clean: reset
 	@   $(RM) $(BUILD_DIR)/                                         ;   \
             $(CD) $(DOCS_DIR)                                           ;   \
-            $(MAKE) $@                                                  ;   \
-            $(RM) $(DOCS_DIR)/_static/favicon.ico                       ;   \
-            $(RM) $(DOCS_DIR)/_static/heroku-button.png
+            $(MAKE) $@
 
 clobber: clean
 	@   $(RM) $(CACHE_DIR)
@@ -94,7 +92,9 @@ distclean: clobber
                 $(RM) $(PROJ_ROOT)/logo.pdf                             ;   \
             else                                                            \
                 $(RM) $(ICONS_DIR)                                      ;   \
-            fi
+            fi                                                          ;   \
+            $(RM) $(DOCS_DIR)/_static/favicon.ico                       ;   \
+            $(RM) $(DOCS_DIR)/_static/heroku-button.png
 
 help:
 	@   $(call show-usage-info)

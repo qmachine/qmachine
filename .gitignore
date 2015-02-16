@@ -11,12 +11,11 @@
 #   control -- always execute your commits manually!
 #
 #                                                       ~~ (c) SRW, 31 Oct 2011
-#                                                   ~~ last updated 02 Dec 2014
+#                                                   ~~ last updated 16 Feb 2015
 
 #-  Temporary project directories
 build/
 cache/
-docs/_build/
 icons/
 var/
 
@@ -43,6 +42,10 @@ node_modules/
 ehthumbs.db
 Icon?
 Thumbs.db
+
+#-  Sphinx documentation directories
+docs/_build/
+docs/_static/
 
 #-  Vim files (taken from http://git.io/qmQqxA)
 .*.s[a-w][a-z]
