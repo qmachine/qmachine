@@ -16,9 +16,9 @@
 #       served to show the default, and I removed most of them.
 #
 #                                                       ~~ (c) SRW, 09 Jul 2014
-#                                                   ~~ last updated 29 Jan 2015
+#                                                   ~~ last updated 16 Feb 2015
 
-import os, urllib
+import os, time, urllib
 
 # -- General configuration ------------------------------------------------
 
@@ -42,7 +42,7 @@ master_doc = 'index'
 # General information about the project.
 
 project = u'QMachine'
-copyright = u'2014-2015, Sean Wilkinson'
+copyright = u'2014-' + time.strftime("%Y") + ', Sean Wilkinson'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
