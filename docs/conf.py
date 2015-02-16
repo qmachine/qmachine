@@ -42,7 +42,7 @@ master_doc = 'index'
 # General information about the project.
 
 project = u'QMachine'
-copyright = u'2014-' + time.strftime("%Y") + ', Sean Wilkinson'
+copyright = u'2014-' + time.strftime('%Y') + ', Sean Wilkinson'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
