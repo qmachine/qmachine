@@ -37,7 +37,7 @@ language: node_js
 
 matrix:
   allow_failures:
-    - node_js: '0.12'
+    - node_js: '0.8'
     - env: db=couch
     - env: backend=ruby-app db=postgres
     - env: backend=ruby-app db=redis
