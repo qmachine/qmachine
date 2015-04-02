@@ -9,7 +9,7 @@
 #   also allowed to fail because they are considered experimental right now.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
-#                                                   ~~ last updated 05 Feb 2015
+#                                                   ~~ last updated 02 Apr 2015
 
 #addons:
 #  postgres: '9.2'          # see http://goo.gl/w344UT and http://goo.gl/3ef8hF
@@ -37,6 +37,7 @@ language: node_js
 
 matrix:
   allow_failures:
+    - node_js: '0.12'
     - env: db=couch
     - env: backend=ruby-app db=postgres
     - env: backend=ruby-app db=redis
@@ -52,6 +53,7 @@ matrix:
       env: backend=ruby-app db=sqlite
 
 node_js:
+  - '0.12'
   - '0.10'
   - '0.8'
 
