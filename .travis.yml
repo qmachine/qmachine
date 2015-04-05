@@ -2,11 +2,14 @@
 
 #-  .travis.yml ~~
 #
-#   These instructions run QMachine's tests 14 times -- 2 versions of Node.js
-#   against 5 databases each, plus Ruby against 4 databases. CouchDB support is
-#   probably going to be removed soon, so its failures are allowed (and, at
-#   this point, somewhat expected ...). Ruby databases other than MongoDB are
-#   also allowed to fail because they are considered experimental right now.
+#   These instructions run QMachine's tests 24 times -- 3 versions of Node.js
+#   and the latest io.js against 5 databases each, plus the latest stable MRI
+#   Ruby against 4 databases. CouchDB support is probably going to be removed
+#   soon, so its failures are allowed (and, at this point, somewhat expected).
+#   Node.js 0.8 is allowed to fail because it is so old, and io.js is allowed
+#   to fail because I haven't had time to explore all its differences yet. The
+#   databases other than Mongo are allowed to fail for the Ruby version because
+#   that support is still experimental.
 #
 #                                                       ~~ (c) SRW, 15 Jul 2013
 #                                                   ~~ last updated 04 Apr 2015
