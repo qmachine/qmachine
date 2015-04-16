@@ -9,6 +9,7 @@
 .. _CouchDB: http://couchdb.apache.org
 .. _CouchDB.app: http://couchdb.apache.org/#download
 .. _Git: http://git-scm.com/
+.. _GitLab: https://gitlab.com/qmachine/qmachine
 .. _GitHub: https://github.com/
 .. _`GNU Make`: https://www.gnu.org/software/make/
 .. _Heroku: https://www.heroku.com/

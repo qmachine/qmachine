@@ -23,8 +23,9 @@ its submodules, too:
 
     $ git clone --recursive https://github.com/qmachine/qmachine.git
 
-There are also "mirrors" available at Bitbucket_, CodePlex_, Gitorious_,
-`Google Code`_, and SourceForge_.
+There are also "mirrors" available at Bitbucket_, CodePlex_, GitLab_, and
+SourceForge_. The repositories at Gitorious_ and `Google Code`_ will no longer
+be updated because those hosting services are being shut down.
 
 
 Node.js
